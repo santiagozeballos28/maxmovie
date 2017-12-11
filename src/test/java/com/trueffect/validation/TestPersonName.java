@@ -77,6 +77,45 @@ public class TestPersonName {
         Assert.assertEquals(PersonValidation.isValidLastName(lastName, sizeMax),expected);     
         
       } 
-      
+//            @Test
+//      public void testLastNameTwo(){   
+//         boolean expected = true;
+//       String lastName = "Mamani Zeballos";
+//       int sizeMax=DataResourse.MAXIMUM_VALUES;
+//        Assert.assertEquals(PersonValidation.isValidLastName(lastName, sizeMax),expected);     
+//        
+//      } 
+     @Test
+      public void testLastNameOne(){   
+         boolean expected = false;
+       String lastName = "MamaniZeballos";
+       int sizeMax=DataResourse.MAXIMUM_VALUES;
+        Assert.assertEquals(PersonValidation.isValidLastName(lastName, sizeMax),expected);     
+        
+      } 
+        @Test
+      public void testLastNameTwoLowerCase(){   
+         boolean expected = false;
+       String lastName = "Mamani zeballos";
+       int sizeMax=DataResourse.MAXIMUM_VALUES;
+        Assert.assertEquals(PersonValidation.isValidLastName(lastName, sizeMax),expected);     
+        
+      } 
+              @Test
+      public void testLastNameTwoSpace(){   
+         boolean expected = false;
+       String lastName = "Mamani  Zeballos";
+       int sizeMax=DataResourse.MAXIMUM_VALUES;
+        Assert.assertEquals(PersonValidation.isValidLastName(lastName, sizeMax),expected);     
+        
+      } 
+      @Test
+      public void testLastNameTwoVALID(){   
+         boolean expected = true;
+       String lastName = "Mamani Nina";
+       int sizeMax=DataResourse.MAXIMUM_VALUES;
+        Assert.assertEquals(PersonValidation.isValidLastName(lastName, sizeMax),expected);     
+        
+      } 
    
 }

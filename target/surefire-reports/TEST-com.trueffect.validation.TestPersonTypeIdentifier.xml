@@ -29,7 +29,7 @@
     <property name="maven.ext.class.path" value="C:\Program Files\NetBeans 8.12\java\maven-nblib\netbeans-eventspy.jar"/>
     <property name="classworlds.conf" value="C:\Program Files\NetBeans 8.12\java\maven\bin\m2.conf"/>
     <property name="sun.jnu.encoding" value="Cp1252"/>
-    <property name="java.library.path" value="C:\Program Files\Java\jdk1.7.0_60\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;c:\program files\apache-maven-3.3.9\bin\;c:\Program Files\Java\jdk1.7.0_60\bin\;C:\Users\santiago.mamani\AppData\Local\Microsoft\WindowsApps;;."/>
+    <property name="java.library.path" value="C:\Program Files\Java\jdk1.7.0_60\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;c:\program files\apache-maven-3.3.9\bin\;c:\Program Files\Java\jdk1.7.0_60\bin\;C:\Users\santiago.mamani\AppData\Local\Microsoft\WindowsApps;C:\Users\santiago.mamani\AppData\Local\Programs\Git\cmd;."/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.class.version" value="51.0"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
@@ -65,7 +65,7 @@
   <testcase time="0" classname="com.trueffect.validation.TestPersonTypeIdentifier" name="testTypeIdentifierPass"/>
   <testcase time="0" classname="com.trueffect.validation.TestPersonTypeIdentifier" name="testTypeIdentifierNitLowerCase"/>
   <testcase time="0" classname="com.trueffect.validation.TestPersonTypeIdentifier" name="testTypeIdentifierEmpty"/>
-  <testcase time="0" classname="com.trueffect.validation.TestPersonTypeIdentifier" name="testTypeIdentifierError"/>
+  <testcase time="0.001" classname="com.trueffect.validation.TestPersonTypeIdentifier" name="testTypeIdentifierError"/>
   <testcase time="0" classname="com.trueffect.validation.TestPersonTypeIdentifier" name="testTypeIdentifierCi"/>
   <testcase time="0" classname="com.trueffect.validation.TestPersonTypeIdentifier" name="testTypeIdentifierNit"/>
   <testcase time="0" classname="com.trueffect.validation.TestPersonTypeIdentifier" name="testTypeIdentifierPassLowerCase"/>
