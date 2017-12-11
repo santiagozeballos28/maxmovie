@@ -8,12 +8,12 @@ import java.sql.SQLException;
 /**
  * @author santiago.mamani
  */
-public class PostgresSQLConnection {
+public class DatabasePostgres {
 
     public static Connection connection;
-    public PostgresSQLConnection() {
+    public DatabasePostgres() {
     }
-    public static void connectionDB() throws Exception{
+    public static Connection getConection() throws Exception{
         try {
             Class.forName(DataConection.DRIVER);
             connection = DriverManager.getConnection(DataConection.SERVER, DataConection.USER, DataConection.PASSWORD);
@@ -21,8 +21,9 @@ public class PostgresSQLConnection {
         } catch (Exception e) {     
              new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
+        return connection;
     }
-    public static void closeDB()  throws Exception{
+    public static void close()  throws Exception{
         try {
             connection.close();
         } catch (SQLException ex) {

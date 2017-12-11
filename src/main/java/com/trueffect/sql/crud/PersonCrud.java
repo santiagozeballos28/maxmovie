@@ -3,13 +3,16 @@ package com.trueffect.sql.crud;
 import com.trueffect.response.CorrectResponse;
 import com.trueffect.response.ErrorResponse;
 import com.trueffect.response.MapperResponse;
-import com.trueffect.conection.db.PostgresSQLConnection;
+import com.trueffect.conection.db.DatabasePostgres;
 import com.trueffect.messages.Message;
 import com.trueffect.model.Person;
 
+
 import com.trueffect.tools.CodeStatus;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,10 +23,9 @@ import javax.ws.rs.core.Response;
  */
 public class PersonCrud {
 
-    public static Person insertrenterUser(int idJob, Person renterUser) throws Exception {
-      Person renterUserInserted=null;
-        
-            PostgresSQLConnection.connectionDB();
+    public static Person insertrenterUser(Connection connection,int idJob, Person renterUser) throws Exception {
+      Person renterUserInserted=null; 
+             Statement query = null;
             try {
                 String typeIdentifier = renterUser.getTypeIdentifier();
                 String identifier = renterUser.getIdentifier();
@@ -31,7 +33,7 @@ public class PersonCrud {
                 String firstName = renterUser.getFirstName();
                 String genre = renterUser.getGenre();
                 String birthay = renterUser.getBirthday();
-                Statement consulta = (Statement) PostgresSQLConnection.connection.createStatement();
+                query = (Statement) connection.createStatement();
                 String sql=
                 "INSERT INTO person(\n" +
                 " type_identifier, identifier, last_name, first_name, genre, \n" +
@@ -40,26 +42,33 @@ public class PersonCrud {
                 " VALUES ('"+typeIdentifier+"','"+identifier+"','"+lastName+"', '"
                         +firstName+"','"+ genre+"','"+birthay+"','2017-12-08','"+idJob+"',null,null,'Active')";
       
-                consulta.execute(sql);
+                query.execute(sql);
                 String msg = "The user " + firstName + " " + lastName + " has been successfully inserted";
                 renterUserInserted = getByTypeIdentifier(typeIdentifier, identifier);
               } catch (Exception e) {
                 throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-            }
-            PostgresSQLConnection.closeDB();
+            }finally{
+                 try {
+                   if(query!=null) query.close();                
+                                   
+                 } catch (SQLException ex) {
+                    throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, ex.getMessage());    
+                  }
+         }  
+            
             return renterUserInserted;
     }
 
     public static Person getRenterUser(int id) throws Exception{
        Person renterUser = null;
         try {
-            PostgresSQLConnection.connectionDB();
+            DatabasePostgres.getConection();
             try {
                 renterUser = getRenterUserById(id);
                 } catch (Exception e) {
                 throw new ErrorResponse(CodeStatus.NOT_FOUND, e.getMessage());
             }
-            PostgresSQLConnection.closeDB();
+            DatabasePostgres.close();
         } catch (Exception e) {
             throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
@@ -73,7 +82,7 @@ public class PersonCrud {
                       "FROM person\n" +
                       " WHERE person.id = ?\n" ;
 
-        PreparedStatement st = PostgresSQLConnection.connection.prepareStatement(sql);
+        PreparedStatement st = DatabasePostgres.connection.prepareStatement(sql);
         st.setInt(1, id);
         ResultSet rs = st.executeQuery();
         if (rs.next()) {
@@ -90,8 +99,8 @@ public class PersonCrud {
                      " birthday\n" +
                      " FROM person" ;
         try {
- PostgresSQLConnection.connectionDB();
-        PreparedStatement st = PostgresSQLConnection.connection.prepareStatement(sql);
+ DatabasePostgres.getConection();
+        PreparedStatement st = DatabasePostgres.connection.prepareStatement(sql);
         ResultSet rs = st.executeQuery();
         
         if (rs.next()) {
@@ -119,7 +128,7 @@ public class PersonCrud {
         } catch (Exception e) {
             //response = mapper.toResponse(new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
         }
-         PostgresSQLConnection.closeDB();
+         DatabasePostgres.close();
         return persons;
     }
 
@@ -132,13 +141,13 @@ public class PersonCrud {
     public static Person getPersonByTypeIdentifier(String typeIdentifier,String  identifier) throws Exception{     
         Person renterUser = null;
            try {
-            PostgresSQLConnection.connectionDB();
+            DatabasePostgres.getConection();
             try {
                 renterUser = getByTypeIdentifier(typeIdentifier, identifier);
                 } catch (Exception e) {
                 throw new ErrorResponse(CodeStatus.NOT_FOUND, e.getMessage());
             }
-            PostgresSQLConnection.closeDB();
+            DatabasePostgres.close();
         } catch (Exception e) {
             throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
@@ -147,7 +156,7 @@ public class PersonCrud {
       private static Person getByTypeIdentifier(String type_identifier,String  identifier) throws Exception{
           Person  renterUserPerson = null;
             try {     
-                 Statement consulta = (Statement) PostgresSQLConnection.connection.createStatement();
+                 Statement consulta = (Statement) DatabasePostgres.connection.createStatement();
                  String sql = "SELECT id, type_identifier, identifier, last_name, first_name, genre, \n" +
                               "  birthday\n" +
                               "  FROM person\n" +
@@ -167,7 +176,7 @@ public class PersonCrud {
       public static int getIdOf(String lastName,String firstName) throws Exception{
        int idPerson=0;
         try {
-            PostgresSQLConnection.connectionDB();
+            DatabasePostgres.getConection();
             try {
                 
                 String sqlGet="SELECT id\n" +
@@ -177,7 +186,7 @@ public class PersonCrud {
                 } catch (Exception e) {
                 throw new ErrorResponse(CodeStatus.NOT_FOUND, e.getMessage());
             }
-            PostgresSQLConnection.closeDB();
+            DatabasePostgres.close();
         } catch (Exception e) {
             throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }

@@ -2,6 +2,7 @@
 package com.trueffect.model;
 import com.trueffect.sql.crud.PersonCrud;
 import com.trueffect.util.ModelObject;
+import java.sql.Connection;
 /*
  * @author santiago.mamani
  */
@@ -84,8 +85,8 @@ public class Person extends ModelObject{
 
     
     @Override
-     public ModelObject insertResourse(int idCreatorUser)throws Exception{
-     return PersonCrud.insertrenterUser(idCreatorUser,this);
+     public ModelObject insertResourse(int idCreatorUser, Connection connection)throws Exception{
+     return PersonCrud.insertrenterUser(connection,idCreatorUser, this);
      }
      @Override
     public ModelObject updateResourse(int idCreatorUser) {

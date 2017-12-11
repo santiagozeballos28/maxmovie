@@ -1,6 +1,6 @@
 package com.trueffect.sql.crud;
 import com.trueffect.response.ErrorResponse;
-import com.trueffect.conection.db.PostgresSQLConnection;
+import com.trueffect.conection.db.DatabasePostgres;
 import com.trueffect.model.Job;
 import com.trueffect.tools.CodeStatus;
 import java.sql.PreparedStatement;
@@ -11,13 +11,13 @@ import java.sql.ResultSet;
 public class JobCrud {
     public static Job getJobOf(int id)throws Exception {
             Job job=null;
-            PostgresSQLConnection.connectionDB();
+            DatabasePostgres.getConection();
             try {
                           String sql = "SELECT id, name_job\n" +
                              "  FROM data_job, job\n" +
                              "  WHERE data_job.id_job= job.id AND id_person=?;" ;
 
-                PreparedStatement st = PostgresSQLConnection.connection.prepareStatement(sql);
+                PreparedStatement st = DatabasePostgres.connection.prepareStatement(sql);
                 st.setInt(1, id);
                 ResultSet rs = st.executeQuery();
             if (rs.next()) {
@@ -28,7 +28,7 @@ public class JobCrud {
             } catch (Exception e) {
                 throw new ErrorResponse(CodeStatus.NOT_FOUND, e.getMessage());
             }
-            PostgresSQLConnection.closeDB();
+            DatabasePostgres.close();
             return job;
     }    
 }
