@@ -11,7 +11,7 @@ public class Job {
 
     public Job(int id, String nameJob) {
         this.id = id;
-        this.nameJob = nameJob;
+        this.nameJob = nameJob.trim();
     }
 
     public int getId() {

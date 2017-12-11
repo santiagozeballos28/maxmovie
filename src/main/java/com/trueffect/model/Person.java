@@ -18,12 +18,12 @@ public class Person extends ModelObject{
     }
     public Person(int id, String typeIdentifier, String identifier, String lastName, String firstName, String genre, String birthday) {
         this.id = id;
-        this.typeIdentifier = typeIdentifier;
-        this.identifier = identifier;
-        this.lastName = lastName;
-        this.firstName = firstName;
-        this.genre = genre;
-        this.birthday = birthday;
+        this.typeIdentifier = typeIdentifier.trim();
+        this.identifier = identifier.trim();
+        this.lastName = lastName.trim();
+        this.firstName = firstName.trim();
+        this.genre = genre.trim();
+        this.birthday = birthday.trim();
     }
 
     public int getId() {
@@ -93,11 +93,10 @@ public class Person extends ModelObject{
       return PersonCrud.updateRenterUser(idCreatorUser,this);       
     }
     public int compareTo(Person o) {
-     return (
-             typeIdentifier.compareTo(o.typeIdentifier)==0&&
-             identifier.compareTo(o.identifier)==0&&
-             lastName.compareTo(o.lastName)==0&&
-             firstName.compareTo(o.firstName)==0&&
+     return (typeIdentifier.compareTo(o.typeIdentifier)==0&&
+             identifier.compareTo(o.identifier)==0 &&
+             lastName.compareTo(o.lastName)==0 &&
+             firstName.compareTo(o.firstName)==0 &&
              genre.compareTo(o.genre)==0)?0:-1;
       }
  

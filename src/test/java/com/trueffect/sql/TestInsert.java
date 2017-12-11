@@ -24,7 +24,7 @@ public class TestInsert {
     @Test
     public void testValidationInsertConMock() throws Exception {
 
-        Person renterUser = new Person(0,"NIT","77788655", "Zeballos", "Jhon", "M", "5/25/92");
+        Person renterUser = new Person(0,"PASS","DDD123456D", "Choque Mamani", "Ruben", "M", "9/20/2003");
            RenterUser complyRenterUser = mock(RenterUser.class);
         when(complyRenterUser.complyCondition(2,renterUser)).thenReturn(true);
         String ex_msg = "";
@@ -34,9 +34,9 @@ public class TestInsert {
         } catch (ErrorResponse ex) {
             ex_msg = ex.getMessage();
         }
-        Assert.assertEquals(renterUser.compareTo(resRenterUser),0);
+         Assert.assertEquals(renterUser.compareTo(resRenterUser),0);
     }
-    */
+    
     /*
     @Test
     public void testValidationInsertErrorSinMock() throws Exception {

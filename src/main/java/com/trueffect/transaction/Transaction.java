@@ -21,6 +21,7 @@ public class Transaction {
          ModelObject res= null;
          String errorSql="";
          try {
+             System.out.println("TRANSACCION");
             connection.setAutoCommit(false);
             res = object.insertResourse(id, connection);
             connection.commit();

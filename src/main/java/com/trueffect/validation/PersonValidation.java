@@ -5,6 +5,7 @@ import com.trueffect.tools.DataResourse;
 import com.trueffect.tools.DataResourse.Genre;
 import com.trueffect.tools.DataResourse.TypeIdentifier;
 import com.trueffect.tools.RegularExpression;
+import java.sql.Connection;
 import java.util.regex.Pattern;
 /*
  * @author santiago.mamani
@@ -65,8 +66,9 @@ public class PersonValidation {
      return true;
     }
 
-    public static boolean alreadyExists(String typeIdentifier, String identifier) throws Exception{
-       Person person = (Person)PersonCrud.getPersonByTypeIdentifier(typeIdentifier, identifier);
+    public static boolean alreadyExists(String typeIdentifier, String identifier,   Connection connection) throws Exception{
+       Person person = (Person)PersonCrud.getPersonByTypeIdentifier(typeIdentifier, identifier,connection);
+       System.out.println("ALREDEDOR_IDENTIFIER: " + typeIdentifier + " Sise: "+typeIdentifier.length());
       if(person == null){
           return false;
       }

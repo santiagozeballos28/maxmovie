@@ -7,6 +7,7 @@ import com.trueffect.messages.Message;
 import com.trueffect.model.Person;
 import com.trueffect.util.DataCondition;
 import com.trueffect.util.ModelObject;
+import java.sql.Connection;
 /**
  * @author santiago.mamani
  */
@@ -17,7 +18,7 @@ public class RenterUserUpdate implements DataCondition{
         this.renterUserComply = renterUserComply;
     }
     
-    public boolean complyCondition(int id , ModelObject resource) throws Exception {
+    public boolean complyCondition(int id , ModelObject resource,    Connection connection) throws Exception {
         boolean complyJob = false;
         Person renterUserNew =  (Person) resource;
         Person renterUserActual = PersonCrud.getRenterUserById(renterUserNew.getId());
@@ -26,19 +27,19 @@ public class RenterUserUpdate implements DataCondition{
         if (jobName.equals("Administrator")){
                operationUpdate = new RenterUserUpdateByAdministrator();
                operationUpdate.complyData(renterUserActual,renterUserNew);  
-               return renterUserComply.complyCondition(id, resource);
+             // return renterUserComply.complyCondition(id, resource);
            
         }else{
            if(jobName.equals("Manager")){
                operationUpdate = new RenterUserUpdateByManager();
                operationUpdate.complyData(renterUserActual,renterUserNew);   
-               return renterUserComply.complyCondition(id, resource);
+             //  return renterUserComply.complyCondition(id, resource);
            
            }else{
              throw new ErrorResponse(460,Message.NOT_HAVE_PERMISSION_FOR_MODIFY);
            }
         }
-        
+        return false;
     }
 
     

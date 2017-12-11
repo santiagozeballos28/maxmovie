@@ -27,12 +27,14 @@ public class PersonCrud {
       Person renterUserInserted=null; 
              Statement query = null;
             try {
-                String typeIdentifier = renterUser.getTypeIdentifier();
-                String identifier = renterUser.getIdentifier();
-                String lastName = renterUser.getLastName();
-                String firstName = renterUser.getFirstName();
-                String genre = renterUser.getGenre();
-                String birthay = renterUser.getBirthday();
+                String typeIdentifier = renterUser.getTypeIdentifier().trim();
+                System.out.println("TYPE_IDENTIFIER: " + typeIdentifier + " Sise: "+typeIdentifier.length());
+                String identifier = renterUser.getIdentifier().trim();
+                System.out.println("IDENTIFIER: " + identifier + " Sise: "+identifier.length());
+                String lastName = renterUser.getLastName().trim();
+                String firstName = renterUser.getFirstName().trim();
+                String genre = renterUser.getGenre().trim();
+                String birthay = renterUser.getBirthday().trim();
                 query = (Statement) connection.createStatement();
                 String sql=
                 "INSERT INTO person(\n" +
@@ -43,16 +45,17 @@ public class PersonCrud {
                         +firstName+"','"+ genre+"','"+birthay+"','2017-12-08','"+idJob+"',null,null,'Active')";
       
                 query.execute(sql);
-                String msg = "The user " + firstName + " " + lastName + " has been successfully inserted";
-                renterUserInserted = getByTypeIdentifier(typeIdentifier, identifier);
+                //ResultSet rs = query.executeQuery(sql);
+                 String msg = "The user " + firstName + " " + lastName + " has been successfully inserted";
+                 renterUserInserted = getByTypeIdentifier(connection,typeIdentifier, identifier);
               } catch (Exception e) {
-                throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+                throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, e.getMessage()+" Isert1");
             }finally{
                  try {
                    if(query!=null) query.close();                
                                    
                  } catch (SQLException ex) {
-                    throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, ex.getMessage());    
+                    throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, ex.getMessage() +" Isert2");    
                   }
          }  
             
@@ -138,38 +141,36 @@ public class PersonCrud {
        return null;
     }
     
-    public static Person getPersonByTypeIdentifier(String typeIdentifier,String  identifier) throws Exception{     
+    public static Person getPersonByTypeIdentifier(String typeIdentifier,String  identifier,   Connection connection) throws Exception{     
         Person renterUser = null;
-           try {
-            DatabasePostgres.getConection();
             try {
-                renterUser = getByTypeIdentifier(typeIdentifier, identifier);
+                 renterUser = getByTypeIdentifier(connection,typeIdentifier, identifier);
                 } catch (Exception e) {
                 throw new ErrorResponse(CodeStatus.NOT_FOUND, e.getMessage());
             }
-            DatabasePostgres.close();
-        } catch (Exception e) {
-            throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }
+        
+        
         return renterUser;
     }
-      private static Person getByTypeIdentifier(String type_identifier,String  identifier) throws Exception{
+      private static Person getByTypeIdentifier(Connection connection,String type_identifier,String  identifier) throws Exception{
           Person  renterUserPerson = null;
             try {     
-                 Statement consulta = (Statement) DatabasePostgres.connection.createStatement();
+                 Statement consulta = (Statement) connection.createStatement();
                  String sql = "SELECT id, type_identifier, identifier, last_name, first_name, genre, \n" +
                               "  birthday\n" +
                               "  FROM person\n" +
                               "  WHERE status= 'Active' AND type_identifier = '"+type_identifier+"' AND identifier = '"+identifier+"';" ;
 
                   ResultSet rs = consulta.executeQuery(sql);
-              if (rs.next()) {
-                   renterUserPerson = new Person(rs.getInt("id"), rs.getString("type_identifier"), rs.getString("identifier"), rs.getString("last_name"), rs.getString("first_name"), rs.getString("genre"), rs.getString("birthday"));
-            } else {
-                     throw new ErrorResponse(CodeStatus.NOT_FOUND, Message.NOT_FOUND);
-                   }     
+                  if(rs.next()){
+                  renterUserPerson = new Person(rs.getInt("id"), rs.getString("type_identifier"), rs.getString("identifier"), rs.getString("last_name"), rs.getString("first_name"), rs.getString("genre"), rs.getString("birthday"));
+                  }
+                
+                  
+                       
             } catch (Exception e) {
-                throw new ErrorResponse(CodeStatus.NOT_FOUND, e.getMessage());
+                System.out.println("NOT_found_segundo");
+                throw new ErrorResponse(CodeStatus.NOT_FOUND,e.getMessage());
             }
         return renterUserPerson;
     }

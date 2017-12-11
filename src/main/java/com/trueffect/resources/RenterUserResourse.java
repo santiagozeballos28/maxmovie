@@ -1,6 +1,7 @@
 
 package com.trueffect.resources;
 
+import com.trueffect.logica.PersonLogic;
 import com.trueffect.tools.CodeStatus;
 import com.trueffect.response.CorrectResponse;
 import com.trueffect.response.ErrorResponse;
@@ -34,8 +35,9 @@ public class RenterUserResourse  {
     public Response insertRenterUser(@PathParam ("id")int id,Person renterUser) throws Exception{
         Response response = null;
         MapperResponse mapper = new MapperResponse();
+        PersonLogic personLogic =  new PersonLogic();
         try {
-            Person resRenterUser= (Person)ProcessObject.processInsert(id,renterUser, new RenterUser());
+            Person resRenterUser= personLogic.createPerson(id,renterUser, new RenterUser());
             CorrectResponse phraseCorrect = new CorrectResponse(CodeStatus.CREATED,"",resRenterUser);
             response = mapper.toResponse(phraseCorrect);
         } catch (ErrorResponse ex) {
@@ -62,15 +64,15 @@ public class RenterUserResourse  {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response putRenterUser(Person renterUser, @PathParam ("id")int id) throws Exception{
-            Response response = null;
-        MapperResponse mapper = new MapperResponse();
-        try {
-            Person res_renter_user= (Person)ProcessObject.processUpdate(id,renterUser, new RenterUserUpdate());
-            CorrectResponse phraseCorrect = new CorrectResponse(CodeStatus.CREATED,"",res_renter_user);
-            response = mapper.toResponse(phraseCorrect);
-        } catch (ErrorResponse ex) {
-            response = mapper.toResponse(ex);
-        }
-      return response;
+//            Response response = null;
+//        MapperResponse mapper = new MapperResponse();
+//        try {
+//            Person res_renter_user= (Person)ProcessObject.processUpdate(id,renterUser, new RenterUserUpdate());
+//            CorrectResponse phraseCorrect = new CorrectResponse(CodeStatus.CREATED,"",res_renter_user);
+//            response = mapper.toResponse(phraseCorrect);
+//        } catch (ErrorResponse ex) {
+//            response = mapper.toResponse(ex);
+//        }
+      return null;
     }
 }

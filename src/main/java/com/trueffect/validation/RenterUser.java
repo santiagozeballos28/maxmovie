@@ -7,18 +7,19 @@ import com.trueffect.model.Person;
 import com.trueffect.tools.CodeStatus;
 import com.trueffect.tools.DataResourse;
 import com.trueffect.util.DataCondition;
+import java.sql.Connection;
 /**
  * @author santiago.mamani
  */
 public class RenterUser implements DataCondition {
 
     @Override
-    public boolean complyCondition(int id, ModelObject resource) throws Exception {
+    public boolean complyCondition(int id, ModelObject resource,   Connection connection) throws Exception {
          Person renterUser = (Person) resource;
          String typeIdentifier = renterUser.getTypeIdentifier();
          if(PersonValidation.isValidTypeIdentifier(typeIdentifier)){
            if(PersonValidation.isValidIdentifier(typeIdentifier,renterUser.getIdentifier())){
-             if(!PersonValidation.alreadyExists(typeIdentifier, renterUser.getIdentifier())){
+             if(!PersonValidation.alreadyExists(typeIdentifier, renterUser.getIdentifier(),connection)){
               if(PersonValidation.isValidLastName(renterUser.getLastName(),DataResourse.MAXIMUM_VALUES)){
                   if(PersonValidation.isValidFirstName(renterUser.getFirstName(),DataResourse.MAXIMUM_VALUES)){
                       if(PersonValidation.isValidGenre(renterUser.getGenre())){
