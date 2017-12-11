@@ -50,33 +50,28 @@ public class PersonCrud {
             return renterUserInserted;
     }
 
-    public static Response getRenterUser(int id) {
-        MapperResponse mapper = new MapperResponse();
-        Response response = Response.serverError().build();
+    public static Person getRenterUser(int id) throws Exception{
+       Person renterUser = null;
         try {
             PostgresSQLConnection.connectionDB();
             try {
-
-                Person renterUser = getRenterUserById(id);
-                CorrectResponse phraseCorrect = new CorrectResponse(CodeStatus.OK, "Exist the user", renterUser);
-                response = mapper.toResponse(phraseCorrect);
-            } catch (Exception e) {
-                //para mostrar el mensaje en ibles verificar el parametro
-                response = mapper.toResponse(new ErrorResponse(CodeStatus.NOT_FOUND, e.getMessage()));
+                renterUser = getRenterUserById(id);
+                } catch (Exception e) {
+                throw new ErrorResponse(CodeStatus.NOT_FOUND, e.getMessage());
             }
             PostgresSQLConnection.closeDB();
         } catch (Exception e) {
-            response = mapper.toResponse(new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
+            throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
-        return response;
+        return renterUser;
     }
 
     public static Person getRenterUserById(int id) throws Exception {
 
         Person renterUser = null;
-        String sql = "SELECT id,type_identifier,identifier, last_name, first_name,genre,birthday\n" +
-"FROM person\n" +
-" WHERE person.id = ?\n" ;
+        String sql =  "SELECT id,type_identifier,identifier, last_name, first_name,genre,birthday\n" +
+                      "FROM person\n" +
+                      " WHERE person.id = ?\n" ;
 
         PreparedStatement st = PostgresSQLConnection.connection.prepareStatement(sql);
         st.setInt(1, id);
@@ -92,8 +87,8 @@ public class PersonCrud {
         ArrayList<Person> persons= new ArrayList<Person>();
         Person renterUser = null;
         String sql = "SELECT type_identifier, identifier, last_name, first_name, genre, \n" +
-          " birthday\n" +
-          " FROM person" ;
+                     " birthday\n" +
+                     " FROM person" ;
         try {
  PostgresSQLConnection.connectionDB();
         PreparedStatement st = PostgresSQLConnection.connection.prepareStatement(sql);
@@ -150,8 +145,7 @@ public class PersonCrud {
         return renterUser;
     }
       private static Person getByTypeIdentifier(String type_identifier,String  identifier) throws Exception{
-        MapperResponse mapper = new MapperResponse();
-        Person  renterUserPerson = null;
+          Person  renterUserPerson = null;
             try {     
                  Statement consulta = (Statement) PostgresSQLConnection.connection.createStatement();
                  String sql = "SELECT id, type_identifier, identifier, last_name, first_name, genre, \n" +
@@ -169,6 +163,25 @@ public class PersonCrud {
                 throw new ErrorResponse(CodeStatus.NOT_FOUND, e.getMessage());
             }
         return renterUserPerson;
+    }
+      public static int getIdOf(String lastName,String firstName) throws Exception{
+       int idPerson=0;
+        try {
+            PostgresSQLConnection.connectionDB();
+            try {
+                
+                String sqlGet="SELECT id\n" +
+                              " FROM person\n" +
+                              " WHERE person.last_name = '"+lastName+"' AND person.first_name='"+firstName+"';";
+               // renterUser = getRenterUserById(id);
+                } catch (Exception e) {
+                throw new ErrorResponse(CodeStatus.NOT_FOUND, e.getMessage());
+            }
+            PostgresSQLConnection.closeDB();
+        } catch (Exception e) {
+            throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+        return idPerson;
     }
       
 }

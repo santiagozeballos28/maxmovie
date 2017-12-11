@@ -39,9 +39,12 @@ public class PersonValidation {
     
    public static boolean isValidLastName(String lastName, int size){
     if(lastName.length()>0) 
-    return lastName.length()<= DataResourse.MAXIMUM_VALUES&&Pattern.matches(RegularExpression.LAST_NAME,lastName);
-    return false;
+        if(lastName.contains(" "))
+       return lastName.length()<= DataResourse.MAXIMUM_VALUES&&Pattern.matches(RegularExpression.LAST_NAME_TWO,lastName);
+        
+    return lastName.length()<= DataResourse.MAXIMUM_VALUES&&Pattern.matches(RegularExpression.LAST_NAME_ONE,lastName);
     }
+  
     public static boolean isValidGenre(String genre) {
         Genre genreEnum= null;
         if (genre != null) {

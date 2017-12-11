@@ -49,7 +49,7 @@ public class RenterUserResourse  {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRenterUser(@PathParam ("id")int id){
-      return PersonCrud.getRenterUser(id);
+      return null;
     }
     @GET
     @Path("/getAllRenterUser") 
