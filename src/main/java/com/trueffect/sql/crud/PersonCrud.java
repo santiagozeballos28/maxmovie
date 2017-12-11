@@ -164,8 +164,8 @@ public class PersonCrud {
             }
         return renterUserPerson;
     }
-      public static Person getIdOf(String lastName,String firstName) throws Exception{
-       Person renterUser = null;
+      public static int getIdOf(String lastName,String firstName) throws Exception{
+       int idPerson=0;
         try {
             PostgresSQLConnection.connectionDB();
             try {
@@ -181,7 +181,7 @@ public class PersonCrud {
         } catch (Exception e) {
             throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
-        return renterUser;
+        return idPerson;
     }
       
 }
