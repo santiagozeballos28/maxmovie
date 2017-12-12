@@ -18,11 +18,9 @@ public class PersonLogic {
          String errorMgs="";
          boolean errorExist=false;
          int codeError=0;
-     
           Connection connection = DatabasePostgres.getConection();
           conditiondata.complyCondition(id ,renterUser, connection);
-          
-          try {
+       try {
             connection.setAutoCommit(false);
             PersonCrud.notExistPerson(connection,renterUser.getLastName(), renterUser.getFirstName());
             res =  PersonCrud.insertrenterUser(connection, id, renterUser);
@@ -37,10 +35,9 @@ public class PersonLogic {
                  connection.rollback();
                  } catch (SQLException exSql) {
                     errorMgs = errorMgs + exSql.getMessage();
-                 }
-                
+                 }  
              }    
-        }
+          }
           finally{
             try {
                  if(connection!=null) 
@@ -66,7 +63,6 @@ public class PersonLogic {
             connection.commit();
         } catch (Exception e) {
             errorExist = true;
-            //codeError = e.getCode();
             errorMgs = e.getMessage();
             if(connection!=null)
               {
@@ -75,7 +71,6 @@ public class PersonLogic {
                  } catch (SQLException exSql) {
                     errorMgs = errorMgs + exSql.getMessage();
                  }
-                
              }    
         }
           finally{

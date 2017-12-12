@@ -23,9 +23,7 @@ public class PersonCrud {
              Statement query = null;
             try {
                 String typeIdentifier = renterUser.getTypeIdentifier().trim();
-                System.out.println("TYPE_IDENTIFIER: " + typeIdentifier + " Sise: "+typeIdentifier.length());
                 String identifier = renterUser.getIdentifier().trim();
-                System.out.println("IDENTIFIER: " + identifier + " Sise: "+identifier.length());
                 String lastName = renterUser.getLastName().trim();
                 String firstName = renterUser.getFirstName().trim();
                 String genre = renterUser.getGenre().trim();
@@ -40,17 +38,16 @@ public class PersonCrud {
                         +firstName+"','"+ genre+"','"+birthay+"', current_date ,'"+idJob+"',null,null,'Active')";
       
                 query.execute(sql);
-                //ResultSet rs = query.executeQuery(sql);
-                 String msg = "The user " + firstName + " " + lastName + " has been successfully inserted";
+                String msg = "The user " + firstName + " " + lastName + " has been successfully inserted";
                  renterUserInserted = getByTypeIdentifier(connection,typeIdentifier, identifier);
               } catch (Exception e) {
-                throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, e.getMessage()+" Isert1");
+                throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, e.getMessage());
             }finally{
                  try {
                    if(query!=null) query.close();                
                                    
                  } catch (SQLException ex) {
-                    throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, ex.getMessage() +" Isert2");    
+                    throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, ex.getMessage());    
                   }
          }  
             
@@ -159,10 +156,7 @@ public class PersonCrud {
                   ResultSet rs = consulta.executeQuery(sql);
                   if(rs.next()){
                   renterUserPerson = new Person(rs.getInt("id"), rs.getString("type_identifier"), rs.getString("identifier"), rs.getString("last_name"), rs.getString("first_name"), rs.getString("genre"), rs.getString("birthday"));
-                  }
-                
-                  
-                       
+                  }       
             } catch (Exception e) {
                 System.out.println("NOT_found_segundo");
                 throw new ErrorResponse(CodeStatus.NOT_FOUND,e.getMessage());
@@ -189,8 +183,8 @@ public class PersonCrud {
        public static Person getPerson(Connection connection, int id) throws Exception {
          Person renterUser = null;
          String sql =  "SELECT id,type_identifier,identifier, last_name, first_name,genre,birthday\n" +
-                      "FROM person\n" +
-                      " WHERE status = 'Active' AND person.id = ?\n" ;
+                       " FROM person\n" +
+                       " WHERE status = 'Active' AND person.id = ?\n" ;
 
          PreparedStatement st = connection.prepareStatement(sql);
          st.setInt(1, id);
@@ -203,8 +197,7 @@ public class PersonCrud {
         return renterUser; 
     }
     public static Person deleteById(Connection connection, int id, int idUserModifier) throws Exception {
-      Person renterUserInserted=null; 
-             
+      Person renterUserInserted=null;  
             try {
                 String sql=
                 "UPDATE person\n" +
