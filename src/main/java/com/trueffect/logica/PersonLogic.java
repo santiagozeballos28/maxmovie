@@ -22,10 +22,12 @@ public class PersonLogic {
          boolean errorExist=false;
          int codeError=0;
      
-        Connection connection = DatabasePostgres.getConection();
-           conditiondata.complyCondition(id ,renterUser, connection);
+          Connection connection = DatabasePostgres.getConection();
+          conditiondata.complyCondition(id ,renterUser, connection);
+          
           try {
             connection.setAutoCommit(false);
+            PersonCrud.notExistPerson(connection,renterUser.getLastName(), renterUser.getFirstName());
             res =  PersonCrud.insertrenterUser(connection, id, renterUser);
             connection.commit();
         } catch (ErrorResponse e) {
@@ -52,6 +54,43 @@ public class PersonLogic {
          }
           if(errorExist)
           throw new ErrorResponse(codeError, errorMgs);
+       
+   return res;
+   }
+      public Person deleteById(int idPerson, int idUserModify) throws Exception{
+         Person res= null;
+         String errorMgs="";
+         boolean errorExist=false;
+         Connection connection = DatabasePostgres.getConection();
+           try {
+            connection.setAutoCommit(false);
+            res =  PersonCrud.getPerson(connection, idPerson);
+            PersonCrud.deleteById(connection, idPerson,idUserModify);
+            connection.commit();
+        } catch (Exception e) {
+            errorExist = true;
+            //codeError = e.getCode();
+            errorMgs = e.getMessage();
+            if(connection!=null)
+              {
+              try {
+                 connection.rollback();
+                 } catch (SQLException exSql) {
+                    errorMgs = errorMgs + exSql.getMessage();
+                 }
+                
+             }    
+        }
+          finally{
+            try {
+                 if(connection!=null) 
+                     connection.close();
+             } catch (SQLException ex) {
+                 errorMgs = errorMgs +"\n"+ex.getMessage();
+             }
+         }
+          if(errorExist)
+          throw new ErrorResponse(200, errorMgs);
        
    return res;
    }

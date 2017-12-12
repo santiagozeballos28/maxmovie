@@ -3,7 +3,7 @@ package com.trueffect.messages;
  * @author santiago.mamani
  */
 public class Message {
-   /*
+ /*
     * constant variables for person
     */
     public static  String NOT_HAVE_PERMISSION_TYPE_IDENTIFIER="You do not have permission to modify type identifier";
@@ -17,6 +17,8 @@ public class Message {
     public static  String NOT_VALID_IDENTIFIER="The dentifier not's  valid";     
     public static  String DUPLICATE_IDENTIFIER="The identifier already exists";     
     public static  String NOT_MEET_THE_AGE="To be registered must be greater than 15 years"; 
+    public static  String THE_NAMES_ALREADY_EXIST="The names already exist"; 
+    public static  String NOT_RESOURCE="There is not resource"; 
     /*
     * constant for resources
     */

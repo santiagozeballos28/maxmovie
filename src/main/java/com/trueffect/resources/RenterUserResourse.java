@@ -8,12 +8,11 @@ import com.trueffect.response.ErrorResponse;
 import com.trueffect.response.MapperResponse;
 import com.trueffect.sql.crud.PersonCrud;
 import com.trueffect.validation.RenterUser;
-import com.trueffect.validation.ProcessObject;
-import com.trueffect.validation.RenterUserUpdate;
 import com.trueffect.model.Person;
 
 import java.util.List;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -73,6 +72,22 @@ public class RenterUserResourse  {
 //        } catch (ErrorResponse ex) {
 //            response = mapper.toResponse(ex);
 //        }
+      return null;
+    }
+    @DELETE
+    @Path("/{id}/{idModifyUser}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteById( @PathParam ("id")int id,@PathParam ("idModifyUser")int idModifyUser) throws Exception{
+            Response response = null;
+        MapperResponse mapper = new MapperResponse();
+        PersonLogic personLogic = new PersonLogic();
+        try {
+            Person resRenterUser= personLogic.deleteById(id,idModifyUser);
+            CorrectResponse phraseCorrect = new CorrectResponse(CodeStatus.OK,"",resRenterUser);
+            response = mapper.toResponse(phraseCorrect);
+        } catch (ErrorResponse ex) {
+            response = mapper.toResponse(ex);
+        }
       return null;
     }
 }

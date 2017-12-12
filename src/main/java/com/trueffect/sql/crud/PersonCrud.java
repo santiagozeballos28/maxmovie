@@ -174,24 +174,75 @@ public class PersonCrud {
             }
         return renterUserPerson;
     }
-      public static int getIdOf(String lastName,String firstName) throws Exception{
-       int idPerson=0;
-        try {
-            DatabasePostgres.getConection();
+      public static boolean notExistPerson(Connection connection,String lastName,String firstName) throws Exception{
+       boolean res = false;
             try {
-                
                 String sqlGet="SELECT id\n" +
                               " FROM person\n" +
                               " WHERE person.last_name = '"+lastName+"' AND person.first_name='"+firstName+"';";
-               // renterUser = getRenterUserById(id);
-                } catch (Exception e) {
-                throw new ErrorResponse(CodeStatus.NOT_FOUND, e.getMessage());
-            }
-            DatabasePostgres.close();
-        } catch (Exception e) {
-            throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+                PreparedStatement st = connection.prepareStatement(sqlGet);
+                ResultSet rs = st.executeQuery();
+                if(rs.next()){
+                  throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, Message.THE_NAMES_ALREADY_EXIST);
+                }else res = true;
+               } catch (Exception e) {
+                      throw e;
+                }
+        return res;
+    }
+// public static boolean isActived(Connection connection, int id) throws Exception {
+//            boolean res= false;
+//             
+//             try {
+//                String sql="SELECT id\n" +
+//                              "FROM person\n" +
+//                              "WHERE status = 'Active' AND id =?;";
+//                PreparedStatement st = connection.prepareStatement(sql);
+//                st.setInt(1, id);
+//                ResultSet rs = st.executeQuery();
+//                if(rs.next()){
+//                  res =true;
+//                }else{
+//                throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, Message.NOT_RESOURCE);
+//                }
+//                 } catch (Exception e) {
+//                      throw e;
+//                }     
+//            return res; 
+//    }
+      
+       public static Person getPerson(Connection connection, int id) throws Exception {
+         Person renterUser = null;
+         String sql =  "SELECT id,type_identifier,identifier, last_name, first_name,genre,birthday\n" +
+                      "FROM person\n" +
+                      " WHERE status = 'Active' AND person.id = ?\n" ;
+
+         PreparedStatement st = connection.prepareStatement(sql);
+         st.setInt(1, id);
+         ResultSet rs = st.executeQuery();
+         if (rs.next()) {
+           renterUser = new Person(rs.getInt("id"), rs.getString("type_identifier"), rs.getString("identifier"), rs.getString("last_name"), rs.getString("first_name"), rs.getString("genre"), rs.getString("birthday"));
+        } else {
+            throw new ErrorResponse(CodeStatus.NOT_FOUND, Message.NOT_FOUND);
         }
-        return idPerson;
+        return renterUser; 
+    }
+    public static Person deleteById(Connection connection, int id, int idUserModifier) throws Exception {
+      Person renterUserInserted=null; 
+             
+            try {
+                String sql=
+                "UPDATE person\n" +
+                "SET status='Inactive', date_modifier=  current_date , user_modifier= ?" +
+                "WHERE id = ?;";                 
+                PreparedStatement st = connection.prepareStatement(sql);
+                st.setInt(1, idUserModifier);
+                st.setInt(2, id);
+                st.execute();    
+              } catch (Exception e) {
+                throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            }         
+            return renterUserInserted; 
     }
       
 }
