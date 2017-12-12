@@ -1,10 +1,6 @@
 package com.trueffect.sql.crud;
 
-import com.trueffect.response.ErrorResponse;
-import com.trueffect.conection.db.DataBasePostgres;
-import com.trueffect.messages.Message;
 import com.trueffect.model.Person;
-import com.trueffect.tools.CodeStatus;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -31,7 +27,8 @@ public class PersonCrud {
             String sql
                     = "INSERT INTO person(type_identifier, identifier, last_name, first_name, genre, birthday, date_create, user_create, date_modifier, user_modifier, status) \n"
                     + "VALUES ('" + typeIdentifier + "','" + identifier + "','" + lastName + "', '" + firstName + "','" + genre + "','" + birthay + "', current_date ,'" + idJob + "',null,null,'Active')";
-            query.execute(sql);
+           
+           query.execute(sql);
             if (query != null) {
                 query.close();
             }
@@ -49,7 +46,7 @@ public class PersonCrud {
             String sql = "SELECT id, type_identifier, identifier, last_name, first_name, genre, birthday\n"+
                          "  FROM person\n"+
                          " WHERE status= 'Active' AND type_identifier = '" + typeIdentifier + "' AND identifier = '" + identifier + "'";
-
+            
             ResultSet rs = consulta.executeQuery(sql);
             if (rs.next()) {
                 person = new Person(rs.getInt("id"), rs.getString("type_identifier"), rs.getString("identifier"), rs.getString("last_name"), rs.getString("first_name"), rs.getString("genre"), rs.getString("birthday"));
@@ -67,6 +64,7 @@ public class PersonCrud {
                             "  FROM person\n"+
                             " WHERE person.last_name = '" + lastName+"'\n"+
                             "   AND person.first_name='" + firstName + "'";
+            
             PreparedStatement st = connection.prepareStatement(sqlGet);
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
@@ -105,6 +103,7 @@ public class PersonCrud {
                     = "UPDATE person\n"+
                       "   SET status='Inactive', date_modifier=  current_date , user_modifier= ?"+
                       " WHERE id = ?";
+            
             PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, idUserModifier);
             st.setInt(2, idPerson);

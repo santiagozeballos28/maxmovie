@@ -17,7 +17,6 @@ public class PersonValidationTest {
         boolean expected = true;
         String typeIdentifier = "CI";
         Assert.assertEquals(PersonValidation.isValidTypeIdentifier(typeIdentifier), expected);
-
     }
 
     @Test
@@ -25,7 +24,6 @@ public class PersonValidationTest {
         boolean expected = true;
         String typeIdentifier = "PASS";
         Assert.assertEquals(PersonValidation.isValidTypeIdentifier(typeIdentifier), expected);
-
     }
 
     @Test
@@ -33,7 +31,6 @@ public class PersonValidationTest {
         boolean expected = true;
         String typeIdentifier = "NIT";
         Assert.assertEquals(PersonValidation.isValidTypeIdentifier(typeIdentifier), expected);
-
     }
 
     @Test
@@ -41,7 +38,6 @@ public class PersonValidationTest {
         boolean expected = false;
         String typeIdentifier = "ci";
         Assert.assertEquals(PersonValidation.isValidTypeIdentifier(typeIdentifier), expected);
-
     }
 
     @Test
@@ -81,7 +77,6 @@ public class PersonValidationTest {
         boolean expected = false;
         String typeIdentifier = "";
         Assert.assertEquals(PersonValidation.isValidIdentifier(typeIdentifier), expected);
-
     }
 
     @Test
@@ -90,7 +85,6 @@ public class PersonValidationTest {
         boolean expected = true;
         String typeIdentifier = "1234567";
         Assert.assertEquals(PersonValidation.isValidIdentifier(typeIdentifier), expected);
-
     }
 
     @Test
@@ -99,7 +93,6 @@ public class PersonValidationTest {
         boolean expected = true;
         String typeIdentifier = "ABC123456A";
         Assert.assertEquals(PersonValidation.isValidIdentifier(typeIdentifier), expected);
-
     }
 
     @Test
@@ -108,7 +101,6 @@ public class PersonValidationTest {
         boolean expected = true;
         String typeIdentifier = "10223456";
         Assert.assertEquals(PersonValidation.isValidIdentifier(typeIdentifier), expected);
-
     }
 
     @Test
@@ -117,7 +109,6 @@ public class PersonValidationTest {
         boolean expected = false;
         String typeIdentifier = "1022";
         Assert.assertEquals(PersonValidation.isValidIdentifier(typeIdentifier), expected);
-
     }
 
     /*
@@ -130,7 +121,6 @@ public class PersonValidationTest {
         String firstName = "Santiago";
         int sizeMax = DataResourse.MAXIMUM_VALUES;
         Assert.assertEquals(PersonValidation.isValidFirstName(firstName, sizeMax), expected);
-
     }
 
     @Test
@@ -140,7 +130,6 @@ public class PersonValidationTest {
         String firstName = "Santiago Elias";
         int sizeMax = DataResourse.MAXIMUM_VALUES;
         Assert.assertEquals(PersonValidation.isValidFirstName(firstName, sizeMax), expected);
-
     }
 
     @Test
@@ -150,7 +139,6 @@ public class PersonValidationTest {
         String firstName = "Sant#iago$";
         int sizeMax = DataResourse.MAXIMUM_VALUES;
         Assert.assertEquals(PersonValidation.isValidFirstName(firstName, sizeMax), expected);
-
     }
 
     @Test
@@ -159,7 +147,6 @@ public class PersonValidationTest {
         String firstName = "";
         int sizeMax = DataResourse.MAXIMUM_VALUES;
         Assert.assertEquals(PersonValidation.isValidFirstName(firstName, sizeMax), expected);
-
     }
 
     @Test
@@ -168,7 +155,6 @@ public class PersonValidationTest {
         String lastName = "";
         int sizeMax = DataResourse.MAXIMUM_VALUES;
         Assert.assertEquals(PersonValidation.isValidLastName(lastName, sizeMax), expected);
-
     }
 
     @Test
@@ -177,7 +163,6 @@ public class PersonValidationTest {
         String lastName = "Zeballos";
         int sizeMax = DataResourse.MAXIMUM_VALUES;
         Assert.assertEquals(PersonValidation.isValidLastName(lastName, sizeMax), expected);
-
     }
 
     @Test
@@ -186,7 +171,6 @@ public class PersonValidationTest {
         String lastName = "Mamani# Zeballos";
         int sizeMax = DataResourse.MAXIMUM_VALUES;
         Assert.assertEquals(PersonValidation.isValidLastName(lastName, sizeMax), expected);
-
     }
 
     @Test
@@ -195,7 +179,6 @@ public class PersonValidationTest {
         String lastName = "MamaniZeballos";
         int sizeMax = DataResourse.MAXIMUM_VALUES;
         Assert.assertEquals(PersonValidation.isValidLastName(lastName, sizeMax), expected);
-
     }
 
     @Test
@@ -204,7 +187,6 @@ public class PersonValidationTest {
         String lastName = "Mamani zeballos";
         int sizeMax = DataResourse.MAXIMUM_VALUES;
         Assert.assertEquals(PersonValidation.isValidLastName(lastName, sizeMax), expected);
-
     }
 
     @Test
@@ -213,7 +195,6 @@ public class PersonValidationTest {
         String lastName = "Mamani  Zeballos";
         int sizeMax = DataResourse.MAXIMUM_VALUES;
         Assert.assertEquals(PersonValidation.isValidLastName(lastName, sizeMax), expected);
-
     }
 
     @Test
@@ -222,19 +203,16 @@ public class PersonValidationTest {
         String lastName = "Mamani Nina";
         int sizeMax = DataResourse.MAXIMUM_VALUES;
         Assert.assertEquals(PersonValidation.isValidLastName(lastName, sizeMax), expected);
-
     }
 
     /*Test Briday
      */
-
     @Test
     public void testBirthDay() {
 
         boolean expected = true;
         String birthday = "11/12/2014";
         Assert.assertEquals(PersonValidation.isValidBirthday(birthday), expected);
-
     }
 
     @Test
@@ -243,6 +221,5 @@ public class PersonValidationTest {
         boolean expected = false;
         String birthday = "/12/2014";
         Assert.assertEquals(PersonValidation.isValidBirthday(birthday), expected);
-
     }
 }
