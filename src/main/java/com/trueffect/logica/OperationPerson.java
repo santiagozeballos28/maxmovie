@@ -12,6 +12,7 @@ import java.sql.Connection;
  * @author santiago.mamani
  */
 public class OperationPerson {
+    /*rename classs*/
 
     public static void verifyIdentifierInDataBase(Connection connection, String typeIdentifier, String identifier, ErrorContainer errorContainer) throws Exception {
         Person person = (Person) PersonCrud.getPersonByTypeIdentifier(connection, typeIdentifier, identifier);

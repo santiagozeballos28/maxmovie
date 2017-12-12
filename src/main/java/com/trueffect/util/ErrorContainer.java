@@ -38,7 +38,5 @@ public class ErrorContainer {
     public int getCodeStatusEnd() {
         return listError.get(listError.size() - 1).getCode();
     }
-    public void removeAll(){
-       listError.clear();
-    }
+
 }

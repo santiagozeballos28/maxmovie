@@ -25,8 +25,30 @@ public class PersonCrud {
             query = (Statement) connection.createStatement();
             //ident
             String sql
-                    = "INSERT INTO person(type_identifier, identifier, last_name, first_name, genre, birthday, date_create, user_create, date_modifier, user_modifier, status) \n"
-                    + "VALUES ('" + typeIdentifier + "','" + identifier + "','" + lastName + "', '" + firstName + "','" + genre + "','" + birthay + "', current_date ,'" + idJob + "',null,null,'Active')";
+                    = "INSERT INTO person("
+                    + "type_identifier, "
+                    + "identifier, "
+                    + "last_name, "
+                    + "first_name, "
+                    + "genre, " 
+                    + "birthday, "
+                    + "date_create, "
+                    + "user_create, "
+                    + "date_modifier, "
+                    + "user_modifier, "
+                    + "status) \n"
+                    + "VALUES ('" 
+                    + typeIdentifier + "','" 
+                    + identifier + "','" 
+                    + lastName + "', '" 
+                    + firstName + "','" 
+                    + genre + "','" 
+                    + birthay + "', "
+                    + "current_date ,'" 
+                    + idJob + "',"
+                    + "null,"
+                    + "null,"
+                    + "'Active')";
            
            query.execute(sql);
             if (query != null) {
