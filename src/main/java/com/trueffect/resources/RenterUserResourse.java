@@ -63,15 +63,7 @@ public class RenterUserResourse  {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response putRenterUser(Person renterUser, @PathParam ("id")int id) throws Exception{
-//            Response response = null;
-//        MapperResponse mapper = new MapperResponse();
-//        try {
-//            Person res_renter_user= (Person)ProcessObject.processUpdate(id,renterUser, new RenterUserUpdate());
-//            CorrectResponse phraseCorrect = new CorrectResponse(CodeStatus.CREATED,"",res_renter_user);
-//            response = mapper.toResponse(phraseCorrect);
-//        } catch (ErrorResponse ex) {
-//            response = mapper.toResponse(ex);
-//        }
+
       return null;
     }
     @DELETE

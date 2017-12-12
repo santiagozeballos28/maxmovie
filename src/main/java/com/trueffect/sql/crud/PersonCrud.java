@@ -1,14 +1,11 @@
 package com.trueffect.sql.crud;
 
-import com.trueffect.response.CorrectResponse;
 import com.trueffect.response.ErrorResponse;
-import com.trueffect.response.MapperResponse;
 import com.trueffect.conection.db.DatabasePostgres;
 import com.trueffect.messages.Message;
 import com.trueffect.model.Person;
-
-
 import com.trueffect.tools.CodeStatus;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,8 +13,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import javax.ws.rs.core.Response;
-
 /*
  * @author santiago.mamani
  */
@@ -42,7 +37,7 @@ public class PersonCrud {
                 " birthday, date_create, user_create, date_modifier, user_modifier, \n" +
                 " status)\n" +
                 " VALUES ('"+typeIdentifier+"','"+identifier+"','"+lastName+"', '"
-                        +firstName+"','"+ genre+"','"+birthay+"','2017-12-08','"+idJob+"',null,null,'Active')";
+                        +firstName+"','"+ genre+"','"+birthay+"', current_date ,'"+idJob+"',null,null,'Active')";
       
                 query.execute(sql);
                 //ResultSet rs = query.executeQuery(sql);
@@ -190,26 +185,6 @@ public class PersonCrud {
                 }
         return res;
     }
-// public static boolean isActived(Connection connection, int id) throws Exception {
-//            boolean res= false;
-//             
-//             try {
-//                String sql="SELECT id\n" +
-//                              "FROM person\n" +
-//                              "WHERE status = 'Active' AND id =?;";
-//                PreparedStatement st = connection.prepareStatement(sql);
-//                st.setInt(1, id);
-//                ResultSet rs = st.executeQuery();
-//                if(rs.next()){
-//                  res =true;
-//                }else{
-//                throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, Message.NOT_RESOURCE);
-//                }
-//                 } catch (Exception e) {
-//                      throw e;
-//                }     
-//            return res; 
-//    }
       
        public static Person getPerson(Connection connection, int id) throws Exception {
          Person renterUser = null;
