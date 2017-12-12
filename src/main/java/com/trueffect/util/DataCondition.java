@@ -8,6 +8,6 @@ import java.sql.Connection;
  */
 public interface DataCondition {
    
-     abstract boolean complyCondition(ModelObject resource)throws Exception;
+     abstract boolean complyCondition(ModelObject resource, ErrorContainer  errorContainer)throws Exception;
     
 }

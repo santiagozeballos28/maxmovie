@@ -4,7 +4,7 @@ package com.trueffect.tools;
  * @author santiago.mamani
  */
 public class RegularExpression {
-    public static String DATE = "\\d{1,2}/\\d{1,2}/\\d{4}";
+    public static String DATE = "^\\d{1,2}/\\d{1,2}/\\d{4}$";
     public static String CI="^[0-9]{6}$";
     public static String PASS="^[A-Z]{3}[0-9]{6}[A-Z]?$";
     public static String NIT="^[0-9]{6,}$";

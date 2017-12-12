@@ -11,8 +11,8 @@ public class Message {
     public static  String NOT_HAVE_PERMISSION_FOR_MODIFY="You do not have permission for modify";
     public static  String NOT_VALID_BIRTHDAY="The  birthday not is valid";
     public static  String NOT_VALID_GENRE="The genre not is valid";           
-    public static  String NOT_VALID_FIRST_NAME="The first name size must be less than or equal to 50 characters";         
-    public static  String NOT_VALID_LAST_NAME="The last name size must be less than or equal to 50 characters";         
+    public static  String NOT_VALID_FIRST_NAME="The first name is not valid";         
+    public static  String NOT_VALID_LAST_NAME="The last name is not valid";         
     public static  String NOT_VALID_TYPE_IDENTIFIER="The type of dentifier not valid";     
     public static  String NOT_VALID_IDENTIFIER="The dentifier not's  valid";     
     public static  String DUPLICATE_IDENTIFIER="The identifier already exists";     

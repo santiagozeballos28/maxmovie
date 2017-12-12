@@ -1,11 +1,13 @@
-
 package com.trueffect.logica;
 
-import com.trueffect.conection.db.DatabasePostgres;
+import com.trueffect.conection.db.DataBasePostgres;
+import com.trueffect.conection.db.OperationDataBase;
 import com.trueffect.model.Person;
 import com.trueffect.response.ErrorResponse;
 import com.trueffect.sql.crud.PersonCrud;
+import com.trueffect.tools.CodeStatus;
 import com.trueffect.util.DataCondition;
+import com.trueffect.util.ErrorContainer;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -13,82 +15,50 @@ import java.sql.SQLException;
  * @author santiago.mamani
  */
 public class PersonLogic {
-    public Person createPerson(int id, Person renterUser, DataCondition conditiondata) throws Exception{
-         Person res= null;
-         String errorMgs="";
-         boolean errorExist=false;
-         int codeError=0;
-         //open conection 
-         Connection connection = DatabasePostgres.getConection();
-          conditiondata.complyCondition(renterUser);
-       try {
-           //Validation of payload
-           //this will be removed
-            connection.setAutoCommit(false);
+
+    public Person createPerson(int id, Person person, DataCondition conditiondata) throws Exception {
+        Person personRes = null;
+        ErrorContainer errorContainer = new ErrorContainer();
+        //open conection 
+        Connection connection = DataBasePostgres.getConection();
+        try {
             //Validation of data 
-            PersonCrud.notExistPerson(connection,renterUser.getLastName(), renterUser.getFirstName());
-            //insert, update or delete
-            res =  PersonCrud.insertrenterUser(connection, id, renterUser);
-            connection.commit();
-        } catch (ErrorResponse e) {
-            errorExist = true;
-            codeError = e.getCode();
-            errorMgs = e.getMessage();
-            if(connection!=null)
-              {
-              try {
-                 connection.rollback();
-                 } catch (SQLException exSql) {
-                    errorMgs = errorMgs + exSql.getMessage();
-                 }  
-             }    
-          }
-          finally{
-            try {
-                 if(connection!=null) 
-                     connection.close();
-             } catch (SQLException ex) {
-                 errorMgs = errorMgs +"\n"+ex.getMessage();
-             }
-         }
-          if(errorExist)
-          throw new ErrorResponse(codeError, errorMgs);
-       
-   return res;
-   }
-      public Person deleteById(int idPerson, int idUserModify) throws Exception{
-         Person res= null;
-         String errorMgs="";
-         boolean errorExist=false;
-         Connection connection = DatabasePostgres.getConection();
-           try {
-            connection.setAutoCommit(false);
-            res =  PersonCrud.getPerson(connection, idPerson);
-            PersonCrud.deleteById(connection, idPerson,idUserModify);
-            connection.commit();
-        } catch (Exception e) {
-            errorExist = true;
-            errorMgs = e.getMessage();
-            if(connection!=null)
-              {
-              try {
-                 connection.rollback();
-                 } catch (SQLException exSql) {
-                    errorMgs = errorMgs + exSql.getMessage();
-                 }
-             }    
+            if (conditiondata.complyCondition(person, errorContainer)) {
+              OperationPerson.verifyIdentifierInDataBase(connection, person.getTypeIdentifier(), person.getIdentifier(), errorContainer);
+              OperationPerson.verifyNamesInDataBase(connection, person.getLastName(), person.getFirstName(), errorContainer);
+              personRes = PersonCrud.insertrenterUser(connection, id, person);
+              connection.commit();  
+            }         
+            
+        } catch (Exception exception) {
+            errorContainer.addError(new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR,exception.getMessage()));
+            OperationDataBase.connectionRollback(connection,errorContainer);
+        } finally {
+           OperationDataBase.connectionClose(connection,errorContainer);
         }
-          finally{
-            try {
-                 if(connection!=null) 
-                     connection.close();
-             } catch (SQLException ex) {
-                 errorMgs = errorMgs +"\n"+ex.getMessage();
-             }
-         }
-          if(errorExist)
-          throw new ErrorResponse(200, errorMgs);
-       
-   return res;
-   }
+        if (errorContainer.size() > 0) {
+            throw new ErrorResponse(errorContainer.getCodeStatusEnd(), errorContainer.allMessagesError());
+        }
+        return personRes;
+    }
+  public Person deleteById(int idPerson, int idUserModify) throws Exception {
+        Person res = null; 
+        ErrorContainer errorContainer = new ErrorContainer();
+        Connection connection = DataBasePostgres.getConection();
+        try {
+            if(PersonCrud.getPerson(connection, idPerson)!=null){
+            res = PersonCrud.deleteById(connection, idPerson, idUserModify);
+            }
+             connection.commit();
+        } catch (Exception e) {
+            errorContainer.addError(new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
+            OperationDataBase.connectionRollback(connection,errorContainer);
+        } finally {
+            OperationDataBase.connectionClose(connection,errorContainer);
+        }
+        if (errorContainer.size()>0) {
+            throw new ErrorResponse(errorContainer.getCodeStatusEnd(),errorContainer.allMessagesError());
+        }
+      return res;
+    }
 }

@@ -73,12 +73,5 @@ public class PersonValidation {
         return true;
     }
 
-    public static boolean alreadyExists(String typeIdentifier, String identifier, Connection connection) throws Exception {
-        Person person = (Person) PersonCrud.getPersonByTypeIdentifier(typeIdentifier, identifier, connection);
-
-        if (person == null) {
-            return false;
-        }
-        return true;
-    }
+ 
 }
