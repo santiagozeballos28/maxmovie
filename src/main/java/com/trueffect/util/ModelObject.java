@@ -6,11 +6,4 @@ import java.sql.Connection;
  */
 public abstract class ModelObject {
   
-    public ModelObject insertResourse(int idJob,Connection connection)throws Exception{
-     return null;
-    }
-    public ModelObject updateResourse(int idUserCreate) {
-      return null;       
-    }
-
 }

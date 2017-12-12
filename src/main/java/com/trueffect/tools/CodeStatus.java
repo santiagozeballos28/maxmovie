@@ -13,7 +13,6 @@ public class CodeStatus {
     */
     public static int BAD_REQUEST=400;
     public static int NOT_FOUND=404;
-    public static int UN_PROCESSABLE_ENTITY=422;
     /*
     * code status Server error
     */

@@ -13,16 +13,21 @@ import java.sql.SQLException;
  * @author santiago.mamani
  */
 public class PersonLogic {
-   public Person createPerson(int id, Person renterUser, DataCondition conditiondata) throws Exception{
+    public Person createPerson(int id, Person renterUser, DataCondition conditiondata) throws Exception{
          Person res= null;
          String errorMgs="";
          boolean errorExist=false;
          int codeError=0;
-          Connection connection = DatabasePostgres.getConection();
-          conditiondata.complyCondition(id ,renterUser, connection);
+         //open conection 
+         Connection connection = DatabasePostgres.getConection();
+          conditiondata.complyCondition(renterUser);
        try {
+           //Validation of payload
+           //this will be removed
             connection.setAutoCommit(false);
+            //Validation of data 
             PersonCrud.notExistPerson(connection,renterUser.getLastName(), renterUser.getFirstName());
+            //insert, update or delete
             res =  PersonCrud.insertrenterUser(connection, id, renterUser);
             connection.commit();
         } catch (ErrorResponse e) {

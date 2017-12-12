@@ -2,13 +2,11 @@
 package com.trueffect.sql;
 
 import com.trueffect.validation.RenterUser;
-import com.trueffect.validation.ProcessObject;
 import com.trueffect.response.ErrorResponse;
 import com.trueffect.sql.crud.PersonCrud;
 import com.trueffect.model.Person;
-
 import com.trueffect.tools.CodeStatus;
-import com.trueffect.validation.ProcessObject;
+
 import com.trueffect.validation.RenterUser;
 import java.util.logging.Level;
 import java.util.logging.Logger;

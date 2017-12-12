@@ -11,8 +11,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 /*
  * @author santiago.mamani
  */
@@ -29,6 +27,7 @@ public class PersonCrud {
                 String genre = renterUser.getGenre().trim();
                 String birthay = renterUser.getBirthday().trim();
                 query = (Statement) connection.createStatement();
+                //ident
                 String sql=
                 "INSERT INTO person(\n" +
                 " type_identifier, identifier, last_name, first_name, genre, \n" +
@@ -38,13 +37,15 @@ public class PersonCrud {
                         +firstName+"','"+ genre+"','"+birthay+"', current_date ,'"+idJob+"',null,null,'Active')";
       
                 query.execute(sql);
+                //close query
                 String msg = "The user " + firstName + " " + lastName + " has been successfully inserted";
                  renterUserInserted = getByTypeIdentifier(connection,typeIdentifier, identifier);
               } catch (Exception e) {
+                  //Only one try and catch with generic exeption
                 throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, e.getMessage());
             }finally{
                  try {
-                   if(query!=null) query.close();                
+                   if(query!=null){ query.close();                }
                                    
                  } catch (SQLException ex) {
                     throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, ex.getMessage());    
@@ -54,21 +55,7 @@ public class PersonCrud {
             return renterUserInserted;
     }
 
-    public static Person getRenterUser(int id) throws Exception{
-       Person renterUser = null;
-        try {
-            DatabasePostgres.getConection();
-            try {
-                renterUser = getRenterUserById(id);
-                } catch (Exception e) {
-                throw new ErrorResponse(CodeStatus.NOT_FOUND, e.getMessage());
-            }
-            DatabasePostgres.close();
-        } catch (Exception e) {
-            throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }
-        return renterUser;
-    }
+
 
     public static Person getRenterUserById(int id) throws Exception {
 
@@ -86,62 +73,15 @@ public class PersonCrud {
             throw new ErrorResponse(CodeStatus.NOT_FOUND, Message.NOT_FOUND);
         }
         return renterUser;
-    }
-    public static List<Person> getAllRenterUser() throws Exception {
-        ArrayList<Person> persons= new ArrayList<Person>();
-        Person renterUser = null;
-        String sql = "SELECT type_identifier, identifier, last_name, first_name, genre, \n" +
-                     " birthday\n" +
-                     " FROM person" ;
-        try {
- DatabasePostgres.getConection();
-        PreparedStatement st = DatabasePostgres.connection.prepareStatement(sql);
-        ResultSet rs = st.executeQuery();
-        
-        if (rs.next()) {
-           renterUser = new Person(rs.getInt("id"), 
-                        rs.getString("type_identifier"),
-                        rs.getString("identifier"),
-                        rs.getString("last_name"),
-                        rs.getString("first_name"),
-                        rs.getString("genre"),
-                        rs.getString("birthday"));
-           persons.add(renterUser);
-            while (rs.next()) {
-           renterUser = new Person(rs.getInt("id"), 
-                        rs.getString("type_identifier"),
-                        rs.getString("identifier"),
-                        rs.getString("last_name"),
-                        rs.getString("first_name"),
-                        rs.getString("genre"),
-                        rs.getString("birthday"));     
-           persons.add(renterUser);     
-            }
-        } else {
-            throw new ErrorResponse(CodeStatus.NOT_FOUND, Message.NOT_FOUND);
-        }
-        } catch (Exception e) {
-            //response = mapper.toResponse(new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
-        }
-         DatabasePostgres.close();
-        return persons;
-    }
-
-   
-
-    public static Person updateRenterUser(int id_user_create, Person aThis) {
-       return null;
-    }
-    
+    } 
+  
     public static Person getPersonByTypeIdentifier(String typeIdentifier,String  identifier,   Connection connection) throws Exception{     
         Person renterUser = null;
             try {
                  renterUser = getByTypeIdentifier(connection,typeIdentifier, identifier);
                 } catch (Exception e) {
                 throw new ErrorResponse(CodeStatus.NOT_FOUND, e.getMessage());
-            }
-        
-        
+            }   
         return renterUser;
     }
       private static Person getByTypeIdentifier(Connection connection,String type_identifier,String  identifier) throws Exception{
@@ -166,14 +106,15 @@ public class PersonCrud {
       public static boolean notExistPerson(Connection connection,String lastName,String firstName) throws Exception{
        boolean res = false;
             try {
-                String sqlGet="SELECT id\n" +
-                              " FROM person\n" +
-                              " WHERE person.last_name = '"+lastName+"' AND person.first_name='"+firstName+"';";
+                String sqlGet=" SELECT id\n" +
+                              "   FROM person\n" +
+                              "  WHERE person.last_name = '"+lastName
+                              +"'  AND person.first_name='"+firstName+"';";
                 PreparedStatement st = connection.prepareStatement(sqlGet);
                 ResultSet rs = st.executeQuery();
                 if(rs.next()){
                   throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, Message.THE_NAMES_ALREADY_EXIST);
-                }else res = true;
+                }else{ res = true;}
                } catch (Exception e) {
                       throw e;
                 }
@@ -212,5 +153,4 @@ public class PersonCrud {
             }         
             return renterUserInserted; 
     }
-      
 }
