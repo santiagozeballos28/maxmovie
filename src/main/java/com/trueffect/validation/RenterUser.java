@@ -25,6 +25,10 @@ public class RenterUser implements DataCondition {
         if (!PersonValidation.isValidIdentifier(renterUser.getIdentifier())) {
             errorMessages = errorMessages + "\n" + Message.NOT_VALID_IDENTIFIER;
         }
+        //Validation to what the type identifier and the identifier are of the same type
+        if (!PersonValidation.isValidIdentifier(renterUser.getTypeIdentifier(),renterUser.getIdentifier())) {
+            errorMessages = errorMessages + "\n" + Message.NOT_SAME_TYPE;
+        }
         //Validation of last name
         if (!PersonValidation.isValidLastName(renterUser.getLastName(), DataResourse.MAXIMUM_VALUES)) {
             errorMessages = errorMessages + "\n" + Message.NOT_VALID_LAST_NAME;

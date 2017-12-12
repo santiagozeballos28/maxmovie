@@ -70,8 +70,22 @@ public class PersonValidation {
     }
 
     public static boolean isValidIdentifier(String typeIdentifier, String identifier) throws Exception {
-        return true;
+        TypeIdentifier typeId = null;
+        boolean res = false;
+        if (typeIdentifier.equals(typeId.CI.name())) {
+            if (Pattern.matches(RegularExpression.CI, identifier)) {
+                res = true;
+            }
+        } else if (typeIdentifier.equals(typeId.PASS.name())) {
+            if (Pattern.matches(RegularExpression.PASS, identifier)) {
+                res = true;
+            }
+        } else if (typeIdentifier.equals(typeId.NIT.name())) {
+            if (Pattern.matches(RegularExpression.NIT, identifier)) {
+                res = true;
+            }
+        }
+        return res;
     }
 
- 
 }
