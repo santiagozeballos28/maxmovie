@@ -1,11 +1,12 @@
-
 package com.trueffect.model;
-import com.trueffect.sql.crud.PersonCrud;
+
 import com.trueffect.util.ModelObject;
+
 /*
  * @author santiago.mamani
  */
-public class Person extends ModelObject{
+public class Person extends ModelObject {
+
     private int id;
     public String typeIdentifier;
     public String identifier;
@@ -13,16 +14,18 @@ public class Person extends ModelObject{
     public String firstName;
     public String genre;
     public String birthday;
+
     public Person() {
     }
+
     public Person(int id, String typeIdentifier, String identifier, String lastName, String firstName, String genre, String birthday) {
         this.id = id;
-        this.typeIdentifier = typeIdentifier;
-        this.identifier = identifier;
-        this.lastName = lastName;
-        this.firstName = firstName;
-        this.genre = genre;
-        this.birthday = birthday;
+        this.typeIdentifier = typeIdentifier.trim();
+        this.identifier = identifier.trim();
+        this.lastName = lastName.trim();
+        this.firstName = firstName.trim();
+        this.genre = genre.trim();
+        this.birthday = birthday.trim();
     }
 
     public int getId() {
@@ -81,23 +84,12 @@ public class Person extends ModelObject{
         this.birthday = birthday;
     }
 
-
-    
-    @Override
-     public ModelObject insertResourse(int idCreatorUser)throws Exception{
-     return PersonCrud.insertrenterUser(idCreatorUser,this);
-     }
-     @Override
-    public ModelObject updateResourse(int idCreatorUser) {
-      return PersonCrud.updateRenterUser(idCreatorUser,this);       
-    }
     public int compareTo(Person o) {
-     return (
-             typeIdentifier.compareTo(o.typeIdentifier)==0&&
-             identifier.compareTo(o.identifier)==0&&
-             lastName.compareTo(o.lastName)==0&&
-             firstName.compareTo(o.firstName)==0&&
-             genre.compareTo(o.genre)==0)?0:-1;
-      }
- 
+        return (typeIdentifier.compareTo(o.typeIdentifier) == 0
+                && identifier.compareTo(o.identifier) == 0
+                && lastName.compareTo(o.lastName) == 0
+                && firstName.compareTo(o.firstName) == 0
+                && genre.compareTo(o.genre) == 0) ? 0 : -1;
+    }
+
 }
