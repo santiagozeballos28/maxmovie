@@ -152,4 +152,24 @@ public class PersonCrud {
         }
         return person;
     }
+
+    public static Person updateRenterUser(Connection connection, int idPerson, int idUserModifier,String setString) throws Exception {
+        Person person = null;
+        try {
+            
+            String sql
+                    = "UPDATE PERSON\n"+
+                      "   SET "+ setString+" user_modifier= ?"+
+                      " WHERE id = ?";
+            
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, idUserModifier);
+            st.setInt(2, idPerson);
+            st.execute();
+            person = getPerson(connection, idPerson);
+        } catch (Exception exception) {
+            throw exception;
+        }
+        return person;
+    }
 }

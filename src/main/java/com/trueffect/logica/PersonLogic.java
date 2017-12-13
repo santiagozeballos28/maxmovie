@@ -2,12 +2,15 @@ package com.trueffect.logica;
 
 import com.trueffect.conection.db.DataBasePostgres;
 import com.trueffect.conection.db.OperationDataBase;
+import com.trueffect.model.Job;
 import com.trueffect.model.Person;
 import com.trueffect.response.ErrorResponse;
+import com.trueffect.sql.crud.JobCrud;
 import com.trueffect.sql.crud.PersonCrud;
 import com.trueffect.tools.CodeStatus;
 import com.trueffect.util.DataCondition;
 import com.trueffect.util.ErrorContainer;
+import com.trueffect.validation.RenterUserUpdate;
 import java.sql.Connection;
 
 /**
@@ -60,5 +63,44 @@ public class PersonLogic {
             throw new ErrorResponse(errorContainer.getCodeStatusEnd(), errorContainer.allMessagesError());
         }
         return res;
+    }
+
+    public Person update(Person person,int idRenter, int idUserModify) throws Exception {
+        Person personRes = null;
+        ErrorContainer errorContainer = new ErrorContainer();
+        //open conection 
+        System.out.println("ENTRO A UPDATE LOGIC: "+idRenter+ " idMOD: " +idUserModify);
+        Connection connection = DataBasePostgres.getConection();
+        try {
+            //Validation of data 
+            Job job = JobCrud.getJobOf(connection,idRenter);
+            if (job != null) {
+                System.out.println("Entro noes nullo Job");
+                String nameJob = job.getNameJob();
+                if (nameJob.equals("Administrator") || nameJob.equals("Manager")) {
+                    RenterUserUpdate rentUserUpdate = new RenterUserUpdate();
+                    rentUserUpdate.setIdUserModify(nameJob);
+                    System.out.println("Entro  el preguntar Aministratod");
+                    if (rentUserUpdate.complyCondition(personRes, errorContainer)) {
+                        System.out.println("Entro  al condicion");
+                        PersonValidationsDB.verifyNamesInDataBase(connection, person.getLastName(), person.getFirstName(), errorContainer);                
+                        String setString = Generator.getStringSet(person);
+                          System.out.println("SET " +setString);
+                        personRes = PersonCrud.updateRenterUser(connection, idRenter, idUserModify,setString);
+                        connection.commit();
+                    }
+                }
+            }
+
+        } catch (Exception exception) {
+            errorContainer.addError(new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, exception.getMessage()));
+            OperationDataBase.connectionRollback(connection, errorContainer);
+        } finally {
+            OperationDataBase.connectionClose(connection, errorContainer);
+        }
+        if (errorContainer.size() > 0) {
+            throw new ErrorResponse(errorContainer.getCodeStatusEnd(), errorContainer.allMessagesError());
+        }
+        return personRes;
     }
 }

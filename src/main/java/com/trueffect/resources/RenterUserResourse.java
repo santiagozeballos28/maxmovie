@@ -4,12 +4,13 @@ import com.trueffect.logica.PersonLogic;
 import com.trueffect.tools.CodeStatus;
 import com.trueffect.response.ErrorResponse;
 import com.trueffect.response.MapperResponse;
-import com.trueffect.validation.RenterUser;
+import com.trueffect.validation.RenterUserCreate;
 import com.trueffect.model.Person;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -32,7 +33,7 @@ public class RenterUserResourse {
     public Response insertRenterUser(@PathParam("id") int id, Person renterUser) throws Exception {
         Response response = null;
         try {
-            Person resRenterUser = personLogic.createPerson(id, renterUser, new RenterUser());
+            Person resRenterUser = personLogic.createPerson(id, renterUser, new RenterUserCreate());
             response = mapper.toResponse(CodeStatus.CREATED, resRenterUser);
         } catch (ErrorResponse ex) {
             response = mapper.toResponse(ex);
@@ -47,6 +48,20 @@ public class RenterUserResourse {
         Response response = null;
         try {
             Person resRenterUser = personLogic.deleteById(idUser, idModifyUser);
+            response = mapper.toResponse(CodeStatus.OK, resRenterUser);
+        } catch (ErrorResponse ex) {
+            response = mapper.toResponse(ex);
+        }
+        return response;
+    }
+    
+    @PUT
+    @Path("/{id}/{idModifyUser}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateRenterUser(@PathParam("id") int idUser, @PathParam("idModifyUser") int idModifyUser, Person renterUser) throws Exception {
+        Response response = null;
+        try {
+            Person resRenterUser = personLogic.update(renterUser, idUser, idModifyUser);
             response = mapper.toResponse(CodeStatus.OK, resRenterUser);
         } catch (ErrorResponse ex) {
             response = mapper.toResponse(ex);

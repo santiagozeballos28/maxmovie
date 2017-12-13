@@ -18,7 +18,7 @@ public class Message {
     public static String NOT_VALID_LAST_NAME = "The last name not's valid";
     public static String NOT_VALID_FIRST_NAME = "The first name not's valid";
     public static String NOT_VALID_GENRE = "The genre not's valid";
-    public static String NOT_VALID_BIRTHDAY = "The  birthday not's valid";
+    public static String NOT_VALID_BIRTHDAY = "The date format not's valid";
     public static String NOT_SAME_TYPE = "The identifier is not the same type";
     //Message de restrictions    
     public static String SIZE_IDENTIFIER = "The identifier is very long, must be less than 10 characters";
