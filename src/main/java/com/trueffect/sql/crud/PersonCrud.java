@@ -25,7 +25,7 @@ public class PersonCrud {
             query = (Statement) connection.createStatement();
             //ident
             String sql
-                    = "INSERT INTO person("
+                    = "INSERT INTO PERSON("
                     + "type_identifier, "
                     + "identifier, "
                     + "last_name, "
@@ -66,12 +66,21 @@ public class PersonCrud {
         try {
             Statement consulta = (Statement) connection.createStatement();
             String sql = "SELECT id, type_identifier, identifier, last_name, first_name, genre, birthday\n"+
-                         "  FROM person\n"+
-                         " WHERE status= 'Active' AND type_identifier = '" + typeIdentifier + "' AND identifier = '" + identifier + "'";
+                         "  FROM PERSON "+
+                         " WHERE status= 'Active' " +
+                         "   AND type_identifier = '" + typeIdentifier + "' "+
+                         "   AND identifier = '" + identifier + "'";
             
             ResultSet rs = consulta.executeQuery(sql);
             if (rs.next()) {
-                person = new Person(rs.getInt("id"), rs.getString("type_identifier"), rs.getString("identifier"), rs.getString("last_name"), rs.getString("first_name"), rs.getString("genre"), rs.getString("birthday"));
+                person = new Person(
+                        rs.getInt("id"),
+                        rs.getString("type_identifier"),
+                        rs.getString("identifier"), 
+                        rs.getString("last_name"), 
+                        rs.getString("first_name"), 
+                        rs.getString("genre"), 
+                        rs.getString("birthday"));
             }
         } catch (Exception exception) {
             throw exception;
@@ -83,9 +92,9 @@ public class PersonCrud {
         Person person = null;
         try {
             String sqlGet = "SELECT id, type_identifier, identifier, last_name, first_name, genre, birthday\n"+
-                            "  FROM person\n"+
-                            " WHERE person.last_name = '" + lastName+"'\n"+
-                            "   AND person.first_name='" + firstName + "'";
+                            "  FROM PERSON "+
+                            " WHERE last_name = '" + lastName+"' "+
+                            "   AND first_name='" + firstName + "'";
             
             PreparedStatement st = connection.prepareStatement(sqlGet);
             ResultSet rs = st.executeQuery();
@@ -102,14 +111,22 @@ public class PersonCrud {
         Person person = null;
         try {
             String sql = "SELECT id,type_identifier,identifier, last_name, first_name, genre, birthday\n"+
-                         "  FROM person\n"+
-                         " WHERE status = 'Active' AND person.id = ?\n";
+                         "  FROM PERSON "+
+                         " WHERE status = 'Active' "+
+                         "   AND person.id = ?";
 
             PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, idPerson);
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
-                person = new Person(rs.getInt("id"), rs.getString("type_identifier"), rs.getString("identifier"), rs.getString("last_name"), rs.getString("first_name"), rs.getString("genre"), rs.getString("birthday"));
+                person = new Person(
+                        rs.getInt("id"), 
+                        rs.getString("type_identifier"),
+                        rs.getString("identifier"),
+                        rs.getString("last_name"),
+                        rs.getString("first_name"),
+                        rs.getString("genre"), 
+                        rs.getString("birthday"));
             }
         } catch (Exception exception) {
             throw exception;
@@ -122,7 +139,7 @@ public class PersonCrud {
         try {
             person = getPerson(connection, idPerson);
             String sql
-                    = "UPDATE person\n"+
+                    = "UPDATE PERSON\n"+
                       "   SET status='Inactive', date_modifier=  current_date , user_modifier= ?"+
                       " WHERE id = ?";
             

@@ -42,8 +42,7 @@
             <version>1.6.1</version>
             <scope>test</scope>
         </dependency>
-
-        
+  
         <!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
         <dependency>
             <groupId>org.mockito</groupId>
@@ -52,14 +51,12 @@
             <scope>test</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.easymock/easymock -->
-<dependency>
-    <groupId>org.easymock</groupId>
-    <artifactId>easymock</artifactId>
-    <version>3.5.1</version>
-    <scope>test</scope>
-</dependency>
-
-
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+            <version>3.5.1</version>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>com.sun.jersey</groupId>
@@ -72,33 +69,13 @@
             <artifactId>jersey-json</artifactId>
             <version>1.19.3</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.8.1</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.thoughtworks.xstream/xstream -->
-        <dependency>
-            <groupId>com.thoughtworks.xstream</groupId>
-            <artifactId>xstream</artifactId>
-            <version>1.4.10</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
-        <!--dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.22</version>
-        </dependency-->
 
         <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>9.4-1204-jdbc41</version>
-        </dependency>
-       
-
+        </dependency> 
 
     </dependencies>
 

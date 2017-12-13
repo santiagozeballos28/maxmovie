@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite failures="0" time="0.084" errors="0" skipped="0" tests="26" name="com.trueffect.validation.PersonValidationTest">
+<testsuite failures="0" time="0.069" errors="0" skipped="0" tests="14" name="com.trueffect.validation.PersonValidationTest">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk1.7.0_60\jre\bin"/>
@@ -62,29 +62,17 @@
     <property name="sun.cpu.isalist" value="amd64"/>
   </properties>
   <testcase time="0" classname="com.trueffect.validation.PersonValidationTest" name="testOneLastName"/>
-  <testcase time="0" classname="com.trueffect.validation.PersonValidationTest" name="testTypeIdentifierCiLowerCase"/>
   <testcase time="0" classname="com.trueffect.validation.PersonValidationTest" name="testLastNameSymbol"/>
   <testcase time="0" classname="com.trueffect.validation.PersonValidationTest" name="testLastNameOne"/>
-  <testcase time="0" classname="com.trueffect.validation.PersonValidationTest" name="testIdentyfierEmpty"/>
   <testcase time="0" classname="com.trueffect.validation.PersonValidationTest" name="testFirstEmpty"/>
-  <testcase time="0" classname="com.trueffect.validation.PersonValidationTest" name="testTypeIdentifierPass"/>
   <testcase time="0" classname="com.trueffect.validation.PersonValidationTest" name="testFirstNameSymbol"/>
   <testcase time="0" classname="com.trueffect.validation.PersonValidationTest" name="testBirthday2"/>
   <testcase time="0" classname="com.trueffect.validation.PersonValidationTest" name="testFirstNameTwoName"/>
-  <testcase time="0" classname="com.trueffect.validation.PersonValidationTest" name="testIdentyfierInvalid"/>
   <testcase time="0" classname="com.trueffect.validation.PersonValidationTest" name="testIdentyfierNIT"/>
-  <testcase time="0" classname="com.trueffect.validation.PersonValidationTest" name="testTypeIdentifierNitLowerCase"/>
   <testcase time="0" classname="com.trueffect.validation.PersonValidationTest" name="testFirstName"/>
   <testcase time="0" classname="com.trueffect.validation.PersonValidationTest" name="testLastNameTwoLowerCase"/>
   <testcase time="0" classname="com.trueffect.validation.PersonValidationTest" name="testLastNameTwoSpace"/>
   <testcase time="0" classname="com.trueffect.validation.PersonValidationTest" name="testLastNameTwoVALID"/>
-  <testcase time="0" classname="com.trueffect.validation.PersonValidationTest" name="testTypeIdentifierEmpty"/>
-  <testcase time="0" classname="com.trueffect.validation.PersonValidationTest" name="testTypeIdentifierError"/>
-  <testcase time="0.001" classname="com.trueffect.validation.PersonValidationTest" name="testTypeIdentifierCi"/>
   <testcase time="0" classname="com.trueffect.validation.PersonValidationTest" name="testLastNameEmpty"/>
-  <testcase time="0" classname="com.trueffect.validation.PersonValidationTest" name="testTypeIdentifierNit"/>
   <testcase time="0" classname="com.trueffect.validation.PersonValidationTest" name="testBirthDay"/>
-  <testcase time="0" classname="com.trueffect.validation.PersonValidationTest" name="testIdentyfierCI"/>
-  <testcase time="0" classname="com.trueffect.validation.PersonValidationTest" name="testIdentyfierPASSPORT"/>
-  <testcase time="0" classname="com.trueffect.validation.PersonValidationTest" name="testTypeIdentifierPassLowerCase"/>
 </testsuite>

@@ -1,13 +1,10 @@
 package com.trueffect.util;
-import com.trueffect.util.ModelObject;
-import com.trueffect.util.ModelObject;
-import java.sql.Connection;
 
 /**
  * @author Santiago
  */
 public interface DataCondition {
-   
-     abstract boolean complyCondition(ModelObject resource, ErrorContainer  errorContainer)throws Exception;
-    
+
+    abstract boolean complyCondition(ModelObject resource, ErrorContainer errorContainer) throws Exception;
+
 }

@@ -1,12 +1,9 @@
 package com.trueffect.validation;
 
-import com.trueffect.model.Person;
-import com.trueffect.sql.crud.PersonCrud;
 import com.trueffect.tools.DataResourse;
 import com.trueffect.tools.DataResourse.Genre;
 import com.trueffect.tools.DataResourse.TypeIdentifier;
 import com.trueffect.tools.RegularExpression;
-import java.sql.Connection;
 import java.util.regex.Pattern;
 
 /*
@@ -14,76 +11,76 @@ import java.util.regex.Pattern;
  */
 public class PersonValidation {
 
+    public static boolean isEmpty(String typeId) {
+        return typeId == null;
+    }
+
     public static boolean isValidTypeIdentifier(String typeId) {
-        TypeIdentifier typeIdentifier = null;
-        if (typeId.length() > 0) {
-            return typeId.equals(typeIdentifier.CI.name())
-                    || typeId.equals(typeIdentifier.PASS.name())
-                    || typeId.equals(typeIdentifier.NIT.name());
+        boolean res = true;
+        try {
+            TypeIdentifier typeIdentifier = TypeIdentifier.valueOf(typeId);
+        } catch (Exception e) {
+            res = false;
         }
-        return false;
+        return res;
     }
 
     public static boolean isValidIdentifier(String identifier) {
-        if (identifier.length() > 0) {
-            return Pattern.matches(RegularExpression.CI, identifier)
-                    || Pattern.matches(RegularExpression.PASS, identifier)
-                    || Pattern.matches(RegularExpression.NIT, identifier);
-        }
-        return false;
+        return Pattern.matches(RegularExpression.CI, identifier)
+                || Pattern.matches(RegularExpression.PASS, identifier)
+                || Pattern.matches(RegularExpression.NIT, identifier);
+
     }
 
-    public static boolean isValidFirstName(String firstName, int size) {
-        if (firstName.length() > 0) {
-            return firstName.length() <= DataResourse.MAXIMUM_VALUES && Pattern.matches(RegularExpression.FIRST_NAME, firstName);
-        }
-        return false;
+    public static boolean isValidFirstName(String firstName) {
+        return Pattern.matches(RegularExpression.FIRST_NAME, firstName);
     }
 
     public static boolean isValidSize(String name, int size) {
-        return name.length() >= 0 && name.length() <= DataResourse.MAXIMUM_VALUES;
+        return name.length() <= size;
     }
 
-    public static boolean isValidLastName(String lastName, int size) {
-        if (lastName.length() > 0) {
-            if (lastName.contains(" ")) {
-                return lastName.length() <= DataResourse.MAXIMUM_VALUES && Pattern.matches(RegularExpression.LAST_NAME_TWO, lastName);
-            }
+    public static boolean isValidLastName(String lastName) {
+        if (lastName.contains(" ")) {
+            return Pattern.matches(RegularExpression.LAST_NAME_TWO, lastName);
+        } else {
+            return Pattern.matches(RegularExpression.LAST_NAME_ONE, lastName);
         }
-
-        return lastName.length() <= DataResourse.MAXIMUM_VALUES && Pattern.matches(RegularExpression.LAST_NAME_ONE, lastName);
     }
 
     public static boolean isValidGenre(String genre) {
         Genre genreEnum = null;
-        if (genre != null) {
-            return genre.equals(genreEnum.M.name()) || genre.equals(genreEnum.F.name());
-        }
-        return false;
+        return genre.equals(genreEnum.M.name()) || genre.equals(genreEnum.F.name());
     }
 
     public static boolean isValidBirthday(String date) {
-        if (date.length() > 0) {
-            return Pattern.matches(RegularExpression.DATE, date);
-        }
-        return false;
+        return Pattern.matches(RegularExpression.DATE, date);
     }
 
-    public static boolean isValidIdentifier(String typeIdentifier, String identifier) throws Exception {
-        TypeIdentifier typeId = null;
+    public static boolean isValidIdentifier(String typeIdentifier, String identifier) {
         boolean res = false;
-        if (typeIdentifier.equals(typeId.CI.name())) {
-            if (Pattern.matches(RegularExpression.CI, identifier)) {
-                res = true;
+        try {
+            TypeIdentifier typeIden = TypeIdentifier.valueOf(typeIdentifier);
+            switch (typeIden) {
+
+                case CI:
+                    if (Pattern.matches(RegularExpression.CI, identifier)) {
+                        res = true;
+                    }
+                    break;
+                case PASS:
+                    if (Pattern.matches(RegularExpression.PASS, identifier)) {
+                        res = true;
+                    }
+                    break;
+                case NIT:
+                    if (Pattern.matches(RegularExpression.NIT, identifier)) {
+                        res = true;
+                    }
+                    break;
+
             }
-        } else if (typeIdentifier.equals(typeId.PASS.name())) {
-            if (Pattern.matches(RegularExpression.PASS, identifier)) {
-                res = true;
-            }
-        } else if (typeIdentifier.equals(typeId.NIT.name())) {
-            if (Pattern.matches(RegularExpression.NIT, identifier)) {
-                res = true;
-            }
+        } catch (Exception e) {
         }
         return res;
     }

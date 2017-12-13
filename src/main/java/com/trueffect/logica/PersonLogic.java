@@ -23,8 +23,8 @@ public class PersonLogic {
         try {
             //Validation of data 
             if (conditiondata.complyCondition(person, errorContainer)) {
-                OperationPerson.verifyIdentifierInDataBase(connection, person.getTypeIdentifier(), person.getIdentifier(), errorContainer);
-                OperationPerson.verifyNamesInDataBase(connection, person.getLastName(), person.getFirstName(), errorContainer);
+                PersonValidationsDB.verifyIdentifierInDataBase(connection, person.getTypeIdentifier(), person.getIdentifier(), errorContainer);
+                PersonValidationsDB.verifyNamesInDataBase(connection, person.getLastName(), person.getFirstName(), errorContainer);
                 personRes = PersonCrud.insertrenterUser(connection, id, person);
                 connection.commit();
             }
@@ -46,7 +46,7 @@ public class PersonLogic {
         ErrorContainer errorContainer = new ErrorContainer();
         Connection connection = DataBasePostgres.getConection();
         try {
-            if (OperationPerson.getPerson(connection, idPerson, errorContainer) != null) {
+            if (PersonValidationsDB.getPerson(connection, idPerson, errorContainer) != null) {
                 res = PersonCrud.deleteById(connection, idPerson, idUserModify);
                 connection.commit();
             }

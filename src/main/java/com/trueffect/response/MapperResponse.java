@@ -16,7 +16,7 @@ public class MapperResponse {
 
     public Response toResponse(ErrorResponse ep) {
         return Response.status(new MyStatusType(ep.getCode()))
-                .entity(ep.getMessage())
+                .entity(ep.getMessage().toString())
                 .build();
     }
 
