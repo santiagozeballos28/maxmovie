@@ -26,10 +26,10 @@ public class RenterUserUpdate implements DataCondition {
     }
 
     @Override
-    public boolean complyCondition(ModelObject resource, ErrorContainer errorContainer) throws Exception {
+    public void complyCondition(ModelObject resource) throws Exception {
 
         Person renterUser = (Person) resource;
-
+        ErrorContainer errorContainer = new ErrorContainer();
         //Validation empty type identifier
         if (!PersonValidation.isEmpty(renterUser.getTypeIdentifier())) {
             intentUpdateTypeIdentifier(renterUser, errorContainer);
@@ -55,14 +55,13 @@ public class RenterUserUpdate implements DataCondition {
         }
         //To check if there was an error
         if (errorContainer.size() > 0) {
-            errorContainer.addError(new ErrorResponse(errorContainer.getCodeStatusEnd(), errorContainer.allMessagesError()));
-            return false;
+            throw new ErrorResponse(errorContainer.getCodeStatusEnd(), errorContainer.allMessagesError());
         }
-        return true;
+
     }
 
     private void intentUpdateTypeIdentifier(Person renterUser, ErrorContainer errorContainer) {
-        if (job.equals("Aministrator")) {
+        if (job.equals("Administrator")) {
             if (!PersonValidation.isValidTypeIdentifier(renterUser.getTypeIdentifier())) {
                 errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, Message.NOT_VALID_TYPE_IDENTIFIER));
             }
@@ -73,7 +72,7 @@ public class RenterUserUpdate implements DataCondition {
     }
 
     private void intentUpdateIdentifier(Person renterUser, ErrorContainer errorContainer) {
-        if (job.equals("Aministrator")) {
+        if (job.equals("Administrator")) {
             if (!PersonValidation.isValidIdentifier(renterUser.getIdentifier())) {
                 errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, Message.NOT_VALID_IDENTIFIER));
             }

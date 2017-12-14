@@ -5,6 +5,6 @@ package com.trueffect.util;
  */
 public interface DataCondition {
 
-    abstract boolean complyCondition(ModelObject resource, ErrorContainer errorContainer) throws Exception;
+    abstract void complyCondition(ModelObject resource) throws Exception;
 
 }

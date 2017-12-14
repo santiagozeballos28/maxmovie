@@ -13,25 +13,61 @@ import java.sql.Connection;
  */
 public class PersonValidationsDB {
 
-    public static void verifyIdentifierInDataBase(Connection connection, String typeIdentifier, String identifier, ErrorContainer errorContainer) throws Exception {
-        Person person = (Person) PersonCrud.getPersonByTypeIdentifier(connection, typeIdentifier, identifier);
+    /*
+    * For dates duplidates
+     */
+    public static void veriryDataInDataBase(Connection connection, Person personNew) throws Exception {
+        ErrorContainer errorContainer = new ErrorContainer();
+        Person person = (Person) PersonCrud.getPersonByIdentifier(connection, personNew.getTypeIdentifier(), personNew.getIdentifier());
         if (person != null) {
             errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, Message.DUPLICATE_IDENTIFIER));
         }
-    }
-
-    public static void verifyNamesInDataBase(Connection connection, String lastName, String firstName, ErrorContainer errorContainer) throws Exception {
-        Person person = (Person) PersonCrud.getPersonByName(connection, lastName, firstName);
+        person = (Person) PersonCrud.getPersonByName(connection, personNew.getLastName(), person.getFirstName());
         if (person != null) {
             errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, Message.THE_NAMES_ALREADY_EXIST));
         }
+        if (!errorContainer.isEmpty()) {
+            throw new ErrorResponse(errorContainer.getCodeStatusEnd(), errorContainer.allMessagesError());
+        }
     }
 
-    public static Person getPerson(Connection connection, int idPerson, ErrorContainer errorContainer) throws Exception {
-        Person person = PersonCrud.getPerson(connection, idPerson);
-        if (person == null) {
-            errorContainer.addError(new ErrorResponse(CodeStatus.NOT_FOUND, Message.NOT_RESOURCE));
+    public static void verifyDataUpdate(Connection connection, int id, Person personNew) throws Exception {
+        ErrorContainer errorContainer = new ErrorContainer();
+        Person personOld = PersonCrud.getPerson(connection, id);
+        Person personAux = generatePersonAuxiliary(personOld, personNew);
+        Person personById = (Person) PersonCrud.getPersonByIdentifier(connection, personAux.getTypeIdentifier(), personAux.getIdentifier());
+        Person personByName = (Person) PersonCrud.getPersonByName(connection, personAux.getLastName(), personAux.getFirstName());
+        if (personById != null) {
+            if (id != personById.getId()) {
+                errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, Message.DUPLICATE_IDENTIFIER));
+            }
         }
-        return person;
+        if (personByName != null) {
+            if (id != personByName.getId()) {
+                errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, Message.THE_NAMES_ALREADY_EXIST));
+            }
+        }
+        if (!errorContainer.isEmpty()) {
+            throw new ErrorResponse(errorContainer.getCodeStatusEnd(), errorContainer.allMessagesError());
+        }
+
     }
+
+    private static Person generatePersonAuxiliary(Person personOld, Person personNew) {
+        Person personAuxiliary = personOld;
+        if (personNew.getTypeIdentifier() != null) {
+            personAuxiliary.setTypeIdentifier(personNew.getTypeIdentifier());
+        }
+        if (personNew.getIdentifier() != null) {
+            personAuxiliary.setIdentifier(personNew.getIdentifier());
+        }
+        if (personNew.getLastName() != null) {
+            personAuxiliary.setLastName(personNew.getLastName());
+        }
+        if (personNew.getFirstName() != null) {
+            personAuxiliary.setFirstName(personNew.getFirstName());
+        }
+        return personAuxiliary;
+    }
+
 }

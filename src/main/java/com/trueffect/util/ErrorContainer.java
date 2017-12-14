@@ -39,4 +39,8 @@ public class ErrorContainer {
         return listError.get(listError.size() - 1).getCode();
     }
 
+    public boolean isEmpty() {
+        return listError.size() == 0;
+    }
+
 }

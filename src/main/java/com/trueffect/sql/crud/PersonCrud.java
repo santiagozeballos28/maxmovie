@@ -1,6 +1,8 @@
 package com.trueffect.sql.crud;
 
 import com.trueffect.model.Person;
+import com.trueffect.response.ErrorResponse;
+import com.trueffect.tools.CodeStatus;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -54,14 +56,14 @@ public class PersonCrud {
             if (query != null) {
                 query.close();
             }
-            renterUserInserted = getPersonByTypeIdentifier(connection, typeIdentifier, identifier);
+            renterUserInserted = getPersonByIdentifier(connection, typeIdentifier, identifier);
         } catch (Exception exception) {
-            throw exception;
+          throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR,exception.getMessage());
         }
         return renterUserInserted;
     }
 
-    public static Person getPersonByTypeIdentifier(Connection connection, String typeIdentifier, String identifier) throws Exception {
+    public static Person getPersonByIdentifier(Connection connection, String typeIdentifier, String identifier) throws Exception {
         Person person = null;
         try {
             Statement consulta = (Statement) connection.createStatement();
@@ -83,7 +85,7 @@ public class PersonCrud {
                         rs.getString("birthday"));
             }
         } catch (Exception exception) {
-            throw exception;
+           throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR,exception.getMessage());
         }
         return person;
     }
@@ -102,7 +104,7 @@ public class PersonCrud {
                 person = new Person(rs.getInt("id"), rs.getString("type_identifier"), rs.getString("identifier"), rs.getString("last_name"), rs.getString("first_name"), rs.getString("genre"), rs.getString("birthday"));
             }
         } catch (Exception exception) {
-            throw exception;
+           throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR,exception.getMessage());
         }
         return person;
     }
@@ -129,7 +131,7 @@ public class PersonCrud {
                         rs.getString("birthday"));
             }
         } catch (Exception exception) {
-            throw exception;
+          throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR,exception.getMessage());
         }
         return person;
     }
@@ -148,7 +150,7 @@ public class PersonCrud {
             st.setInt(2, idPerson);
             st.execute();
         } catch (Exception exception) {
-            throw exception;
+           throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR,exception.getMessage());
         }
         return person;
     }
@@ -168,7 +170,7 @@ public class PersonCrud {
             st.execute();
             person = getPerson(connection, idPerson);
         } catch (Exception exception) {
-            throw exception;
+        throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR,exception.getMessage());
         }
         return person;
     }

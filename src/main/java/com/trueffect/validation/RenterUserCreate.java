@@ -7,7 +7,6 @@ import com.trueffect.model.Person;
 import com.trueffect.tools.CodeStatus;
 import com.trueffect.tools.DataResourse;
 import com.trueffect.util.DataCondition;
-import com.trueffect.util.ErrorContainer;
 
 /**
  * @author santiago.mamani
@@ -15,15 +14,13 @@ import com.trueffect.util.ErrorContainer;
 public class RenterUserCreate implements DataCondition {
 
     @Override
-    public boolean complyCondition(ModelObject resource, ErrorContainer errorContainer) {
-        boolean res=false;
-        if (!existEmpty(resource, errorContainer)){
-            res = correctData(resource, errorContainer);
-        }
-        return res;        
+    public void complyCondition(ModelObject resource) throws Exception {
+        verifyEmpty(resource);
+        verifyData(resource);
+
     }
 
-    private boolean existEmpty(ModelObject resource, ErrorContainer errorContainer) {
+    private void verifyEmpty(ModelObject resource) throws Exception {
         Person renterUser = (Person) resource;
         String errorMessages = "";
         //Validation empty type identifier
@@ -52,25 +49,23 @@ public class RenterUserCreate implements DataCondition {
         }
         //To check if there was an error
         if (!errorMessages.equals("")) {
-
-            errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, errorMessages));
-            return true;
+            throw new ErrorResponse(CodeStatus.BAD_REQUEST, errorMessages);
         }
-        return false;
+
     }
 
-    private boolean correctData(ModelObject resource, ErrorContainer errorContainer) {
+    private void verifyData(ModelObject resource) throws Exception {
         Person renterUser = (Person) resource;
         String errorMessages = "";
         //Validation of identifier
         if (!PersonValidation.isValidTypeIdentifier(renterUser.getTypeIdentifier())) {
-            errorMessages = Message.NOT_VALID_TYPE_IDENTIFIER ;
+            errorMessages = Message.NOT_VALID_TYPE_IDENTIFIER;
         }
         //Validation of identifier
         if (!PersonValidation.isValidIdentifier(renterUser.getIdentifier())) {
             errorMessages = errorMessages + "\n" + Message.NOT_VALID_IDENTIFIER;
         }
-         //Validation of identifier size
+        //Validation of identifier size
         if (!PersonValidation.isValidSize(renterUser.getIdentifier(), DataResourse.MAXIMUM_IDENTIFIER)) {
             errorMessages = errorMessages + "\n" + Message.SIZE_IDENTIFIER;
         }
@@ -104,9 +99,7 @@ public class RenterUserCreate implements DataCondition {
         }
         //To check if there was an error
         if (!errorMessages.equals("")) {
-            errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, errorMessages));
-            return false;
+            throw new ErrorResponse(CodeStatus.BAD_REQUEST, errorMessages);
         }
-        return true;
     }
 }

@@ -2,6 +2,7 @@ package com.trueffect.logica;
 
 import com.trueffect.conection.db.DataBasePostgres;
 import com.trueffect.conection.db.OperationDataBase;
+import com.trueffect.messages.Message;
 import com.trueffect.model.Job;
 import com.trueffect.model.Person;
 import com.trueffect.response.ErrorResponse;
@@ -25,15 +26,12 @@ public class PersonLogic {
         Connection connection = DataBasePostgres.getConection();
         try {
             //Validation of data 
-            if (conditiondata.complyCondition(person, errorContainer)) {
-                PersonValidationsDB.verifyIdentifierInDataBase(connection, person.getTypeIdentifier(), person.getIdentifier(), errorContainer);
-                PersonValidationsDB.verifyNamesInDataBase(connection, person.getLastName(), person.getFirstName(), errorContainer);
-                personRes = PersonCrud.insertrenterUser(connection, id, person);
-                connection.commit();
-            }
-
-        } catch (Exception exception) {
-            errorContainer.addError(new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, exception.getMessage()));
+            conditiondata.complyCondition(person);
+            PersonValidationsDB.veriryDataInDataBase(connection, person);
+            personRes = PersonCrud.insertrenterUser(connection, id, person);
+            connection.commit();
+        } catch (ErrorResponse errorResponse) {
+            errorContainer.addError(new ErrorResponse(errorResponse.getCode(), errorResponse.getMessage()));
             OperationDataBase.connectionRollback(connection, errorContainer);
         } finally {
             OperationDataBase.connectionClose(connection, errorContainer);
@@ -49,12 +47,11 @@ public class PersonLogic {
         ErrorContainer errorContainer = new ErrorContainer();
         Connection connection = DataBasePostgres.getConection();
         try {
-            if (PersonValidationsDB.getPerson(connection, idPerson, errorContainer) != null) {
-                res = PersonCrud.deleteById(connection, idPerson, idUserModify);
-                connection.commit();
-            }
-        } catch (Exception e) {
-            errorContainer.addError(new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
+            verifyPerson(connection, idPerson);
+            res = PersonCrud.deleteById(connection, idPerson, idUserModify);
+            connection.commit();
+        } catch (ErrorResponse e) {
+            errorContainer.addError(new ErrorResponse(e.getCode(), e.getMessage()));
             OperationDataBase.connectionRollback(connection, errorContainer);
         } finally {
             OperationDataBase.connectionClose(connection, errorContainer);
@@ -65,32 +62,31 @@ public class PersonLogic {
         return res;
     }
 
-    public Person update(Person person,int idRenter, int idUserModify) throws Exception {
+    private static void verifyPerson(Connection connection, int idPerson) throws Exception {
+        Person person = PersonCrud.getPerson(connection, idPerson);
+        if (person == null) {
+            throw new ErrorResponse(CodeStatus.NOT_FOUND, Message.NOT_RESOURCE);
+        }
+    }
+
+    public Person update(Person person, int idRenter, int idUserModify) throws Exception {
         Person personRes = null;
         ErrorContainer errorContainer = new ErrorContainer();
         //open conection 
-         Connection connection = DataBasePostgres.getConection();
-        
+        Connection connection = DataBasePostgres.getConection();
         try {
-            //Validation of data 
-            Job job = JobCrud.getJobOf(connection,idUserModify);
-             if (job != null) {
-                 String nameJob = job.getNameJob();
-                if (nameJob.equals("Administrator") || nameJob.equals("Manager")) {
-                    RenterUserUpdate rentUserUpdate = new RenterUserUpdate();
-                    rentUserUpdate.setIdUserModify(nameJob);
-                    if (rentUserUpdate.complyCondition(person, errorContainer)) {
-                        PersonValidationsDB.verifyNamesInDataBase(connection, person.getLastName(), person.getFirstName(), errorContainer);                
-                        String setString = Generator.getStringSet(person);
-                          System.out.println("SET " +setString);
-                        personRes = PersonCrud.updateRenterUser(connection, idRenter, idUserModify,setString);
-                        connection.commit();
-                    }
-                }
-            }
-
-        } catch (Exception exception) {
-            errorContainer.addError(new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, exception.getMessage()));
+            //Validation of data             
+            verifyModifierUser(connection, idUserModify);
+            Job job = JobCrud.getJobOf(connection, idUserModify);
+            RenterUserUpdate rentUserUpdate = new RenterUserUpdate();
+            rentUserUpdate.setIdUserModify(job.getNameJob());
+            rentUserUpdate.complyCondition(person);
+            PersonValidationsDB.verifyDataUpdate(connection, idRenter, person);
+            String setString = Generator.getStringSet(person);
+            personRes = PersonCrud.updateRenterUser(connection, idRenter, idUserModify, setString);
+            connection.commit();
+        } catch (ErrorResponse exception) {
+            errorContainer.addError(new ErrorResponse(exception.getCode(), exception.getMessage()));
             OperationDataBase.connectionRollback(connection, errorContainer);
         } finally {
             OperationDataBase.connectionClose(connection, errorContainer);
@@ -100,4 +96,20 @@ public class PersonLogic {
         }
         return personRes;
     }
+
+    private boolean verifyModifierUser(Connection connection, int idUserModify) throws Exception {
+        Job job = JobCrud.getJobOf(connection, idUserModify);
+        if (job != null) {
+            String nameJob = job.getNameJob();
+            if (nameJob.equals("Administrator") || nameJob.equals("Manager")) {
+                return true;
+
+            } else {
+                throw new ErrorResponse(CodeStatus.FORBIDDEN, Message.NOT_HAVE_PERMISSION_FOR_MODIFY);
+            }
+        } else {
+            throw new ErrorResponse(CodeStatus.FORBIDDEN, Message.NOT_HAVE_PERMISSION_FOR_MODIFY);
+        }
+    }
+
 }

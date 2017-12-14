@@ -89,7 +89,8 @@ public class Person extends ModelObject {
                 && identifier.compareTo(o.identifier) == 0
                 && lastName.compareTo(o.lastName) == 0
                 && firstName.compareTo(o.firstName) == 0
-                && genre.compareTo(o.genre) == 0) ? 0 : -1;
+                && genre.compareTo(o.genre) == 0)
+                ? 0 : -1;
     }
 
 }
