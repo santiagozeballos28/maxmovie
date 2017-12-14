@@ -97,6 +97,10 @@ public class RenterUserCreate implements DataCondition {
         if (!PersonValidation.isValidBirthday(renterUser.getBirthday())) {
             errorMessages = errorMessages + "\n" + Message.NOT_VALID_BIRTHDAY;
         }
+         //Validation of birthday
+        if (!PersonValidation.isValidAge(renterUser.getBirthday())) {
+            errorMessages = errorMessages + "\n" + Message.NOT_VALID_AGE;
+        }
         //To check if there was an error
         if (!errorMessages.equals("")) {
             throw new ErrorResponse(CodeStatus.BAD_REQUEST, errorMessages);

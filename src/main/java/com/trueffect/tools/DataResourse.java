@@ -16,4 +16,7 @@ public class DataResourse {
         CI, PASS, NIT
     }
 
+    public enum EmployeeWithPermissionModify {
+        Administrator, Manager
+    }
 }

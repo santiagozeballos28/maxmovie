@@ -45,7 +45,7 @@ public class RenterUserResourse {
     @DELETE
     @Path("/{id}/{idModifyUser}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteById(@PathParam("id") int idUser, @QueryParam("idModifyUser") int idModifyUser) throws Exception {
+    public Response deleteById(@PathParam("id") int idUser, @PathParam("idModifyUser") int idModifyUser) throws Exception {
         Response response = null;
         try {
             Person resRenterUser = personLogic.deleteById(idUser, idModifyUser);

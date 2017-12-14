@@ -1,6 +1,5 @@
 package com.trueffect.validation;
 
-import com.trueffect.tools.DataResourse.TypeIdentifier;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -12,81 +11,59 @@ public class PersonValidationTest {
 
     /*Validations type Identifier
      */
-    // @Test
-    public void testTypeIdentifierCi() {
-        boolean expected = true;
-        String typeIde = "2323324";
-        try {
-            TypeIdentifier typeIdentifier = TypeIdentifier.valueOf(typeIde);
-            if (typeIdentifier == null) {
-                System.err.println("333333333333333333333333333");
-            }
-        } catch (Exception e) {
-            System.err.println("333333333333333333333333333");
-        }//Assert.assertEquals(PersonValidation.isValidTypeIdentifier(typeIdentifier), expected);
-    }
-
-   // @Test
+    @Test
     public void testTypeIdentifierPass() {
         boolean expected = true;
         String typeIdentifier = "PASS";
         Assert.assertEquals(PersonValidation.isValidTypeIdentifier(typeIdentifier), expected);
     }
 
-    //@Test
+    @Test
     public void testTypeIdentifierNit() {
         boolean expected = true;
         String typeIdentifier = "NIT";
         Assert.assertEquals(PersonValidation.isValidTypeIdentifier(typeIdentifier), expected);
     }
 
-    //@Test
+    @Test
     public void testTypeIdentifierCiLowerCase() {
         boolean expected = false;
         String typeIdentifier = "ci";
         Assert.assertEquals(PersonValidation.isValidTypeIdentifier(typeIdentifier), expected);
     }
 
-   // @Test
+    @Test
     public void testTypeIdentifierPassLowerCase() {
         boolean expected = false;
         String typeIdentifier = "pass";
         Assert.assertEquals(PersonValidation.isValidTypeIdentifier(typeIdentifier), expected);
     }
 
-    //@Test
+    @Test
     public void testTypeIdentifierNitLowerCase() {
         boolean expected = false;
         String typeIdentifier = "nit";
         Assert.assertEquals(PersonValidation.isValidTypeIdentifier(typeIdentifier), expected);
     }
 
-   // @Test
+    @Test
     public void testTypeIdentifierError() {
         boolean expected = false;
         String typeIdentifier = "ni";
         Assert.assertEquals(PersonValidation.isValidTypeIdentifier(typeIdentifier), expected);
     }
 
-    //@Test
+    @Test
     public void testTypeIdentifierEmpty() {
         boolean expected = false;
         String typeIdentifier = "";
-        Assert.assertEquals(PersonValidation.isValidTypeIdentifier(typeIdentifier), expected);
+        Assert.assertEquals(PersonValidation.isEmpty(typeIdentifier), expected);
     }
 
     /*
     *Identifier 
      */
-    //@Test
-    public void testIdentyfierEmpty() {
-
-        boolean expected = false;
-        String typeIdentifier = "";
-        Assert.assertEquals(PersonValidation.isValidIdentifier(typeIdentifier), expected);
-    }
-
-    //@Test
+    @Test
     public void testIdentyfierCI() {
 
         boolean expected = true;
@@ -94,7 +71,7 @@ public class PersonValidationTest {
         Assert.assertEquals(PersonValidation.isValidIdentifier(typeIdentifier), expected);
     }
 
-    //@Test
+    @Test
     public void testIdentyfierPASSPORT() {
 
         boolean expected = true;
@@ -110,11 +87,11 @@ public class PersonValidationTest {
         Assert.assertEquals(PersonValidation.isValidIdentifier(typeIdentifier), expected);
     }
 
-    //@Test
+    @Test
     public void testIdentyfierInvalid() {
 
-        boolean expected = false;
-        String typeIdentifier = "1022";
+        boolean expected = true;
+        String typeIdentifier = "10223456";
         Assert.assertEquals(PersonValidation.isValidIdentifier(typeIdentifier), expected);
     }
 
@@ -143,20 +120,6 @@ public class PersonValidationTest {
         boolean expected = false;
         String firstName = "Sant#iago$";
         Assert.assertEquals(PersonValidation.isValidFirstName(firstName), expected);
-    }
-
-    @Test
-    public void testFirstEmpty() {
-        boolean expected = false;
-        String firstName = "";
-        Assert.assertEquals(PersonValidation.isValidFirstName(firstName), expected);
-    }
-
-    @Test
-    public void testLastNameEmpty() {
-        boolean expected = false;
-        String lastName = "";
-        Assert.assertEquals(PersonValidation.isValidLastName(lastName), expected);
     }
 
     @Test

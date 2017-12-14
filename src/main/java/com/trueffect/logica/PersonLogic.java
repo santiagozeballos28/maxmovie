@@ -9,6 +9,8 @@ import com.trueffect.response.ErrorResponse;
 import com.trueffect.sql.crud.JobCrud;
 import com.trueffect.sql.crud.PersonCrud;
 import com.trueffect.tools.CodeStatus;
+import com.trueffect.tools.DataResourse;
+import com.trueffect.tools.DataResourse.EmployeeWithPermissionModify;
 import com.trueffect.util.DataCondition;
 import com.trueffect.util.ErrorContainer;
 import com.trueffect.validation.RenterUserUpdate;
@@ -97,14 +99,13 @@ public class PersonLogic {
         return personRes;
     }
 
-    private boolean verifyModifierUser(Connection connection, int idUserModify) throws Exception {
+    private void verifyModifierUser(Connection connection, int idUserModify) throws Exception {
         Job job = JobCrud.getJobOf(connection, idUserModify);
         if (job != null) {
             String nameJob = job.getNameJob();
-            if (nameJob.equals("Administrator") || nameJob.equals("Manager")) {
-                return true;
-
-            } else {
+            try {
+               EmployeeWithPermissionModify employee = EmployeeWithPermissionModify.valueOf(nameJob);
+            } catch (Exception e) {
                 throw new ErrorResponse(CodeStatus.FORBIDDEN, Message.NOT_HAVE_PERMISSION_FOR_MODIFY);
             }
         } else {

@@ -1,9 +1,9 @@
 package com.trueffect.validation;
 
-import com.trueffect.tools.DataResourse;
 import com.trueffect.tools.DataResourse.Genre;
 import com.trueffect.tools.DataResourse.TypeIdentifier;
 import com.trueffect.tools.RegularExpression;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 /*
@@ -55,6 +55,23 @@ public class PersonValidation {
 
     public static boolean isValidBirthday(String date) {
         return Pattern.matches(RegularExpression.DATE, date);
+    }
+
+    public static boolean isValidAge(String age) {
+        boolean res = false;
+        Date date = new Date();
+        String yearUser = age.substring(6).trim();      
+        try {
+            int yearNow =(int) date.getYear()%100;
+            yearNow =  yearNow + 2000;
+            int yearOfBirth = (int) Integer.parseInt(yearUser);
+            if ((yearNow - yearOfBirth) >= 15) {
+                res = true;
+            }
+        } catch (Exception e) {
+            res = false;
+        }
+        return res;
     }
 
     public static boolean isValidIdentifier(String typeIdentifier, String identifier) {
