@@ -181,4 +181,18 @@ public class PersonValidationTest {
         String birthday = "/12/2014";
         Assert.assertEquals(PersonValidation.isValidBirthday(birthday), expected);
     }
+       @Test
+    public void testAgeIvalid() {
+
+        boolean expected = false;
+        String birthday = "12/12/2005";
+        Assert.assertEquals(PersonValidation.isValidAge(birthday), expected);
+    }
+     @Test
+    public void testAgeValid() {
+
+        boolean expected = true;
+        String birthday = "/12/2002";
+        Assert.assertEquals(PersonValidation.isValidAge(birthday), expected);
+    }
 }
