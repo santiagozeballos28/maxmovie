@@ -1,10 +1,15 @@
+
 package com.trueffect.model;
-/*
+
+import com.trueffect.util.ModelObject;
+
+/**
+ *
  * @author santiago.mamani
  */
-public class Job {
+public class Job extends ModelObject{
     private int id;
-    private String nameJob;
+    protected String nameJob;
 
     public Job() {
     }
@@ -29,9 +34,8 @@ public class Job {
     public void setNameJob(String nameJob) {
         this.nameJob = nameJob;
     }
-    
-     public int compareTo(Job o) {
-     return nameJob.compareTo(o.nameJob);
-      
+    public int compareTo(Job o){
+    return nameJob.compareTo(o.nameJob);
     }
+    
 }

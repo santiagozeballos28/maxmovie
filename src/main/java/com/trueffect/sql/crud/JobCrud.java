@@ -1,34 +1,32 @@
 package com.trueffect.sql.crud;
-import com.trueffect.response.ErrorResponse;
-import com.trueffect.conection.db.PostgresSQLConnection;
+
 import com.trueffect.model.Job;
-import com.trueffect.tools.CodeStatus;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+
 /**
  * @author santiago.mamani
  */
 public class JobCrud {
-    public static Job getJobOf(int id)throws Exception {
-            Job job=null;
-            PostgresSQLConnection.connectionDB();
-            try {
-                          String sql = "SELECT id, name_job\n" +
-                             "  FROM data_job, job\n" +
-                             "  WHERE data_job.id_job= job.id AND id_person=?;" ;
 
-                PreparedStatement st = PostgresSQLConnection.connection.prepareStatement(sql);
-                st.setInt(1, id);
-                ResultSet rs = st.executeQuery();
+    public static Job getJobOf(Connection connection, int idUser) throws Exception {
+        Job job = null;
+        try {
+            String sql = "SELECT id, name_job\n"+
+                         "  FROM data_job, job\n"+
+                         " WHERE data_job.id_job= job.id "+
+                         "   AND id_person=?;";
+
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, idUser);
+            ResultSet rs = st.executeQuery();
             if (rs.next()) {
-               job = new Job(rs.getInt("id"), rs.getString("name_job"));
-            } else {
-               throw new ErrorResponse(CodeStatus.NOT_FOUND, "No existe el recurso not job");
+                job = new Job(rs.getInt("id"), rs.getString("name_job"));
             }
-            } catch (Exception e) {
-                throw new ErrorResponse(CodeStatus.NOT_FOUND, e.getMessage());
-            }
-            PostgresSQLConnection.closeDB();
-            return job;
-    }    
+        } catch (Exception exception) {
+            throw exception;
+        }
+        return job;
+    }
 }
