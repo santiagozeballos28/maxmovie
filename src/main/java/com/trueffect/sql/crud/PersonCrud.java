@@ -140,7 +140,7 @@ public class PersonCrud {
             person = getPerson(connection, idPerson);
             String sql
                     = "UPDATE PERSON\n"+
-                      "   SET status='Inactive', date_modifier=  current_date , user_modifier= ?"+
+                      "   SET status='Inactive', date_modifier =  current_date , user_modifier= ?"+
                       " WHERE id = ?";
             
             PreparedStatement st = connection.prepareStatement(sql);
@@ -159,7 +159,7 @@ public class PersonCrud {
             
             String sql
                     = "UPDATE PERSON\n"+
-                      "   SET "+ setString+" user_modifier= ?"+
+                      "   SET "+ setString+" date_modifier=  current_date, user_modifier= ?"+
                       " WHERE id = ?";
             
             PreparedStatement st = connection.prepareStatement(sql);

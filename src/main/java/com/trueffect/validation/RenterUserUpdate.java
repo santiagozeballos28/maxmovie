@@ -6,10 +6,8 @@
 package com.trueffect.validation;
 
 import com.trueffect.messages.Message;
-import com.trueffect.model.Job;
 import com.trueffect.model.Person;
 import com.trueffect.response.ErrorResponse;
-import com.trueffect.sql.crud.JobCrud;
 import com.trueffect.tools.CodeStatus;
 import com.trueffect.util.DataCondition;
 import com.trueffect.util.ErrorContainer;
@@ -58,9 +56,9 @@ public class RenterUserUpdate implements DataCondition {
         //To check if there was an error
         if (errorContainer.size() > 0) {
             errorContainer.addError(new ErrorResponse(errorContainer.getCodeStatusEnd(), errorContainer.allMessagesError()));
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     private void intentUpdateTypeIdentifier(Person renterUser, ErrorContainer errorContainer) {

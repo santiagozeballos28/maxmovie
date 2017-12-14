@@ -14,40 +14,41 @@ public class Generator {
         String varSet = person.getTypeIdentifier();
         if (varSet != null) {
             if (varSet.length() > 0) {
-                resSet = "type_identifier= '" + varSet + "'";
+                resSet = "type_identifier= '" + varSet + "',";
             }
         }
 
         varSet = person.getIdentifier();
         if (varSet != null) {
             if (varSet.length() > 0) {
-                resSet = resSet + "identifier= '" + varSet + "'";
+                resSet = resSet + "identifier= '" + varSet + "',";
             }
         }
         varSet = person.getLastName();
         if (varSet != null) {
             if (varSet.length() > 0) {
-                resSet = resSet + "last_name= '" + varSet + "'";
+                resSet = resSet + "last_name= '" + varSet + "',";
             }
         }
         varSet = person.getFirstName();
         if (varSet != null) {
             if (varSet.length() > 0) {
-                resSet = resSet + "first_name= '" + varSet + "'";
+                resSet = resSet + "first_name= '" + varSet + "',";
             }
         }
         varSet = person.getGenre();
         if (varSet != null) {
             if (varSet.length() > 0) {
-                resSet = resSet + "genre= '" + varSet + "'";
+                resSet = resSet + "genre= '" + varSet + "',";
             }
         }
         varSet = person.getBirthday();
         if (varSet != null) {
             if (varSet.length() > 0) {
-                resSet = resSet + "birthday= '" + varSet + "'";
+                resSet = resSet + "birthday= '" + varSet + "',";
             }
         }
+
 
         return resSet;
     }

@@ -69,20 +69,17 @@ public class PersonLogic {
         Person personRes = null;
         ErrorContainer errorContainer = new ErrorContainer();
         //open conection 
-        System.out.println("ENTRO A UPDATE LOGIC: "+idRenter+ " idMOD: " +idUserModify);
-        Connection connection = DataBasePostgres.getConection();
+         Connection connection = DataBasePostgres.getConection();
+        
         try {
             //Validation of data 
-            Job job = JobCrud.getJobOf(connection,idRenter);
-            if (job != null) {
-                System.out.println("Entro noes nullo Job");
-                String nameJob = job.getNameJob();
+            Job job = JobCrud.getJobOf(connection,idUserModify);
+             if (job != null) {
+                 String nameJob = job.getNameJob();
                 if (nameJob.equals("Administrator") || nameJob.equals("Manager")) {
                     RenterUserUpdate rentUserUpdate = new RenterUserUpdate();
                     rentUserUpdate.setIdUserModify(nameJob);
-                    System.out.println("Entro  el preguntar Aministratod");
-                    if (rentUserUpdate.complyCondition(personRes, errorContainer)) {
-                        System.out.println("Entro  al condicion");
+                    if (rentUserUpdate.complyCondition(person, errorContainer)) {
                         PersonValidationsDB.verifyNamesInDataBase(connection, person.getLastName(), person.getFirstName(), errorContainer);                
                         String setString = Generator.getStringSet(person);
                           System.out.println("SET " +setString);
