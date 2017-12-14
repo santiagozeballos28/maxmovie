@@ -43,9 +43,9 @@ public class RenterUserResourse {
     }
 
     @DELETE
-    @Path("/{id}/{idModifyUser}")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteById(@PathParam("id") int idUser, @PathParam("idModifyUser") int idModifyUser) throws Exception {
+    public Response deleteById(@PathParam("id") int idUser, @QueryParam("idModifyUser") int idModifyUser) throws Exception {
         Response response = null;
         try {
             Person resRenterUser = personLogic.deleteById(idUser, idModifyUser);
@@ -57,9 +57,9 @@ public class RenterUserResourse {
     }
     
     @PUT
-    @Path("/{id}/{idModifyUser}")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateRenterUser(@PathParam("id") int idUser, @PathParam("idModifyUser") int idModifyUser, Person renterUser) throws Exception {
+    public Response updateRenterUser(@PathParam("id") int idUser, @QueryParam("idModifyUser") int idModifyUser, Person renterUser) throws Exception {
         Response response = null;
         try {
             Person resRenterUser = personLogic.update(renterUser, idUser, idModifyUser);
