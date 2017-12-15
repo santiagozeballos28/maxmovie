@@ -13,24 +13,18 @@ import java.sql.SQLException;
 public class OperationDataBase {
 
     public static void connectionClose(Connection connection, ErrorContainer errorContainer) {
-
-        if (connection != null) {
-            try {
-                connection.close();
-            } catch (SQLException ex) {
-                errorContainer.addError(new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, ex.getMessage()));
-            }
+        try {
+            connection.close();
+        } catch (SQLException ex) {
+            errorContainer.addError(new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, ex.getMessage()));
         }
     }
 
     public static void connectionRollback(Connection connection, ErrorContainer errorContainer) {
-        if (connection != null) {
-            try {
-                connection.rollback();
-            } catch (SQLException ex) {
-                errorContainer.addError(new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, ex.getMessage()));
-            }
+        try {
+            connection.rollback();
+        } catch (SQLException ex) {
+            errorContainer.addError(new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, ex.getMessage()));
         }
-
     }
 }
