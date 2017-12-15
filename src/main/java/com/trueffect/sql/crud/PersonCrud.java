@@ -18,12 +18,12 @@ public class PersonCrud {
         Person renterUserInserted = new Person();
         Statement query = null;
         try {
-            String typeIdentifier = renterUser.getTypeIdentifier().trim();
-            String identifier = renterUser.getIdentifier().trim();
-            String lastName = renterUser.getLastName().trim();
-            String firstName = renterUser.getFirstName().trim();
-            String genre = renterUser.getGenre().trim();
-            String birthay = renterUser.getBirthday().trim();
+            String typeIdentifier = renterUser.getTypeIdentifier();
+            String identifier = renterUser.getIdentifier();
+            String lastName = renterUser.getLastName();
+            String firstName = renterUser.getFirstName();
+            String genre = renterUser.getGenre();
+            String birthay = renterUser.getBirthday();
             query = (Statement) connection.createStatement();
             //ident
             String sql

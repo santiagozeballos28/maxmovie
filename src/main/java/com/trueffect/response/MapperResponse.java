@@ -1,5 +1,4 @@
 package com.trueffect.response;
-
 import com.trueffect.util.ModelObject;
 import javax.ws.rs.core.Response;
 
@@ -15,8 +14,11 @@ public class MapperResponse {
     }
 
     public Response toResponse(ErrorResponse ep) {
+        String mgs = ep.getMessage();
+        String [] list = mgs.split("\n");
         return Response.status(new MyStatusType(ep.getCode()))
-                .entity(ep.getMessage().toString())
+                .entity(list)
                 .build();
     }
+    //.entity("\""+ep.getMessage().toString()+"\"")
 }

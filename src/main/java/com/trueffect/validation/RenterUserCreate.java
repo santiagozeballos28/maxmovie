@@ -22,7 +22,7 @@ public class RenterUserCreate implements DataCondition {
 
     private void verifyEmpty(ModelObject resource) throws Exception {
         Person renterUser = (Person) resource;
-        String errorMessages = "";
+        String errorMessages="";
         //Validation empty type identifier
         if (PersonValidation.isEmpty(renterUser.getTypeIdentifier())) {
             errorMessages = Message.EMPTY_TYPE_IDENTIFIER;
