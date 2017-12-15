@@ -1,5 +1,6 @@
 package com.trueffect.validation;
 
+import com.trueffect.tools.ConstantData;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -186,13 +187,15 @@ public class PersonValidationTest {
 
         boolean expected = false;
         String birthday = "12/12/2005";
-        Assert.assertEquals(PersonValidation.isValidAge(birthday), expected);
+        int minimumAge =  ConstantData.MINIMUM_AGE;
+        Assert.assertEquals(PersonValidation.isValidAge(birthday,minimumAge), expected);
     }
      @Test
     public void testAgeValid() {
 
         boolean expected = true;
         String birthday = "/12/2002";
-        Assert.assertEquals(PersonValidation.isValidAge(birthday), expected);
+        int minimumAge =  ConstantData.MINIMUM_AGE;
+        Assert.assertEquals(PersonValidation.isValidAge(birthday,minimumAge), expected);
     }
 }

@@ -1,4 +1,4 @@
-package com.trueffect.logica;
+package com.trueffect.logica.person;
 
 import com.trueffect.messages.Message;
 import com.trueffect.model.Person;
@@ -18,12 +18,12 @@ public class PersonValidationsDB {
      */
     public static void veriryDataInDataBase(Connection connection, Person personNew) throws Exception {
         ErrorContainer errorContainer = new ErrorContainer();
-        Person person = (Person) PersonCrud.getPersonByIdentifier(connection, personNew.getTypeIdentifier(), personNew.getIdentifier());
-        if (person != null) {
+        Person person = PersonCrud.getPersonByIdentifier(connection, personNew.getTypeIdentifier(), personNew.getIdentifier());
+        if (!person.isEmpty()) {
             errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, Message.DUPLICATE_IDENTIFIER));
         }
-        person = (Person) PersonCrud.getPersonByName(connection, personNew.getLastName(), person.getFirstName());
-        if (person != null) {
+        person = PersonCrud.getPersonByName(connection, personNew.getLastName(), person.getFirstName());
+        if (!person.isEmpty()) {
             errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, Message.THE_NAMES_ALREADY_EXIST));
         }
         if (!errorContainer.isEmpty()) {
@@ -35,14 +35,14 @@ public class PersonValidationsDB {
         ErrorContainer errorContainer = new ErrorContainer();
         Person personOld = PersonCrud.getPerson(connection, id);
         Person personAux = generatePersonAuxiliary(personOld, personNew);
-        Person personById = (Person) PersonCrud.getPersonByIdentifier(connection, personAux.getTypeIdentifier(), personAux.getIdentifier());
-        Person personByName = (Person) PersonCrud.getPersonByName(connection, personAux.getLastName(), personAux.getFirstName());
-        if (personById != null) {
+        Person personById = PersonCrud.getPersonByIdentifier(connection, personAux.getTypeIdentifier(), personAux.getIdentifier());
+        Person personByName = PersonCrud.getPersonByName(connection, personAux.getLastName(), personAux.getFirstName());
+        if (!personById.isEmpty()) {
             if (id != personById.getId()) {
                 errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, Message.DUPLICATE_IDENTIFIER));
             }
         }
-        if (personByName != null) {
+        if (!personByName.isEmpty()) {
             if (id != personByName.getId()) {
                 errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, Message.THE_NAMES_ALREADY_EXIST));
             }
@@ -50,7 +50,6 @@ public class PersonValidationsDB {
         if (!errorContainer.isEmpty()) {
             throw new ErrorResponse(errorContainer.getCodeStatusEnd(), errorContainer.allMessagesError());
         }
-
     }
 
     private static Person generatePersonAuxiliary(Person personOld, Person personNew) {
@@ -69,5 +68,4 @@ public class PersonValidationsDB {
         }
         return personAuxiliary;
     }
-
 }

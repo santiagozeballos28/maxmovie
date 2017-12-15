@@ -19,5 +19,4 @@ public class MapperResponse {
                 .entity(ep.getMessage().toString())
                 .build();
     }
-
 }

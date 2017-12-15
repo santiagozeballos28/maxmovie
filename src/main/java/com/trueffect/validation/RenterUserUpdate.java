@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.trueffect.validation;
 
 import com.trueffect.messages.Message;
@@ -21,7 +16,7 @@ public class RenterUserUpdate implements DataCondition {
 
     private String job;
 
-    public void setIdUserModify(String job) {
+    public RenterUserUpdate(String job) {
         this.job = job;
     }
 
@@ -57,7 +52,6 @@ public class RenterUserUpdate implements DataCondition {
         if (errorContainer.size() > 0) {
             throw new ErrorResponse(errorContainer.getCodeStatusEnd(), errorContainer.allMessagesError());
         }
-
     }
 
     private void intentUpdateTypeIdentifier(Person renterUser, ErrorContainer errorContainer) {
@@ -68,7 +62,6 @@ public class RenterUserUpdate implements DataCondition {
         } else {
             errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, Message.NOT_HAVE_PERMISSION_TYPE_IDENTIFIER));
         }
-
     }
 
     private void intentUpdateIdentifier(Person renterUser, ErrorContainer errorContainer) {

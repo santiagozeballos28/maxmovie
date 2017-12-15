@@ -1,6 +1,6 @@
 package com.trueffect.resources;
 
-import com.trueffect.logica.PersonLogic;
+import com.trueffect.logica.person.PersonLogic;
 import com.trueffect.tools.CodeStatus;
 import com.trueffect.response.ErrorResponse;
 import com.trueffect.response.MapperResponse;
@@ -28,13 +28,12 @@ public class RenterUserResourse {
     private MapperResponse mapper = new MapperResponse();
 
     @POST
-    @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response insertRenterUser(@PathParam("id") int id, Person renterUser) throws Exception {
+    public Response insertRenterUser(@QueryParam("idModifyUser") int idModifyUser, Person renterUser) throws Exception {
         Response response = null;
         try {
-            Person resRenterUser = personLogic.createPerson(id, renterUser, new RenterUserCreate());
+            Person resRenterUser = personLogic.createPerson(idModifyUser, renterUser, new RenterUserCreate());
             response = mapper.toResponse(CodeStatus.CREATED, resRenterUser);
         } catch (ErrorResponse ex) {
             response = mapper.toResponse(ex);
@@ -55,7 +54,7 @@ public class RenterUserResourse {
         }
         return response;
     }
-    
+
     @PUT
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)

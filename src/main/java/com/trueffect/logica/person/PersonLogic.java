@@ -1,4 +1,4 @@
-package com.trueffect.logica;
+package com.trueffect.logica.person;
 
 import com.trueffect.conection.db.DataBasePostgres;
 import com.trueffect.conection.db.OperationDataBase;
@@ -9,7 +9,7 @@ import com.trueffect.response.ErrorResponse;
 import com.trueffect.sql.crud.JobCrud;
 import com.trueffect.sql.crud.PersonCrud;
 import com.trueffect.tools.CodeStatus;
-import com.trueffect.tools.DataResourse.EmployeeWithPermissionModify;
+import com.trueffect.tools.ConstantData.EmployeeWithPermissionModify;
 import com.trueffect.util.DataCondition;
 import com.trueffect.util.ErrorContainer;
 import com.trueffect.validation.RenterUserUpdate;
@@ -19,9 +19,9 @@ import java.sql.Connection;
  * @author santiago.mamani
  */
 public class PersonLogic {
-
+    
     public Person createPerson(int id, Person person, DataCondition conditiondata) throws Exception {
-        Person personRes = null;
+        Person personRes = new Person();
         ErrorContainer errorContainer = new ErrorContainer();
         //open conection 
         Connection connection = DataBasePostgres.getConection();
@@ -37,14 +37,14 @@ public class PersonLogic {
         } finally {
             OperationDataBase.connectionClose(connection, errorContainer);
         }
-        if (errorContainer.size() > 0) {
+        if (!errorContainer.isEmpty()) {
             throw new ErrorResponse(errorContainer.getCodeStatusEnd(), errorContainer.allMessagesError());
         }
         return personRes;
     }
-
+    
     public Person deleteById(int idPerson, int idUserModify) throws Exception {
-        Person res = null;
+        Person res = new Person();
         ErrorContainer errorContainer = new ErrorContainer();
         Connection connection = DataBasePostgres.getConection();
         try {
@@ -57,34 +57,35 @@ public class PersonLogic {
         } finally {
             OperationDataBase.connectionClose(connection, errorContainer);
         }
-        if (errorContainer.size() > 0) {
+        if (!errorContainer.isEmpty()) {
             throw new ErrorResponse(errorContainer.getCodeStatusEnd(), errorContainer.allMessagesError());
         }
         return res;
     }
-
-    private static void verifyPerson(Connection connection, int idPerson) throws Exception {
+    
+    private void verifyPerson(Connection connection, int idPerson) throws Exception {
         Person person = PersonCrud.getPerson(connection, idPerson);
-        if (person == null) {
+        if (person.isEmpty()) {
             throw new ErrorResponse(CodeStatus.NOT_FOUND, Message.NOT_RESOURCE);
         }
     }
-
+    
     public Person update(Person person, int idRenter, int idUserModify) throws Exception {
-        Person personRes = null;
+        Person personRes = new Person();
         ErrorContainer errorContainer = new ErrorContainer();
         //open conection 
         Connection connection = DataBasePostgres.getConection();
         try {
-            //Validation of data             
+            //Validation of data
+            verifyPerson(connection, idRenter);
+            verifyId(person, idRenter);
             verifyModifierUser(connection, idUserModify);
             Job job = JobCrud.getJobOf(connection, idUserModify);
-            RenterUserUpdate rentUserUpdate = new RenterUserUpdate();
-            rentUserUpdate.setIdUserModify(job.getNameJob());
+            //update is a class to specifically validate the conditions to update a person
+            RenterUserUpdate rentUserUpdate = new RenterUserUpdate(job.getNameJob());
             rentUserUpdate.complyCondition(person);
             PersonValidationsDB.verifyDataUpdate(connection, idRenter, person);
-            String setString = Generator.getStringSet(person);
-            personRes = PersonCrud.updateRenterUser(connection, idRenter, idUserModify, setString);
+            personRes = PersonCrud.updateRenterUser(connection, idRenter, idUserModify, person);
             connection.commit();
         } catch (ErrorResponse exception) {
             errorContainer.addError(new ErrorResponse(exception.getCode(), exception.getMessage()));
@@ -92,12 +93,12 @@ public class PersonLogic {
         } finally {
             OperationDataBase.connectionClose(connection, errorContainer);
         }
-        if (errorContainer.size() > 0) {
+        if (!errorContainer.isEmpty()) {
             throw new ErrorResponse(errorContainer.getCodeStatusEnd(), errorContainer.allMessagesError());
         }
         return personRes;
     }
-
+    
     private void verifyModifierUser(Connection connection, int idUserModify) throws Exception {
         Job job = JobCrud.getJobOf(connection, idUserModify);
         if (job != null) {
@@ -111,5 +112,12 @@ public class PersonLogic {
             throw new ErrorResponse(CodeStatus.FORBIDDEN, Message.NOT_HAVE_PERMISSION_FOR_MODIFY);
         }
     }
-
+    
+    private void verifyId(Person person, int idRenter) throws Exception {        
+        if (person.getId() != 0) {
+            if (person.getId() != idRenter) {
+                throw new ErrorResponse(CodeStatus.CONFLICT, Message.CONFLCT_ID);
+            }
+        }
+    }
 }

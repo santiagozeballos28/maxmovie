@@ -5,7 +5,7 @@ import com.trueffect.util.ModelObject;
 import com.trueffect.response.ErrorResponse;
 import com.trueffect.model.Person;
 import com.trueffect.tools.CodeStatus;
-import com.trueffect.tools.DataResourse;
+import com.trueffect.tools.ConstantData;
 import com.trueffect.util.DataCondition;
 
 /**
@@ -51,7 +51,6 @@ public class RenterUserCreate implements DataCondition {
         if (!errorMessages.equals("")) {
             throw new ErrorResponse(CodeStatus.BAD_REQUEST, errorMessages);
         }
-
     }
 
     private void verifyData(ModelObject resource) throws Exception {
@@ -66,7 +65,7 @@ public class RenterUserCreate implements DataCondition {
             errorMessages = errorMessages + "\n" + Message.NOT_VALID_IDENTIFIER;
         }
         //Validation of identifier size
-        if (!PersonValidation.isValidSize(renterUser.getIdentifier(), DataResourse.MAXIMUM_IDENTIFIER)) {
+        if (!PersonValidation.isValidSize(renterUser.getIdentifier(), ConstantData.MAXIMUM_IDENTIFIER)) {
             errorMessages = errorMessages + "\n" + Message.SIZE_IDENTIFIER;
         }
         //Validation to what the type identifier and the identifier are of the same type
@@ -74,7 +73,7 @@ public class RenterUserCreate implements DataCondition {
             errorMessages = errorMessages + "\n" + Message.NOT_SAME_TYPE;
         }
         //Validation of last name size
-        if (!PersonValidation.isValidSize(renterUser.getLastName(), DataResourse.MAXIMUM_NAMES)) {
+        if (!PersonValidation.isValidSize(renterUser.getLastName(), ConstantData.MAXIMUM_NAMES)) {
             errorMessages = errorMessages + "\n" + Message.SIZE_LAST_NAME;
         }
         //Validation of last name
@@ -82,7 +81,7 @@ public class RenterUserCreate implements DataCondition {
             errorMessages = errorMessages + "\n" + Message.NOT_VALID_LAST_NAME;
         }
         //Validation of first name size
-        if (!PersonValidation.isValidSize(renterUser.getFirstName(), DataResourse.MAXIMUM_NAMES)) {
+        if (!PersonValidation.isValidSize(renterUser.getFirstName(), ConstantData.MAXIMUM_NAMES)) {
             errorMessages = errorMessages + "\n" + Message.SIZE_FIRST_NAME;
         }
         //Validation of first name
@@ -97,8 +96,8 @@ public class RenterUserCreate implements DataCondition {
         if (!PersonValidation.isValidBirthday(renterUser.getBirthday())) {
             errorMessages = errorMessages + "\n" + Message.NOT_VALID_BIRTHDAY;
         }
-         //Validation of birthday
-        if (!PersonValidation.isValidAge(renterUser.getBirthday())) {
+        //Validation of birthday
+        if (!PersonValidation.isValidAge(renterUser.getBirthday(), ConstantData.MINIMUM_AGE)) {
             errorMessages = errorMessages + "\n" + Message.NOT_VALID_AGE;
         }
         //To check if there was an error

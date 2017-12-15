@@ -8,12 +8,12 @@ import com.trueffect.util.ModelObject;
 public class Person extends ModelObject {
 
     private int id;
-    public String typeIdentifier;
-    public String identifier;
-    public String lastName;
-    public String firstName;
-    public String genre;
-    public String birthday;
+    protected String typeIdentifier;
+    protected String identifier;
+    protected String lastName;
+    protected String firstName;
+    protected String genre;
+    protected String birthday;
 
     public Person() {
     }
@@ -93,4 +93,12 @@ public class Person extends ModelObject {
                 ? 0 : -1;
     }
 
+    public boolean isEmpty() {
+        return id == 0
+                && typeIdentifier == null
+                && lastName == null
+                && firstName == null
+                && genre == null
+                && birthday == null;
+    }
 }

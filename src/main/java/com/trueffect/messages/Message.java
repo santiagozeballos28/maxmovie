@@ -31,6 +31,7 @@ public class Message {
     // Message of results
     public static String NOT_FOUND = "The requested resource does not exist";
     public static String NOT_RESOURCE = "There is not resource";
+    public static String CONFLCT_ID = "There was a conflict in the id";
     // Message of permission
     public static String NOT_HAVE_PERMISSION_TYPE_IDENTIFIER = "You do not have permission to modify type identifier";
     public static String NOT_HAVE_PERMISSION_IDENTIFIER = "You do not have permission to modify identifier";
