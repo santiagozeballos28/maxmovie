@@ -15,10 +15,10 @@ public class Message {
     //Message dates incorrect
     public static String NOT_VALID_TYPE_IDENTIFIER = "The type of identifier is not valid";
     public static String NOT_VALID_IDENTIFIER = "The identifier is not valid";
-    public static String NOT_VALID_LAST_NAME = "The last name is not valid";
-    public static String NOT_VALID_FIRST_NAME = "The first name is not valid";
+    public static String NOT_VALID_LAST_NAME = "Can not use symbols except ('). Exmaple of the last names valids: Zeballos, O'relly";
+    public static String NOT_VALID_FIRST_NAME = "Can not use symbols except ('). Exmaple of the First names valids: Santiago, Eve'lin";
     public static String NOT_VALID_GENRE = "The genre is not valid";
-    public static String NOT_VALID_BIRTHDAY = "The date format is not valid";
+    public static String NOT_VALID_BIRTHDAY = "The date format is not valid. The valid format is as follows: dd/MM/yyyy";
     public static String NOT_SAME_TYPE = "The identifier is not the same type";
     //Message de restrictions    
     public static String SIZE_IDENTIFIER = "The identifier is very long, must be less than 10 characters";
