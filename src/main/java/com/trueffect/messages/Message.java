@@ -6,7 +6,7 @@ package com.trueffect.messages;
 public class Message {
 
     // Message of Empty
-    public static String EMPTY_TYPE_IDENTIFIER = "\"The type of identifier is required\"";
+    public static String EMPTY_TYPE_IDENTIFIER = "The type of identifier is required";
     public static String EMPTY_IDENTIFIER = "The identifier is required";
     public static String EMPTY_LAST_NAME = "The last name is required";
     public static String EMPTY_FIRST_NAME = "The firt name is required";
