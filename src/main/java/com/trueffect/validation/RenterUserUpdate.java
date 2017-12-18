@@ -8,8 +8,7 @@ import com.trueffect.util.DataCondition;
 import com.trueffect.util.ErrorContainer;
 import com.trueffect.util.ModelObject;
 
-/**
- *
+/*
  * @author santiago.mamani
  */
 public class RenterUserUpdate implements DataCondition {

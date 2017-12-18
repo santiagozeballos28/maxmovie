@@ -41,7 +41,7 @@ public class RenterUserResourse {
         return response;
     }
 
-    @DELETE
+    @PUT
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteById(@PathParam("id") int idUser, @QueryParam("idModifyUser") int idModifyUser) throws Exception {

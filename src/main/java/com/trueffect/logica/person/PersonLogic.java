@@ -29,7 +29,7 @@ public class PersonLogic {
             //Validation of data 
             conditiondata.complyCondition(person);
             PersonValidationsDB.veriryDataInDataBase(connection, person);
-            personRes = PersonCrud.insertrenterUser(connection, id, person);
+            personRes = PersonCrud.insertRenterUser(connection, id, person);
             connection.commit();
         } catch (ErrorResponse errorResponse) {
             errorContainer.addError(new ErrorResponse(errorResponse.getCode(), errorResponse.getMessage()));

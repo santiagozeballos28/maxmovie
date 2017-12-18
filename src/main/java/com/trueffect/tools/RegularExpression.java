@@ -9,7 +9,7 @@ public class RegularExpression {
     public static String CI = "^[0-9]*$";
     public static String PASS = "^[A-Z]{3}[0-9]{6}[A-Z]?$";
     public static String NIT = "^[0-9]*$";
-    public static String LAST_NAME_TWO = "^[A-Z]{1}[a-z]{1,}\\s{1}[A-Z]{1}[a-z]{1,}$";
-    public static String LAST_NAME_ONE = "^[A-Z]{1}[a-z]{2,}$";
-    public static String FIRST_NAME = "^[A-Z]{1}[a-z]{2,}$";
+    public static String LAST_NAME_TWO = "^[A-Za-z]{2,}\\s{1}[A-Za-z]{2,}$";
+    public static String LAST_NAME_ONE = "^[A-Za-z]{2,}$";
+    public static String FIRST_NAME = "^[A-Za-z]{2,}$";
 }

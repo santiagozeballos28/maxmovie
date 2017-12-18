@@ -27,14 +27,14 @@ public class Message {
     public static String DUPLICATE_IDENTIFIER = "The identifier already exists";
     public static String NOT_MEET_THE_AGE = "To be registered must be greater than 15 years";
     public static String THE_NAMES_ALREADY_EXIST = "The names already exist";
-    public static String NOT_VALID_AGE = "Must be  at least 15 years old";
+    
     // Message of results
     public static String NOT_FOUND = "The requested resource does not exist";
     public static String NOT_RESOURCE = "There is not resource";
     public static String CONFLCT_ID = "There was a conflict in the id";
     // Message of permission
-    public static String NOT_HAVE_PERMISSION_TYPE_IDENTIFIER = "You do not have permission to modify type identifier";
-    public static String NOT_HAVE_PERMISSION_IDENTIFIER = "You do not have permission to modify identifier";
-    public static String NOT_HAVE_PERMISSION_FOR_MODIFY = "You do not have permission for modify";
+    public static String NOT_HAVE_PERMISSION_TYPE_IDENTIFIER = "The user don't have permission to modify type identifier";
+    public static String NOT_HAVE_PERMISSION_IDENTIFIER = "The user don't have permission to modify identifier";
+    public static String NOT_HAVE_PERMISSION_FOR_MODIFY = "The user don't have permission to modify";
 
 }

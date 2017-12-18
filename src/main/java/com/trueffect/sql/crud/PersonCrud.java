@@ -14,7 +14,7 @@ import java.sql.Statement;
  */
 public class PersonCrud {
 
-    public static Person insertrenterUser(Connection connection, int idJob, Person renterUser) throws Exception {
+    public static Person insertRenterUser(Connection connection, int idJob, Person renterUser) throws Exception {
         Person renterUserInserted = new Person();
         Statement query = null;
         try {

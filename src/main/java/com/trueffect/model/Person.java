@@ -61,27 +61,27 @@ public class Person extends ModelObject {
     }
 
     public void setTypeIdentifier(String typeIdentifier) {
-        this.typeIdentifier = typeIdentifier;
+        this.typeIdentifier = typeIdentifier.trim();
     }
 
     public void setIdentifier(String identifier) {
-        this.identifier = identifier;
+        this.identifier = identifier.trim();
     }
 
     public void setLastName(String lastName) {
-        this.lastName = lastName;
+        this.lastName = lastName.trim();
     }
 
     public void setFirstName(String firstName) {
-        this.firstName = firstName;
+        this.firstName = firstName.trim();
     }
 
     public void setGenre(String genre) {
-        this.genre = genre;
+        this.genre = genre.trim();
     }
 
     public void setBirthday(String birthday) {
-        this.birthday = birthday;
+        this.birthday = birthday.trim();
     }
 
     public int compareTo(Person o) {

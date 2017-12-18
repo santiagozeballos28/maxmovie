@@ -98,7 +98,7 @@ public class RenterUserCreate implements DataCondition {
         }
         //Validation of birthday
         if (!PersonValidation.isValidAge(renterUser.getBirthday(), ConstantData.MINIMUM_AGE)) {
-            errorMessages = errorMessages + "\n" + Message.NOT_VALID_AGE;
+            errorMessages = errorMessages + "\n" + Message.NOT_MEET_THE_AGE;
         }
         //To check if there was an error
         if (!errorMessages.equals("")) {

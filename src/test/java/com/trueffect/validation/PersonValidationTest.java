@@ -122,14 +122,25 @@ public class PersonValidationTest {
         String firstName = "Sant#iago$";
         Assert.assertEquals(PersonValidation.isValidFirstName(firstName), expected);
     }
-
+   @Test
+    public void testFirstNameUpperCase() {
+        boolean expected = true;
+        String lastName = "elIas";
+        Assert.assertEquals(PersonValidation.isValidLastName(lastName), expected);
+    }
+       @Test
+    public void testFirstNameLowerCase() {
+        boolean expected = true;
+        String lastName = "elias";
+        Assert.assertEquals(PersonValidation.isValidLastName(lastName), expected);
+    }
     @Test
     public void testOneLastName() {
         boolean expected = true;
         String lastName = "Zeballos";
         Assert.assertEquals(PersonValidation.isValidLastName(lastName), expected);
     }
-
+ 
     @Test
     public void testLastNameSymbol() {
         boolean expected = false;
@@ -139,14 +150,26 @@ public class PersonValidationTest {
 
     @Test
     public void testLastNameOne() {
-        boolean expected = false;
-        String lastName = "MamaniZeballos";
+        boolean expected = true;
+        String lastName = "mamani";
+        Assert.assertEquals(PersonValidation.isValidLastName(lastName), expected);
+    }
+        @Test
+    public void testLastNameUpperCase() {
+        boolean expected = true;
+        String lastName = "zebAllos";
+        Assert.assertEquals(PersonValidation.isValidLastName(lastName), expected);
+    }
+            @Test
+    public void testLastNameUpperCaseAndLowerCase() {
+        boolean expected = true;
+        String lastName = "zebAllos mamANi";
         Assert.assertEquals(PersonValidation.isValidLastName(lastName), expected);
     }
 
     @Test
     public void testLastNameTwoLowerCase() {
-        boolean expected = false;
+        boolean expected = true;
         String lastName = "Mamani zeballos";
         Assert.assertEquals(PersonValidation.isValidLastName(lastName), expected);
     }
