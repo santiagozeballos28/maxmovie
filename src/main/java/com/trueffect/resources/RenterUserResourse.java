@@ -33,7 +33,6 @@ public class RenterUserResourse {
     public Response insertRenterUser(@QueryParam("idModifyUser") int idModifyUser, Person renterUser) throws Exception {
         Response response = null;
         try {
-            System.out.println("ENTRO A POST:");
             Person resRenterUser = personLogic.createPerson(idModifyUser, renterUser, new RenterUserCreate());
             response = mapper.toResponse(CodeStatus.CREATED, resRenterUser);
         } catch (ErrorResponse ex) {

@@ -12,6 +12,7 @@ import com.trueffect.tools.CodeStatus;
 import com.trueffect.tools.ConstantData.EmployeeWithPermissionModify;
 import com.trueffect.util.DataCondition;
 import com.trueffect.util.ErrorContainer;
+import com.trueffect.validation.RenterUserCreate;
 import com.trueffect.validation.RenterUserUpdate;
 import java.sql.Connection;
 
@@ -20,21 +21,19 @@ import java.sql.Connection;
  */
 public class PersonLogic {
     
-    public Person createPerson(int id, Person person, DataCondition conditiondata) throws Exception {
+    public Person createPerson(int idUserWhoCreate, Person person, RenterUserCreate conditiondata) throws Exception {
         Person personRes = new Person();
         ErrorContainer errorContainer = new ErrorContainer();
         //open conection 
         Connection connection = DataBasePostgres.getConection();
-        System.out.println("ENTRO A create person:");
         try {
             //Validation of data 
-            System.out.println("ENTRO a try:");
+            checkUserPermission(connection, idUserWhoCreate);
             person.formatOfTheName();
-             System.out.println("acmbio en formato adecuado:");
             conditiondata.complyCondition(person);
+            conditiondata.identifiersAreOfTheSameType(person);
             PersonValidationsDB.veriryDataInDataBase(connection, person);
-            System.out.println("verify data base:");
-            personRes = PersonCrud.insertRenterUser(connection, id, person);
+            personRes = PersonCrud.insertRenterUser(connection, idUserWhoCreate, person);
             connection.commit();
         } catch (ErrorResponse errorResponse) {
             errorContainer.addError(new ErrorResponse(errorResponse.getCode(), errorResponse.getMessage()));
@@ -82,9 +81,9 @@ public class PersonLogic {
         Connection connection = DataBasePostgres.getConection();
         try {
             //Validation of data
+            checkUserPermission(connection, idUserModify);
             verifyPerson(connection, idRenter);
             verifyId(person, idRenter);
-            verifyModifierUser(connection, idUserModify);
             Job job = JobCrud.getJobOf(connection, idUserModify);
             //update is a class to specifically validate the conditions to update a person
             RenterUserUpdate rentUserUpdate = new RenterUserUpdate(job.getNameJob());
@@ -104,7 +103,7 @@ public class PersonLogic {
         return personRes;
     }
     
-    private void verifyModifierUser(Connection connection, int idUserModify) throws Exception {
+    private void checkUserPermission(Connection connection, int idUserModify) throws Exception {
         Job job = JobCrud.getJobOf(connection, idUserModify);
         if (job != null) {
             String nameJob = job.getNameJob();
@@ -114,7 +113,7 @@ public class PersonLogic {
                 throw new ErrorResponse(CodeStatus.FORBIDDEN, Message.NOT_HAVE_PERMISSION_FOR_MODIFY);
             }
         } else {
-            throw new ErrorResponse(CodeStatus.FORBIDDEN, Message.NOT_HAVE_PERMISSION_FOR_MODIFY);
+            throw new ErrorResponse(CodeStatus.BAD_REQUEST, Message.NOT_FOUND_USER_MODIFY);
         }
     }
     

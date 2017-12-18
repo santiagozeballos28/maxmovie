@@ -68,10 +68,7 @@ public class RenterUserCreate implements DataCondition {
         if (!PersonValidation.isValidSize(renterUser.getIdentifier(), ConstantData.MAXIMUM_IDENTIFIER)) {
             errorMessages = errorMessages + "\n" + Message.SIZE_IDENTIFIER;
         }
-        //Validation to what the type identifier and the identifier are of the same type
-        if (!PersonValidation.isValidIdentifier(renterUser.getTypeIdentifier(), renterUser.getIdentifier())) {
-            errorMessages = errorMessages + "\n" + Message.NOT_SAME_TYPE;
-        }
+       
         //Validation of last name size
         if (!PersonValidation.isValidSize(renterUser.getLastName(), ConstantData.MAXIMUM_NAMES)) {
             errorMessages = errorMessages + "\n" + Message.SIZE_LAST_NAME;
@@ -103,6 +100,12 @@ public class RenterUserCreate implements DataCondition {
         //To check if there was an error
         if (!errorMessages.equals("")) {
             throw new ErrorResponse(CodeStatus.BAD_REQUEST, errorMessages);
+        }
+    }
+    public void identifiersAreOfTheSameType(Person renterUser) throws Exception {
+      //Validation to what the type identifier and the identifier are of the same type
+        if (!PersonValidation.isValidIdentifier(renterUser.getTypeIdentifier(), renterUser.getIdentifier())) {
+             throw new ErrorResponse(CodeStatus.BAD_REQUEST, Message.NOT_SAME_TYPE);
         }
     }
 }

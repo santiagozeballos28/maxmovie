@@ -30,7 +30,8 @@ public class Message {
     
     // Message of results
     public static String NOT_FOUND = "The requested resource does not exist";
-    public static String NOT_RESOURCE = "There is not resource";
+    public static String NOT_FOUND_USER_MODIFY = "the user who wants to modify does not exist";
+    public static String NOT_RESOURCE = "There is not resource";//
     public static String CONFLCT_ID = "The identifier not corresponde to value of renter user";
     // Message of permission
     public static String NOT_HAVE_PERMISSION_TYPE_IDENTIFIER = "The user don't have permission to modify type identifier";

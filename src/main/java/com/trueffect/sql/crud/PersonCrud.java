@@ -76,8 +76,7 @@ public class PersonCrud {
                     + "       genre,"
                     + "       birthday\n"
                     + "  FROM PERSON "
-                    + " WHERE status= 'Active' "
-                    + "   AND type_identifier = '" + typeIdentifier + "' "
+                    + " WHERE type_identifier = '" + typeIdentifier + "' "
                     + "   AND identifier = '" + identifier + "'";
 
             ResultSet rs = query.executeQuery(sql);

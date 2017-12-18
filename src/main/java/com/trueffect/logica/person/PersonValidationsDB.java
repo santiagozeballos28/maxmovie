@@ -22,7 +22,7 @@ public class PersonValidationsDB {
         if (!person.isEmpty()) {
             errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, Message.DUPLICATE_IDENTIFIER));
         }
-        person = PersonCrud.getPersonByName(connection, personNew.getLastName(), person.getFirstName());
+        person = PersonCrud.getPersonByName(connection, personNew.getLastName(), personNew.getFirstName());
         if (!person.isEmpty()) {
             errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, Message.THE_NAMES_ALREADY_EXIST));
         }
