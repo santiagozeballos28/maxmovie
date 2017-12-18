@@ -26,7 +26,7 @@ public class Person extends ModelObject {
         this.firstName = firstName.trim();
         this.genre = genre.trim();
         this.birthday = birthday.trim();
-    }
+     }
 
     public int getId() {
         return id;
@@ -61,8 +61,8 @@ public class Person extends ModelObject {
     }
 
     public void setTypeIdentifier(String typeIdentifier) {
-        this.typeIdentifier = typeIdentifier.trim();
-    }
+         this.typeIdentifier = typeIdentifier.trim();
+          }
 
     public void setIdentifier(String identifier) {
         this.identifier = identifier.trim();
@@ -70,7 +70,7 @@ public class Person extends ModelObject {
 
     public void setLastName(String lastName) {
         this.lastName = lastName.trim();
-    }
+          }
 
     public void setFirstName(String firstName) {
         this.firstName = firstName.trim();
@@ -100,5 +100,22 @@ public class Person extends ModelObject {
                 && firstName == null
                 && genre == null
                 && birthday == null;
+    }
+
+    public void formatOfTheName() {
+
+        String[] lastNameAux = lastName.split(" ");
+        String resLastName = "";
+       //The first letter of the last name is divided to capitalize.
+        for (String lastName : lastNameAux) {
+            resLastName = resLastName + " " + lastName.substring(0,1).toUpperCase()
+                    + lastName.substring(1,lastName.length()).toLowerCase();
+        }
+        lastName = resLastName.trim();
+        //The first letter becomes to upper case
+        firstName = firstName.substring(0, 1).toUpperCase()
+                    + firstName.substring(1,firstName.length()).toLowerCase();
+        
+
     }
 }

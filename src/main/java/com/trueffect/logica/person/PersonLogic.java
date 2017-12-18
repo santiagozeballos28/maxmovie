@@ -25,10 +25,15 @@ public class PersonLogic {
         ErrorContainer errorContainer = new ErrorContainer();
         //open conection 
         Connection connection = DataBasePostgres.getConection();
+        System.out.println("ENTRO A create person:");
         try {
             //Validation of data 
+            System.out.println("ENTRO a try:");
+            person.formatOfTheName();
+             System.out.println("acmbio en formato adecuado:");
             conditiondata.complyCondition(person);
             PersonValidationsDB.veriryDataInDataBase(connection, person);
+            System.out.println("verify data base:");
             personRes = PersonCrud.insertRenterUser(connection, id, person);
             connection.commit();
         } catch (ErrorResponse errorResponse) {

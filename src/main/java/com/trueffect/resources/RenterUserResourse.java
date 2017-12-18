@@ -33,6 +33,7 @@ public class RenterUserResourse {
     public Response insertRenterUser(@QueryParam("idModifyUser") int idModifyUser, Person renterUser) throws Exception {
         Response response = null;
         try {
+            System.out.println("ENTRO A POST:");
             Person resRenterUser = personLogic.createPerson(idModifyUser, renterUser, new RenterUserCreate());
             response = mapper.toResponse(CodeStatus.CREATED, resRenterUser);
         } catch (ErrorResponse ex) {
@@ -41,14 +42,14 @@ public class RenterUserResourse {
         return response;
     }
 
-    @PUT
+    @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteById(@PathParam("id") int idUser, @QueryParam("idModifyUser") int idModifyUser) throws Exception {
         Response response = null;
         try {
             Person resRenterUser = personLogic.deleteById(idUser, idModifyUser);
-            response = mapper.toResponse(CodeStatus.OK, resRenterUser);
+            response = mapper.toResponse(CodeStatus.CREATED, resRenterUser);
         } catch (ErrorResponse ex) {
             response = mapper.toResponse(ex);
         }
