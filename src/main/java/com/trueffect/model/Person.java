@@ -1,6 +1,7 @@
 package com.trueffect.model;
 
 import com.trueffect.util.ModelObject;
+import org.apache.commons.lang3.StringUtils;
 
 /*
  * @author santiago.mamani
@@ -103,18 +104,15 @@ public class Person extends ModelObject {
     }
 
     public void formatOfTheName() {
-        String[] lastNameAux = lastName.split(" ");
-        String resLastName = "";
-        //The first letter of the last name is divided to capitalize.
-        for (String lastName : lastNameAux) {
-            resLastName = resLastName + " "
-                    + lastName.substring(0, 1).toUpperCase()
-                    + lastName.substring(1, lastName.length()).toLowerCase();
+        firstName = StringUtils.capitalize(firstName.toLowerCase());
+        String[] lastNameAux = lastName.toLowerCase().split(" ");
+        lastName = "";
+        for (String lastN : lastNameAux) {
+            lastName = lastName + " " + StringUtils.capitalize(lastN);
         }
-        lastName = resLastName.trim();
-        //The first letter becomes to upper case
-        firstName = firstName.substring(0, 1).toUpperCase()
-                + firstName.substring(1, firstName.length()).toLowerCase();
-
+        lastName = lastName.trim();
+        // add apostrophe if exist (')
+        lastName = StringUtils.replace(lastName,"'","''");
+        firstName = StringUtils.replace(firstName,"'","''");
     }
 }

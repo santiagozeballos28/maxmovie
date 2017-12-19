@@ -3,7 +3,9 @@ package com.trueffect.validation;
 import com.trueffect.tools.ConstantData.Genre;
 import com.trueffect.tools.ConstantData.TypeIdentifier;
 import com.trueffect.tools.RegularExpression;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 /*
@@ -53,13 +55,40 @@ public class PersonValidation {
         return genre.equals(genreEnum.M.name()) || genre.equals(genreEnum.F.name());
     }
 
-    public static boolean isValidBirthday(String date) {
-        return Pattern.matches(RegularExpression.DATE, date);
+    public static boolean isValidBirthday(String dateBirthday) {
+        // return Pattern.matches(RegularExpression.DATE, date);
+        if (!Pattern.matches(RegularExpression.DATE, dateBirthday)) {
+            return false;
+        }
+        String[] dates = dateBirthday.split("-");
+        int year = Integer.parseInt(dates[0]);
+        int month = Integer.parseInt(dates[1]);
+        int dayOfMonth = Integer.parseInt(dates[2]);
+
+        if (year < 1900) {
+            return false;
+        }
+
+        try {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setLenient(false);
+            calendar.set(Calendar.YEAR, year);
+            
+            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            calendar.set(Calendar.MONTH, month -1 ); // [0,...,11]
+            Date date = calendar.getTime();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            System.out.println(sdf.format(date)); // 01/01/2016
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+
     }
 
     public static boolean isValidAge(String age, int ageMin) {
         boolean res = false;
-        String yearUser = age.substring(6).trim();
+        String yearUser = age.substring(0,4).trim();
         try {
             int yearNow = Calendar.getInstance().get(Calendar.YEAR);
             int yearOfBirth = (int) Integer.parseInt(yearUser);
