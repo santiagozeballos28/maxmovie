@@ -173,21 +173,21 @@ public class PersonCrud {
         return person;
     }
 
-    public static Person deleteById(Connection connection, int idPerson, int idUserModifier) throws Exception {
+    public static Person updateStatusPerson(Connection connection, int idPerson, int idUserModifier, String status) throws Exception {
         Person person = new Person();
-        System.out.println("ENTRO A CRUDPERSON DELETE");
         try {
             person = getPerson(connection, idPerson);
             String sql
                     = "UPDATE PERSON\n"
-                    + "   SET status='Inactive', "
+                    + "   SET status=?, "
                     + "       date_modifier =  current_date ,"
                     + "       user_modifier= ?"
                     + " WHERE id = ?";
 
             PreparedStatement st = connection.prepareStatement(sql);
-            st.setInt(1, idUserModifier);
-            st.setInt(2, idPerson);
+            st.setString(1, status);
+            st.setInt(2, idUserModifier);
+            st.setInt(3, idPerson);
             st.execute();
             if (st != null) {
                 st.close();
@@ -201,7 +201,7 @@ public class PersonCrud {
     public static Person updateRenterUser(Connection connection, int idPerson, int idUserModifier, Person person) throws Exception {
         Person resPerson = new Person();
         try {
-            String sql 
+            String sql
                     = "UPDATE PERSON\n"
                     + "   SET ";
             // variable to store the person attributes

@@ -8,7 +8,6 @@ import com.trueffect.validation.RenterUserCreate;
 import com.trueffect.model.Person;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -41,13 +40,13 @@ public class RenterUserResourse {
         return response;
     }
 
-    @DELETE
-    @Path("/{id}")
+    @PUT
+    @Path("/{id}/updateStatus")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteById(@PathParam("id") int idUser, @QueryParam("idModifyUser") int idModifyUser) throws Exception {
+    public Response deleteById(@PathParam("id") int idUser, @QueryParam("idModifyUser") int idModifyUser, @QueryParam("status") String status) throws Exception {
         Response response = null;
         try {
-            Person resRenterUser = personLogic.deleteById(idUser, idModifyUser);
+            Person resRenterUser = personLogic.deleteById(idUser, idModifyUser, status);
             response = mapper.toResponse(CodeStatus.CREATED, resRenterUser);
         } catch (ErrorResponse ex) {
             response = mapper.toResponse(ex);

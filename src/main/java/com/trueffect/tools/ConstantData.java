@@ -20,4 +20,7 @@ public class ConstantData {
     public enum EmployeeWithPermissionModify {
         Administrator, Manager
     }
+    public enum StatusPerson {
+        Active,Inactive
+    }
 }

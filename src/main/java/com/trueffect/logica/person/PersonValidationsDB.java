@@ -36,9 +36,9 @@ public class PersonValidationsDB {
         ErrorContainer errorContainer = new ErrorContainer();
         Person personOld = PersonCrud.getPerson(connection, id);
         Person personAux = generatePersonAuxiliary(personOld, personNew);
-        if(!PersonValidation.isValidIdentifier(personAux.getTypeIdentifier(),personAux.getIdentifier())){
-        throw new ErrorResponse(CodeStatus.BAD_REQUEST, Message.NOT_SAME_TYPE);
-        }       
+        if (!PersonValidation.isValidIdentifier(personAux.getTypeIdentifier(), personAux.getIdentifier())) {
+            throw new ErrorResponse(CodeStatus.BAD_REQUEST, Message.NOT_SAME_TYPE);
+        }
         Person personById = PersonCrud.getPersonByIdentifier(connection, personAux.getTypeIdentifier(), personAux.getIdentifier());
         Person personByName = PersonCrud.getPersonByName(connection, personAux.getLastName(), personAux.getFirstName());
         if (!personById.isEmpty()) {

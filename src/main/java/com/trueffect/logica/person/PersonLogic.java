@@ -10,17 +10,18 @@ import com.trueffect.sql.crud.JobCrud;
 import com.trueffect.sql.crud.PersonCrud;
 import com.trueffect.tools.CodeStatus;
 import com.trueffect.tools.ConstantData.EmployeeWithPermissionModify;
-import com.trueffect.util.DataCondition;
+import com.trueffect.tools.ConstantData.StatusPerson;
 import com.trueffect.util.ErrorContainer;
 import com.trueffect.validation.RenterUserCreate;
 import com.trueffect.validation.RenterUserUpdate;
 import java.sql.Connection;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author santiago.mamani
  */
 public class PersonLogic {
-    
+
     public Person createPerson(int idUserWhoCreate, Person person, RenterUserCreate conditiondata) throws Exception {
         Person personRes = new Person();
         ErrorContainer errorContainer = new ErrorContainer();
@@ -46,14 +47,16 @@ public class PersonLogic {
         }
         return personRes;
     }
-    
-    public Person deleteById(int idPerson, int idUserModify) throws Exception {
+
+    public Person deleteById(int idPerson, int idUserModify, String status) throws Exception {
         Person res = new Person();
         ErrorContainer errorContainer = new ErrorContainer();
         Connection connection = DataBasePostgres.getConection();
         try {
+            checkUserPermission(connection, idUserModify);
+            verifyStatus(status);
             existPerson(connection, idPerson);
-            res = PersonCrud.deleteById(connection, idPerson, idUserModify);
+            res = PersonCrud.updateStatusPerson(connection, idPerson, idUserModify, status);
             connection.commit();
         } catch (ErrorResponse e) {
             errorContainer.addError(new ErrorResponse(e.getCode(), e.getMessage()));
@@ -66,14 +69,14 @@ public class PersonLogic {
         }
         return res;
     }
-    
+
     private void existPerson(Connection connection, int idPerson) throws Exception {
         Person person = PersonCrud.getPerson(connection, idPerson);
         if (person.isEmpty()) {
             throw new ErrorResponse(CodeStatus.NOT_FOUND, Message.NOT_RESOURCE);
         }
     }
-    
+
     public Person update(Person person, int idRenter, int idUserModify) throws Exception {
         Person personRes = new Person();
         ErrorContainer errorContainer = new ErrorContainer();
@@ -103,7 +106,7 @@ public class PersonLogic {
         }
         return personRes;
     }
-    
+
     private void checkUserPermission(Connection connection, int idUserModify) throws Exception {
         Job job = JobCrud.getJobOf(connection, idUserModify);
         if (job != null) {
@@ -117,12 +120,26 @@ public class PersonLogic {
             throw new ErrorResponse(CodeStatus.BAD_REQUEST, Message.NOT_FOUND_USER_MODIFY);
         }
     }
-    
-    private void verifyId(Person person, int idRenter) throws Exception {        
+
+    private void verifyId(Person person, int idRenter) throws Exception {
         if (person.getId() != 0) {
             if (person.getId() != idRenter) {
                 throw new ErrorResponse(CodeStatus.CONFLICT, Message.CONFLCT_ID);
             }
+        }
+    }
+
+    private void verifyStatus(String status) throws Exception {
+        try {
+            StatusPerson statusPerson = StatusPerson.valueOf(status);
+        } catch (Exception e) {
+
+            throw new ErrorResponse(
+                    CodeStatus.BAD_REQUEST,
+                    StringUtils.replace(
+                            Message.NOT_VALID_STATUS,
+                            "{status}",
+                            status));
         }
     }
 }

@@ -73,9 +73,9 @@ public class PersonValidation {
             Calendar calendar = Calendar.getInstance();
             calendar.setLenient(false);
             calendar.set(Calendar.YEAR, year);
-            
+
             calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            calendar.set(Calendar.MONTH, month -1 ); // [0,...,11]
+            calendar.set(Calendar.MONTH, month - 1); // [0,...,11]
             Date date = calendar.getTime();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             System.out.println(sdf.format(date)); // 01/01/2016
@@ -88,7 +88,7 @@ public class PersonValidation {
 
     public static boolean isValidAge(String age, int ageMin) {
         boolean res = false;
-        String yearUser = age.substring(0,4).trim();
+        String yearUser = age.substring(0, 4).trim();
         try {
             int yearNow = Calendar.getInstance().get(Calendar.YEAR);
             int yearOfBirth = (int) Integer.parseInt(yearUser);

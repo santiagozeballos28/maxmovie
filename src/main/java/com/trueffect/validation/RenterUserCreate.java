@@ -7,6 +7,7 @@ import com.trueffect.model.Person;
 import com.trueffect.tools.CodeStatus;
 import com.trueffect.tools.ConstantData;
 import com.trueffect.util.DataCondition;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author santiago.mamani
@@ -22,7 +23,7 @@ public class RenterUserCreate implements DataCondition {
 
     private void verifyEmpty(ModelObject resource) throws Exception {
         Person renterUser = (Person) resource;
-        String errorMessages="";
+        String errorMessages = "";
         //Validation empty type identifier
         if (PersonValidation.isEmpty(renterUser.getTypeIdentifier())) {
             errorMessages = Message.EMPTY_TYPE_IDENTIFIER;
@@ -58,17 +59,25 @@ public class RenterUserCreate implements DataCondition {
         String errorMessages = "";
         //Validation of identifier
         if (!PersonValidation.isValidTypeIdentifier(renterUser.getTypeIdentifier())) {
-            errorMessages = Message.NOT_VALID_TYPE_IDENTIFIER;
+
+            errorMessages = StringUtils.replace(
+                    Message.NOT_VALID_TYPE_IDENTIFIER,
+                    "{typeIdentifier}",
+                    renterUser.getTypeIdentifier());
         }
         //Validation of identifier
         if (!PersonValidation.isValidIdentifier(renterUser.getIdentifier())) {
-            errorMessages = errorMessages + "\n" + Message.NOT_VALID_IDENTIFIER;
+            errorMessages = errorMessages + "\n"
+                    + StringUtils.replace(
+                            Message.NOT_VALID_IDENTIFIER,
+                            "{identifier}",
+                            renterUser.getIdentifier());
         }
         //Validation of identifier size
         if (!PersonValidation.isValidSize(renterUser.getIdentifier(), ConstantData.MAXIMUM_IDENTIFIER)) {
             errorMessages = errorMessages + "\n" + Message.SIZE_IDENTIFIER;
         }
-       
+
         //Validation of last name size
         if (!PersonValidation.isValidSize(renterUser.getLastName(), ConstantData.MAXIMUM_NAMES)) {
             errorMessages = errorMessages + "\n" + Message.SIZE_LAST_NAME;
@@ -102,10 +111,11 @@ public class RenterUserCreate implements DataCondition {
             throw new ErrorResponse(CodeStatus.BAD_REQUEST, errorMessages);
         }
     }
+
     public void identifiersAreOfTheSameType(Person renterUser) throws Exception {
-      //Validation to what the type identifier and the identifier are of the same type
+        //Validation to what the type identifier and the identifier are of the same type
         if (!PersonValidation.isValidIdentifier(renterUser.getTypeIdentifier(), renterUser.getIdentifier())) {
-             throw new ErrorResponse(CodeStatus.BAD_REQUEST, Message.NOT_SAME_TYPE);
+            throw new ErrorResponse(CodeStatus.BAD_REQUEST, Message.NOT_SAME_TYPE);
         }
     }
 }

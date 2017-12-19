@@ -114,5 +114,6 @@ public class Person extends ModelObject {
         // add apostrophe if exist (')
         lastName = StringUtils.replace(lastName,"'","''");
         firstName = StringUtils.replace(firstName,"'","''");
+        
     }
 }
