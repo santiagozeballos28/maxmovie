@@ -52,7 +52,7 @@ public class PersonLogic {
         ErrorContainer errorContainer = new ErrorContainer();
         Connection connection = DataBasePostgres.getConection();
         try {
-            verifyPerson(connection, idPerson);
+            existPerson(connection, idPerson);
             res = PersonCrud.deleteById(connection, idPerson, idUserModify);
             connection.commit();
         } catch (ErrorResponse e) {
@@ -67,7 +67,7 @@ public class PersonLogic {
         return res;
     }
     
-    private void verifyPerson(Connection connection, int idPerson) throws Exception {
+    private void existPerson(Connection connection, int idPerson) throws Exception {
         Person person = PersonCrud.getPerson(connection, idPerson);
         if (person.isEmpty()) {
             throw new ErrorResponse(CodeStatus.NOT_FOUND, Message.NOT_RESOURCE);
@@ -82,11 +82,12 @@ public class PersonLogic {
         try {
             //Validation of data
             checkUserPermission(connection, idUserModify);
-            verifyPerson(connection, idRenter);
+            existPerson(connection, idRenter);
             verifyId(person, idRenter);
             Job job = JobCrud.getJobOf(connection, idUserModify);
             //update is a class to specifically validate the conditions to update a person
             RenterUserUpdate rentUserUpdate = new RenterUserUpdate(job.getNameJob());
+            person.formatOfTheName();
             rentUserUpdate.complyCondition(person);
             PersonValidationsDB.verifyDataUpdate(connection, idRenter, person);
             personRes = PersonCrud.updateRenterUser(connection, idRenter, idUserModify, person);

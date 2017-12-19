@@ -62,7 +62,7 @@ public class RenterUserResourse {
         Response response = null;
         try {
             Person resRenterUser = personLogic.update(renterUser, idUser, idModifyUser);
-            response = mapper.toResponse(CodeStatus.OK, resRenterUser);
+            response = mapper.toResponse(CodeStatus.CREATED, resRenterUser);
         } catch (ErrorResponse ex) {
             response = mapper.toResponse(ex);
         }

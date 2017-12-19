@@ -6,6 +6,7 @@ import com.trueffect.response.ErrorResponse;
 import com.trueffect.sql.crud.PersonCrud;
 import com.trueffect.tools.CodeStatus;
 import com.trueffect.util.ErrorContainer;
+import com.trueffect.validation.PersonValidation;
 import java.sql.Connection;
 
 /**
@@ -35,6 +36,9 @@ public class PersonValidationsDB {
         ErrorContainer errorContainer = new ErrorContainer();
         Person personOld = PersonCrud.getPerson(connection, id);
         Person personAux = generatePersonAuxiliary(personOld, personNew);
+        if(!PersonValidation.isValidIdentifier(personAux.getTypeIdentifier(),personAux.getIdentifier())){
+        throw new ErrorResponse(CodeStatus.BAD_REQUEST, Message.NOT_SAME_TYPE);
+        }       
         Person personById = PersonCrud.getPersonByIdentifier(connection, personAux.getTypeIdentifier(), personAux.getIdentifier());
         Person personByName = PersonCrud.getPersonByName(connection, personAux.getLastName(), personAux.getFirstName());
         if (!personById.isEmpty()) {
