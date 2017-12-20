@@ -4,9 +4,12 @@ import com.trueffect.messages.Message;
 import com.trueffect.model.Person;
 import com.trueffect.response.ErrorResponse;
 import com.trueffect.tools.CodeStatus;
+import com.trueffect.tools.ConstantData;
 import com.trueffect.util.DataCondition;
 import com.trueffect.util.ErrorContainer;
 import com.trueffect.util.ModelObject;
+import com.trueffect.util.OperationString;
+import java.util.HashMap;
 
 /*
  * @author santiago.mamani
@@ -14,9 +17,11 @@ import com.trueffect.util.ModelObject;
 public class RenterUserUpdate implements DataCondition {
 
     private String job;
+    private HashMap<String, String> listData;
 
     public RenterUserUpdate(String job) {
         this.job = job;
+        listData = new HashMap<String, String>();
     }
 
     @Override
@@ -54,46 +59,111 @@ public class RenterUserUpdate implements DataCondition {
     }
 
     private void intentUpdateTypeIdentifier(Person renterUser, ErrorContainer errorContainer) {
+        String errorMgs = "";
+        listData.clear();
         if (job.equals("Administrator")) {
             if (!PersonValidation.isValidTypeIdentifier(renterUser.getTypeIdentifier())) {
-                errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, Message.NOT_VALID_TYPE_IDENTIFIER));
+
+                listData.put("{typeData}", Message.TYPE_IDENTIFIER);
+                listData.put("{data}", renterUser.getTypeIdentifier());
+                listData.put("{valid}", Message.VALID_TI);
+                errorMgs = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
+                errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, errorMgs));
             }
         } else {
-            errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, Message.NOT_HAVE_PERMISSION_TYPE_IDENTIFIER));
+            listData.put("{typeData}", Message.TYPE_IDENTIFIER);
+            errorMgs = OperationString.generateMesage(Message.NOT_HAVE_PERMISSION, listData);
+            errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, errorMgs));
         }
     }
 
     private void intentUpdateIdentifier(Person renterUser, ErrorContainer errorContainer) {
+        String errorMgs = "";
+        listData.clear();
         if (job.equals("Administrator")) {
             if (!PersonValidation.isValidIdentifier(renterUser.getIdentifier())) {
-                errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, Message.NOT_VALID_IDENTIFIER));
+                listData.put("{typeData}", Message.IDENTIFIER);
+                listData.put("{data}", renterUser.getIdentifier());
+                listData.put("{valid}", Message.VALID_I);
+                errorMgs = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
+                errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, errorMgs));
             }
         } else {
-            errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, Message.NOT_HAVE_PERMISSION_IDENTIFIER));
+            listData.put("{typeData}", Message.IDENTIFIER);
+            errorMgs = OperationString.generateMesage(Message.NOT_HAVE_PERMISSION, listData);
+            errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, errorMgs));
         }
     }
 
     private void validateLastName(String lastName, ErrorContainer errorContainer) {
+        String errorMgs="";
         if (!PersonValidation.isValidLastName(lastName)) {
-            errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, Message.NOT_VALID_LAST_NAME));
+            listData.clear();
+            listData.put("{typeData}", Message.LAST_NAME);
+            listData.put("{data}", lastName);
+            listData.put("{valid}", Message.VALID_LN);
+            errorMgs = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
+            errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, errorMgs));
+        }
+          //Validation of last name size
+        if (!PersonValidation.isValidSize(lastName, ConstantData.MAXIMUM_NAMES)) {
+            listData.clear();
+            listData.put("{typeData}", Message.LAST_NAME);
+            listData.put("{data}", lastName);
+            listData.put("{size}", ConstantData.MAXIMUM_NAMES + "");
+            errorMgs = OperationString.generateMesage(Message.SIZE_MAX, listData);
+            errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, errorMgs));
         }
     }
 
     private void validateFirstName(String firstName, ErrorContainer errorContainer) {
-        if (!PersonValidation.isValidFirstName(firstName)) {
-            errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, Message.NOT_VALID_FIRST_NAME));
+            String errorMgs="";
+        if (!PersonValidation.isValidLastName(firstName)) {
+            listData.clear();
+            listData.put("{typeData}", Message.FIRST_NAME);
+            listData.put("{data}", firstName);
+            listData.put("{valid}", Message.VALID_FN);
+            errorMgs = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
+            errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, errorMgs));
+        }
+          //Validation of last name size
+        if (!PersonValidation.isValidSize(firstName, ConstantData.MAXIMUM_NAMES)) {
+            listData.clear();
+            listData.put("{typeData}", Message.FIRST_NAME);
+            listData.put("{data}", firstName);
+            listData.put("{size}", ConstantData.MAXIMUM_NAMES + "");
+            errorMgs =  OperationString.generateMesage(Message.SIZE_MAX, listData);
+            errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, errorMgs));
         }
     }
 
     private void validationGenre(String genre, ErrorContainer errorContainer) {
+        String errorMgs="";
         if (!PersonValidation.isValidGenre(genre)) {
-            errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, Message.NOT_VALID_GENRE));
+              listData.clear();
+            listData.put("{typeData}", Message.GENRE);
+            listData.put("{data}", genre);
+            listData.put("{valid}", Message.VALID_G);
+            errorMgs = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
+            errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, errorMgs));
         }
     }
 
     private void validationBirthday(String birthday, ErrorContainer errorContainer) {
+        String errorMgs="";
         if (!PersonValidation.isValidBirthday(birthday)) {
-            errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, Message.NOT_VALID_BIRTHDAY));
+            listData.clear();
+            listData.put("{typeData}", Message.BIRTHDAY);
+            listData.put("{data}", birthday);
+            listData.put("{valid}", Message.VALID_B);
+            errorMgs = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
+            errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST,errorMgs));
+        }
+           //Validation of birthday
+        if (!PersonValidation.isValidAge(birthday, ConstantData.MINIMUM_AGE)) {
+            listData.clear();
+            errorMgs = OperationString.generateMesage(Message.NOT_MEET_THE_AGE, listData);
+            errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST,errorMgs));
         }
     }
 }

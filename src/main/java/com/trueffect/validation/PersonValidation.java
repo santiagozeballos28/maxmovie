@@ -56,7 +56,6 @@ public class PersonValidation {
     }
 
     public static boolean isValidBirthday(String dateBirthday) {
-        // return Pattern.matches(RegularExpression.DATE, date);
         if (!Pattern.matches(RegularExpression.DATE, dateBirthday)) {
             return false;
         }

@@ -12,15 +12,22 @@ import com.trueffect.tools.CodeStatus;
 import com.trueffect.tools.ConstantData.EmployeeWithPermissionModify;
 import com.trueffect.tools.ConstantData.StatusPerson;
 import com.trueffect.util.ErrorContainer;
+import com.trueffect.util.OperationString;
 import com.trueffect.validation.RenterUserCreate;
 import com.trueffect.validation.RenterUserUpdate;
 import java.sql.Connection;
-import org.apache.commons.lang3.StringUtils;
+import java.util.HashMap;
 
 /**
  * @author santiago.mamani
  */
 public class PersonLogic {
+
+    private HashMap<String, String> listData;
+
+    public PersonLogic() {
+        listData = new HashMap<String, String>();
+    }
 
     public Person createPerson(int idUserWhoCreate, Person person, RenterUserCreate conditiondata) throws Exception {
         Person personRes = new Person();
@@ -73,7 +80,10 @@ public class PersonLogic {
     private void existPerson(Connection connection, int idPerson) throws Exception {
         Person person = PersonCrud.getPerson(connection, idPerson);
         if (person.isEmpty()) {
-            throw new ErrorResponse(CodeStatus.NOT_FOUND, Message.NOT_RESOURCE);
+            listData.clear();
+            listData.put("{object}", "Person");
+            String errorMgs = OperationString.generateMesage(Message.NOT_FOUND, listData);
+            throw new ErrorResponse(CodeStatus.NOT_FOUND, errorMgs);
         }
     }
 
@@ -114,7 +124,10 @@ public class PersonLogic {
             try {
                 EmployeeWithPermissionModify employee = EmployeeWithPermissionModify.valueOf(nameJob);
             } catch (Exception e) {
-                throw new ErrorResponse(CodeStatus.FORBIDDEN, Message.NOT_HAVE_PERMISSION_FOR_MODIFY);
+                listData.clear();
+                listData.put("{typeData}", "Person");
+                String errorMgs = OperationString.generateMesage(Message.NOT_HAVE_PERMISSION, listData);
+                throw new ErrorResponse(CodeStatus.FORBIDDEN, errorMgs);
             }
         } else {
             throw new ErrorResponse(CodeStatus.BAD_REQUEST, Message.NOT_FOUND_USER_MODIFY);
@@ -133,13 +146,12 @@ public class PersonLogic {
         try {
             StatusPerson statusPerson = StatusPerson.valueOf(status);
         } catch (Exception e) {
-
-            throw new ErrorResponse(
-                    CodeStatus.BAD_REQUEST,
-                    StringUtils.replace(
-                            Message.NOT_VALID_STATUS,
-                            "{status}",
-                            status));
+            listData.clear();
+            listData.put("{typeData}", "Status");
+            listData.put("{data}", status);
+            listData.put("{valid}", Message.VALID_STATUS);
+            String errorMgs = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
+            throw new ErrorResponse(CodeStatus.BAD_REQUEST, errorMgs);
         }
     }
 }
