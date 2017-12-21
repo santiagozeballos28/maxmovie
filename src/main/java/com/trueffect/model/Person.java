@@ -1,6 +1,7 @@
 package com.trueffect.model;
 
 import com.trueffect.util.ModelObject;
+import org.apache.commons.lang3.StringUtils;
 
 /*
  * @author santiago.mamani
@@ -8,12 +9,12 @@ import com.trueffect.util.ModelObject;
 public class Person extends ModelObject {
 
     private int id;
-    public String typeIdentifier;
-    public String identifier;
-    public String lastName;
-    public String firstName;
-    public String genre;
-    public String birthday;
+    protected String typeIdentifier;
+    protected String identifier;
+    protected String lastName;
+    protected String firstName;
+    protected String genre;
+    protected String birthday;
 
     public Person() {
     }
@@ -61,27 +62,27 @@ public class Person extends ModelObject {
     }
 
     public void setTypeIdentifier(String typeIdentifier) {
-        this.typeIdentifier = typeIdentifier;
+        this.typeIdentifier = typeIdentifier.trim();
     }
 
     public void setIdentifier(String identifier) {
-        this.identifier = identifier;
+        this.identifier = identifier.trim();
     }
 
     public void setLastName(String lastName) {
-        this.lastName = lastName;
+        this.lastName = lastName.trim();
     }
 
     public void setFirstName(String firstName) {
-        this.firstName = firstName;
+        this.firstName = firstName.trim();
     }
 
     public void setGenre(String genre) {
-        this.genre = genre;
+        this.genre = genre.trim();
     }
 
     public void setBirthday(String birthday) {
-        this.birthday = birthday;
+        this.birthday = birthday.trim();
     }
 
     public int compareTo(Person o) {
@@ -93,4 +94,26 @@ public class Person extends ModelObject {
                 ? 0 : -1;
     }
 
+    public boolean isEmpty() {
+        return id == 0
+                && typeIdentifier == null
+                && lastName == null
+                && firstName == null
+                && genre == null
+                && birthday == null;
+    }
+
+    public void formatOfTheName() {
+        firstName = StringUtils.capitalize(firstName.toLowerCase());
+        String[] lastNameAux = lastName.toLowerCase().split(" ");
+        lastName = "";
+        for (String lastN : lastNameAux) {
+            lastName = lastName + " " + StringUtils.capitalize(lastN);
+        }
+        lastName = lastName.trim();
+        // add apostrophe if exist (')
+        lastName = StringUtils.replace(lastName,"'","''");
+        firstName = StringUtils.replace(firstName,"'","''");
+        
+    }
 }
