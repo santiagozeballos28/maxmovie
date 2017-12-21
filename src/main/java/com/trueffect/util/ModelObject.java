@@ -3,6 +3,9 @@ package com.trueffect.util;
 /**
  * @author santiago.mamani
  */
-public abstract class ModelObject {
+public class ModelObject {
 
+    public boolean isEmpty() {
+        return false;
+    }
 }

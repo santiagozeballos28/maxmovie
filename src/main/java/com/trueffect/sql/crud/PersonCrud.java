@@ -1,21 +1,21 @@
 package com.trueffect.sql.crud;
 
 import com.trueffect.model.Person;
-import com.trueffect.response.ErrorResponse;
+import com.trueffect.response.Either;
 import com.trueffect.tools.CodeStatus;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 /*
  * @author santiago.mamani
  */
 public class PersonCrud {
 
-    public static Person insertRenterUser(Connection connection, int idJob, Person renterUser) throws Exception {
-        Person renterUserInserted = new Person();
+    public static Either insertRenterUser(Connection connection, int idJob, Person renterUser) {
         Statement query = null;
         try {
             String typeIdentifier = renterUser.getTypeIdentifier();
@@ -56,15 +56,15 @@ public class PersonCrud {
             if (query != null) {
                 query.close();
             }
-            renterUserInserted = getPersonByIdentifier(connection, typeIdentifier, identifier);
+            return getPersonByIdentifier(connection, typeIdentifier, identifier);
         } catch (Exception exception) {
-            throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
         }
-        return renterUserInserted;
     }
 
-    public static Person getPersonByIdentifier(Connection connection, String typeIdentifier, String identifier) throws Exception {
-        Person person = new Person();
+    public static Either getPersonByIdentifier(Connection connection, String typeIdentifier, String identifier) {
         try {
             Statement query = (Statement) connection.createStatement();
             String sql
@@ -80,7 +80,7 @@ public class PersonCrud {
                     + "   AND identifier = '" + identifier + "'";
 
             ResultSet rs = query.executeQuery(sql);
-
+            Person person = null;
             if (rs.next()) {
                 person = new Person(
                         rs.getInt("id"),
@@ -90,18 +90,20 @@ public class PersonCrud {
                         rs.getString("first_name"),
                         rs.getString("genre"),
                         rs.getString("birthday"));
+
             }
             if (query != null) {
                 query.close();
             }
+            return new Either(CodeStatus.CREATED, person);
         } catch (Exception exception) {
-            throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
         }
-        return person;
     }
 
-    public static Person getPersonByName(Connection connection, String lastName, String firstName) throws Exception {
-        Person person = new Person();
+    public static Either getPersonByName(Connection connection, String lastName, String firstName) {
         try {
             String sqlGet
                     = "SELECT id, "
@@ -117,6 +119,7 @@ public class PersonCrud {
 
             PreparedStatement st = connection.prepareStatement(sqlGet);
             ResultSet rs = st.executeQuery();
+            Person person = null;
             if (rs.next()) {
                 person = new Person(
                         rs.getInt("id"),
@@ -130,14 +133,15 @@ public class PersonCrud {
             if (st != null) {
                 st.close();
             }
+            return new Either(CodeStatus.CREATED, person);
         } catch (Exception exception) {
-            throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
         }
-        return person;
     }
 
-    public static Person getPerson(Connection connection, int idPerson) throws Exception {
-        Person person = new Person();
+    public static Either getPerson(Connection connection, int idPerson) {
         try {
             String sql
                     = "SELECT id,"
@@ -154,6 +158,7 @@ public class PersonCrud {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, idPerson);
             ResultSet rs = st.executeQuery();
+            Person person = null;
             if (rs.next()) {
                 person = new Person(
                         rs.getInt("id"),
@@ -167,16 +172,18 @@ public class PersonCrud {
             if (st != null) {
                 st.close();
             }
+            return new Either(CodeStatus.CREATED, person);
         } catch (Exception exception) {
-            throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
         }
-        return person;
     }
 
-    public static Person updateStatusPerson(Connection connection, int idPerson, int idUserModifier, String status) throws Exception {
-        Person person = new Person();
+    public static Either updateStatusPerson(Connection connection, int idPerson, int idUserModifier, String status) {
+
         try {
-            person = getPerson(connection, idPerson);
+            Either eitherPerson = getPerson(connection, idPerson);
             String sql
                     = "UPDATE PERSON\n"
                     + "   SET status=?, "
@@ -192,14 +199,15 @@ public class PersonCrud {
             if (st != null) {
                 st.close();
             }
+            return new Either(CodeStatus.CREATED, eitherPerson.getModelObject());
         } catch (Exception exception) {
-            throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
         }
-        return person;
     }
 
-    public static Person updateRenterUser(Connection connection, int idPerson, int idUserModifier, Person person) throws Exception {
-        Person resPerson = new Person();
+    public static Either updateRenterUser(Connection connection, int idPerson, int idUserModifier, Person person) {
         try {
             String sql
                     = "UPDATE PERSON\n"
@@ -240,10 +248,12 @@ public class PersonCrud {
             if (st != null) {
                 st.close();
             }
-            resPerson = getPerson(connection, idPerson);
+            Either resPerson = getPerson(connection, idPerson);
+            return new Either(CodeStatus.CREATED, person);
         } catch (Exception exception) {
-            throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
         }
-        return resPerson;
     }
 }

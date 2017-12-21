@@ -4,7 +4,6 @@ import com.trueffect.tools.CodeStatus;
 import com.trueffect.response.ErrorResponse;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
 
 /**
  * @author santiago.mamani
@@ -16,7 +15,7 @@ public class DataBasePostgres {
     public DataBasePostgres() {
     }
 
-    public static Connection getConection() throws Exception {
+    public static Connection getConection() {
         try {
             Class.forName(DataConection.DRIVER);
             connection = DriverManager.getConnection(DataConection.SERVER, DataConection.USER, DataConection.PASSWORD);
@@ -30,8 +29,8 @@ public class DataBasePostgres {
     public static void close() throws Exception {
         try {
             connection.close();
-        } catch (SQLException ex) {
-            new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+        } catch (Exception ex) {
+            throw ex;
         }
     }
 }

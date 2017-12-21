@@ -2,13 +2,13 @@ package com.trueffect.logica.person;
 
 import com.trueffect.messages.Message;
 import com.trueffect.model.Person;
-import com.trueffect.response.ErrorResponse;
+import com.trueffect.response.Either;
 import com.trueffect.sql.crud.PersonCrud;
 import com.trueffect.tools.CodeStatus;
-import com.trueffect.util.ErrorContainer;
 import com.trueffect.util.OperationString;
 import com.trueffect.validation.PersonValidation;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -19,59 +19,68 @@ public class PersonValidationsDB {
     /*
     * For dates duplidates
      */
-    public static void veriryDataInDataBase(Connection connection, Person personNew) throws Exception {
-        ErrorContainer errorContainer = new ErrorContainer();
+    public static Either veriryDataInDataBase(Connection connection, Person personNew) {
+        String errorMgs = "";
+        ArrayList<String> listError = new ArrayList<String>();
         HashMap<String, String> listData = new HashMap<String, String>();
-        Person person = PersonCrud.getPersonByIdentifier(connection, personNew.getTypeIdentifier(), personNew.getIdentifier());
-        if (!person.isEmpty()) {
+        Either eitherPerson = PersonCrud.getPersonByIdentifier(connection, personNew.getTypeIdentifier(), personNew.getIdentifier());
+        if (eitherPerson.haveModelObject()) {
             listData.put("{typeData}", Message.IDENTIFIERS);
             listData.put("{data}", personNew.getTypeIdentifier() + " = " + personNew.getIdentifier());
-            String errorMgs = OperationString.generateMesage(Message.DUPLICATE, listData);
-            errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, errorMgs));
+            errorMgs = OperationString.generateMesage(Message.DUPLICATE, listData);
+            listError.add(errorMgs);
         }
-        person = PersonCrud.getPersonByName(connection, personNew.getLastName(), personNew.getFirstName());
-        if (!person.isEmpty()) {
+        eitherPerson = PersonCrud.getPersonByName(connection, personNew.getLastName(), personNew.getFirstName());
+        if (eitherPerson.haveModelObject()) {
             listData.clear();
             listData.put("{typeData}", Message.NAMES);
             listData.put("{data}", personNew.getLastName() + " = " + personNew.getFirstName());
-            String errorMgs = OperationString.generateMesage(Message.DUPLICATE, listData);
-            errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, errorMgs));
+            errorMgs = OperationString.generateMesage(Message.DUPLICATE, listData);
+            listError.add(errorMgs);
+
         }
-        if (!errorContainer.isEmpty()) {
-            throw new ErrorResponse(errorContainer.getCodeStatusEnd(), errorContainer.allMessagesError());
+        if (!listError.isEmpty()) {
+            return new Either(CodeStatus.BAD_REQUEST, listError);
+
         }
+        return new Either();
     }
 
-    public static void verifyDataUpdate(Connection connection, int id, Person personNew) throws Exception {
-        ErrorContainer errorContainer = new ErrorContainer();
+    public static Either verifyDataUpdate(Connection connection, int id, Person personNew) {
+        String errorMgs="";
+        ArrayList<String> listError = new ArrayList<String>();
         HashMap<String, String> listData = new HashMap<String, String>();
-        Person personOld = PersonCrud.getPerson(connection, id);
-        Person personAux = generatePersonAuxiliary(personOld, personNew);
+        Either eitherPersonOld = PersonCrud.getPerson(connection, id);
+        Person personAux = generatePersonAuxiliary((Person)eitherPersonOld.getModelObject(), personNew);
         if (!PersonValidation.isValidIdentifier(personAux.getTypeIdentifier(), personAux.getIdentifier())) {
-            throw new ErrorResponse(CodeStatus.BAD_REQUEST, Message.NOT_SAME_TYPE);
+            listError.add(Message.NOT_SAME_TYPE);
+            return new Either(CodeStatus.BAD_REQUEST, listError);
         }
-        Person personById = PersonCrud.getPersonByIdentifier(connection, personAux.getTypeIdentifier(), personAux.getIdentifier());
-        Person personByName = PersonCrud.getPersonByName(connection, personAux.getLastName(), personAux.getFirstName());
-        if (!personById.isEmpty()) {
-            if (id != personById.getId()) {
+        Either eitherPersonById = PersonCrud.getPersonByIdentifier(connection, personAux.getTypeIdentifier(), personAux.getIdentifier());
+        if (eitherPersonById.haveModelObject()) {
+            Person personEither= (Person)eitherPersonById.getModelObject();
+            if (id != personEither.getId()) {
                 listData.put("{typeData}", Message.IDENTIFIERS);
                 listData.put("{data}", personAux.getTypeIdentifier() + " = " + personAux.getIdentifier());
-                String errorMgs = OperationString.generateMesage(Message.DUPLICATE, listData);
-                errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, errorMgs));
+                errorMgs = OperationString.generateMesage(Message.DUPLICATE, listData);
+                listError.add(errorMgs);
             }
         }
-        if (!personByName.isEmpty()) {
-            if (id != personByName.getId()) {
+        Either eitherPersonByName = PersonCrud.getPersonByName(connection, personAux.getLastName(), personAux.getFirstName());
+        if (eitherPersonByName.haveModelObject()) {
+            Person personEither= (Person)eitherPersonByName.getModelObject();
+            if (id != personEither.getId()) {
                 listData.clear();
                 listData.put("{typeData}", Message.NAMES);
                 listData.put("{data}", personAux.getLastName() + " = " + personAux.getFirstName());
-                String errorMgs = OperationString.generateMesage(Message.DUPLICATE, listData);
-                errorContainer.addError(new ErrorResponse(CodeStatus.BAD_REQUEST, errorMgs));
+                errorMgs = OperationString.generateMesage(Message.DUPLICATE, listData);
+                listError.add(errorMgs);
             }
         }
-        if (!errorContainer.isEmpty()) {
-            throw new ErrorResponse(errorContainer.getCodeStatusEnd(), errorContainer.allMessagesError());
+        if (!listError.isEmpty()) {
+            return new Either(CodeStatus.BAD_REQUEST,listError);
         }
+        return new Either();
     }
 
     private static Person generatePersonAuxiliary(Person personOld, Person personNew) {
