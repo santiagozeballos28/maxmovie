@@ -9,6 +9,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import javax.ws.rs.core.MultivaluedMap;
+import org.apache.commons.lang3.StringUtils;
 
 /*
  * @author santiago.mamani
@@ -250,6 +254,75 @@ public class PersonCrud {
             }
             Either resPerson = getPerson(connection, idPerson);
             return new Either(CodeStatus.CREATED, resPerson.getModelObject());
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+    }
+
+    public static Either getPersonBy(Connection connection, MultivaluedMap<String, String> listConditions) {
+        Either eitherRes = new Either();
+        try {
+            String sql
+                    = "SELECT LIST_PERSON.id,"
+                    + "       LIST_PERSON.type_identifier,"
+                    + "       LIST_PERSON.identifier,"
+                    + "       LIST_PERSON.last_name,"
+                    + "       LIST_PERSON.first_name,"
+                    + "       LIST_PERSON.genre,"
+                    + "       LIST_PERSON.birthday,"
+                    + "       LIST_PERSON.date_create,"
+                    + "       (PERSON.last_name || ' ' || PERSON.first_name) "
+                    + "       AS name_user_create\n"
+                    + "  FROM ("
+                    + "SELECT id, "
+                    + "       type_identifier, "
+                    + "       identifier,"
+                    + "       last_name,"
+                    + "       first_name,"
+                    + "       genre,"
+                    + "       birthday,"
+                    + "       date_create,"
+                    + "       user_create\n"
+                    + " FROM PERSON\n"
+                    + "WHERE ";
+
+            for (Map.Entry<String, List<String>> e : listConditions.entrySet()) {
+                for (String value : e.getValue()) {
+                    String key = e.getKey() + "";
+                    if (key.equals("last_name") || key.equals("first_name")) {
+                        String valueName = StringUtils.replace(value, "'", "''");
+                        sql = sql + key + " LIKE '%" + valueName + "%' AND ";
+                    } else {
+                        sql = sql + key + " = '" + value + "' AND ";
+                    }
+                }
+            }
+            sql = sql + " status = 'Active' )"
+                    + " LIST_PERSON,PERSON\n"
+                    + "WHERE LIST_PERSON.user_create=PERSON.id";
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            Person person = new Person();
+            while (rs.next()) {
+                person = new Person(
+                        rs.getInt("id"),
+                        rs.getString("type_identifier"),
+                        rs.getString("identifier"),
+                        rs.getString("last_name"),
+                        rs.getString("first_name"),
+                        rs.getString("genre"),
+                        rs.getString("birthday"),
+                        rs.getString("date_create"),
+                        rs.getString("name_user_create"));
+                eitherRes.addModeloObjet(person);
+            }
+            if (st != null) {
+                st.close();
+            }
+            eitherRes.setCode(CodeStatus.CREATED);
+            return eitherRes;
         } catch (Exception exception) {
             ArrayList<String> listError = new ArrayList<String>();
             listError.add(exception.getMessage());

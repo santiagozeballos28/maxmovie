@@ -11,12 +11,15 @@ import com.trueffect.sql.crud.PersonCrud;
 import com.trueffect.tools.CodeStatus;
 import com.trueffect.tools.ConstantData.EmployeeWithPermissionModify;
 import com.trueffect.tools.ConstantData.StatusPerson;
+import com.trueffect.util.ModelObject;
 import com.trueffect.util.OperationString;
 import com.trueffect.validation.RenterUserCreate;
 import com.trueffect.validation.RenterUserUpdate;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import javax.ws.rs.core.MultivaluedMap;
 
 /**
  * @author santiago.mamani
@@ -31,7 +34,7 @@ public class PersonLogic {
 
     public Either createPerson(int idUserWhoCreate, Person person, RenterUserCreate conditiondata) {
         Either eitherRes = new Either();
-        Connection connection= null;
+        Connection connection = null;
         try {
             //open conection 
             connection = DataBasePostgres.getConection();
@@ -66,7 +69,7 @@ public class PersonLogic {
 
     public Either deleteById(int idPerson, int idUserModify, String status) {
         Either eitherRes = new Either();
-        Connection connection= null;
+        Connection connection = null;
         try {
             //open conection 
             connection = DataBasePostgres.getConection();
@@ -121,7 +124,7 @@ public class PersonLogic {
 
     public Either update(Person person, int idRenter, int idUserModify) {
         Either eitherRes = new Either();
-        Connection connection= null;
+        Connection connection = null;
         try {
             //open conection 
             connection = DataBasePostgres.getConection();
@@ -215,4 +218,47 @@ public class PersonLogic {
             return new Either(CodeStatus.BAD_REQUEST, listError);
         }
     }
+
+    public Either get(MultivaluedMap<String, String> list) {
+        Either eitherRes = new Either();
+        Connection connection = null;
+        try {
+            //open conection 
+            List<String> idUserSearch = list.remove("idUserSearch");
+            int idUserS = Integer.parseInt(idUserSearch.get(0));
+            connection = DataBasePostgres.getConection();
+            //Check if the user can modify
+            eitherRes = checkUserPermission(connection, idUserS);
+            if (eitherRes.existError()) {
+                //return eitherRes;
+                throw eitherRes;
+            }
+
+            eitherRes = PersonCrud.getPersonBy(connection, list);
+             if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            addDescription(eitherRes) ;
+            OperationDataBase.connectionCommit(connection);
+
+        } catch (Either e) {
+            eitherRes = e;
+            OperationDataBase.connectionRollback(connection, eitherRes);
+        } finally {
+            OperationDataBase.connectionClose(connection, eitherRes);
+        }
+        return eitherRes;
+    }
+
+    private void addDescription(Either eitherRes) {
+        ArrayList<ModelObject> listObject =  eitherRes.getListObject();
+        for (int i = 0; i < listObject.size(); i++) {
+//            addDescriptionTypeIdentifier(lilistObject.get(i));
+        }
+        
+    }
+
+//    private void addDescriptionTypeIdentifier(ModelObject get) {
+//        String typ
+//    }
 }

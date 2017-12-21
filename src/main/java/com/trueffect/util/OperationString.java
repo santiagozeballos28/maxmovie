@@ -19,8 +19,7 @@ public class OperationString {
         while (iterator.hasNext()) {
             Map.Entry mentry = (Map.Entry) iterator.next();
             res = StringUtils.replace(res, mentry.getKey() + "", mentry.getValue() + "");
-            System.out.println("MAP: " + res);
-        }
+         }
         return res;
     }
 

@@ -12,22 +12,26 @@ public class Either extends Exception {
     private int code;
     private ModelObject modelObject;
     private ArrayList<String> listError;
+    private ArrayList<ModelObject> listObject;
     public Either(){
     code = 0;
     modelObject =  new ModelObject();
     listError= new ArrayList<String>();
+    listObject = new ArrayList<ModelObject>();
     }
 
     public Either(int code, ModelObject modelObject) {
         this.code = code;
         this.modelObject = modelObject;
         listError = new ArrayList<String>();
+        listObject = new ArrayList<ModelObject>();
         }
 
     public Either(int code, ArrayList<String> listError) {
         this.code = code;
         modelObject =  new ModelObject();
         this.listError = listError;
+        listObject = new ArrayList<ModelObject>();
     
     }
 
@@ -43,6 +47,10 @@ public class Either extends Exception {
         return listError;
     }
 
+    public ArrayList<ModelObject> getListObject() {
+        return listObject;
+    }
+
     public void setCode(int code) {
         this.code = code;
     }
@@ -54,9 +62,16 @@ public class Either extends Exception {
     public void setListError(ArrayList<String> listError) {
         this.listError = listError;
     }
+
+    public void setListObject(ArrayList<ModelObject> listObject) {
+        this.listObject = listObject;
+    }
  
     public void addError(String errorMessage) {
         listError.add(errorMessage);
+    }
+    public void addModeloObjet(ModelObject modelObject){
+      listObject.add(modelObject);
     }
 
     public boolean existError() {

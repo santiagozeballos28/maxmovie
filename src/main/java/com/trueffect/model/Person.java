@@ -15,7 +15,8 @@ public class Person extends ModelObject {
     protected String firstName;
     protected String genre;
     protected String birthday;
-
+    protected String dateCreate;
+    protected String nameUserCreate;
     public Person() {
     }
 
@@ -29,6 +30,18 @@ public class Person extends ModelObject {
         this.birthday = birthday.trim();
     }
 
+    public Person(int id, String typeIdentifier, String identifier, String lastName, String firstName, String genre, String birthday, String dateCreate, String nameUserCreate) {
+        this.id = id;
+        this.typeIdentifier = typeIdentifier;
+        this.identifier = identifier;
+        this.lastName = lastName;
+        this.firstName = firstName;
+        this.genre = genre;
+        this.birthday = birthday;
+        this.dateCreate = dateCreate;
+        this.nameUserCreate = nameUserCreate;
+    }
+    
     public int getId() {
         return id;
     }
@@ -57,6 +70,14 @@ public class Person extends ModelObject {
         return birthday;
     }
 
+    public String getDateCreate() {
+        return dateCreate;
+    }
+
+    public String getNameUserCreate() {
+        return nameUserCreate;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -83,6 +104,14 @@ public class Person extends ModelObject {
 
     public void setBirthday(String birthday) {
         this.birthday = birthday.trim();
+    }
+
+    public void setDateCreate(String dateCreate) {
+        this.dateCreate = dateCreate;
+    }
+
+    public void setNameUserCreate(String nameUserCreate) {
+        this.nameUserCreate = nameUserCreate;
     }
 
     public int compareTo(Person o) {

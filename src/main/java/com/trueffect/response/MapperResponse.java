@@ -17,7 +17,7 @@ public class MapperResponse {
 
     public Response toResponseModelObejt(Either either) {
         return Response.status(new MyStatusType(either.getCode()))
-                .entity(either.getModelObject())
+                .entity(either.getListObject())
                 .build();
     }
 
