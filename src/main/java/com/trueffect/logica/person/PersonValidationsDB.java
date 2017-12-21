@@ -51,7 +51,14 @@ public class PersonValidationsDB {
         Either eitherPersonOld = PersonCrud.getPerson(connection, id);
         Person personAux = generatePersonAuxiliary((Person) eitherPersonOld.getModelObject(), personNew);
         if (!PersonValidation.isValidIdentifier(personAux.getTypeIdentifier(), personAux.getIdentifier())) {
-            listError.add(Message.NOT_SAME_TYPE);
+
+            listData.clear();
+            listData.put("{typeData1}", Message.IDENTIFIER);
+            listData.put("{typeData2}", Message.TYPE_IDENTIFIER);
+            listData.put("{data1}", personAux.getIdentifier());
+            listData.put("{data2}", personAux.getTypeIdentifier());
+            errorMgs = OperationString.generateMesage(Message.NOT_SAME_TYPE, listData);
+            listError.add(errorMgs);
             return new Either(CodeStatus.BAD_REQUEST, listError);
         }
         Either eitherPersonById = PersonCrud.getPersonByIdentifier(connection, personAux.getTypeIdentifier(), personAux.getIdentifier());

@@ -31,9 +31,10 @@ public class PersonLogic {
 
     public Either createPerson(int idUserWhoCreate, Person person, RenterUserCreate conditiondata) {
         Either eitherRes = new Either();
-        //open conection 
-        Connection connection = DataBasePostgres.getConection();
+        Connection connection= null;
         try {
+            //open conection 
+            connection = DataBasePostgres.getConection();
             //Validation of permission 
             eitherRes = checkUserPermission(connection, idUserWhoCreate);
             if (eitherRes.existError()) {
@@ -42,10 +43,6 @@ public class PersonLogic {
             person.formatOfTheName();
 
             eitherRes = conditiondata.complyCondition(person);
-            if (eitherRes.existError()) {
-                throw eitherRes;
-            }
-            eitherRes = conditiondata.identifiersAreOfTheSameType(person);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -69,8 +66,10 @@ public class PersonLogic {
 
     public Either deleteById(int idPerson, int idUserModify, String status) {
         Either eitherRes = new Either();
-        Connection connection = DataBasePostgres.getConection();
+        Connection connection= null;
         try {
+            //open conection 
+            connection = DataBasePostgres.getConection();
             //Check if the user can modify
             eitherRes = checkUserPermission(connection, idUserModify);
             if (eitherRes.existError()) {
@@ -96,7 +95,6 @@ public class PersonLogic {
         } finally {
             OperationDataBase.connectionClose(connection, eitherRes);
         }
-
         return eitherRes;
     }
 
@@ -111,7 +109,6 @@ public class PersonLogic {
             listError.add(exception.getMessage());
             return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
         }
-
         if (person.isEmpty()) {
             listData.clear();
             listData.put("{object}", "Person");
@@ -124,9 +121,10 @@ public class PersonLogic {
 
     public Either update(Person person, int idRenter, int idUserModify) {
         Either eitherRes = new Either();
-        //open conection 
-        Connection connection = DataBasePostgres.getConection();
+        Connection connection= null;
         try {
+            //open conection 
+            connection = DataBasePostgres.getConection();
             //Validation of data
             eitherRes = checkUserPermission(connection, idUserModify);
             if (eitherRes.existError()) {
@@ -140,7 +138,6 @@ public class PersonLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-
             eitherRes = JobCrud.getJobOf(connection, idUserModify);
             if (eitherRes.existError()) {
                 throw eitherRes;

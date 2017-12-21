@@ -10,7 +10,7 @@ public class Message {
     //Message dates incorrect
     public static String NOT_VALID_DATA = "The [{typeData}] [{data}] is not valid. The valid format is as follows: ({valid})";
     //Message same type identifier
-    public static String NOT_SAME_TYPE = "The identifier is not the same type. It must be an identity card, passport or tax identification numbe";
+    public static String NOT_SAME_TYPE = "The [{typeData1}] [{data1}] is not of the [{data2}] [{typeData2}]";
     //Message de restrictions    
     public static String SIZE_MAX = "The [{typeData}] [{data}] is very long, must be less than ({size}) characters";
     //Message Age

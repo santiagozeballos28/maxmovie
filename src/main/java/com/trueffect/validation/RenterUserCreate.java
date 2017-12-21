@@ -90,8 +90,11 @@ public class RenterUserCreate implements DataCondition {
         Person renterUser = (Person) resource;
         ArrayList<String> listError = new ArrayList<String>();
         String errorMessages = "";
+        boolean validTypeIdentifier = true;
+        boolean validIdentifier = true;
         //Validation of identifier
         if (!PersonValidation.isValidTypeIdentifier(renterUser.getTypeIdentifier())) {
+            validTypeIdentifier = false;
             listData.clear();
             listData.put("{typeData}", Message.TYPE_IDENTIFIER);
             listData.put("{data}", renterUser.getTypeIdentifier());
@@ -101,12 +104,26 @@ public class RenterUserCreate implements DataCondition {
         }
         //Validation of identifier
         if (!PersonValidation.isValidIdentifier(renterUser.getIdentifier())) {
+            validIdentifier = false;
             listData.clear();
             listData.put("{typeData}", Message.IDENTIFIER);
             listData.put("{data}", renterUser.getIdentifier());
             listData.put("{valid}", Message.VALID_I);
             errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
             listError.add(errorMessages);
+        }
+        //Validation if the identifier belongs to the same type identifier
+        if (validTypeIdentifier && validIdentifier) {
+            if (!PersonValidation.isValidIdentifier(renterUser.getTypeIdentifier(), renterUser.getIdentifier())) {
+                //The [{typeData1}] [{data1}] is not of the [{data2}] [{typeData2}]
+                listData.clear();
+                listData.put("{typeData1}", Message.IDENTIFIER);
+                listData.put("{typeData2}", Message.TYPE_IDENTIFIER);
+                listData.put("{data1}", renterUser.getIdentifier());
+                listData.put("{data2}", renterUser.getTypeIdentifier());
+                errorMessages = OperationString.generateMesage(Message.NOT_SAME_TYPE, listData);
+                listError.add(errorMessages);
+            }
         }
         //Validation of identifier size
         if (!PersonValidation.isValidSize(renterUser.getIdentifier(), ConstantData.MAXIMUM_IDENTIFIER)) {
@@ -182,16 +199,6 @@ public class RenterUserCreate implements DataCondition {
         if (!listError.isEmpty()) {
             return new Either(CodeStatus.BAD_REQUEST, listError);
 
-        }
-        return new Either();
-    }
-
-    public Either identifiersAreOfTheSameType(Person renterUser) {
-        //Validation to what the type identifier and the identifier are of the same type
-        ArrayList<String> listError = new ArrayList<String>();
-        if (!PersonValidation.isValidIdentifier(renterUser.getTypeIdentifier(), renterUser.getIdentifier())) {
-            listError.add(Message.NOT_SAME_TYPE);
-            return new Either(CodeStatus.BAD_REQUEST, listError);
         }
         return new Either();
     }

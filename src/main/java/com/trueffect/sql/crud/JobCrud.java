@@ -35,7 +35,6 @@ public class JobCrud {
         } catch (Exception exception) {
             either.setCode(CodeStatus.INTERNAL_SERVER_ERROR);
             either.addError(exception.getMessage());
-            
         }
         return either;
     }
