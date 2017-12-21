@@ -47,14 +47,9 @@ public class RenterUserResourse {
     @PUT
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateRenterUser(@PathParam("id") int idUser, @QueryParam("idModifyUser") int idModifyUser, Person renterUser) throws Exception {
-        Response response = null;
-//        try {
-//            Person resRenterUser = personLogic.update(renterUser, idUser, idModifyUser);
-//            response = mapper.toResponse(CodeStatus.CREATED, resRenterUser);
-//        } catch (ErrorResponse ex) {
-//            response = mapper.toResponse(ex);
-//        }
+    public Response updateRenterUser(@PathParam("id") int idUser, @QueryParam("idModifyUser") int idModifyUser, Person renterUser) {
+        Either eitherRenter = personLogic.update(renterUser, idUser, idModifyUser);
+        Response response = mapper.toResponse(eitherRenter);
         return response;
     }
 }

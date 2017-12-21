@@ -37,28 +37,26 @@ public class PersonValidationsDB {
             listData.put("{data}", personNew.getLastName() + " = " + personNew.getFirstName());
             errorMgs = OperationString.generateMesage(Message.DUPLICATE, listData);
             listError.add(errorMgs);
-
         }
         if (!listError.isEmpty()) {
             return new Either(CodeStatus.BAD_REQUEST, listError);
-
         }
         return new Either();
     }
 
     public static Either verifyDataUpdate(Connection connection, int id, Person personNew) {
-        String errorMgs="";
+        String errorMgs = "";
         ArrayList<String> listError = new ArrayList<String>();
         HashMap<String, String> listData = new HashMap<String, String>();
         Either eitherPersonOld = PersonCrud.getPerson(connection, id);
-        Person personAux = generatePersonAuxiliary((Person)eitherPersonOld.getModelObject(), personNew);
+        Person personAux = generatePersonAuxiliary((Person) eitherPersonOld.getModelObject(), personNew);
         if (!PersonValidation.isValidIdentifier(personAux.getTypeIdentifier(), personAux.getIdentifier())) {
             listError.add(Message.NOT_SAME_TYPE);
             return new Either(CodeStatus.BAD_REQUEST, listError);
         }
         Either eitherPersonById = PersonCrud.getPersonByIdentifier(connection, personAux.getTypeIdentifier(), personAux.getIdentifier());
         if (eitherPersonById.haveModelObject()) {
-            Person personEither= (Person)eitherPersonById.getModelObject();
+            Person personEither = (Person) eitherPersonById.getModelObject();
             if (id != personEither.getId()) {
                 listData.put("{typeData}", Message.IDENTIFIERS);
                 listData.put("{data}", personAux.getTypeIdentifier() + " = " + personAux.getIdentifier());
@@ -68,7 +66,7 @@ public class PersonValidationsDB {
         }
         Either eitherPersonByName = PersonCrud.getPersonByName(connection, personAux.getLastName(), personAux.getFirstName());
         if (eitherPersonByName.haveModelObject()) {
-            Person personEither= (Person)eitherPersonByName.getModelObject();
+            Person personEither = (Person) eitherPersonByName.getModelObject();
             if (id != personEither.getId()) {
                 listData.clear();
                 listData.put("{typeData}", Message.NAMES);
@@ -78,7 +76,7 @@ public class PersonValidationsDB {
             }
         }
         if (!listError.isEmpty()) {
-            return new Either(CodeStatus.BAD_REQUEST,listError);
+            return new Either(CodeStatus.BAD_REQUEST, listError);
         }
         return new Either();
     }

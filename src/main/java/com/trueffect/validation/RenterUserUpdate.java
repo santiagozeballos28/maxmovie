@@ -3,11 +3,9 @@ package com.trueffect.validation;
 import com.trueffect.messages.Message;
 import com.trueffect.model.Person;
 import com.trueffect.response.Either;
-import com.trueffect.response.ErrorResponse;
 import com.trueffect.tools.CodeStatus;
 import com.trueffect.tools.ConstantData;
 import com.trueffect.util.DataCondition;
-import com.trueffect.util.ErrorContainer;
 import com.trueffect.util.ModelObject;
 import com.trueffect.util.OperationString;
 import java.util.ArrayList;
@@ -171,7 +169,6 @@ public class RenterUserUpdate implements DataCondition {
             listData.clear();
             errorMessage = OperationString.generateMesage(Message.NOT_MEET_THE_AGE, listData);
             listError.add(errorMessage);
-
         }
     }
 }

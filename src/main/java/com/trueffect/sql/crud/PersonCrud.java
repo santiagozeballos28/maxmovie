@@ -80,7 +80,7 @@ public class PersonCrud {
                     + "   AND identifier = '" + identifier + "'";
 
             ResultSet rs = query.executeQuery(sql);
-            Person person = null;
+            Person person = new Person();
             if (rs.next()) {
                 person = new Person(
                         rs.getInt("id"),
@@ -119,7 +119,7 @@ public class PersonCrud {
 
             PreparedStatement st = connection.prepareStatement(sqlGet);
             ResultSet rs = st.executeQuery();
-            Person person = null;
+            Person person = new Person();
             if (rs.next()) {
                 person = new Person(
                         rs.getInt("id"),
@@ -158,7 +158,7 @@ public class PersonCrud {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, idPerson);
             ResultSet rs = st.executeQuery();
-            Person person = null;
+            Person person = new Person();
             if (rs.next()) {
                 person = new Person(
                         rs.getInt("id"),
@@ -249,7 +249,7 @@ public class PersonCrud {
                 st.close();
             }
             Either resPerson = getPerson(connection, idPerson);
-            return new Either(CodeStatus.CREATED, person);
+            return new Either(CodeStatus.CREATED, resPerson.getModelObject());
         } catch (Exception exception) {
             ArrayList<String> listError = new ArrayList<String>();
             listError.add(exception.getMessage());

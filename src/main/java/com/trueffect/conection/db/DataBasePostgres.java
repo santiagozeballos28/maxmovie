@@ -1,7 +1,5 @@
 package com.trueffect.conection.db;
 
-import com.trueffect.tools.CodeStatus;
-import com.trueffect.response.ErrorResponse;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
@@ -21,7 +19,7 @@ public class DataBasePostgres {
             connection = DriverManager.getConnection(DataConection.SERVER, DataConection.USER, DataConection.PASSWORD);
             connection.setAutoCommit(false);
         } catch (Exception e) {
-            new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+           // new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
         return connection;
     }

@@ -6,21 +6,21 @@ package com.trueffect.messages;
 public class Message {
 
     // Message of Empty
-    public static String EMPTY_DATA = "The {typeData} is required";
+    public static String EMPTY_DATA = "The [{typeData}] is required";
     //Message dates incorrect
-    public static String NOT_VALID_DATA = "The {typeData} {data} is not valid. The valid format is as follows: {valid}";
+    public static String NOT_VALID_DATA = "The [{typeData}] [{data}] is not valid. The valid format is as follows: ({valid})";
     //Message same type identifier
     public static String NOT_SAME_TYPE = "The identifier is not the same type. It must be an identity card, passport or tax identification numbe";
     //Message de restrictions    
-    public static String SIZE_MAX = "The {typeData} {data} is very long, must be less than {size} characters";
+    public static String SIZE_MAX = "The [{typeData}] [{data}] is very long, must be less than ({size}) characters";
     //Message Age
     public static String NOT_MEET_THE_AGE = "To be registered must be greater than 15 years";
     //Message duplicate
-    public static String DUPLICATE = "The {typeData} {data} already exists";
+    public static String DUPLICATE = "The [{typeData}] [{data}] already exists";
     // Message of permission
-    public static String NOT_HAVE_PERMISSION = "The user don't have permission to modify the {typeData}";
+    public static String NOT_HAVE_PERMISSION = "The user don't have permission to modify the [{typeData}]";
     // Message of results
-    public static String NOT_FOUND = "The {object} requested record was not found";
+    public static String NOT_FOUND = "The [{object}] requested record was not found";
     public static String NOT_FOUND_USER_MODIFY = "the user who wants to modify does not exist";
     public static String CONFLCT_ID = "The identifier not corresponde to value of renter user";
 
@@ -35,11 +35,11 @@ public class Message {
     public static String NAMES = "Names";
 
     //Data Valid
-    public static String VALID_TI = "CI, PASS o NIT";
-    public static String VALID_I = "CI = 123455, PASS = ABD122334X o NIT=8679232456";
-    public static String VALID_LN = "Zeballos O'relly, Vidal";
-    public static String VALID_FN = "Santiago, Eve'lin";
+    public static String VALID_TI = "CI, PASS , NIT";
+    public static String VALID_I = "CI = 123455, PASS = ABD122334X , NIT=8679232456";
+    public static String VALID_LN = "Letters = A-Za-z, apostrophes = '";
+    public static String VALID_FN = "Letters = A-Za-z, apostrophes = '";
     public static String VALID_G = "M,F";
-    public static String VALID_B = "yyy-MM-dd";
+    public static String VALID_B = "YYYY-MM-DD";
     public static String VALID_STATUS = "Active, Inactive";
 }

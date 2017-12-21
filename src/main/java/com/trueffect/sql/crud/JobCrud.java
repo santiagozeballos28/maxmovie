@@ -1,14 +1,11 @@
 package com.trueffect.sql.crud;
 
-import com.sun.jersey.api.client.ClientResponse;
 import com.trueffect.model.Job;
 import com.trueffect.response.Either;
 import com.trueffect.tools.CodeStatus;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-
 /**
  * @author santiago.mamani
  */
