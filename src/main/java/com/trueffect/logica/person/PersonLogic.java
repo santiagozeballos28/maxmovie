@@ -5,21 +5,24 @@ import com.trueffect.conection.db.OperationDataBase;
 import com.trueffect.messages.Message;
 import com.trueffect.model.Job;
 import com.trueffect.model.Person;
+import com.trueffect.model.PersonDetail;
 import com.trueffect.response.Either;
 import com.trueffect.sql.crud.JobCrud;
 import com.trueffect.sql.crud.PersonCrud;
 import com.trueffect.tools.CodeStatus;
 import com.trueffect.tools.ConstantData.EmployeeWithPermissionModify;
+import com.trueffect.tools.ConstantData.Genre;
 import com.trueffect.tools.ConstantData.StatusPerson;
+import com.trueffect.tools.ConstantData.TypeIdentifier;
 import com.trueffect.util.ModelObject;
 import com.trueffect.util.OperationString;
 import com.trueffect.validation.RenterUserCreate;
 import com.trueffect.validation.RenterUserUpdate;
+
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import javax.ws.rs.core.MultivaluedMap;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author santiago.mamani
@@ -107,7 +110,7 @@ public class PersonLogic {
         ArrayList<String> listError = new ArrayList<String>();
         try {
             eitherRes = PersonCrud.getPerson(connection, idPerson);
-            person = (Person) eitherRes.getModelObject();
+            person = (Person) eitherRes.getFirstObject();
         } catch (Exception exception) {
             listError.add(exception.getMessage());
             return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
@@ -146,7 +149,7 @@ public class PersonLogic {
                 throw eitherRes;
             }
             //update is a class to specifically validate the conditions to update a person
-            RenterUserUpdate rentUserUpdate = new RenterUserUpdate(((Job) eitherRes.getModelObject()).getNameJob());
+            RenterUserUpdate rentUserUpdate = new RenterUserUpdate(((Job) eitherRes.getFirstObject()).getNameJob());
             person.formatOfTheName();
             eitherRes = rentUserUpdate.complyCondition(person);
             if (eitherRes.existError()) {
@@ -175,7 +178,7 @@ public class PersonLogic {
         Either eitherRes = new Either();
         ArrayList<String> listError = new ArrayList<String>();
         if (eitherJob.haveModelObject()) {
-            String nameJob = ((Job) eitherJob.getModelObject()).getNameJob();
+            String nameJob = ((Job) eitherJob.getFirstObject()).getNameJob();
             try {
                 EmployeeWithPermissionModify employee = EmployeeWithPermissionModify.valueOf(nameJob);
                 return new Either();
@@ -219,26 +222,30 @@ public class PersonLogic {
         }
     }
 
-    public Either get(MultivaluedMap<String, String> list) {
+    public Either get(int idUserSearch, String typeId, String identifier, String lastName, String firstName, String genre) {
         Either eitherRes = new Either();
         Connection connection = null;
         try {
             //open conection 
-            List<String> idUserSearch = list.remove("idUserSearch");
-            int idUserS = Integer.parseInt(idUserSearch.get(0));
             connection = DataBasePostgres.getConection();
             //Check if the user can modify
-            eitherRes = checkUserPermission(connection, idUserS);
+            eitherRes = checkUserPermission(connection, idUserSearch);
             if (eitherRes.existError()) {
                 //return eitherRes;
                 throw eitherRes;
             }
+            if (StringUtils.isNotBlank(lastName)) {
+                lastName = OperationString.generateLastName(lastName);
+            }
 
-            eitherRes = PersonCrud.getPersonBy(connection, list);
-             if (eitherRes.existError()) {
+            if (StringUtils.isNotBlank(firstName)) {
+                firstName = OperationString.generateFirstName(firstName);
+            }
+            eitherRes = PersonCrud.getPersonBy(connection, typeId, identifier, lastName, firstName, genre);
+            if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            addDescription(eitherRes) ;
+            eitherRes = addDescription(eitherRes);
             OperationDataBase.connectionCommit(connection);
 
         } catch (Either e) {
@@ -250,15 +257,55 @@ public class PersonLogic {
         return eitherRes;
     }
 
-    private void addDescription(Either eitherRes) {
-        ArrayList<ModelObject> listObject =  eitherRes.getListObject();
+    private Either addDescription(Either either) {
+        Either eitherRes = new Either();
+        eitherRes.setCode(either.getCode());
+        ArrayList<ModelObject> listObject = either.getListObject();
         for (int i = 0; i < listObject.size(); i++) {
-//            addDescriptionTypeIdentifier(lilistObject.get(i));
+
+            PersonDetail person = addDescriptionTypeIdentifier((PersonDetail) listObject.get(i));
+            person = addDescriptionGenre(person);
+            eitherRes.addModeloObjet(person);
         }
-        
+        return eitherRes;
     }
 
-//    private void addDescriptionTypeIdentifier(ModelObject get) {
-//        String typ
-//    }
+    private PersonDetail addDescriptionTypeIdentifier(PersonDetail person) {
+        String typeIdPerson = person.getTypeIdentifier();
+        try {
+            TypeIdentifier typeIden = TypeIdentifier.valueOf(typeIdPerson);
+            switch (typeIden) {
+                case CI:
+                    person.setTypeIdDescription(Message.CI_DESCRIPTION);
+
+                    break;
+                case PASS:
+                    person.setTypeIdDescription(Message.PASS_DESCRIPTION);
+                    break;
+                case NIT:
+                    person.setTypeIdDescription(Message.NIT_DESCRIPTION);
+                    break;
+            }
+        } catch (Exception e) {
+        }
+        return person;
+    }
+
+    private PersonDetail addDescriptionGenre(PersonDetail person) {
+        String genrePerson = person.getGenre();
+        try {
+            Genre typeIden = Genre.valueOf(genrePerson);
+            switch (typeIden) {
+                case M:
+                    person.setGenre(Message.M_DESCRIPTION);
+
+                    break;
+                case F:
+                    person.setGenre(Message.F_DESCRIPTION);
+                    break;
+            }
+        } catch (Exception e) {
+        }
+        return person;
+    }
 }

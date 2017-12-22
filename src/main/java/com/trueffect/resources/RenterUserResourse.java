@@ -5,11 +5,6 @@ import com.trueffect.response.MapperResponse;
 import com.trueffect.validation.RenterUserCreate;
 import com.trueffect.model.Person;
 import com.trueffect.response.Either;
-import java.net.URI;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -19,13 +14,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-import org.apache.commons.lang3.StringUtils;
-
 /*
  * @author santiago.mamani
  */
@@ -39,7 +29,6 @@ public class RenterUserResourse {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response insertRenterUser(@QueryParam("idModifyUser") int idModifyUser, Person renterUser) {
-
         Either either = personLogic.createPerson(idModifyUser, renterUser, new RenterUserCreate());
         Response response = mapper.toResponse(either);
         return response;
@@ -65,20 +54,16 @@ public class RenterUserResourse {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getRenterUser(@Context UriInfo uriInfo) {
-        MultivaluedMap<String, String> list = uriInfo.getQueryParameters();
-        Either eitherRenter = personLogic.get(list);
-        Response response = mapper.toResponse(eitherRenter);
-        return response;
-       
-//       for (Map.Entry<String, List<String>> e : list.entrySet()) {
-//        for (String v : e.getValue()) {
-//            String key = e.getKey() + "";
-//            String value =v+ "";
-//            System.out.println("KEY NOW: " +key);
-//            System.out.println("VALUE NOW: " +value);
-//         }
-//    }
+    public Response getRenterUser(
+            @QueryParam("idUserSearch") int idUserSearch,
+            @QueryParam("typeIdentifier") String typeIdentifier,
+            @QueryParam("identifier") String identifier,
+            @QueryParam("lastName") String lastName,
+            @QueryParam("firstName") String firstName,
+            @QueryParam("genre") String genre) {
 
+         Either eitherRenter = personLogic.get(idUserSearch, typeIdentifier, identifier, lastName, firstName, genre);
+         Response response = mapper.toResponse(eitherRenter);
+         return response;
     }
 }

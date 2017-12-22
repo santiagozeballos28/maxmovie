@@ -38,4 +38,8 @@ public class Job extends ModelObject {
         return nameJob.compareTo(o.nameJob);
     }
 
+    public boolean isEmpty() {
+        return id == 0 && nameJob == null;
+
+    }
 }

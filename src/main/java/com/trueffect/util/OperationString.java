@@ -19,8 +19,25 @@ public class OperationString {
         while (iterator.hasNext()) {
             Map.Entry mentry = (Map.Entry) iterator.next();
             res = StringUtils.replace(res, mentry.getKey() + "", mentry.getValue() + "");
-         }
+        }
         return res;
     }
 
+    public static String generateLastName(String lastName) {
+        String resLastName = "";
+        String[] lastNameAux = lastName.toLowerCase().split(" ");
+        for (String lastN : lastNameAux) {
+            resLastName = resLastName + " " + StringUtils.capitalize(lastN);
+        }
+        resLastName = resLastName.trim();
+        resLastName = StringUtils.replace(resLastName, "'", "''");
+        return resLastName;
+    }
+
+    public static String generateFirstName(String firstName) {
+        String resFirstName = "";
+        resFirstName = StringUtils.capitalize(firstName.toLowerCase());
+        resFirstName = StringUtils.replace(resFirstName, "'", "''");
+        return resFirstName;
+    }
 }

@@ -8,15 +8,13 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class Person extends ModelObject {
 
-    private int id;
+    protected int id;
     protected String typeIdentifier;
     protected String identifier;
     protected String lastName;
     protected String firstName;
     protected String genre;
     protected String birthday;
-    protected String dateCreate;
-    protected String nameUserCreate;
     public Person() {
     }
 
@@ -29,19 +27,13 @@ public class Person extends ModelObject {
         this.genre = genre.trim();
         this.birthday = birthday.trim();
     }
-
-    public Person(int id, String typeIdentifier, String identifier, String lastName, String firstName, String genre, String birthday, String dateCreate, String nameUserCreate) {
+       public Person(int id, String typeIdentifier, String identifier, String genre, String birthday) {
         this.id = id;
-        this.typeIdentifier = typeIdentifier;
-        this.identifier = identifier;
-        this.lastName = lastName;
-        this.firstName = firstName;
-        this.genre = genre;
-        this.birthday = birthday;
-        this.dateCreate = dateCreate;
-        this.nameUserCreate = nameUserCreate;
+        this.typeIdentifier = typeIdentifier.trim();
+        this.identifier = identifier.trim();
+        this.genre = genre.trim();
+        this.birthday = birthday.trim();
     }
-    
     public int getId() {
         return id;
     }
@@ -68,14 +60,6 @@ public class Person extends ModelObject {
 
     public String getBirthday() {
         return birthday;
-    }
-
-    public String getDateCreate() {
-        return dateCreate;
-    }
-
-    public String getNameUserCreate() {
-        return nameUserCreate;
     }
 
     public void setId(int id) {
@@ -106,14 +90,6 @@ public class Person extends ModelObject {
         this.birthday = birthday.trim();
     }
 
-    public void setDateCreate(String dateCreate) {
-        this.dateCreate = dateCreate;
-    }
-
-    public void setNameUserCreate(String nameUserCreate) {
-        this.nameUserCreate = nameUserCreate;
-    }
-
     public int compareTo(Person o) {
         return (typeIdentifier.compareTo(o.typeIdentifier) == 0
                 && identifier.compareTo(o.identifier) == 0
@@ -122,7 +98,6 @@ public class Person extends ModelObject {
                 && genre.compareTo(o.genre) == 0)
                 ? 0 : -1;
     }
-
     public boolean isEmpty() {
         return id == 0
                 && typeIdentifier == null
@@ -143,6 +118,5 @@ public class Person extends ModelObject {
         // add apostrophe if exist (')
         lastName = StringUtils.replace(lastName,"'","''");
         firstName = StringUtils.replace(firstName,"'","''");
-        
     }
 }

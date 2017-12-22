@@ -6,6 +6,6 @@ package com.trueffect.util;
 public class ModelObject {
 
     public boolean isEmpty() {
-        return false;
+        return true;
     }
 }

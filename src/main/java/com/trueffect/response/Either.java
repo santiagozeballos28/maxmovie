@@ -10,37 +10,30 @@ import java.util.ArrayList;
 public class Either extends Exception {
 
     private int code;
-    private ModelObject modelObject;
     private ArrayList<String> listError;
     private ArrayList<ModelObject> listObject;
-    public Either(){
-    code = 0;
-    modelObject =  new ModelObject();
-    listError= new ArrayList<String>();
-    listObject = new ArrayList<ModelObject>();
+
+    public Either() {
+        code = 0;
+        listError = new ArrayList<String>();
+        listObject = new ArrayList<ModelObject>();
+    }
+
+    public Either(int code, ArrayList<String> listError) {
+        this.code = code;
+        this.listError = listError;
+        listObject = new ArrayList<ModelObject>();
     }
 
     public Either(int code, ModelObject modelObject) {
         this.code = code;
-        this.modelObject = modelObject;
-        listError = new ArrayList<String>();
+        this.listError = new ArrayList<String>();
         listObject = new ArrayList<ModelObject>();
-        }
-
-    public Either(int code, ArrayList<String> listError) {
-        this.code = code;
-        modelObject =  new ModelObject();
-        this.listError = listError;
-        listObject = new ArrayList<ModelObject>();
-    
+        listObject.add(modelObject);
     }
 
     public int getCode() {
         return code;
-    }
-
-    public ModelObject getModelObject() {
-        return modelObject;
     }
 
     public ArrayList<String> getListError() {
@@ -55,10 +48,6 @@ public class Either extends Exception {
         this.code = code;
     }
 
-    public void setModelObject(ModelObject modelObject) {
-        this.modelObject = modelObject;
-    }
-
     public void setListError(ArrayList<String> listError) {
         this.listError = listError;
     }
@@ -66,12 +55,13 @@ public class Either extends Exception {
     public void setListObject(ArrayList<ModelObject> listObject) {
         this.listObject = listObject;
     }
- 
+
     public void addError(String errorMessage) {
         listError.add(errorMessage);
     }
-    public void addModeloObjet(ModelObject modelObject){
-      listObject.add(modelObject);
+
+    public void addModeloObjet(ModelObject modelObject) {
+        listObject.add(modelObject);
     }
 
     public boolean existError() {
@@ -79,6 +69,18 @@ public class Either extends Exception {
     }
 
     public boolean haveModelObject() {
-        return !modelObject.isEmpty();
+        if(!listObject.isEmpty()){
+         return  !listObject.get(0).isEmpty();
+        }
+        return false;
+    }
+
+    public ModelObject getFirstObject() {
+        if (!listObject.isEmpty()) {
+            return listObject.get(0);
+        }
+        else{
+        return new ModelObject();
+        }
     }
 }

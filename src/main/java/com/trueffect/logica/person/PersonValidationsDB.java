@@ -16,9 +16,6 @@ import java.util.HashMap;
  */
 public class PersonValidationsDB {
 
-    /*
-    * For dates duplidates
-     */
     public static Either veriryDataInDataBase(Connection connection, Person personNew) {
         String errorMgs = "";
         ArrayList<String> listError = new ArrayList<String>();
@@ -49,7 +46,7 @@ public class PersonValidationsDB {
         ArrayList<String> listError = new ArrayList<String>();
         HashMap<String, String> listData = new HashMap<String, String>();
         Either eitherPersonOld = PersonCrud.getPerson(connection, id);
-        Person personAux = generatePersonAuxiliary((Person) eitherPersonOld.getModelObject(), personNew);
+        Person personAux = generatePersonAuxiliary((Person) eitherPersonOld.getFirstObject(), personNew);
         if (!PersonValidation.isValidIdentifier(personAux.getTypeIdentifier(), personAux.getIdentifier())) {
 
             listData.clear();
@@ -63,7 +60,7 @@ public class PersonValidationsDB {
         }
         Either eitherPersonById = PersonCrud.getPersonByIdentifier(connection, personAux.getTypeIdentifier(), personAux.getIdentifier());
         if (eitherPersonById.haveModelObject()) {
-            Person personEither = (Person) eitherPersonById.getModelObject();
+            Person personEither = (Person) eitherPersonById.getFirstObject();
             if (id != personEither.getId()) {
                 listData.put("{typeData}", Message.IDENTIFIERS);
                 listData.put("{data}", personAux.getTypeIdentifier() + " = " + personAux.getIdentifier());
@@ -73,7 +70,7 @@ public class PersonValidationsDB {
         }
         Either eitherPersonByName = PersonCrud.getPersonByName(connection, personAux.getLastName(), personAux.getFirstName());
         if (eitherPersonByName.haveModelObject()) {
-            Person personEither = (Person) eitherPersonByName.getModelObject();
+            Person personEither = (Person) eitherPersonByName.getFirstObject();
             if (id != personEither.getId()) {
                 listData.clear();
                 listData.put("{typeData}", Message.NAMES);
