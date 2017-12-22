@@ -305,9 +305,13 @@ public class PersonCrud {
                 query = query + "genre= '" + genre + "' AND ";
             }
 
-            query = query + " status= 'Active' )"
-                    + "       LIST_PERSON,PERSON\n"
-                    + " WHERE LIST_PERSON.user_create=PERSON.id";
+            query = query + "  status= 'Active' )"
+                    + "        LIST_PERSON,PERSON\n"
+                    + "  WHERE LIST_PERSON.user_create=PERSON.id  "
+                    + "        AND LIST_PERSON.id\n"
+                    + " NOT IN ("
+                    + " SELECT id_person\n"
+                    + "    FROM DATA_JOB)";
             PreparedStatement st = connection.prepareStatement(query);
             ResultSet rs = st.executeQuery();
             PersonDetail person = new PersonDetail();
