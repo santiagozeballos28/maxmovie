@@ -115,7 +115,6 @@ public class RenterUserCreate implements DataCondition {
         //Validation if the identifier belongs to the same type identifier
         if (validTypeIdentifier && validIdentifier) {
             if (!PersonValidation.isValidIdentifier(renterUser.getTypeIdentifier(), renterUser.getIdentifier())) {
-                //The [{typeData1}] [{data1}] is not of the [{data2}] [{typeData2}]
                 listData.clear();
                 listData.put("{typeData1}", Message.IDENTIFIER);
                 listData.put("{typeData2}", Message.TYPE_IDENTIFIER);

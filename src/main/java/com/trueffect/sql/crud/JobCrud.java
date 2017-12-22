@@ -6,6 +6,7 @@ import com.trueffect.tools.CodeStatus;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+
 /**
  * @author santiago.mamani
  */
@@ -31,7 +32,7 @@ public class JobCrud {
                         rs.getString("name_job"));
             }
             either.setCode(CodeStatus.OK);
-            either.setModelObject(job);
+            either.addModeloObjet(job);
         } catch (Exception exception) {
             either.setCode(CodeStatus.INTERNAL_SERVER_ERROR);
             either.addError(exception.getMessage());

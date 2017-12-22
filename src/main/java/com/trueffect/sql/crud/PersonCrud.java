@@ -1,6 +1,7 @@
 package com.trueffect.sql.crud;
 
 import com.trueffect.model.Person;
+import com.trueffect.model.PersonDetail;
 import com.trueffect.response.Either;
 import com.trueffect.tools.CodeStatus;
 
@@ -9,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import org.apache.commons.lang3.StringUtils;
 
 /*
  * @author santiago.mamani
@@ -51,7 +53,6 @@ public class PersonCrud {
                     + "null,"
                     + "null,"
                     + "'Active')";
-
             query.execute(sql);
             if (query != null) {
                 query.close();
@@ -78,7 +79,6 @@ public class PersonCrud {
                     + "  FROM PERSON "
                     + " WHERE type_identifier = '" + typeIdentifier + "' "
                     + "   AND identifier = '" + identifier + "'";
-
             ResultSet rs = query.executeQuery(sql);
             Person person = new Person();
             if (rs.next()) {
@@ -90,7 +90,6 @@ public class PersonCrud {
                         rs.getString("first_name"),
                         rs.getString("genre"),
                         rs.getString("birthday"));
-
             }
             if (query != null) {
                 query.close();
@@ -199,7 +198,7 @@ public class PersonCrud {
             if (st != null) {
                 st.close();
             }
-            return new Either(CodeStatus.CREATED, eitherPerson.getModelObject());
+            return new Either(CodeStatus.CREATED, eitherPerson.getFirstObject());
         } catch (Exception exception) {
             ArrayList<String> listError = new ArrayList<String>();
             listError.add(exception.getMessage());
@@ -249,7 +248,87 @@ public class PersonCrud {
                 st.close();
             }
             Either resPerson = getPerson(connection, idPerson);
-            return new Either(CodeStatus.CREATED, resPerson.getModelObject());
+            return new Either(CodeStatus.CREATED, resPerson.getFirstObject());
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+    }
+
+    public static Either getPersonBy(
+            Connection connection,
+            String typeId,
+            String identifier,
+            String lastName,
+            String firstName,
+            String genre) {
+        Either eitherRes = new Either();
+        try {
+            String query
+                    = " SELECT LIST_PERSON.id, "
+                    + "        LIST_PERSON.type_identifier, "
+                    + "        LIST_PERSON.identifier, "
+                    + "        LIST_PERSON.last_name, "
+                    + "        LIST_PERSON.first_name, "
+                    + "        LIST_PERSON.genre, "
+                    + "        LIST_PERSON.birthday, "
+                    + "        LIST_PERSON.date_create, "
+                    + "        PERSON.last_name AS last_name_user_create, "
+                    + "        PERSON.first_name AS first_name_user_create \n"
+                    + "   FROM "
+                    + "(SELECT id, "
+                    + "        type_identifier, "
+                    + "        identifier, "
+                    + "        last_name, "
+                    + "        first_name, "
+                    + "        genre, "
+                    + "        birthday,"
+                    + "        date_create, "
+                    + "        user_create\n"
+                    + "   FROM PERSON\n"
+                    + "  WHERE ";
+
+            if (StringUtils.isNotBlank(typeId)) {
+                query = query + "type_identifier= '" + typeId + "' AND ";
+            }
+            if (StringUtils.isNotBlank(identifier)) {
+                query = query + "identifier= '" + identifier + "' AND ";
+            }
+            if (StringUtils.isNotBlank(lastName)) {
+                query = query + "last_name LIKE '%" + lastName + "%' AND ";
+            }
+            if (StringUtils.isNotBlank(firstName)) {
+                query = query + "first_name LIKE '%" + firstName + "%' AND ";
+            }
+            if (StringUtils.isNotBlank(genre)) {
+                query = query + "genre= '" + genre + "' AND ";
+            }
+
+            query = query + " status= 'Active' )"
+                    + "       LIST_PERSON,PERSON\n"
+                    + " WHERE LIST_PERSON.user_create=PERSON.id";
+            PreparedStatement st = connection.prepareStatement(query);
+            ResultSet rs = st.executeQuery();
+            PersonDetail person = new PersonDetail();
+            while (rs.next()) {
+                person = new PersonDetail(
+                        rs.getInt("id"),
+                        rs.getString("type_identifier"),
+                        "",
+                        rs.getString("identifier"),
+                        rs.getString("last_name") + " " + rs.getString("first_name"),
+                        rs.getString("genre"),
+                        rs.getString("birthday"),
+                        rs.getString("date_create"),
+                        rs.getString("last_name_user_create") + " " + rs.getString("first_name_user_create"));
+                eitherRes.addModeloObjet(person);
+            }
+            if (st != null) {
+                st.close();
+            }
+            eitherRes.setCode(CodeStatus.CREATED);
+            return eitherRes;
         } catch (Exception exception) {
             ArrayList<String> listError = new ArrayList<String>();
             listError.add(exception.getMessage());

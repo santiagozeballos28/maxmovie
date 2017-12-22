@@ -7,6 +7,7 @@ import com.trueffect.model.Person;
 import com.trueffect.response.Either;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -15,7 +16,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 /*
  * @author santiago.mamani
  */
@@ -29,7 +29,6 @@ public class RenterUserResourse {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response insertRenterUser(@QueryParam("idModifyUser") int idModifyUser, Person renterUser) {
-
         Either either = personLogic.createPerson(idModifyUser, renterUser, new RenterUserCreate());
         Response response = mapper.toResponse(either);
         return response;
@@ -51,5 +50,20 @@ public class RenterUserResourse {
         Either eitherRenter = personLogic.update(renterUser, idUser, idModifyUser);
         Response response = mapper.toResponse(eitherRenter);
         return response;
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRenterUser(
+            @QueryParam("idUserSearch") int idUserSearch,
+            @QueryParam("typeIdentifier") String typeIdentifier,
+            @QueryParam("identifier") String identifier,
+            @QueryParam("lastName") String lastName,
+            @QueryParam("firstName") String firstName,
+            @QueryParam("genre") String genre) {
+
+         Either eitherRenter = personLogic.get(idUserSearch, typeIdentifier, identifier, lastName, firstName, genre);
+         Response response = mapper.toResponse(eitherRenter);
+         return response;
     }
 }

@@ -42,4 +42,10 @@ public class Message {
     public static String VALID_G = "M,F";
     public static String VALID_B = "YYYY-MM-DD";
     public static String VALID_STATUS = "Active, Inactive";
+    //Description
+    public static String  CI_DESCRIPTION= "Identity Card";
+    public static String  PASS_DESCRIPTION= "Passport";
+    public static String  NIT_DESCRIPTION= "Tributary Identification Number";
+    public static String  M_DESCRIPTION= "Male";
+    public static String  F_DESCRIPTION= "Female";
 }
