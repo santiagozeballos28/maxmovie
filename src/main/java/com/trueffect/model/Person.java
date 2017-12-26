@@ -2,6 +2,7 @@ package com.trueffect.model;
 
 import com.trueffect.util.ModelObject;
 import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /*
  * @author santiago.mamani
@@ -15,6 +16,7 @@ public class Person extends ModelObject {
     protected String firstName;
     protected String genre;
     protected String birthday;
+
     public Person() {
     }
 
@@ -27,13 +29,15 @@ public class Person extends ModelObject {
         this.genre = genre.trim();
         this.birthday = birthday.trim();
     }
-       public Person(int id, String typeIdentifier, String identifier, String genre, String birthday) {
+
+    public Person(int id, String typeIdentifier, String identifier, String genre, String birthday) {
         this.id = id;
         this.typeIdentifier = typeIdentifier.trim();
         this.identifier = identifier.trim();
         this.genre = genre.trim();
         this.birthday = birthday.trim();
     }
+
     public int getId() {
         return id;
     }
@@ -98,6 +102,8 @@ public class Person extends ModelObject {
                 && genre.compareTo(o.genre) == 0)
                 ? 0 : -1;
     }
+
+    @JsonIgnore
     public boolean isEmpty() {
         return id == 0
                 && typeIdentifier == null
@@ -116,7 +122,7 @@ public class Person extends ModelObject {
         }
         lastName = lastName.trim();
         // add apostrophe if exist (')
-        lastName = StringUtils.replace(lastName,"'","''");
-        firstName = StringUtils.replace(firstName,"'","''");
+        lastName = StringUtils.replace(lastName, "'", "''");
+        firstName = StringUtils.replace(firstName, "'", "''");
     }
 }

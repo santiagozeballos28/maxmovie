@@ -69,8 +69,8 @@ public class Either extends Exception {
     }
 
     public boolean haveModelObject() {
-        if(!listObject.isEmpty()){
-         return  !listObject.get(0).isEmpty();
+        if (!listObject.isEmpty()) {
+            return !listObject.get(0).isEmpty();
         }
         return false;
     }
@@ -78,9 +78,8 @@ public class Either extends Exception {
     public ModelObject getFirstObject() {
         if (!listObject.isEmpty()) {
             return listObject.get(0);
-        }
-        else{
-        return new ModelObject();
+        } else {
+            return new ModelObject();
         }
     }
 }

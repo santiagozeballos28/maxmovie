@@ -5,8 +5,9 @@ import com.trueffect.util.ModelObject;
 /**
  * @author santiago.mamani
  */
-public class PersonDetail extends ModelObject{
-   protected int id;
+public class PersonDetail extends ModelObject {
+
+    protected int id;
     protected String typeIdentifier;
     protected String typeIdDescription;
     protected String identifier;
@@ -31,7 +32,6 @@ public class PersonDetail extends ModelObject{
         this.nameCreateUser = nameCreateUser.trim();
     }
 
-   
     public int getId() {
         return id;
     }
