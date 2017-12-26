@@ -41,4 +41,29 @@ public class JobCrud {
         }
         return either;
     }
+
+    public static Either getJobOfName(Connection connection, String name) {
+        Either either = new Either();
+        try {
+            String sql = "SELECT id, name_job\n"
+                    + "  FROM job\n"
+                    + "  WHERE name_job=?";
+
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, name);
+            ResultSet rs = st.executeQuery();
+            Job job = new Job();
+            if (rs.next()) {
+                job = new Job(
+                        rs.getInt("id"),
+                        rs.getString("name_job"));
+            }
+            either.setCode(CodeStatus.OK);
+            either.addModeloObjet(job);
+        } catch (Exception exception) {
+            either.setCode(CodeStatus.INTERNAL_SERVER_ERROR);
+            either.addError(exception.getMessage());
+        }
+        return either;
+    }
 }

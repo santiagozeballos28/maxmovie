@@ -14,11 +14,12 @@ import java.util.HashMap;
 /**
  * @author santiago.mamani
  */
-public class RenterUserCreate implements DataCondition {
+public class PersonCreate implements DataCondition {
 
-    private HashMap<String, String> listData;
-
-    public RenterUserCreate() {
+    protected HashMap<String, String> listData;
+    protected int ageMinimum;
+    public PersonCreate(int ageMinimum) {
+        this.ageMinimum =  ageMinimum;
         listData = new HashMap<String, String>();
     }
 
@@ -32,7 +33,7 @@ public class RenterUserCreate implements DataCondition {
 
     }
 
-    private Either verifyEmpty(ModelObject resource) {
+    protected Either verifyEmpty(ModelObject resource) {
         Person renterUser = (Person) resource;
         ArrayList<String> listError = new ArrayList<String>();
         String errorMessages = "";
@@ -86,7 +87,7 @@ public class RenterUserCreate implements DataCondition {
         return new Either();
     }
 
-    private Either verifyData(ModelObject resource) {
+    protected Either verifyData(ModelObject resource) {
         Person renterUser = (Person) resource;
         ArrayList<String> listError = new ArrayList<String>();
         String errorMessages = "";
@@ -189,7 +190,7 @@ public class RenterUserCreate implements DataCondition {
             listError.add(errorMessages);
         }
         //Validation of birthday
-        if (!PersonValidation.isValidAge(renterUser.getBirthday(), ConstantData.MINIMUM_AGE)) {
+        if (!PersonValidation.isValidAge(renterUser.getBirthday(),ageMinimum)) {
             listData.clear();
             errorMessages = OperationString.generateMesage(Message.NOT_MEET_THE_AGE, listData);
             listError.add(errorMessages);

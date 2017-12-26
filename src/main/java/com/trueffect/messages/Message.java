@@ -33,8 +33,14 @@ public class Message {
     public static String BIRTHDAY = "Birthday";
     public static String IDENTIFIERS = "Identifiers";
     public static String NAMES = "Names";
+    // Data employee max movie
+    public static String DATE_OF_HIRE="Date of hire";
+    public static String ADDRESS="Address";
+    public static String JOB="Job";
+    public static String PHONE="Reference Phone";
+    
 
-    //Data Valid
+    //Data Valid person
     public static String VALID_TI = "CI, PASS , NIT";
     public static String VALID_I = "CI = 123455, PASS = ABD122334X , NIT=8679232456";
     public static String VALID_LN = "Letters = A-Za-z, apostrophes = '";
@@ -42,6 +48,9 @@ public class Message {
     public static String VALID_G = "M,F";
     public static String VALID_B = "YYYY-MM-DD";
     public static String VALID_STATUS = "Active, Inactive";
+    //data Valid Employee
+    public static String VALID_JOB = "Cashier, Custom care , Manager, Administrator";
+    public static String VALID_PHONE = "77973186, 71XXXXXX";
     //Description
     public static String  CI_DESCRIPTION= "Identity Card";
     public static String  PASS_DESCRIPTION= "Passport";

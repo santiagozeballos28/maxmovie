@@ -17,15 +17,15 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class PersonCrud {
 
-    public static Either insertRenterUser(Connection connection, int idJob, Person renterUser) {
+    public static Either insertPerson(Connection connection, int idJob, Person person) {
         Statement query = null;
         try {
-            String typeIdentifier = renterUser.getTypeIdentifier();
-            String identifier = renterUser.getIdentifier();
-            String lastName = renterUser.getLastName();
-            String firstName = renterUser.getFirstName();
-            String genre = renterUser.getGenre();
-            String birthay = renterUser.getBirthday();
+            String typeIdentifier = person.getTypeIdentifier();
+            String identifier = person.getIdentifier();
+            String lastName = person.getLastName();
+            String firstName = person.getFirstName();
+            String genre = person.getGenre();
+            String birthay = person.getBirthday();
             query = (Statement) connection.createStatement();
             //ident
             String sql

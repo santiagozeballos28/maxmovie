@@ -18,9 +18,11 @@ public class RenterUserUpdate implements DataCondition {
 
     private String job;
     private HashMap<String, String> listData;
+    private int ageMinimum;
 
-    public RenterUserUpdate(String job) {
+    public RenterUserUpdate(String job,int ageMinimum) {
         this.job = job;
+        this.ageMinimum=ageMinimum;
         listData = new HashMap<String, String>();
     }
 
@@ -165,7 +167,7 @@ public class RenterUserUpdate implements DataCondition {
             listError.add(errorMessage);
         }
         //Validation of birthday
-        if (!PersonValidation.isValidAge(birthday, ConstantData.MINIMUM_AGE)) {
+        if (!PersonValidation.isValidAge(birthday, ageMinimum)) {
             listData.clear();
             errorMessage = OperationString.generateMesage(Message.NOT_MEET_THE_AGE, listData);
             listError.add(errorMessage);

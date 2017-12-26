@@ -3,6 +3,7 @@ package com.trueffect.validation;
 import com.trueffect.tools.ConstantData.Genre;
 import com.trueffect.tools.ConstantData.TypeIdentifier;
 import com.trueffect.tools.RegularExpression;
+import com.trueffect.util.ModelObject;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -16,6 +17,7 @@ public class PersonValidation {
     public static boolean isEmpty(String typeId) {
         return typeId == null;
     }
+    
 
     public static boolean isValidTypeIdentifier(String typeId) {
         boolean res = true;

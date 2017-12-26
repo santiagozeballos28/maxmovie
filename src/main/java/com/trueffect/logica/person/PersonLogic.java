@@ -10,13 +10,14 @@ import com.trueffect.response.Either;
 import com.trueffect.sql.crud.JobCrud;
 import com.trueffect.sql.crud.PersonCrud;
 import com.trueffect.tools.CodeStatus;
+import com.trueffect.tools.ConstantData;
 import com.trueffect.tools.ConstantData.EmployeeWithPermissionModify;
 import com.trueffect.tools.ConstantData.Genre;
 import com.trueffect.tools.ConstantData.StatusPerson;
 import com.trueffect.tools.ConstantData.TypeIdentifier;
 import com.trueffect.util.ModelObject;
 import com.trueffect.util.OperationString;
-import com.trueffect.validation.RenterUserCreate;
+import com.trueffect.validation.PersonCreate;
 import com.trueffect.validation.RenterUserUpdate;
 
 import java.sql.Connection;
@@ -35,7 +36,7 @@ public class PersonLogic {
         listData = new HashMap<String, String>();
     }
 
-    public Either createPerson(int idUserWhoCreate, Person person, RenterUserCreate conditiondata) {
+    public Either createPerson(int idUserWhoCreate, Person person, PersonCreate conditiondata) {
         Either eitherRes = new Either();
         Connection connection = null;
         try {
@@ -55,7 +56,7 @@ public class PersonLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            eitherRes = PersonCrud.insertRenterUser(connection, idUserWhoCreate, person);
+            eitherRes = PersonCrud.insertPerson(connection, idUserWhoCreate, person);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -86,7 +87,7 @@ public class PersonLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-           eitherRes = PersonCrud.updateStatusPerson(connection, idPerson, idUserModify, status);
+            eitherRes = PersonCrud.updateStatusPerson(connection, idPerson, idUserModify, status);
             OperationDataBase.connectionCommit(connection);
 
         } catch (Either e) {
@@ -113,7 +114,7 @@ public class PersonLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            eitherRes = getPerson(connection, idRenter,"Active");
+            eitherRes = getPerson(connection, idRenter, "Active");
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -122,7 +123,9 @@ public class PersonLogic {
                 throw eitherRes;
             }
             //update is a class to specifically validate the conditions to update a person
-            RenterUserUpdate rentUserUpdate = new RenterUserUpdate(((Job) eitherRes.getFirstObject()).getNameJob());
+            RenterUserUpdate rentUserUpdate = new RenterUserUpdate(
+                    ((Job) eitherRes.getFirstObject()).getNameJob(),
+                    ConstantData.MINIMUM_AGE_RENTER);
             OperationString.formatOfTheName(person);
             eitherRes = rentUserUpdate.complyCondition(person);
             if (eitherRes.existError()) {
