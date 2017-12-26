@@ -30,6 +30,8 @@ public class JobCrud {
                 job = new Job(
                         rs.getInt("id"),
                         rs.getString("name_job"));
+
+                System.out.println("ES un trabajador");
             }
             either.setCode(CodeStatus.OK);
             either.addModeloObjet(job);

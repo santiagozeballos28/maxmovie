@@ -38,8 +38,8 @@ public class RenterUserResourse {
     @PUT
     @Path("/{id}/updateStatus")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteById(@PathParam("id") int idUser, @QueryParam("idModifyUser") int idModifyUser, @QueryParam("status") String status) {
-        Either either = personLogic.deleteById(idUser, idModifyUser, status);
+    public Response updateStatus(@PathParam("id") int idUser, @QueryParam("idUserModify") int idUserModify, @QueryParam("status") String status) {
+        Either either = personLogic.updateStatus(idUser, idUserModify, status);
         Response response = mapper.toResponse(either);
         return response;
     }

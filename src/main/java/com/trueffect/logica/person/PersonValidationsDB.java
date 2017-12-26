@@ -45,7 +45,7 @@ public class PersonValidationsDB {
         String errorMgs = "";
         ArrayList<String> listError = new ArrayList<String>();
         HashMap<String, String> listData = new HashMap<String, String>();
-        Either eitherPersonOld = PersonCrud.getPerson(connection, id);
+        Either eitherPersonOld = PersonCrud.getPerson(connection, id,"");
         Person personAux = generatePersonAuxiliary((Person) eitherPersonOld.getFirstObject(), personNew);
         if (!PersonValidation.isValidIdentifier(personAux.getTypeIdentifier(), personAux.getIdentifier())) {
 

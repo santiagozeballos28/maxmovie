@@ -46,8 +46,7 @@ public class PersonLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            person.formatOfTheName();
-
+            OperationString.formatOfTheName(person);
             eitherRes = conditiondata.complyCondition(person);
             if (eitherRes.existError()) {
                 throw eitherRes;
@@ -70,7 +69,7 @@ public class PersonLogic {
         return eitherRes;
     }
 
-    public Either deleteById(int idPerson, int idUserModify, String status) {
+    public Either updateStatus(int idPerson, int idUserModify, String status) {
         Either eitherRes = new Either();
         Connection connection = null;
         try {
@@ -83,16 +82,11 @@ public class PersonLogic {
                 throw eitherRes;
             }
             //Validation Status(Active, Inactive)
-            eitherRes = verifyStatus(status);
+            eitherRes = verifyStatus(connection, idPerson, status);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            //check if the personr exists
-            eitherRes = existPerson(connection, idPerson);
-            if (eitherRes.existError()) {
-                throw eitherRes;
-            }
-            eitherRes = PersonCrud.updateStatusPerson(connection, idPerson, idUserModify, status);
+           eitherRes = PersonCrud.updateStatusPerson(connection, idPerson, idUserModify, status);
             OperationDataBase.connectionCommit(connection);
 
         } catch (Either e) {
@@ -100,27 +94,6 @@ public class PersonLogic {
             OperationDataBase.connectionRollback(connection, eitherRes);
         } finally {
             OperationDataBase.connectionClose(connection, eitherRes);
-        }
-        return eitherRes;
-    }
-
-    private Either existPerson(Connection connection, int idPerson) {
-        Either eitherRes = new Either();
-        Person person = new Person();
-        ArrayList<String> listError = new ArrayList<String>();
-        try {
-            eitherRes = PersonCrud.getPerson(connection, idPerson);
-            person = (Person) eitherRes.getFirstObject();
-        } catch (Exception exception) {
-            listError.add(exception.getMessage());
-            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
-        }
-        if (person.isEmpty()) {
-            listData.clear();
-            listData.put("{object}", "Person");
-            String errorMgs = OperationString.generateMesage(Message.NOT_FOUND, listData);
-            listError.add(errorMgs);
-            return new Either(CodeStatus.NOT_FOUND, listError);
         }
         return eitherRes;
     }
@@ -140,7 +113,7 @@ public class PersonLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            eitherRes = existPerson(connection, idRenter);
+            eitherRes = getPerson(connection, idRenter,"Active");
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -150,7 +123,7 @@ public class PersonLogic {
             }
             //update is a class to specifically validate the conditions to update a person
             RenterUserUpdate rentUserUpdate = new RenterUserUpdate(((Job) eitherRes.getFirstObject()).getNameJob());
-            person.formatOfTheName();
+            OperationString.formatOfTheName(person);
             eitherRes = rentUserUpdate.complyCondition(person);
             if (eitherRes.existError()) {
                 throw eitherRes;
@@ -195,6 +168,27 @@ public class PersonLogic {
         }
     }
 
+    private Either getPerson(Connection connection, int idPerson, String status) {
+        Either eitherRes = new Either();
+        Person person = new Person();
+        ArrayList<String> listError = new ArrayList<String>();
+        try {
+            eitherRes = PersonCrud.getPerson(connection, idPerson, status);
+            person = (Person) eitherRes.getFirstObject();
+        } catch (Exception exception) {
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+        if (person.isEmpty()) {
+            listData.clear();
+            listData.put("{object}", "Person");
+            String errorMgs = OperationString.generateMesage(Message.NOT_FOUND, listData);
+            listError.add(errorMgs);
+            return new Either(CodeStatus.NOT_FOUND, listError);
+        }
+        return eitherRes;
+    }
+
     private Either verifyId(Person person, int idRenter) {
         ArrayList<String> listError = new ArrayList<String>();
         if (person.getId() != 0) {
@@ -206,10 +200,17 @@ public class PersonLogic {
         return new Either();
     }
 
-    private Either verifyStatus(String status) {
+    private Either verifyStatus(Connection connection, int idRenter, String status) {
         ArrayList<String> listError = new ArrayList<String>();
         try {
             StatusPerson statusPerson = StatusPerson.valueOf(status);
+            switch (statusPerson) {
+                case Active:
+                    return getPerson(connection, idRenter, "");
+                case Inactive:
+                    return getPerson(connection, idRenter, "Active");
+
+            }
             return new Either();
         } catch (Exception e) {
             listData.clear();
@@ -307,5 +308,9 @@ public class PersonLogic {
         } catch (Exception e) {
         }
         return person;
+    }
+
+    private Either verifyStatusPerson(Connection connection, int idPerson, String status) {
+        return null;
     }
 }

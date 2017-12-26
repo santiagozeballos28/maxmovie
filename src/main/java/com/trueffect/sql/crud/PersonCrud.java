@@ -140,9 +140,9 @@ public class PersonCrud {
         }
     }
 
-    public static Either getPerson(Connection connection, int idPerson) {
+    public static Either getPerson(Connection connection, int idPerson, String status) {
         try {
-            String sql
+            String query
                     = "SELECT id,"
                     + "       type_identifier,"
                     + "       identifier, "
@@ -151,10 +151,13 @@ public class PersonCrud {
                     + "       genre,"
                     + "       birthday\n"
                     + "  FROM PERSON "
-                    + " WHERE status = 'Active' "
-                    + "   AND person.id = ?";
+                    + " WHERE ";
 
-            PreparedStatement st = connection.prepareStatement(sql);
+            if (StringUtils.isNotBlank(status)) {
+                query = query + "status = '" + status + "' AND ";
+            }
+            query = query + "person.id = ?";
+            PreparedStatement st = connection.prepareStatement(query);
             st.setInt(1, idPerson);
             ResultSet rs = st.executeQuery();
             Person person = new Person();
@@ -182,7 +185,7 @@ public class PersonCrud {
     public static Either updateStatusPerson(Connection connection, int idPerson, int idUserModifier, String status) {
 
         try {
-            Either eitherPerson = getPerson(connection, idPerson);
+            Either eitherPerson = getPerson(connection, idPerson, "");
             String sql
                     = "UPDATE PERSON\n"
                     + "   SET status=?, "
@@ -247,7 +250,7 @@ public class PersonCrud {
             if (st != null) {
                 st.close();
             }
-            Either resPerson = getPerson(connection, idPerson);
+            Either resPerson = getPerson(connection, idPerson, "");
             return new Either(CodeStatus.CREATED, resPerson.getFirstObject());
         } catch (Exception exception) {
             ArrayList<String> listError = new ArrayList<String>();

@@ -1,5 +1,6 @@
 package com.trueffect.util;
 
+import com.trueffect.model.Person;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -21,6 +22,18 @@ public class OperationString {
             res = StringUtils.replace(res, mentry.getKey() + "", mentry.getValue() + "");
         }
         return res;
+    }
+
+    public static void formatOfTheName(Person person) {
+        if (StringUtils.isNotBlank(person.getLastName())) {
+            String lastName = generateLastName(person.getLastName());
+            person.setLastName(lastName);
+        }
+        if (StringUtils.isNotBlank(person.getFirstName())) {
+            String firstName = generateFirstName(person.getFirstName());
+            person.setFirstName(firstName);
+        }
+
     }
 
     public static String generateLastName(String lastName) {
