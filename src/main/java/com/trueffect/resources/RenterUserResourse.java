@@ -16,6 +16,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 /*
  * @author santiago.mamani
  */
@@ -62,8 +63,8 @@ public class RenterUserResourse {
             @QueryParam("firstName") String firstName,
             @QueryParam("genre") String genre) {
 
-         Either eitherRenter = personLogic.get(idUserSearch, typeIdentifier, identifier, lastName, firstName, genre);
-         Response response = mapper.toResponse(eitherRenter);
-         return response;
+        Either eitherRenter = personLogic.get(idUserSearch, typeIdentifier, identifier, lastName, firstName, genre);
+        Response response = mapper.toResponse(eitherRenter);
+        return response;
     }
 }

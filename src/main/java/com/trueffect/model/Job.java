@@ -1,6 +1,7 @@
 package com.trueffect.model;
 
 import com.trueffect.util.ModelObject;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  * @author santiago.mamani
@@ -38,6 +39,7 @@ public class Job extends ModelObject {
         return nameJob.compareTo(o.nameJob);
     }
 
+    @JsonIgnore
     public boolean isEmpty() {
         return id == 0 && nameJob == null;
 
