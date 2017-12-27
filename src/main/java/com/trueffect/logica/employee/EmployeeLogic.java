@@ -5,13 +5,18 @@ import com.trueffect.conection.db.OperationDataBase;
 import com.trueffect.logica.permission.Permission;
 import com.trueffect.logica.person.PersonValidationsDB;
 import com.trueffect.model.Employee;
+import com.trueffect.model.Job;
 import com.trueffect.model.Person;
 import com.trueffect.response.Either;
 import com.trueffect.sql.crud.EmployeeCrud;
+import com.trueffect.sql.crud.JobCrud;
 import com.trueffect.sql.crud.PersonCrud;
 import com.trueffect.tools.CodeStatus;
+import com.trueffect.tools.ConstantData;
 import com.trueffect.util.OperationString;
 import com.trueffect.validation.EmployeeCreate;
+import com.trueffect.validation.PersonValidation;
+import com.trueffect.validation.RenterUserUpdate;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -118,7 +123,58 @@ public class EmployeeLogic {
         return eitherRes;
     }
     
-    public Either update(Employee employee, int idUser, int idModifyUser) {
-        return null;
+    public Either update(Employee employee, int idEmployee, int idModifyUser) {
+         Either eitherRes = new Either();
+        Connection connection = null;
+        try {
+            //open conection 
+            connection = DataBasePostgres.getConection();
+            //Validation of data
+            Permission permission = new Permission();
+            eitherRes = permission.checkUserPermission(connection, idModifyUser);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            eitherRes = PersonValidation.verifyId(employee, idEmployee);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+//            eitherRes = getEmployee(connection, idEmployee, "Active");
+//            if (eitherRes.existError()) {
+//                throw eitherRes;
+//            }
+//            eitherRes = JobCrud.getJobOf(connection, idModifyUser);
+//            if (eitherRes.existError()) {
+//                throw eitherRes;
+//            }
+//            //update is a class to specifically validate the conditions to update a person
+//            RenterUserUpdate rentUserUpdate = new RenterUserUpdate(
+//                    ((Job) eitherRes.getFirstObject()).getNameJob(),
+//                    ConstantData.MINIMUM_AGE_RENTER);
+//            OperationString.formatOfTheName(person);
+//            eitherRes = rentUserUpdate.complyCondition(person);
+//            if (eitherRes.existError()) {
+//                throw eitherRes;
+//            }
+//            eitherRes = PersonValidationsDB.verifyDataUpdate(connection, idRenter, person);
+//            if (eitherRes.existError()) {
+//                throw eitherRes;
+//            }
+//            eitherRes = PersonCrud.updateRenterUser(connection, idRenter, idUserModify, person);
+//            if (eitherRes.existError()) {
+//                throw eitherRes;
+//            }
+//            eitherRes = PersonCrud.getPerson(connection, idRenter, "Active");
+//            if (eitherRes.existError()) {
+//                throw eitherRes;
+//            }
+            OperationDataBase.connectionCommit(connection);
+        } catch (Either exception) {
+            eitherRes = exception;
+            OperationDataBase.connectionRollback(connection, eitherRes);
+        } finally {
+            OperationDataBase.connectionClose(connection, eitherRes);
+        }
+        return eitherRes;
     }
 }

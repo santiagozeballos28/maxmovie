@@ -2,6 +2,7 @@ package com.trueffect.sql.crud;
 
 import com.trueffect.model.Employee;
 import com.trueffect.model.Job;
+import com.trueffect.model.Person;
 import com.trueffect.response.Either;
 import com.trueffect.tools.CodeStatus;
 import java.sql.Connection;
@@ -9,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -153,4 +155,54 @@ public class EmployeeCrud {
             return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
         }
     }
+
+    public static Either getEmployee(Connection connection, int idEmployee, String status) {
+        try {
+            String query
+                    = "SELECT PERSON.id, "
+                    + "       type_identifier, "
+                    + "       identifier, "
+                    + "       last_name, "
+                    + "       first_name, "
+                    + "       genre, "
+                    + "       birthday, "
+                    + "       date_of_hire,"
+                    + "       address,"
+                    + "       name_job\n"
+                    + "  FROM PERSON, DATA_JOB, JOB\n"
+                    + " WHERE PERSON.id = ? "
+                    + "   AND PERSON.id = DATA_JOB.id_person "
+                    + "   AND DATA_JOB.id_job = JOB.id";
+
+            if (StringUtils.isNotBlank(status)) {
+                query = query + " AND status = '" + status + "'";
+            }
+            PreparedStatement st = connection.prepareStatement(query);
+            st.setInt(1, idEmployee);
+            ResultSet rs = st.executeQuery();
+            Employee employee = new Employee();
+            if (rs.next()) {
+                employee = new Employee(
+                        rs.getInt("id"),
+                        rs.getString("type_identifier"),
+                        rs.getString("identifier"),
+                        rs.getString("last_name"),
+                        rs.getString("first_name"),
+                        rs.getString("genre"),
+                        rs.getString("birthday"),
+                        rs.getString("date_of_hire"),
+                        rs.getString("address"),
+                        rs.getString("name_job"));
+            }
+            if (st != null) {
+                st.close();
+            }
+            return new Either(CodeStatus.CREATED, employee);
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+    }
+
 }

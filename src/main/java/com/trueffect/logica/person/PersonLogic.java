@@ -18,6 +18,7 @@ import com.trueffect.tools.ConstantData.TypeIdentifier;
 import com.trueffect.util.ModelObject;
 import com.trueffect.util.OperationString;
 import com.trueffect.validation.PersonCreate;
+import com.trueffect.validation.PersonValidation;
 import com.trueffect.validation.RenterUserUpdate;
 
 import java.sql.Connection;
@@ -123,7 +124,7 @@ public class PersonLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            eitherRes = verifyId(person, idRenter);
+            eitherRes = PersonValidation.verifyId(person, idRenter);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -185,17 +186,6 @@ public class PersonLogic {
             return new Either(CodeStatus.NOT_FOUND, listError);
         }
         return eitherRes;
-    }
-
-    private Either verifyId(Person person, int idRenter) {
-        ArrayList<String> listError = new ArrayList<String>();
-        if (person.getId() != 0) {
-            if (person.getId() != idRenter) {
-                listError.add(Message.CONFLCT_ID);
-                return new Either(CodeStatus.CONFLICT, listError);
-            }
-        }
-        return new Either();
     }
 
     private Either verifyStatus(Connection connection, int idRenter, String status) {
