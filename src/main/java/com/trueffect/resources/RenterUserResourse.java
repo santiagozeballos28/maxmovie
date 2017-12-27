@@ -21,7 +21,7 @@ import javax.ws.rs.core.Response;
 /*
  * @author santiago.mamani
  */
-@Path("renterUser")
+@Path("RenterUser")
 public class RenterUserResourse {
 
     private PersonLogic personLogic = new PersonLogic();
@@ -63,7 +63,6 @@ public class RenterUserResourse {
             @QueryParam("lastName") String lastName,
             @QueryParam("firstName") String firstName,
             @QueryParam("genre") String genre) {
-
         Either eitherRenter = personLogic.get(idUserSearch, typeIdentifier, identifier, lastName, firstName, genre);
         Response response = mapper.toResponse(eitherRenter);
         return response;

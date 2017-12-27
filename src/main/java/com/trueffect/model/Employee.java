@@ -6,10 +6,6 @@ import java.util.ArrayList;
  * @author santiago.mamani
  */
 public class Employee extends Person {
-//   -	Date of hire%
-//-	Address (Max 100 chars)
-//-	Job title (Max 10 chars, catalog: cashier, custom_care, manager,administrator)
-//-	Reference Phone(number) at least two.
 
     protected String dateOfHire;
     protected String address;
@@ -17,6 +13,26 @@ public class Employee extends Person {
     protected ArrayList<Integer> phones;
 
     public Employee() {
+        phones = new ArrayList<Integer>();
+    }
+
+    public Employee(
+            int id,
+            String typeIdentifier,
+            String identifier,
+            String lastName,
+            String firstName,
+            String genre,
+            String birthday,
+            String dateOfHire,
+            String address,
+            String job
+    ) {
+        super(id, typeIdentifier, identifier, lastName, firstName, genre, birthday);
+        this.dateOfHire = dateOfHire.trim();
+        this.address = address.trim();
+        this.job = job.trim();
+        this.phones = new ArrayList<Integer>();
     }
 
     public Employee(
@@ -33,9 +49,9 @@ public class Employee extends Person {
             ArrayList<Integer> phones
     ) {
         super(id, typeIdentifier, identifier, lastName, firstName, genre, birthday);
-        this.dateOfHire = dateOfHire;
-        this.address = address;
-        this.job = job;
+        this.dateOfHire = dateOfHire.trim();
+        this.address = address.trim();
+        this.job = job.trim();
         this.phones = phones;
     }
 
@@ -56,19 +72,18 @@ public class Employee extends Person {
     }
 
     public void setDateOfHire(String dateOfHire) {
-        this.dateOfHire = dateOfHire;
+        this.dateOfHire = dateOfHire.trim();
     }
 
     public void setAddress(String address) {
-        this.address = address;
+        this.address = address.trim();
     }
 
     public void setJob(String job) {
-        this.job = job;
+        this.job = job.trim();
     }
 
     public void setPhones(ArrayList<Integer> phones) {
         this.phones = phones;
     }
-
 }

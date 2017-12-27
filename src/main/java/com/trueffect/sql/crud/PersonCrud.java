@@ -57,7 +57,7 @@ public class PersonCrud {
             if (query != null) {
                 query.close();
             }
-            return getPersonByIdentifier(connection, typeIdentifier, identifier);
+            return new Either();
         } catch (Exception exception) {
             ArrayList<String> listError = new ArrayList<String>();
             listError.add(exception.getMessage());
@@ -185,7 +185,6 @@ public class PersonCrud {
     public static Either updateStatusPerson(Connection connection, int idPerson, int idUserModifier, String status) {
 
         try {
-            Either eitherPerson = getPerson(connection, idPerson, "");
             String sql
                     = "UPDATE PERSON\n"
                     + "   SET status=?, "
@@ -201,7 +200,7 @@ public class PersonCrud {
             if (st != null) {
                 st.close();
             }
-            return new Either(CodeStatus.CREATED, eitherPerson.getFirstObject());
+            return new Either();
         } catch (Exception exception) {
             ArrayList<String> listError = new ArrayList<String>();
             listError.add(exception.getMessage());
@@ -250,8 +249,7 @@ public class PersonCrud {
             if (st != null) {
                 st.close();
             }
-            Either resPerson = getPerson(connection, idPerson, "");
-            return new Either(CodeStatus.CREATED, resPerson.getFirstObject());
+            return new Either();
         } catch (Exception exception) {
             ArrayList<String> listError = new ArrayList<String>();
             listError.add(exception.getMessage());
@@ -269,52 +267,50 @@ public class PersonCrud {
         Either eitherRes = new Either();
         try {
             String query
-                    = " SELECT LIST_PERSON.id, "
-                    + "        LIST_PERSON.type_identifier, "
-                    + "        LIST_PERSON.identifier, "
-                    + "        LIST_PERSON.last_name, "
-                    + "        LIST_PERSON.first_name, "
-                    + "        LIST_PERSON.genre, "
-                    + "        LIST_PERSON.birthday, "
-                    + "        LIST_PERSON.date_create, "
-                    + "        PERSON.last_name AS last_name_user_create, "
-                    + "        PERSON.first_name AS first_name_user_create \n"
+                    = " SELECT RENTER_USER.id, "
+                    + "        RENTER_USER.type_identifier, "
+                    + "        RENTER_USER.identifier,"
+                    + "        RENTER_USER.last_name,"
+                    + "        RENTER_USER.first_name,"
+                    + "        RENTER_USER.genre,"
+                    + "        RENTER_USER.birthday,"
+                    + "        RENTER_USER.date_create,"
+                    + "        PERSON.last_name AS last_name_user_create,"
+                    + "        PERSON.first_name AS first_name_user_create"
                     + "   FROM "
                     + "(SELECT id, "
                     + "        type_identifier, "
                     + "        identifier, "
                     + "        last_name, "
                     + "        first_name, "
-                    + "        genre, "
-                    + "        birthday,"
+                    + "        genre,"
+                    + "        birthday, "
                     + "        date_create, "
-                    + "        user_create\n"
-                    + "   FROM PERSON\n"
-                    + "  WHERE ";
+                    + "        user_create,"
+                    + "        status"
+                    + "   FROM person "
+                    + "  WHERE id NOT IN"
+                    + "(SELECT id_person"
+                    + "   FROM DATA_JOB"
+                    + "  WHERE enable_rent = false)) RENTER_USER,PERSON"
+                    + "  WHERE RENTER_USER.status= 'Active' "
+                    + "    AND RENTER_USER.user_create = PERSON.id";
 
             if (StringUtils.isNotBlank(typeId)) {
-                query = query + "type_identifier= '" + typeId + "' AND ";
+                query = query + " AND RENTER_USER.type_identifier = '" + typeId + "'";
             }
             if (StringUtils.isNotBlank(identifier)) {
-                query = query + "identifier= '" + identifier + "' AND ";
+                query = query + " AND RENTER_USER.identifier= '" + identifier + "' ";
             }
             if (StringUtils.isNotBlank(lastName)) {
-                query = query + "last_name LIKE '%" + lastName + "%' AND ";
+                query = query + " AND RENTER_USER.last_name LIKE '%" + lastName + "%'";
             }
             if (StringUtils.isNotBlank(firstName)) {
-                query = query + "first_name LIKE '%" + firstName + "%' AND ";
+                query = query + " AND RENTER_USER.first_name LIKE '%" + firstName + "%'";
             }
             if (StringUtils.isNotBlank(genre)) {
-                query = query + "genre= '" + genre + "' AND ";
+                query = query + " AND RENTER_USER.genre= '" + genre + "'";
             }
-
-            query = query + "  status= 'Active' )"
-                    + "        LIST_PERSON,PERSON\n"
-                    + "  WHERE LIST_PERSON.user_create=PERSON.id  "
-                    + "        AND LIST_PERSON.id\n"
-                    + " NOT IN ("
-                    + " SELECT id_person\n"
-                    + "    FROM DATA_JOB)";
             PreparedStatement st = connection.prepareStatement(query);
             ResultSet rs = st.executeQuery();
             PersonDetail person = new PersonDetail();

@@ -2,6 +2,7 @@ package com.trueffect.logica.person;
 
 import com.trueffect.conection.db.DataBasePostgres;
 import com.trueffect.conection.db.OperationDataBase;
+import com.trueffect.logica.permission.Permission;
 import com.trueffect.messages.Message;
 import com.trueffect.model.Job;
 import com.trueffect.model.Person;
@@ -11,7 +12,6 @@ import com.trueffect.sql.crud.JobCrud;
 import com.trueffect.sql.crud.PersonCrud;
 import com.trueffect.tools.CodeStatus;
 import com.trueffect.tools.ConstantData;
-import com.trueffect.tools.ConstantData.EmployeeWithPermissionModify;
 import com.trueffect.tools.ConstantData.Genre;
 import com.trueffect.tools.ConstantData.StatusPerson;
 import com.trueffect.tools.ConstantData.TypeIdentifier;
@@ -31,9 +31,11 @@ import org.apache.commons.lang3.StringUtils;
 public class PersonLogic {
 
     private HashMap<String, String> listData;
+    private Permission permission;
 
     public PersonLogic() {
         listData = new HashMap<String, String>();
+        permission = new Permission();
     }
 
     public Either createPerson(int idUserWhoCreate, Person person, PersonCreate conditiondata) {
@@ -43,7 +45,7 @@ public class PersonLogic {
             //open conection 
             connection = DataBasePostgres.getConection();
             //Validation of permission 
-            eitherRes = checkUserPermission(connection, idUserWhoCreate);
+            eitherRes = permission.checkUserPermission(connection, idUserWhoCreate);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -57,6 +59,10 @@ public class PersonLogic {
                 throw eitherRes;
             }
             eitherRes = PersonCrud.insertPerson(connection, idUserWhoCreate, person);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            eitherRes = PersonCrud.getPersonByIdentifier(connection, person.getTypeIdentifier(), person.getIdentifier());
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -77,7 +83,7 @@ public class PersonLogic {
             //open conection 
             connection = DataBasePostgres.getConection();
             //Check if the user can modify
-            eitherRes = checkUserPermission(connection, idUserModify);
+            eitherRes = permission.checkUserPermission(connection, idUserModify);
             if (eitherRes.existError()) {
                 //return eitherRes;
                 throw eitherRes;
@@ -88,6 +94,13 @@ public class PersonLogic {
                 throw eitherRes;
             }
             eitherRes = PersonCrud.updateStatusPerson(connection, idPerson, idUserModify, status);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            eitherRes = PersonCrud.getPerson(connection, idPerson, "");
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
             OperationDataBase.connectionCommit(connection);
 
         } catch (Either e) {
@@ -106,7 +119,7 @@ public class PersonLogic {
             //open conection 
             connection = DataBasePostgres.getConection();
             //Validation of data
-            eitherRes = checkUserPermission(connection, idUserModify);
+            eitherRes = permission.checkUserPermission(connection, idUserModify);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -139,6 +152,10 @@ public class PersonLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
+            eitherRes = PersonCrud.getPerson(connection, idRenter, "Active");
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
             OperationDataBase.connectionCommit(connection);
         } catch (Either exception) {
             eitherRes = exception;
@@ -147,28 +164,6 @@ public class PersonLogic {
             OperationDataBase.connectionClose(connection, eitherRes);
         }
         return eitherRes;
-    }
-
-    private Either checkUserPermission(Connection connection, int idUserModify) {
-        Either eitherJob = JobCrud.getJobOf(connection, idUserModify);
-        Either eitherRes = new Either();
-        ArrayList<String> listError = new ArrayList<String>();
-        if (eitherJob.haveModelObject()) {
-            String nameJob = ((Job) eitherJob.getFirstObject()).getNameJob();
-            try {
-                EmployeeWithPermissionModify employee = EmployeeWithPermissionModify.valueOf(nameJob);
-                return new Either();
-            } catch (Exception e) {
-                listData.clear();
-                listData.put("{typeData}", "Person");
-                String errorMgs = OperationString.generateMesage(Message.NOT_HAVE_PERMISSION, listData);
-                listError.add(errorMgs);
-                return new Either(CodeStatus.FORBIDDEN, listError);
-            }
-        } else {
-            listError.add(Message.NOT_FOUND_USER_MODIFY);
-            return new Either(CodeStatus.BAD_REQUEST, listError);
-        }
     }
 
     private Either getPerson(Connection connection, int idPerson, String status) {
@@ -233,7 +228,7 @@ public class PersonLogic {
             //open conection 
             connection = DataBasePostgres.getConection();
             //Check if the user can modify
-            eitherRes = checkUserPermission(connection, idUserSearch);
+            eitherRes = permission.checkUserPermission(connection, idUserSearch);
             if (eitherRes.existError()) {
                 //return eitherRes;
                 throw eitherRes;
@@ -311,9 +306,5 @@ public class PersonLogic {
         } catch (Exception e) {
         }
         return person;
-    }
-
-    private Either verifyStatusPerson(Connection connection, int idPerson, String status) {
-        return null;
     }
 }

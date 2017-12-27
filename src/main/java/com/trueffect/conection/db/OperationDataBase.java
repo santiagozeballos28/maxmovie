@@ -39,5 +39,4 @@ public class OperationDataBase {
             either.addError(ex.getMessage());
         }
     }
-
 }

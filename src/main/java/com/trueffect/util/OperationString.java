@@ -1,5 +1,6 @@
 package com.trueffect.util;
 
+import com.trueffect.model.Employee;
 import com.trueffect.model.Person;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -33,7 +34,6 @@ public class OperationString {
             String firstName = generateFirstName(person.getFirstName());
             person.setFirstName(firstName);
         }
-
     }
 
     public static String generateLastName(String lastName) {
@@ -52,5 +52,23 @@ public class OperationString {
         resFirstName = StringUtils.capitalize(firstName.toLowerCase());
         resFirstName = StringUtils.replace(resFirstName, "'", "''");
         return resFirstName;
+    }
+
+    public static void formatOfNameJob(Employee employee) {
+        if (StringUtils.isNotBlank(employee.getJob())) {
+            String job = generateNameJob(employee.getJob());
+            employee.setJob(job);
+        }
+    }
+
+    public static String generateNameJob(String job) {
+        String resJob = "";
+        String[] jobSplit = job.toLowerCase().split(" ");
+        for (String nameOfJob : jobSplit) {
+            resJob = resJob + StringUtils.capitalize(nameOfJob);
+        }
+        resJob = resJob.trim();
+        resJob = StringUtils.replace(resJob, "'", "''");
+        return resJob;
     }
 }

@@ -15,7 +15,8 @@ public class JobCrud {
     public static Either getJobOf(Connection connection, int idUser) {
         Either either = new Either();
         try {
-            String sql = "SELECT id, "
+            String sql
+                    = "SELECT id, "
                     + "       name_job\n"
                     + "  FROM data_job,"
                     + "       job\n"
@@ -30,8 +31,6 @@ public class JobCrud {
                 job = new Job(
                         rs.getInt("id"),
                         rs.getString("name_job"));
-
-                System.out.println("ES un trabajador");
             }
             either.setCode(CodeStatus.OK);
             either.addModeloObjet(job);
@@ -45,8 +44,10 @@ public class JobCrud {
     public static Either getJobOfName(Connection connection, String name) {
         Either either = new Either();
         try {
-            String sql = "SELECT id, name_job\n"
-                    + "  FROM job\n"
+            String sql
+                    = "SELECT id, "
+                    + "       name_job"
+                    + "  FROM job"
                     + "  WHERE name_job=?";
 
             PreparedStatement st = connection.prepareStatement(sql);

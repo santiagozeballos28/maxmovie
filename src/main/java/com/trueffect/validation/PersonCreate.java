@@ -18,8 +18,9 @@ public class PersonCreate implements DataCondition {
 
     protected HashMap<String, String> listData;
     protected int ageMinimum;
+
     public PersonCreate(int ageMinimum) {
-        this.ageMinimum =  ageMinimum;
+        this.ageMinimum = ageMinimum;
         listData = new HashMap<String, String>();
     }
 
@@ -30,7 +31,6 @@ public class PersonCreate implements DataCondition {
             return eitherRes;
         }
         return verifyData(resource);
-
     }
 
     protected Either verifyEmpty(ModelObject resource) {
@@ -50,7 +50,6 @@ public class PersonCreate implements DataCondition {
             listData.put("{typeData}", Message.IDENTIFIER);
             errorMessages = OperationString.generateMesage(Message.EMPTY_DATA, listData);
             listError.add(errorMessages);
-
         }
         //Validation empty last name
         if (PersonValidation.isEmpty(renterUser.getLastName())) {
@@ -190,8 +189,9 @@ public class PersonCreate implements DataCondition {
             listError.add(errorMessages);
         }
         //Validation of birthday
-        if (!PersonValidation.isValidAge(renterUser.getBirthday(),ageMinimum)) {
+        if (!PersonValidation.isValidAge(renterUser.getBirthday(), ageMinimum)) {
             listData.clear();
+            listData.put("{data}", ageMinimum + "");
             errorMessages = OperationString.generateMesage(Message.NOT_MEET_THE_AGE, listData);
             listError.add(errorMessages);
         }

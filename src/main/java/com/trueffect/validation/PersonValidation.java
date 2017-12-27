@@ -3,7 +3,6 @@ package com.trueffect.validation;
 import com.trueffect.tools.ConstantData.Genre;
 import com.trueffect.tools.ConstantData.TypeIdentifier;
 import com.trueffect.tools.RegularExpression;
-import com.trueffect.util.ModelObject;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -14,10 +13,9 @@ import java.util.regex.Pattern;
  */
 public class PersonValidation {
 
-    public static boolean isEmpty(String typeId) {
-        return typeId == null;
+    public static boolean isEmpty(String data) {
+        return data == null;
     }
-    
 
     public static boolean isValidTypeIdentifier(String typeId) {
         boolean res = true;
@@ -33,7 +31,6 @@ public class PersonValidation {
         return Pattern.matches(RegularExpression.CI, identifier)
                 || Pattern.matches(RegularExpression.PASS, identifier)
                 || Pattern.matches(RegularExpression.NIT, identifier);
-
     }
 
     public static boolean isValidFirstName(String firstName) {
@@ -69,12 +66,10 @@ public class PersonValidation {
         if (year < 1900) {
             return false;
         }
-
         try {
             Calendar calendar = Calendar.getInstance();
             calendar.setLenient(false);
             calendar.set(Calendar.YEAR, year);
-
             calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
             calendar.set(Calendar.MONTH, month - 1); // [0,...,11]
             Date date = calendar.getTime();
@@ -84,7 +79,6 @@ public class PersonValidation {
         } catch (Exception e) {
             return false;
         }
-
     }
 
     public static boolean isValidAge(String age, int ageMin) {
@@ -123,7 +117,6 @@ public class PersonValidation {
                         res = true;
                     }
                     break;
-
             }
         } catch (Exception e) {
         }

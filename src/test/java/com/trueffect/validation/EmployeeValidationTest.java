@@ -33,7 +33,7 @@ public class EmployeeValidationTest {
 
     @Test
     public void testAddress2() {
-        boolean expected = false;
+        boolean expected = true;
         String dateOfHire = "#Av. Ayacucho";
         Assert.assertEquals(EmployeeValidation.isValidAddress(dateOfHire), expected);
     }
