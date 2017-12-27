@@ -2,9 +2,10 @@ package com.trueffect.resources;
 
 import com.trueffect.logica.person.PersonLogic;
 import com.trueffect.response.MapperResponse;
-import com.trueffect.validation.RenterUserCreate;
+import com.trueffect.validation.PersonCreate;
 import com.trueffect.model.Person;
 import com.trueffect.response.Either;
+import com.trueffect.tools.ConstantData;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -20,7 +21,7 @@ import javax.ws.rs.core.Response;
 /*
  * @author santiago.mamani
  */
-@Path("renterUser")
+@Path("RenterUser")
 public class RenterUserResourse {
 
     private PersonLogic personLogic = new PersonLogic();
@@ -30,7 +31,7 @@ public class RenterUserResourse {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response insertRenterUser(@QueryParam("idModifyUser") int idModifyUser, Person renterUser) {
-        Either either = personLogic.createPerson(idModifyUser, renterUser, new RenterUserCreate());
+        Either either = personLogic.createPerson(idModifyUser, renterUser, new PersonCreate(ConstantData.MINIMUM_AGE_RENTER));
         Response response = mapper.toResponse(either);
         return response;
     }
@@ -38,8 +39,8 @@ public class RenterUserResourse {
     @PUT
     @Path("/{id}/updateStatus")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteById(@PathParam("id") int idUser, @QueryParam("idModifyUser") int idModifyUser, @QueryParam("status") String status) {
-        Either either = personLogic.deleteById(idUser, idModifyUser, status);
+    public Response updateStatus(@PathParam("id") int idUser, @QueryParam("idUserModify") int idUserModify, @QueryParam("status") String status) {
+        Either either = personLogic.updateStatus(idUser, idUserModify, status);
         Response response = mapper.toResponse(either);
         return response;
     }
@@ -62,7 +63,6 @@ public class RenterUserResourse {
             @QueryParam("lastName") String lastName,
             @QueryParam("firstName") String firstName,
             @QueryParam("genre") String genre) {
-
         Either eitherRenter = personLogic.get(idUserSearch, typeIdentifier, identifier, lastName, firstName, genre);
         Response response = mapper.toResponse(eitherRenter);
         return response;

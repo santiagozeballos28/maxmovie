@@ -13,7 +13,6 @@ public class OperationStringTest {
 
     @Test
     public void testTypeIdentifierPass() {
-        //The {data} is not valid. The valid format is as follows: {valid}
         String msgInput = Message.NOT_VALID_DATA;
         String msgOutputExpected = "The [Last name] [Manti$ago] is not valid. The valid format is as follows: (Letters = A-Za-z, apostrophes = ')";
         HashMap<String, String> listData = new HashMap<String, String>();
@@ -22,5 +21,45 @@ public class OperationStringTest {
         listData.put("{valid}", Message.VALID_LN);
         String res = OperationString.generateMesage(msgInput, listData);
         Assert.assertTrue(res.equals(msgOutputExpected));
+    }
+
+    @Test
+    public void testGenerateNameJobCustomCare1() {
+        String input = "Custom care";
+        String output = "CustomCare";
+        String resNameJob = OperationString.generateNameJob(input);
+        Assert.assertEquals(resNameJob, output);
+    }
+
+    @Test
+    public void testGenerateNameJobCustomCare2() {
+        String input = "custom     care";
+        String output = "CustomCare";
+        String resNameJob = OperationString.generateNameJob(input);
+        Assert.assertEquals(resNameJob, output);
+    }
+
+    @Test
+    public void testGenerateNameJob() {
+        String input = "   custom   care ";
+        String output = "CustomCare";
+        String resNameJob = OperationString.generateNameJob(input);
+        Assert.assertEquals(resNameJob, output);
+    }
+
+    @Test
+    public void testGenerateNameJobAdministrador() {
+        String input = "   administrator ";
+        String output = "Administrator";
+        String resNameJob = OperationString.generateNameJob(input);
+        Assert.assertEquals(resNameJob, output);
+    }
+
+    @Test
+    public void testGenerateNameJobCashier() {
+        String input = "   cashier ";
+        String output = "Cashier";
+        String resNameJob = OperationString.generateNameJob(input);
+        Assert.assertEquals(resNameJob, output);
     }
 }

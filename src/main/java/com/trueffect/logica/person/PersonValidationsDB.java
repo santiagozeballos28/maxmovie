@@ -31,7 +31,7 @@ public class PersonValidationsDB {
         if (eitherPerson.haveModelObject()) {
             listData.clear();
             listData.put("{typeData}", Message.NAMES);
-            listData.put("{data}", personNew.getLastName() + " = " + personNew.getFirstName());
+            listData.put("{data}", personNew.getLastName() + " " + personNew.getFirstName());
             errorMgs = OperationString.generateMesage(Message.DUPLICATE, listData);
             listError.add(errorMgs);
         }
@@ -45,10 +45,9 @@ public class PersonValidationsDB {
         String errorMgs = "";
         ArrayList<String> listError = new ArrayList<String>();
         HashMap<String, String> listData = new HashMap<String, String>();
-        Either eitherPersonOld = PersonCrud.getPerson(connection, id);
+        Either eitherPersonOld = PersonCrud.getPerson(connection, id, "");
         Person personAux = generatePersonAuxiliary((Person) eitherPersonOld.getFirstObject(), personNew);
         if (!PersonValidation.isValidIdentifier(personAux.getTypeIdentifier(), personAux.getIdentifier())) {
-
             listData.clear();
             listData.put("{typeData1}", Message.IDENTIFIER);
             listData.put("{typeData2}", Message.TYPE_IDENTIFIER);

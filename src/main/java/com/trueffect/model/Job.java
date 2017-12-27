@@ -42,6 +42,5 @@ public class Job extends ModelObject {
     @JsonIgnore
     public boolean isEmpty() {
         return id == 0 && nameJob == null;
-
     }
 }

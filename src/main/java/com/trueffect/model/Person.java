@@ -1,7 +1,6 @@
 package com.trueffect.model;
 
 import com.trueffect.util.ModelObject;
-import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 /*
@@ -111,18 +110,5 @@ public class Person extends ModelObject {
                 && firstName == null
                 && genre == null
                 && birthday == null;
-    }
-
-    public void formatOfTheName() {
-        firstName = StringUtils.capitalize(firstName.toLowerCase());
-        String[] lastNameAux = lastName.toLowerCase().split(" ");
-        lastName = "";
-        for (String lastN : lastNameAux) {
-            lastName = lastName + " " + StringUtils.capitalize(lastN);
-        }
-        lastName = lastName.trim();
-        // add apostrophe if exist (')
-        lastName = StringUtils.replace(lastName, "'", "''");
-        firstName = StringUtils.replace(firstName, "'", "''");
     }
 }

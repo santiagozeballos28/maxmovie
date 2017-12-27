@@ -18,9 +18,11 @@ public class RenterUserUpdate implements DataCondition {
 
     private String job;
     private HashMap<String, String> listData;
+    private int ageMinimum;
 
-    public RenterUserUpdate(String job) {
+    public RenterUserUpdate(String job, int ageMinimum) {
         this.job = job;
+        this.ageMinimum = ageMinimum;
         listData = new HashMap<String, String>();
     }
 
@@ -65,7 +67,6 @@ public class RenterUserUpdate implements DataCondition {
         listData.clear();
         if (job.equals("Administrator")) {
             if (!PersonValidation.isValidTypeIdentifier(renterUser.getTypeIdentifier())) {
-
                 listData.put("{typeData}", Message.TYPE_IDENTIFIER);
                 listData.put("{data}", renterUser.getTypeIdentifier());
                 listData.put("{valid}", Message.VALID_TI);
@@ -94,7 +95,6 @@ public class RenterUserUpdate implements DataCondition {
             listData.put("{typeData}", Message.IDENTIFIER);
             errorMessage = OperationString.generateMesage(Message.NOT_HAVE_PERMISSION, listData);
             listError.add(errorMessage);
-
         }
     }
 
@@ -137,7 +137,6 @@ public class RenterUserUpdate implements DataCondition {
             listData.put("{size}", ConstantData.MAXIMUM_NAMES + "");
             errorMessage = OperationString.generateMesage(Message.SIZE_MAX, listData);
             listError.add(errorMessage);
-
         }
     }
 
@@ -165,7 +164,7 @@ public class RenterUserUpdate implements DataCondition {
             listError.add(errorMessage);
         }
         //Validation of birthday
-        if (!PersonValidation.isValidAge(birthday, ConstantData.MINIMUM_AGE)) {
+        if (!PersonValidation.isValidAge(birthday, ageMinimum)) {
             listData.clear();
             errorMessage = OperationString.generateMesage(Message.NOT_MEET_THE_AGE, listData);
             listError.add(errorMessage);
