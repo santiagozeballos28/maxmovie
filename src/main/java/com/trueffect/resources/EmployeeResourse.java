@@ -40,6 +40,7 @@ public class EmployeeResourse {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateEmployee(@PathParam("id") int idUser, @QueryParam("idModifyUser") int idModifyUser, Employee employee) {
+        System.out.println("ESTA EN RESOUrCEs");
         Either eitherEmployee = employeeLogic.update(employee, idUser, idModifyUser);
         Response response = mapper.toResponse(eitherEmployee);
         return response;

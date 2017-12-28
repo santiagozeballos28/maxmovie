@@ -19,7 +19,7 @@ import com.trueffect.util.ModelObject;
 import com.trueffect.util.OperationString;
 import com.trueffect.validation.PersonCreate;
 import com.trueffect.validation.PersonValidation;
-import com.trueffect.validation.RenterUserUpdate;
+import com.trueffect.validation.PersonUpdate;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -137,7 +137,7 @@ public class PersonLogic {
                 throw eitherRes;
             }
             //update is a class to specifically validate the conditions to update a person
-            RenterUserUpdate rentUserUpdate = new RenterUserUpdate(
+            PersonUpdate rentUserUpdate = new PersonUpdate(
                     ((Job) eitherRes.getFirstObject()).getNameJob(),
                     ConstantData.MINIMUM_AGE_RENTER);
             OperationString.formatOfTheName(person);
@@ -149,7 +149,7 @@ public class PersonLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            eitherRes = PersonCrud.updateRenterUser(connection, idRenter, idUserModify, person);
+            eitherRes = PersonCrud.updatePerson(connection, idRenter, idUserModify, person);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }

@@ -2,9 +2,10 @@ package com.trueffect.sql.crud;
 
 import com.trueffect.model.Employee;
 import com.trueffect.model.Job;
-import com.trueffect.model.Person;
+import com.trueffect.model.Phone;
 import com.trueffect.response.Either;
 import com.trueffect.tools.CodeStatus;
+import com.trueffect.util.ModelObject;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -135,7 +136,7 @@ public class EmployeeCrud {
             String query
                     = "SELECT number_phone"
                     + "  FROM PHONE"
-                    + " WHERE id_person=?";
+                    + " WHERE id_person=? AND status = 'Active'";
             PreparedStatement st = connection.prepareStatement(query);
             st.setInt(1, idPerson);
             ResultSet rs = st.executeQuery();
@@ -149,6 +150,36 @@ public class EmployeeCrud {
                 st.close();
             }
             return new Either(CodeStatus.CREATED, employee);
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+    }
+
+    public static Either getDetailOfPhones(Connection connection, int idEmployee) {
+        try {
+            String query
+                    = "SELECT id_person, "
+                    + "       number_phone, "
+                    + "       status"
+                    + "  FROM phone"
+                    + " WHERE id_person = ?";
+            PreparedStatement st = connection.prepareStatement(query);
+            st.setInt(1, idEmployee);
+            ResultSet rs = st.executeQuery();
+            Either eitherRes = new Either();
+            while (rs.next()) {
+                eitherRes.addModeloObjet(new Phone(
+                        rs.getInt("id_person"),
+                        rs.getInt("number_phone"),
+                        rs.getString("status")));
+            }
+            eitherRes.setCode(CodeStatus.CREATED);
+            if (st != null) {
+                st.close();
+            }
+            return eitherRes;
         } catch (Exception exception) {
             ArrayList<String> listError = new ArrayList<String>();
             listError.add(exception.getMessage());
@@ -205,4 +236,59 @@ public class EmployeeCrud {
         }
     }
 
+    public static Either updateDataJob(Connection connection, int idEmployee, int idJob, Employee employee) {
+        try {
+            String sql
+                    = "UPDATE DATA_JOB\n"
+                    + "   SET ";
+            // variable to store the person attributes
+            String varSet = employee.getDateOfHire();
+            if (StringUtils.isNotBlank(varSet)) {
+                sql = sql + "date_of_hire= '" + varSet + "',";
+            }
+            varSet = employee.getAddress();
+            if (StringUtils.isNotBlank(varSet)) {
+                sql = sql + "address= '" + varSet + "',";
+            }
+
+            sql = sql + "     id_job= ?"
+                    + " WHERE id_person = ?";
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, idJob);
+            st.setInt(2, idEmployee);
+            st.execute();
+            if (st != null) {
+                st.close();
+            }
+            return new Either();
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+    }
+
+    public static Either updatePhone(Connection connection, int idEmployee, ArrayList<ModelObject> listPhone) {
+        try {
+            Statement query = (Statement) connection.createStatement();
+            String sql = "";
+            for (int i = 0; i < listPhone.size(); i++) {
+                Phone phone = (Phone) listPhone.get(i);
+                sql = sql
+                        + "UPDATE PHONE"
+                        + "   SET status= '" + phone.getStatus() + "'"
+                        + " WHERE number_phone= " + phone.getNumberPhone() + ";";
+            }
+            query.execute(sql);
+            if (query != null) {
+                query.close();
+            }
+            return new Either();
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+
+    }
 }

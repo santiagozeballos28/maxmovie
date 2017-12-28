@@ -208,8 +208,9 @@ public class PersonCrud {
         }
     }
 
-    public static Either updateRenterUser(Connection connection, int idPerson, int idUserModifier, Person person) {
+    public static Either updatePerson(Connection connection, int idPerson, int idUserModifier, Person person) {
         try {
+            System.out.println("entre UPDATE PERSON");
             String sql
                     = "UPDATE PERSON\n"
                     + "   SET ";
@@ -242,6 +243,9 @@ public class PersonCrud {
                     + "       date_modifier=  current_date,"
                     + "       user_modifier= ?"
                     + " WHERE id = ?";
+            
+            
+            System.out.println("SQL: " +sql);
             PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, idUserModifier);
             st.setInt(2, idPerson);
@@ -249,6 +253,7 @@ public class PersonCrud {
             if (st != null) {
                 st.close();
             }
+            System.out.println("BD FINISH");
             return new Either();
         } catch (Exception exception) {
             ArrayList<String> listError = new ArrayList<String>();

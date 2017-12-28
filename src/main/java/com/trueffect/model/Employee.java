@@ -1,6 +1,7 @@
 package com.trueffect.model;
 
 import java.util.ArrayList;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  * @author santiago.mamani
@@ -85,5 +86,10 @@ public class Employee extends Person {
 
     public void setPhones(ArrayList<Integer> phones) {
         this.phones = phones;
+    }
+
+    @JsonIgnore
+    public boolean haveDataJob() {
+        return dateOfHire != null || address != null || job != null;
     }
 }

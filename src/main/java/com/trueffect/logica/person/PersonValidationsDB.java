@@ -73,7 +73,7 @@ public class PersonValidationsDB {
             if (id != personEither.getId()) {
                 listData.clear();
                 listData.put("{typeData}", Message.NAMES);
-                listData.put("{data}", personAux.getLastName() + " = " + personAux.getFirstName());
+                listData.put("{data}", personAux.getLastName() + " " + personAux.getFirstName());
                 errorMgs = OperationString.generateMesage(Message.DUPLICATE, listData);
                 listError.add(errorMgs);
             }
