@@ -1,4 +1,4 @@
-package com.trueffect.logica.person;
+package com.trueffect.logica;
 
 import com.trueffect.messages.Message;
 import com.trueffect.model.Person;

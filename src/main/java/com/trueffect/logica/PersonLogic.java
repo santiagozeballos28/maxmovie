@@ -1,21 +1,16 @@
-package com.trueffect.logica.person;
+package com.trueffect.logica;
 
 import com.trueffect.conection.db.DataBasePostgres;
 import com.trueffect.conection.db.OperationDataBase;
-import com.trueffect.logica.permission.Permission;
 import com.trueffect.messages.Message;
 import com.trueffect.model.Job;
 import com.trueffect.model.Person;
-import com.trueffect.model.PersonDetail;
 import com.trueffect.response.Either;
 import com.trueffect.sql.crud.JobCrud;
 import com.trueffect.sql.crud.PersonCrud;
 import com.trueffect.tools.CodeStatus;
 import com.trueffect.tools.ConstantData;
-import com.trueffect.tools.ConstantData.Genre;
 import com.trueffect.tools.ConstantData.StatusPerson;
-import com.trueffect.tools.ConstantData.TypeIdentifier;
-import com.trueffect.util.ModelObject;
 import com.trueffect.util.OperationString;
 import com.trueffect.validation.PersonCreate;
 import com.trueffect.validation.PersonValidation;
@@ -103,7 +98,6 @@ public class PersonLogic {
                 throw eitherRes;
             }
             OperationDataBase.connectionCommit(connection);
-
         } catch (Either e) {
             eitherRes = e;
             OperationDataBase.connectionRollback(connection, eitherRes);
@@ -187,6 +181,7 @@ public class PersonLogic {
         }
         return eitherRes;
     }
+    //ask about this method
 
     private Either verifyStatus(Connection connection, int idRenter, String status) {
         ArrayList<String> listError = new ArrayList<String>();
@@ -197,7 +192,6 @@ public class PersonLogic {
                     return getPerson(connection, idRenter, "");
                 case Inactive:
                     return getPerson(connection, idRenter, "Active");
-
             }
             return new Either();
         } catch (Exception e) {
@@ -234,7 +228,9 @@ public class PersonLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            eitherRes = addDescription(eitherRes);
+
+            OperationModel operationModel = new OperationModel();
+            eitherRes = operationModel.addDescription(eitherRes);
             OperationDataBase.connectionCommit(connection);
 
         } catch (Either e) {
@@ -244,57 +240,5 @@ public class PersonLogic {
             OperationDataBase.connectionClose(connection, eitherRes);
         }
         return eitherRes;
-    }
-
-    private Either addDescription(Either either) {
-        Either eitherRes = new Either();
-        eitherRes.setCode(either.getCode());
-        ArrayList<ModelObject> listObject = either.getListObject();
-        for (int i = 0; i < listObject.size(); i++) {
-
-            PersonDetail person = addDescriptionTypeIdentifier((PersonDetail) listObject.get(i));
-            person = addDescriptionGenre(person);
-            eitherRes.addModeloObjet(person);
-        }
-        return eitherRes;
-    }
-
-    private PersonDetail addDescriptionTypeIdentifier(PersonDetail person) {
-        String typeIdPerson = person.getTypeIdentifier();
-        try {
-            TypeIdentifier typeIden = TypeIdentifier.valueOf(typeIdPerson);
-            switch (typeIden) {
-                case CI:
-                    person.setTypeIdDescription(Message.CI_DESCRIPTION);
-
-                    break;
-                case PASS:
-                    person.setTypeIdDescription(Message.PASS_DESCRIPTION);
-                    break;
-                case NIT:
-                    person.setTypeIdDescription(Message.NIT_DESCRIPTION);
-                    break;
-            }
-        } catch (Exception e) {
-        }
-        return person;
-    }
-
-    private PersonDetail addDescriptionGenre(PersonDetail person) {
-        String genrePerson = person.getGenre();
-        try {
-            Genre typeIden = Genre.valueOf(genrePerson);
-            switch (typeIden) {
-                case M:
-                    person.setGenre(Message.M_DESCRIPTION);
-
-                    break;
-                case F:
-                    person.setGenre(Message.F_DESCRIPTION);
-                    break;
-            }
-        } catch (Exception e) {
-        }
-        return person;
     }
 }

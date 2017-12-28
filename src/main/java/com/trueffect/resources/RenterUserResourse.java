@@ -1,6 +1,6 @@
 package com.trueffect.resources;
 
-import com.trueffect.logica.person.PersonLogic;
+import com.trueffect.logica.PersonLogic;
 import com.trueffect.response.MapperResponse;
 import com.trueffect.validation.PersonCreate;
 import com.trueffect.model.Person;

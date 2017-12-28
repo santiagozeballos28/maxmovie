@@ -1,6 +1,6 @@
 package com.trueffect.resources;
 
-import com.trueffect.logica.employee.EmployeeLogic;
+import com.trueffect.logica.EmployeeLogic;
 import com.trueffect.model.Employee;
 import com.trueffect.response.Either;
 import com.trueffect.response.MapperResponse;
@@ -48,8 +48,33 @@ public class EmployeeResourse {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getEmployee() {
-        Either either = employeeLogic.getEmployee("CI", "1234567");
+    public Response getEmployee(
+            @QueryParam("idUserSearch") int idUserSearch,
+            @QueryParam("typeIdentifier") String typeIdentifier,
+            @QueryParam("identifier") String identifier,
+            @QueryParam("lastName") String lastName,
+            @QueryParam("firstName") String firstName,
+            @QueryParam("genre") String genre,
+            @QueryParam("dateOfHire") String dateOfHire,
+            @QueryParam("job") String job) {
+        Either eitherRenter = employeeLogic.get(
+                idUserSearch,
+                typeIdentifier,
+                identifier,
+                lastName,
+                firstName,
+                genre,
+                dateOfHire,
+                job);
+        Response response = mapper.toResponse(eitherRenter);
+        return response;
+    }
+
+    @PUT
+    @Path("/{id}/updateStatus")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateStatus(@PathParam("id") int idEmployee, @QueryParam("idUserModify") int idUserModify, @QueryParam("status") String status) {
+        Either either = employeeLogic.updateStatus(idEmployee, idUserModify, status);
         Response response = mapper.toResponse(either);
         return response;
     }

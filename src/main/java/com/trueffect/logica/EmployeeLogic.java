@@ -1,9 +1,7 @@
-package com.trueffect.logica.employee;
+package com.trueffect.logica;
 
 import com.trueffect.conection.db.DataBasePostgres;
 import com.trueffect.conection.db.OperationDataBase;
-import com.trueffect.logica.permission.Permission;
-import com.trueffect.logica.person.PersonValidationsDB;
 import com.trueffect.messages.Message;
 import com.trueffect.model.Employee;
 import com.trueffect.model.Job;
@@ -15,6 +13,7 @@ import com.trueffect.sql.crud.JobCrud;
 import com.trueffect.sql.crud.PersonCrud;
 import com.trueffect.tools.CodeStatus;
 import com.trueffect.tools.ConstantData;
+import com.trueffect.tools.ConstantData.StatusPerson;
 import com.trueffect.util.ModelObject;
 import com.trueffect.util.OperationString;
 import com.trueffect.validation.EmployeeCreate;
@@ -32,9 +31,11 @@ import org.apache.commons.lang3.StringUtils;
 public class EmployeeLogic {
 
     private HashMap<String, String> listData;
+    private Permission permission;
 
     public EmployeeLogic() {
         listData = new HashMap<String, String>();
+        permission = new Permission();
     }
 
     public Either createEmployee(int idUserCreate, Employee employee, EmployeeCreate employeeCreate) {
@@ -44,7 +45,6 @@ public class EmployeeLogic {
             //open conection 
             connection = DataBasePostgres.getConection();
             //Validation of permission 
-            Permission permission = new Permission();
             eitherRes = permission.checkUserPermission(connection, idUserCreate);
             if (eitherRes.existError()) {
                 throw eitherRes;
@@ -132,7 +132,6 @@ public class EmployeeLogic {
             //open conection 
             connection = DataBasePostgres.getConection();
             //Validation of data
-            Permission permission = new Permission();
             eitherRes = permission.checkUserPermission(connection, idModifyUser);
             if (eitherRes.existError()) {
                 throw eitherRes;
@@ -337,5 +336,103 @@ public class EmployeeLogic {
             resPhones.add(numberPhone);
         }
         return resPhones;
+    }
+
+    public Either get(int idUserSearch, String typeId, String identifier, String lastName, String firstName, String genre, String dateOfHire, String job) {
+        Either eitherRes = new Either();
+        Connection connection = null;
+        try {
+            //open conection 
+            connection = DataBasePostgres.getConection();
+            //Check if the user can modify
+            eitherRes = permission.checkUserPermission(connection, idUserSearch);
+            if (eitherRes.existError()) {
+                //return eitherRes;
+                throw eitherRes;
+            }
+            if (StringUtils.isNotBlank(lastName)) {
+                lastName = OperationString.generateLastName(lastName);
+            }
+            if (StringUtils.isNotBlank(firstName)) {
+                firstName = OperationString.generateFirstName(firstName);
+            }
+            if (StringUtils.isNotBlank(job)) {
+                job = OperationString.generateNameJob(job);
+            }
+
+            //eitherRes = PersonCrud.getEmployeeBy(connection, typeId, identifier, lastName, firstName, genre);
+            eitherRes = EmployeeCrud.getEmployeeBy(connection, typeId, identifier, lastName, firstName, genre, dateOfHire, job);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            OperationModel operationModel = new OperationModel();
+            eitherRes = operationModel.addDescription(eitherRes);
+            OperationDataBase.connectionCommit(connection);
+
+        } catch (Either e) {
+            eitherRes = e;
+            OperationDataBase.connectionRollback(connection, eitherRes);
+        } finally {
+            OperationDataBase.connectionClose(connection, eitherRes);
+        }
+        return eitherRes;
+    }
+
+    public Either updateStatus(int idEmployee, int idUserModify, String status) {
+        Either eitherRes = new Either();
+        Connection connection = null;
+        try {
+            //open conection 
+            connection = DataBasePostgres.getConection();
+            //Check if the user can modify
+            eitherRes = permission.checkUserPermission(connection, idUserModify);
+            if (eitherRes.existError()) {
+                //return eitherRes;
+                throw eitherRes;
+            }
+
+            eitherRes = getEmployee(connection, idEmployee, "");
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+
+            //Validation Status(Active, Inactive)
+            eitherRes = verifyStatus(connection, status);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            eitherRes = PersonCrud.updateStatusPerson(connection, idEmployee, idUserModify, status);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            eitherRes = EmployeeCrud.getEmployee(connection, idEmployee, "");
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            OperationDataBase.connectionCommit(connection);
+
+        } catch (Either e) {
+            eitherRes = e;
+            OperationDataBase.connectionRollback(connection, eitherRes);
+        } finally {
+            OperationDataBase.connectionClose(connection, eitherRes);
+        }
+        return eitherRes;
+    }
+
+    private Either verifyStatus(Connection connection, String status) {
+        ArrayList<String> listError = new ArrayList<String>();
+        try {
+            StatusPerson statusPerson = StatusPerson.valueOf(status);
+            return new Either();
+        } catch (Exception e) {
+            listData.clear();
+            listData.put("{typeData}", "Status");
+            listData.put("{data}", status);
+            listData.put("{valid}", Message.VALID_STATUS);
+            String errorMgs = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
+            listError.add(errorMgs);
+            return new Either(CodeStatus.BAD_REQUEST, listError);
+        }
     }
 }

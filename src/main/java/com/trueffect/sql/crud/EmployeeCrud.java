@@ -1,6 +1,7 @@
 package com.trueffect.sql.crud;
 
 import com.trueffect.model.Employee;
+import com.trueffect.model.EmployeeDetail;
 import com.trueffect.model.Job;
 import com.trueffect.model.Phone;
 import com.trueffect.response.Either;
@@ -289,6 +290,102 @@ public class EmployeeCrud {
             listError.add(exception.getMessage());
             return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
         }
+    }
 
+    public static Either getEmployeeBy(
+            Connection connection,
+            String typeId,
+            String identifier,
+            String lastName,
+            String firstName,
+            String genre,
+            String dateOfHire,
+            String nameJob) {
+        Either eitherRes = new Either();
+        try {
+            String query
+                    = " SELECT EMPLOYEE.id, "
+                    + "        EMPLOYEE.type_identifier, "
+                    + "        EMPLOYEE.identifier, "
+                    + "        EMPLOYEE.last_name, "
+                    + "        EMPLOYEE.first_name, "
+                    + "        EMPLOYEE.genre, "
+                    + "        EMPLOYEE.birthday, "
+                    + "        EMPLOYEE.date_create, "
+                    + "        EMPLOYEE.date_of_hire, "
+                    + "        EMPLOYEE.address , "
+                    + "        EMPLOYEE.name_job, "
+                    + "        PERSON.last_name AS last_name_user_create, "
+                    + "        PERSON.first_name AS first_name_user_create "
+                    + "   FROM "
+                    + "(SELECT PERSON.id, "
+                    + "        type_identifier, "
+                    + "        identifier, "
+                    + "        last_name, "
+                    + "        first_name, "
+                    + "        genre, "
+                    + "        birthday, "
+                    + "        date_create, "
+                    + "        date_of_hire,"
+                    + "        address , "
+                    + "        name_job, "
+                    + "        user_create "
+                    + "  FROM PERSON, DATA_JOB, JOB "
+                    + "  WHERE status = 'Active' AND PERSON.id=DATA_JOB.id_person AND  DATA_JOB.id_job = JOB.id AND DATA_JOB.id_job = JOB.id ";
+
+            if (StringUtils.isNotBlank(typeId)) {
+                query = query + " AND type_identifier = '" + typeId + "'";
+            }
+            if (StringUtils.isNotBlank(identifier)) {
+                query = query + " AND identifier= '" + identifier + "' ";
+            }
+            if (StringUtils.isNotBlank(lastName)) {
+                query = query + " AND last_name LIKE '%" + lastName + "%'";
+            }
+            if (StringUtils.isNotBlank(firstName)) {
+                query = query + " AND first_name LIKE '%" + firstName + "%'";
+            }
+            if (StringUtils.isNotBlank(genre)) {
+                query = query + " AND genre= '" + genre + "'";
+            }
+
+            if (StringUtils.isNotBlank(nameJob)) {
+                query = query + " AND name_job= '" + nameJob + "'";
+            }
+            if (StringUtils.isNotBlank(dateOfHire)) {
+                query = query + " AND  date_of_hire = '" + dateOfHire + "'";
+            }
+            query = query + ") EMPLOYEE, PERSON "
+                    + " WHERE EMPLOYEE.user_create = PERSON.id";
+
+            PreparedStatement st = connection.prepareStatement(query);
+            ResultSet rs = st.executeQuery();
+            EmployeeDetail employeeDetail = new EmployeeDetail();
+            while (rs.next()) {
+                employeeDetail = new EmployeeDetail(
+                        rs.getInt("id"),
+                        rs.getString("type_identifier"),
+                        "",
+                        rs.getString("identifier"),
+                        rs.getString("last_name") + " " + rs.getString("first_name"),
+                        rs.getString("genre"),
+                        rs.getString("birthday"),
+                        rs.getString("date_create"),
+                        rs.getString("date_of_hire"),
+                        rs.getString("address"),
+                        rs.getString("name_job"),
+                        rs.getString("last_name_user_create") + " " + rs.getString("first_name_user_create"));
+                eitherRes.addModeloObjet(employeeDetail);
+            }
+            if (st != null) {
+                st.close();
+            }
+            eitherRes.setCode(CodeStatus.CREATED);
+            return eitherRes;
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
     }
 }
