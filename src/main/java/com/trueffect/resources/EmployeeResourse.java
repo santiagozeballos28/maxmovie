@@ -40,10 +40,28 @@ public class EmployeeResourse {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateEmployee(@PathParam("id") int idUser, @QueryParam("idModifyUser") int idModifyUser, Employee employee) {
-        System.out.println("ESTA EN RESOUrCEs");
         Either eitherEmployee = employeeLogic.update(employee, idUser, idModifyUser);
         Response response = mapper.toResponse(eitherEmployee);
         return response;
+    }
+
+    @PUT
+    @Path("/{id}/updateStatus")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateStatus(@PathParam("id") int idEmployee, @QueryParam("idUserModify") int idUserModify, @QueryParam("status") String status) {
+        Either either = employeeLogic.updateStatus(idEmployee, idUserModify, status);
+        Response response = mapper.toResponse(either);
+        return response;
+    }
+
+    @PUT
+    @Path("/updateBonus")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateBouns() {
+        //Either either = employeeLogic.updateStatus(idEmployee, idUserModify);
+        //Response response = mapper.toResponse(either);
+        // return response;
+        return null;
     }
 
     @GET
@@ -67,15 +85,6 @@ public class EmployeeResourse {
                 dateOfHire,
                 job);
         Response response = mapper.toResponse(eitherRenter);
-        return response;
-    }
-
-    @PUT
-    @Path("/{id}/updateStatus")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response updateStatus(@PathParam("id") int idEmployee, @QueryParam("idUserModify") int idUserModify, @QueryParam("status") String status) {
-        Either either = employeeLogic.updateStatus(idEmployee, idUserModify, status);
-        Response response = mapper.toResponse(either);
         return response;
     }
 }

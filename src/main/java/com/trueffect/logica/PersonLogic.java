@@ -149,6 +149,8 @@ public class PersonLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
+            //add aphostrophe "'".
+            OperationString.addApostrophe(person);
             eitherRes = PersonCrud.updatePerson(connection, idRenter, idUserModify, person);
             if (eitherRes.existError()) {
                 throw eitherRes;

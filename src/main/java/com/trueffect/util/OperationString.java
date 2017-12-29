@@ -25,6 +25,21 @@ public class OperationString {
         return res;
     }
 
+    public static void addApostrophe(Person person) {
+        if (StringUtils.isNotBlank(person.getLastName())) {
+            String lastName = addApostrophe(person.getLastName());
+            person.setLastName(lastName);
+        }
+        if (StringUtils.isNotBlank(person.getFirstName())) {
+            String firstName = addApostrophe(person.getFirstName());
+            person.setFirstName(firstName);
+        }
+    }
+
+    public static String addApostrophe(String name) {
+        return StringUtils.replace(name, "'", "''");
+    }
+
     public static void formatOfTheName(Person person) {
         if (StringUtils.isNotBlank(person.getLastName())) {
             String lastName = generateLastName(person.getLastName());
@@ -43,14 +58,12 @@ public class OperationString {
             resLastName = resLastName + " " + StringUtils.capitalize(lastN);
         }
         resLastName = resLastName.trim();
-        resLastName = StringUtils.replace(resLastName, "'", "''");
         return resLastName;
     }
 
     public static String generateFirstName(String firstName) {
         String resFirstName = "";
         resFirstName = StringUtils.capitalize(firstName.toLowerCase());
-        resFirstName = StringUtils.replace(resFirstName, "'", "''");
         return resFirstName;
     }
 
@@ -68,7 +81,6 @@ public class OperationString {
             resJob = resJob + StringUtils.capitalize(nameOfJob);
         }
         resJob = resJob.trim();
-        resJob = StringUtils.replace(resJob, "'", "''");
         return resJob;
     }
 }

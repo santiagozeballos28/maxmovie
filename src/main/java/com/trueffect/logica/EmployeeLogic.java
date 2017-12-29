@@ -164,6 +164,8 @@ public class EmployeeLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
+            //add aphostrophe "'".
+            OperationString.addApostrophe(employee);
             eitherRes = PersonCrud.updatePerson(connection, idEmployee, idModifyUser, employee);
             if (eitherRes.existError()) {
                 throw eitherRes;
