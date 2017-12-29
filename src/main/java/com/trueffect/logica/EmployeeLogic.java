@@ -397,7 +397,8 @@ public class EmployeeLogic {
             }
 
             //Validation Status(Active, Inactive)
-            eitherRes = verifyStatus(connection, status);
+            OperationModel operationModel = new OperationModel();
+            eitherRes = operationModel.verifyStatus(connection, status);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -418,21 +419,5 @@ public class EmployeeLogic {
             OperationDataBase.connectionClose(connection, eitherRes);
         }
         return eitherRes;
-    }
-
-    private Either verifyStatus(Connection connection, String status) {
-        ArrayList<String> listError = new ArrayList<String>();
-        try {
-            StatusPerson statusPerson = StatusPerson.valueOf(status);
-            return new Either();
-        } catch (Exception e) {
-            listData.clear();
-            listData.put("{typeData}", "Status");
-            listData.put("{data}", status);
-            listData.put("{valid}", Message.VALID_STATUS);
-            String errorMgs = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
-            listError.add(errorMgs);
-            return new Either(CodeStatus.BAD_REQUEST, listError);
-        }
     }
 }

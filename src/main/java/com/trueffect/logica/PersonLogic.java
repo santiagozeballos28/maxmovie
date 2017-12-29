@@ -84,8 +84,14 @@ public class PersonLogic {
                 //return eitherRes;
                 throw eitherRes;
             }
-            //Validation Status(Active, Inactive)
-            eitherRes = verifyStatus(connection, idPerson, status);
+            //Check if exist person
+            eitherRes = getPerson(connection, idPerson, "");
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            //Validation Status(Active, Inactive)          
+            OperationModel operationModel = new OperationModel();
+            eitherRes = operationModel.verifyStatus(connection, status);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -180,29 +186,6 @@ public class PersonLogic {
             return new Either(CodeStatus.NOT_FOUND, listError);
         }
         return eitherRes;
-    }
-    //ask about this method
-
-    private Either verifyStatus(Connection connection, int idRenter, String status) {
-        ArrayList<String> listError = new ArrayList<String>();
-        try {
-            StatusPerson statusPerson = StatusPerson.valueOf(status);
-            switch (statusPerson) {
-                case Active:
-                    return getPerson(connection, idRenter, "");
-                case Inactive:
-                    return getPerson(connection, idRenter, "Active");
-            }
-            return new Either();
-        } catch (Exception e) {
-            listData.clear();
-            listData.put("{typeData}", "Status");
-            listData.put("{data}", status);
-            listData.put("{valid}", Message.VALID_STATUS);
-            String errorMgs = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
-            listError.add(errorMgs);
-            return new Either(CodeStatus.BAD_REQUEST, listError);
-        }
     }
 
     public Either get(int idUserSearch, String typeId, String identifier, String lastName, String firstName, String genre) {

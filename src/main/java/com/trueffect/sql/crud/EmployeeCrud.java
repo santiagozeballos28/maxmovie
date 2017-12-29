@@ -330,8 +330,11 @@ public class EmployeeCrud {
                     + "        address , "
                     + "        name_job, "
                     + "        user_create "
-                    + "  FROM PERSON, DATA_JOB, JOB "
-                    + "  WHERE status = 'Active' AND PERSON.id=DATA_JOB.id_person AND  DATA_JOB.id_job = JOB.id AND DATA_JOB.id_job = JOB.id ";
+                    + "   FROM PERSON, DATA_JOB, JOB "
+                    + "  WHERE status = 'Active' "
+                    + "    AND PERSON.id=DATA_JOB.id_person "
+                    + "    AND DATA_JOB.id_job = JOB.id "
+                    + "    AND DATA_JOB.id_job = JOB.id ";
 
             if (StringUtils.isNotBlank(typeId)) {
                 query = query + " AND type_identifier = '" + typeId + "'";

@@ -143,20 +143,23 @@ public class PersonCrud {
     public static Either getPerson(Connection connection, int idPerson, String status) {
         try {
             String query
-                    = "SELECT id,"
-                    + "       type_identifier,"
+                    = "SELECT id, "
+                    + "       type_identifier, "
                     + "       identifier, "
                     + "       last_name, "
-                    + "       first_name,"
-                    + "       genre,"
-                    + "       birthday\n"
-                    + "  FROM PERSON "
-                    + " WHERE ";
-
+                    + "       first_name, "
+                    + "       genre, "
+                    + "       birthday"
+                    + "  FROM PERSON"
+                    + " WHERE id= ? ";
             if (StringUtils.isNotBlank(status)) {
-                query = query + "status = '" + status + "' AND ";
+                query = query + " AND status = '" + status + "'";
             }
-            query = query + "person.id = ?";
+            query = query
+                    + "   AND id"
+                    + "   NOT IN("
+                    + "SELECT id_person"
+                    + "  FROM DATA_JOB)";
             PreparedStatement st = connection.prepareStatement(query);
             st.setInt(1, idPerson);
             ResultSet rs = st.executeQuery();
