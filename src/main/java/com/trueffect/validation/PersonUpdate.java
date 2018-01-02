@@ -14,13 +14,13 @@ import java.util.HashMap;
 /*
  * @author santiago.mamani
  */
-public class RenterUserUpdate implements DataCondition {
+public class PersonUpdate implements DataCondition {
 
     private String job;
-    private HashMap<String, String> listData;
+    protected HashMap<String, String> listData;
     private int ageMinimum;
 
-    public RenterUserUpdate(String job, int ageMinimum) {
+    public PersonUpdate(String job, int ageMinimum) {
         this.job = job;
         this.ageMinimum = ageMinimum;
         listData = new HashMap<String, String>();

@@ -1,9 +1,14 @@
 package com.trueffect.validation;
 
+import com.trueffect.messages.Message;
+import com.trueffect.model.Person;
+import com.trueffect.response.Either;
+import com.trueffect.tools.CodeStatus;
 import com.trueffect.tools.ConstantData.Genre;
 import com.trueffect.tools.ConstantData.TypeIdentifier;
 import com.trueffect.tools.RegularExpression;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Pattern;
@@ -121,5 +126,16 @@ public class PersonValidation {
         } catch (Exception e) {
         }
         return res;
+    }
+
+    public static Either verifyId(Person person, int idRenter) {
+        ArrayList<String> listError = new ArrayList<String>();
+        if (person.getId() != 0) {
+            if (person.getId() != idRenter) {
+                listError.add(Message.CONFLCT_ID);
+                return new Either(CodeStatus.CONFLICT, listError);
+            }
+        }
+        return new Either();
     }
 }

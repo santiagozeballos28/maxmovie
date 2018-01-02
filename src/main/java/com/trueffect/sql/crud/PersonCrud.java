@@ -143,20 +143,23 @@ public class PersonCrud {
     public static Either getPerson(Connection connection, int idPerson, String status) {
         try {
             String query
-                    = "SELECT id,"
-                    + "       type_identifier,"
+                    = "SELECT id, "
+                    + "       type_identifier, "
                     + "       identifier, "
                     + "       last_name, "
-                    + "       first_name,"
-                    + "       genre,"
-                    + "       birthday\n"
-                    + "  FROM PERSON "
-                    + " WHERE ";
-
+                    + "       first_name, "
+                    + "       genre, "
+                    + "       birthday"
+                    + "  FROM PERSON"
+                    + " WHERE id= ? ";
             if (StringUtils.isNotBlank(status)) {
-                query = query + "status = '" + status + "' AND ";
+                query = query + " AND status = '" + status + "'";
             }
-            query = query + "person.id = ?";
+            query = query
+                    + "   AND id"
+                    + "   NOT IN("
+                    + "SELECT id_person"
+                    + "  FROM DATA_JOB)";
             PreparedStatement st = connection.prepareStatement(query);
             st.setInt(1, idPerson);
             ResultSet rs = st.executeQuery();
@@ -208,8 +211,9 @@ public class PersonCrud {
         }
     }
 
-    public static Either updateRenterUser(Connection connection, int idPerson, int idUserModifier, Person person) {
+    public static Either updatePerson(Connection connection, int idPerson, int idUserModifier, Person person) {
         try {
+            System.out.println("entre UPDATE PERSON");
             String sql
                     = "UPDATE PERSON\n"
                     + "   SET ";
@@ -322,6 +326,7 @@ public class PersonCrud {
                         rs.getString("identifier"),
                         rs.getString("last_name") + " " + rs.getString("first_name"),
                         rs.getString("genre"),
+                        "",
                         rs.getString("birthday"),
                         rs.getString("date_create"),
                         rs.getString("last_name_user_create") + " " + rs.getString("first_name_user_create"));
