@@ -63,11 +63,11 @@ public class OperationModel {
             ConstantData.Genre typeIden = ConstantData.Genre.valueOf(genrePerson);
             switch (typeIden) {
                 case M:
-                    person.setGenre(Message.M_DESCRIPTION);
+                    person.setGenreDescription(Message.M_DESCRIPTION);
 
                     break;
                 case F:
-                    person.setGenre(Message.F_DESCRIPTION);
+                    person.setGenreDescription(Message.F_DESCRIPTION);
                     break;
             }
         } catch (Exception e) {

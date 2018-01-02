@@ -373,6 +373,7 @@ public class EmployeeCrud {
                         rs.getString("identifier"),
                         rs.getString("last_name") + " " + rs.getString("first_name"),
                         rs.getString("genre"),
+                        "",
                         rs.getString("birthday"),
                         rs.getString("date_create"),
                         rs.getString("date_of_hire"),

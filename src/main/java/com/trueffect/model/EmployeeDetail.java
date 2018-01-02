@@ -20,6 +20,7 @@ public class EmployeeDetail extends PersonDetail {
             String identifier,
             String nameRenterUser,
             String genre,
+            String genreDescription,
             String birthday,
             String dateCreate,
             String dateOfHire,
@@ -33,6 +34,7 @@ public class EmployeeDetail extends PersonDetail {
                 identifier,
                 nameRenterUser,
                 genre,
+                genreDescription,
                 birthday,
                 dateCreate,
                 nameCreateUser);

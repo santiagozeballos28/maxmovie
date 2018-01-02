@@ -326,6 +326,7 @@ public class PersonCrud {
                         rs.getString("identifier"),
                         rs.getString("last_name") + " " + rs.getString("first_name"),
                         rs.getString("genre"),
+                        "",
                         rs.getString("birthday"),
                         rs.getString("date_create"),
                         rs.getString("last_name_user_create") + " " + rs.getString("first_name_user_create"));
