@@ -418,31 +418,4 @@ public class EmployeeLogic {
         }
         return eitherRes;
     }
-
-    public Either updateBond(int idUserModify) {
-        Either eitherRes = new Either();
-        Connection connection = null;
-        try {
-            //open conection 
-            connection = DataBasePostgres.getConection();
-            //Check if the user can modify
-            eitherRes = permission.checkUserPermission(connection, idUserModify);
-            if (eitherRes.existError()) {
-                //return eitherRes;
-                throw eitherRes;
-            }
-            eitherRes = EmployeeCrud.getAllDataJob(connection, idUserModify, "Active");
-            if (eitherRes.existError()) {
-                //return eitherRes;
-                throw eitherRes;
-            }
-            OperationDataBase.connectionCommit(connection);
-        } catch (Either e) {
-            eitherRes = e;
-            OperationDataBase.connectionRollback(connection, eitherRes);
-        } finally {
-            OperationDataBase.connectionClose(connection, eitherRes);
-        }
-        return eitherRes;
-    }
 }

@@ -54,16 +54,7 @@ public class EmployeeResourse {
         return response;
     }
 
-    @PUT
-    @Path("/updateBonus")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response updateBond( @QueryParam("idUserModify") int idUserModify) {
-        Either either = employeeLogic.updateBond(idUserModify);
-        Response response = mapper.toResponse(either);
-         return response;
-     }
-
-    @GET
+     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getEmployee(
             @QueryParam("idUserSearch") int idUserSearch,
