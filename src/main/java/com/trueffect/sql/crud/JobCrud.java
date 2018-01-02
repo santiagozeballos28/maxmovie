@@ -1,34 +1,70 @@
 package com.trueffect.sql.crud;
-import com.trueffect.response.ErrorResponse;
-import com.trueffect.conection.db.PostgresSQLConnection;
+
 import com.trueffect.model.Job;
+import com.trueffect.response.Either;
 import com.trueffect.tools.CodeStatus;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+
 /**
  * @author santiago.mamani
  */
 public class JobCrud {
-    public static Job getJobOf(int id)throws Exception {
-            Job job=null;
-            PostgresSQLConnection.connectionDB();
-            try {
-                          String sql = "SELECT id, name_job\n" +
-                             "  FROM data_job, job\n" +
-                             "  WHERE data_job.id_job= job.id AND id_person=?;" ;
 
-                PreparedStatement st = PostgresSQLConnection.connection.prepareStatement(sql);
-                st.setInt(1, id);
-                ResultSet rs = st.executeQuery();
+    public static Either getJobOf(Connection connection, int idUser) {
+        Either either = new Either();
+        try {
+            String sql
+                    = "SELECT id, "
+                    + "       name_job\n"
+                    + "  FROM data_job,"
+                    + "       job\n"
+                    + " WHERE data_job.id_job= job.id "
+                    + "   AND id_person=?;";
+
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, idUser);
+            ResultSet rs = st.executeQuery();
+            Job job = new Job();
             if (rs.next()) {
-               job = new Job(rs.getInt("id"), rs.getString("name_job"));
-            } else {
-               throw new ErrorResponse(CodeStatus.NOT_FOUND, "No existe el recurso not job");
+                job = new Job(
+                        rs.getInt("id"),
+                        rs.getString("name_job"));
             }
-            } catch (Exception e) {
-                throw new ErrorResponse(CodeStatus.NOT_FOUND, e.getMessage());
+            either.setCode(CodeStatus.OK);
+            either.addModeloObjet(job);
+        } catch (Exception exception) {
+            either.setCode(CodeStatus.INTERNAL_SERVER_ERROR);
+            either.addError(exception.getMessage());
+        }
+        return either;
+    }
+
+    public static Either getJobOfName(Connection connection, String name) {
+        Either either = new Either();
+        try {
+            String sql
+                    = "SELECT id, "
+                    + "       name_job"
+                    + "  FROM job"
+                    + "  WHERE name_job=?";
+
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, name);
+            ResultSet rs = st.executeQuery();
+            Job job = new Job();
+            if (rs.next()) {
+                job = new Job(
+                        rs.getInt("id"),
+                        rs.getString("name_job"));
             }
-            PostgresSQLConnection.closeDB();
-            return job;
-    }    
+            either.setCode(CodeStatus.OK);
+            either.addModeloObjet(job);
+        } catch (Exception exception) {
+            either.setCode(CodeStatus.INTERNAL_SERVER_ERROR);
+            either.addError(exception.getMessage());
+        }
+        return either;
+    }
 }

@@ -1,75 +1,141 @@
 package com.trueffect.validation;
+
+import com.trueffect.messages.Message;
 import com.trueffect.model.Person;
-import com.trueffect.sql.crud.PersonCrud;
-import com.trueffect.tools.DataResourse;
-import com.trueffect.tools.DataResourse.Genre;
-import com.trueffect.tools.DataResourse.TypeIdentifier;
+import com.trueffect.response.Either;
+import com.trueffect.tools.CodeStatus;
+import com.trueffect.tools.ConstantData.Genre;
+import com.trueffect.tools.ConstantData.TypeIdentifier;
 import com.trueffect.tools.RegularExpression;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.regex.Pattern;
+
 /*
  * @author santiago.mamani
  */
 public class PersonValidation {
-      
-    public static boolean isValidTypeIdentifier(String typeId){
-        TypeIdentifier typeIdentifier = null;
-        if (typeId.length()>0)
-           return typeId.equals(typeIdentifier.CI.name())||
-                  typeId.equals(typeIdentifier.PASS.name())||
-                  typeId.equals(typeIdentifier.NIT.name());
-        return false;
-    }
-      public static boolean isValidIdentifier(String identifier) {
-        if (identifier.length() > 0) {
-            return Pattern.matches(RegularExpression.CI,identifier)||
-                   Pattern.matches(RegularExpression.PASS,identifier)||
-                   Pattern.matches(RegularExpression.NIT,identifier) ;
-        }
-        return false;
+
+    public static boolean isEmpty(String data) {
+        return data == null;
     }
 
-    public static boolean isValidFirstName(String firstName, int size){
-         if(firstName.length()>0) 
-    return firstName.length()<= DataResourse.MAXIMUM_VALUES&&Pattern.matches(RegularExpression.FIRST_NAME,firstName);
-         return false;
+    public static boolean isValidTypeIdentifier(String typeId) {
+        boolean res = true;
+        try {
+            TypeIdentifier typeIdentifier = TypeIdentifier.valueOf(typeId);
+        } catch (Exception e) {
+            res = false;
+        }
+        return res;
     }
-    public  static boolean isValidSize(String name, int size){
-     return name.length()>=0 && name.length()<= DataResourse.MAXIMUM_VALUES;
+
+    public static boolean isValidIdentifier(String identifier) {
+        return Pattern.matches(RegularExpression.CI, identifier)
+                || Pattern.matches(RegularExpression.PASS, identifier)
+                || Pattern.matches(RegularExpression.NIT, identifier);
     }
-    
-   public static boolean isValidLastName(String lastName, int size){
-    if(lastName.length()>0) 
-        if(lastName.contains(" "))
-       return lastName.length()<= DataResourse.MAXIMUM_VALUES&&Pattern.matches(RegularExpression.LAST_NAME_TWO,lastName);
-        
-    return lastName.length()<= DataResourse.MAXIMUM_VALUES&&Pattern.matches(RegularExpression.LAST_NAME_ONE,lastName);
+
+    public static boolean isValidFirstName(String firstName) {
+        return Pattern.matches(RegularExpression.FIRST_NAME, firstName);
     }
-  
+
+    public static boolean isValidSize(String name, int size) {
+        return name.length() <= size;
+    }
+
+    public static boolean isValidLastName(String lastName) {
+        if (lastName.contains(" ")) {
+            return Pattern.matches(RegularExpression.LAST_NAME_TWO, lastName);
+        } else {
+            return Pattern.matches(RegularExpression.LAST_NAME_ONE, lastName);
+        }
+    }
+
     public static boolean isValidGenre(String genre) {
-        Genre genreEnum= null;
-        if (genre != null) {
-            return genre.equals(genreEnum.M.name()) || genre.equals(genreEnum.F.name());
+        Genre genreEnum = null;
+        return genre.equals(genreEnum.M.name()) || genre.equals(genreEnum.F.name());
+    }
+
+    public static boolean isValidBirthday(String dateBirthday) {
+        if (!Pattern.matches(RegularExpression.DATE, dateBirthday)) {
+            return false;
         }
-        return false;
-    }
+        String[] dates = dateBirthday.split("-");
+        int year = Integer.parseInt(dates[0]);
+        int month = Integer.parseInt(dates[1]);
+        int dayOfMonth = Integer.parseInt(dates[2]);
 
-    public static boolean isValidBirthday(String date) {
-        if (date.length() > 0) {
-            return Pattern.matches(RegularExpression.DATE, date);
+        if (year < 1900) {
+            return false;
         }
-        return false;
+        try {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setLenient(false);
+            calendar.set(Calendar.YEAR, year);
+            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            calendar.set(Calendar.MONTH, month - 1); // [0,...,11]
+            Date date = calendar.getTime();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            System.out.println(sdf.format(date)); // 01/01/2016
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
-   
 
-    public static boolean isValidIdentifier(String typeIdentifier, String identifier)  throws Exception{
-     return true;
+    public static boolean isValidAge(String age, int ageMin) {
+        boolean res = false;
+        String yearUser = age.substring(0, 4).trim();
+        try {
+            int yearNow = Calendar.getInstance().get(Calendar.YEAR);
+            int yearOfBirth = (int) Integer.parseInt(yearUser);
+            if ((yearNow - yearOfBirth) >= ageMin) {
+                res = true;
+            }
+        } catch (Exception e) {
+            res = false;
+        }
+        return res;
     }
 
-    public static boolean alreadyExists(String typeIdentifier, String identifier) throws Exception{
-       Person person = (Person)PersonCrud.getPersonByTypeIdentifier(typeIdentifier, identifier);
-      if(person == null){
-          return false;
-      }
-      return true;
+    public static boolean isValidIdentifier(String typeIdentifier, String identifier) {
+        boolean res = false;
+        try {
+            TypeIdentifier typeIden = TypeIdentifier.valueOf(typeIdentifier);
+            switch (typeIden) {
+
+                case CI:
+                    if (Pattern.matches(RegularExpression.CI, identifier)) {
+                        res = true;
+                    }
+                    break;
+                case PASS:
+                    if (Pattern.matches(RegularExpression.PASS, identifier)) {
+                        res = true;
+                    }
+                    break;
+                case NIT:
+                    if (Pattern.matches(RegularExpression.NIT, identifier)) {
+                        res = true;
+                    }
+                    break;
+            }
+        } catch (Exception e) {
+        }
+        return res;
+    }
+
+    public static Either verifyId(Person person, int idRenter) {
+        ArrayList<String> listError = new ArrayList<String>();
+        if (person.getId() != 0) {
+            if (person.getId() != idRenter) {
+                listError.add(Message.CONFLCT_ID);
+                return new Either(CodeStatus.CONFLICT, listError);
+            }
+        }
+        return new Either();
     }
 }

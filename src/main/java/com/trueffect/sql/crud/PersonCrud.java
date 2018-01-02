@@ -1,187 +1,346 @@
 package com.trueffect.sql.crud;
 
-import com.trueffect.response.CorrectResponse;
-import com.trueffect.response.ErrorResponse;
-import com.trueffect.response.MapperResponse;
-import com.trueffect.conection.db.PostgresSQLConnection;
-import com.trueffect.messages.Message;
 import com.trueffect.model.Person;
-
+import com.trueffect.model.PersonDetail;
+import com.trueffect.response.Either;
 import com.trueffect.tools.CodeStatus;
+
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.List;
-import javax.ws.rs.core.Response;
+import org.apache.commons.lang3.StringUtils;
 
 /*
  * @author santiago.mamani
  */
 public class PersonCrud {
 
-    public static Person insertrenterUser(int idJob, Person renterUser) throws Exception {
-      Person renterUserInserted=null;
-        
-            PostgresSQLConnection.connectionDB();
-            try {
-                String typeIdentifier = renterUser.getTypeIdentifier();
-                String identifier = renterUser.getIdentifier();
-                String lastName = renterUser.getLastName();
-                String firstName = renterUser.getFirstName();
-                String genre = renterUser.getGenre();
-                String birthay = renterUser.getBirthday();
-                Statement consulta = (Statement) PostgresSQLConnection.connection.createStatement();
-                String sql=
-                "INSERT INTO person(\n" +
-                " type_identifier, identifier, last_name, first_name, genre, \n" +
-                " birthday, date_create, user_create, date_modifier, user_modifier, \n" +
-                " status)\n" +
-                " VALUES ('"+typeIdentifier+"','"+identifier+"','"+lastName+"', '"
-                        +firstName+"','"+ genre+"','"+birthay+"','2017-12-08','"+idJob+"',null,null,'Active')";
-      
-                consulta.execute(sql);
-                String msg = "The user " + firstName + " " + lastName + " has been successfully inserted";
-                renterUserInserted = getByTypeIdentifier(typeIdentifier, identifier);
-              } catch (Exception e) {
-                throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-            }
-            PostgresSQLConnection.closeDB();
-            return renterUserInserted;
-    }
-
-    public static Person getRenterUser(int id) throws Exception{
-       Person renterUser = null;
+    public static Either insertPerson(Connection connection, int idJob, Person person) {
+        Statement query = null;
         try {
-            PostgresSQLConnection.connectionDB();
-            try {
-                renterUser = getRenterUserById(id);
-                } catch (Exception e) {
-                throw new ErrorResponse(CodeStatus.NOT_FOUND, e.getMessage());
+            String typeIdentifier = person.getTypeIdentifier();
+            String identifier = person.getIdentifier();
+            String lastName = person.getLastName();
+            String firstName = person.getFirstName();
+            String genre = person.getGenre();
+            String birthay = person.getBirthday();
+            query = (Statement) connection.createStatement();
+            //ident
+            String sql
+                    = "INSERT INTO PERSON("
+                    + "type_identifier, "
+                    + "identifier, "
+                    + "last_name, "
+                    + "first_name, "
+                    + "genre, "
+                    + "birthday, "
+                    + "date_create, "
+                    + "user_create, "
+                    + "date_modifier, "
+                    + "user_modifier, "
+                    + "status) \n"
+                    + "VALUES ('"
+                    + typeIdentifier + "','"
+                    + identifier + "','"
+                    + lastName + "', '"
+                    + firstName + "','"
+                    + genre + "','"
+                    + birthay + "', "
+                    + "current_date ,'"
+                    + idJob + "',"
+                    + "null,"
+                    + "null,"
+                    + "'Active')";
+            query.execute(sql);
+            if (query != null) {
+                query.close();
             }
-            PostgresSQLConnection.closeDB();
-        } catch (Exception e) {
-            throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            return new Either();
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
         }
-        return renterUser;
     }
 
-    public static Person getRenterUserById(int id) throws Exception {
-
-        Person renterUser = null;
-        String sql =  "SELECT id,type_identifier,identifier, last_name, first_name,genre,birthday\n" +
-                      "FROM person\n" +
-                      " WHERE person.id = ?\n" ;
-
-        PreparedStatement st = PostgresSQLConnection.connection.prepareStatement(sql);
-        st.setInt(1, id);
-        ResultSet rs = st.executeQuery();
-        if (rs.next()) {
-           renterUser = new Person(rs.getInt("id"), rs.getString("type_identifier"), rs.getString("identifier"), rs.getString("last_name"), rs.getString("first_name"), rs.getString("genre"), rs.getString("birthday"));
-        } else {
-            throw new ErrorResponse(CodeStatus.NOT_FOUND, Message.NOT_FOUND);
-        }
-        return renterUser;
-    }
-    public static List<Person> getAllRenterUser() throws Exception {
-        ArrayList<Person> persons= new ArrayList<Person>();
-        Person renterUser = null;
-        String sql = "SELECT type_identifier, identifier, last_name, first_name, genre, \n" +
-                     " birthday\n" +
-                     " FROM person" ;
+    public static Either getPersonByIdentifier(Connection connection, String typeIdentifier, String identifier) {
         try {
- PostgresSQLConnection.connectionDB();
-        PreparedStatement st = PostgresSQLConnection.connection.prepareStatement(sql);
-        ResultSet rs = st.executeQuery();
-        
-        if (rs.next()) {
-           renterUser = new Person(rs.getInt("id"), 
+            Statement query = (Statement) connection.createStatement();
+            String sql
+                    = "SELECT id,"
+                    + "       type_identifier, "
+                    + "       identifier, "
+                    + "       last_name, "
+                    + "       first_name, "
+                    + "       genre,"
+                    + "       birthday\n"
+                    + "  FROM PERSON "
+                    + " WHERE type_identifier = '" + typeIdentifier + "' "
+                    + "   AND identifier = '" + identifier + "'";
+            ResultSet rs = query.executeQuery(sql);
+            Person person = new Person();
+            if (rs.next()) {
+                person = new Person(
+                        rs.getInt("id"),
                         rs.getString("type_identifier"),
                         rs.getString("identifier"),
                         rs.getString("last_name"),
                         rs.getString("first_name"),
                         rs.getString("genre"),
                         rs.getString("birthday"));
-           persons.add(renterUser);
-            while (rs.next()) {
-           renterUser = new Person(rs.getInt("id"), 
+            }
+            if (query != null) {
+                query.close();
+            }
+            return new Either(CodeStatus.CREATED, person);
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+    }
+
+    public static Either getPersonByName(Connection connection, String lastName, String firstName) {
+        try {
+            String sqlGet
+                    = "SELECT id, "
+                    + "       type_identifier, "
+                    + "       identifier, "
+                    + "       last_name, "
+                    + "       first_name, "
+                    + "       genre, "
+                    + "       birthday\n"
+                    + "  FROM PERSON "
+                    + " WHERE last_name = '" + lastName + "' "
+                    + "   AND first_name='" + firstName + "'";
+
+            PreparedStatement st = connection.prepareStatement(sqlGet);
+            ResultSet rs = st.executeQuery();
+            Person person = new Person();
+            if (rs.next()) {
+                person = new Person(
+                        rs.getInt("id"),
                         rs.getString("type_identifier"),
                         rs.getString("identifier"),
                         rs.getString("last_name"),
                         rs.getString("first_name"),
                         rs.getString("genre"),
-                        rs.getString("birthday"));     
-           persons.add(renterUser);     
+                        rs.getString("birthday"));
             }
-        } else {
-            throw new ErrorResponse(CodeStatus.NOT_FOUND, Message.NOT_FOUND);
+            if (st != null) {
+                st.close();
+            }
+            return new Either(CodeStatus.CREATED, person);
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
         }
-        } catch (Exception e) {
-            //response = mapper.toResponse(new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
-        }
-         PostgresSQLConnection.closeDB();
-        return persons;
     }
 
-   
-
-    public static Person updateRenterUser(int id_user_create, Person aThis) {
-       return null;
-    }
-    
-    public static Person getPersonByTypeIdentifier(String typeIdentifier,String  identifier) throws Exception{     
-        Person renterUser = null;
-           try {
-            PostgresSQLConnection.connectionDB();
-            try {
-                renterUser = getByTypeIdentifier(typeIdentifier, identifier);
-                } catch (Exception e) {
-                throw new ErrorResponse(CodeStatus.NOT_FOUND, e.getMessage());
-            }
-            PostgresSQLConnection.closeDB();
-        } catch (Exception e) {
-            throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }
-        return renterUser;
-    }
-      private static Person getByTypeIdentifier(String type_identifier,String  identifier) throws Exception{
-          Person  renterUserPerson = null;
-            try {     
-                 Statement consulta = (Statement) PostgresSQLConnection.connection.createStatement();
-                 String sql = "SELECT id, type_identifier, identifier, last_name, first_name, genre, \n" +
-                              "  birthday\n" +
-                              "  FROM person\n" +
-                              "  WHERE status= 'Active' AND type_identifier = '"+type_identifier+"' AND identifier = '"+identifier+"';" ;
-
-                  ResultSet rs = consulta.executeQuery(sql);
-              if (rs.next()) {
-                   renterUserPerson = new Person(rs.getInt("id"), rs.getString("type_identifier"), rs.getString("identifier"), rs.getString("last_name"), rs.getString("first_name"), rs.getString("genre"), rs.getString("birthday"));
-            } else {
-                     throw new ErrorResponse(CodeStatus.NOT_FOUND, Message.NOT_FOUND);
-                   }     
-            } catch (Exception e) {
-                throw new ErrorResponse(CodeStatus.NOT_FOUND, e.getMessage());
-            }
-        return renterUserPerson;
-    }
-      public static int getIdOf(String lastName,String firstName) throws Exception{
-       int idPerson=0;
+    public static Either getPerson(Connection connection, int idPerson, String status) {
         try {
-            PostgresSQLConnection.connectionDB();
-            try {
-                
-                String sqlGet="SELECT id\n" +
-                              " FROM person\n" +
-                              " WHERE person.last_name = '"+lastName+"' AND person.first_name='"+firstName+"';";
-               // renterUser = getRenterUserById(id);
-                } catch (Exception e) {
-                throw new ErrorResponse(CodeStatus.NOT_FOUND, e.getMessage());
+            String query
+                    = "SELECT id, "
+                    + "       type_identifier, "
+                    + "       identifier, "
+                    + "       last_name, "
+                    + "       first_name, "
+                    + "       genre, "
+                    + "       birthday"
+                    + "  FROM PERSON"
+                    + " WHERE id= ? ";
+            if (StringUtils.isNotBlank(status)) {
+                query = query + " AND status = '" + status + "'";
             }
-            PostgresSQLConnection.closeDB();
-        } catch (Exception e) {
-            throw new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            query = query
+                    + "   AND id"
+                    + "   NOT IN("
+                    + "SELECT id_person"
+                    + "  FROM DATA_JOB)";
+            PreparedStatement st = connection.prepareStatement(query);
+            st.setInt(1, idPerson);
+            ResultSet rs = st.executeQuery();
+            Person person = new Person();
+            if (rs.next()) {
+                person = new Person(
+                        rs.getInt("id"),
+                        rs.getString("type_identifier"),
+                        rs.getString("identifier"),
+                        rs.getString("last_name"),
+                        rs.getString("first_name"),
+                        rs.getString("genre"),
+                        rs.getString("birthday"));
+            }
+            if (st != null) {
+                st.close();
+            }
+            return new Either(CodeStatus.CREATED, person);
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
         }
-        return idPerson;
     }
-      
+
+    public static Either updateStatusPerson(Connection connection, int idPerson, int idUserModifier, String status) {
+
+        try {
+            String sql
+                    = "UPDATE PERSON\n"
+                    + "   SET status=?, "
+                    + "       date_modifier =  current_date ,"
+                    + "       user_modifier= ?"
+                    + " WHERE id = ?";
+
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, status);
+            st.setInt(2, idUserModifier);
+            st.setInt(3, idPerson);
+            st.execute();
+            if (st != null) {
+                st.close();
+            }
+            return new Either();
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+    }
+
+    public static Either updatePerson(Connection connection, int idPerson, int idUserModifier, Person person) {
+        try {
+            System.out.println("entre UPDATE PERSON");
+            String sql
+                    = "UPDATE PERSON\n"
+                    + "   SET ";
+            // variable to store the person attributes
+            String varSet = person.getTypeIdentifier();
+            if (varSet != null) {
+                sql = sql + "type_identifier= '" + varSet + "',";
+            }
+            varSet = person.getIdentifier();
+            if (varSet != null) {
+                sql = sql + "identifier= '" + varSet + "',";
+            }
+            varSet = person.getLastName();
+            if (varSet != null) {
+                sql = sql + "last_name= '" + varSet + "',";
+            }
+            varSet = person.getFirstName();
+            if (varSet != null) {
+                sql = sql + "first_name= '" + varSet + "',";
+            }
+            varSet = person.getGenre();
+            if (varSet != null) {
+                sql = sql + "genre= '" + varSet + "',";
+            }
+            varSet = person.getBirthday();
+            if (varSet != null) {
+                sql = sql + "birthday= '" + varSet + "',";
+            }
+            sql = sql
+                    + "       date_modifier=  current_date,"
+                    + "       user_modifier= ?"
+                    + " WHERE id = ?";
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, idUserModifier);
+            st.setInt(2, idPerson);
+            st.execute();
+            if (st != null) {
+                st.close();
+            }
+            return new Either();
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+    }
+
+    public static Either getPersonBy(
+            Connection connection,
+            String typeId,
+            String identifier,
+            String lastName,
+            String firstName,
+            String genre) {
+        Either eitherRes = new Either();
+        try {
+            String query
+                    = " SELECT RENTER_USER.id, "
+                    + "        RENTER_USER.type_identifier, "
+                    + "        RENTER_USER.identifier,"
+                    + "        RENTER_USER.last_name,"
+                    + "        RENTER_USER.first_name,"
+                    + "        RENTER_USER.genre,"
+                    + "        RENTER_USER.birthday,"
+                    + "        RENTER_USER.date_create,"
+                    + "        PERSON.last_name AS last_name_user_create,"
+                    + "        PERSON.first_name AS first_name_user_create"
+                    + "   FROM "
+                    + "(SELECT id, "
+                    + "        type_identifier, "
+                    + "        identifier, "
+                    + "        last_name, "
+                    + "        first_name, "
+                    + "        genre,"
+                    + "        birthday, "
+                    + "        date_create, "
+                    + "        user_create,"
+                    + "        status"
+                    + "   FROM person "
+                    + "  WHERE id NOT IN"
+                    + "(SELECT id_person"
+                    + "   FROM DATA_JOB"
+                    + "  WHERE enable_rent = false)) RENTER_USER,PERSON"
+                    + "  WHERE RENTER_USER.status= 'Active' "
+                    + "    AND RENTER_USER.user_create = PERSON.id";
+
+            if (StringUtils.isNotBlank(typeId)) {
+                query = query + " AND RENTER_USER.type_identifier = '" + typeId + "'";
+            }
+            if (StringUtils.isNotBlank(identifier)) {
+                query = query + " AND RENTER_USER.identifier= '" + identifier + "' ";
+            }
+            if (StringUtils.isNotBlank(lastName)) {
+                query = query + " AND RENTER_USER.last_name LIKE '%" + lastName + "%'";
+            }
+            if (StringUtils.isNotBlank(firstName)) {
+                query = query + " AND RENTER_USER.first_name LIKE '%" + firstName + "%'";
+            }
+            if (StringUtils.isNotBlank(genre)) {
+                query = query + " AND RENTER_USER.genre= '" + genre + "'";
+            }
+            PreparedStatement st = connection.prepareStatement(query);
+            ResultSet rs = st.executeQuery();
+            PersonDetail person = new PersonDetail();
+            while (rs.next()) {
+                person = new PersonDetail(
+                        rs.getInt("id"),
+                        rs.getString("type_identifier"),
+                        "",
+                        rs.getString("identifier"),
+                        rs.getString("last_name") + " " + rs.getString("first_name"),
+                        rs.getString("genre"),
+                        "",
+                        rs.getString("birthday"),
+                        rs.getString("date_create"),
+                        rs.getString("last_name_user_create") + " " + rs.getString("first_name_user_create"));
+                eitherRes.addModeloObjet(person);
+            }
+            if (st != null) {
+                st.close();
+            }
+            eitherRes.setCode(CodeStatus.CREATED);
+            return eitherRes;
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+    }
 }
