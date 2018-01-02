@@ -5,112 +5,224 @@ import com.trueffect.conection.db.OperationDataBase;
 import com.trueffect.messages.Message;
 import com.trueffect.model.Job;
 import com.trueffect.model.Person;
-import com.trueffect.response.ErrorResponse;
+import com.trueffect.response.Either;
 import com.trueffect.sql.crud.JobCrud;
 import com.trueffect.sql.crud.PersonCrud;
 import com.trueffect.tools.CodeStatus;
-import com.trueffect.tools.DataResourse;
-import com.trueffect.tools.DataResourse.EmployeeWithPermissionModify;
-import com.trueffect.util.DataCondition;
-import com.trueffect.util.ErrorContainer;
-import com.trueffect.validation.RenterUserUpdate;
+import com.trueffect.tools.ConstantData;
+import com.trueffect.util.OperationString;
+import com.trueffect.validation.PersonCreate;
+import com.trueffect.validation.PersonValidation;
+import com.trueffect.validation.PersonUpdate;
+
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.HashMap;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author santiago.mamani
  */
 public class PersonLogic {
 
-    public Person createPerson(int id, Person person, DataCondition conditiondata) throws Exception {
-        Person personRes = null;
-        ErrorContainer errorContainer = new ErrorContainer();
-        //open conection 
-        Connection connection = DataBasePostgres.getConection();
+    private HashMap<String, String> listData;
+    private Permission permission;
+
+    public PersonLogic() {
+        listData = new HashMap<String, String>();
+        permission = new Permission();
+    }
+
+    public Either createPerson(int idUserWhoCreate, Person person, PersonCreate conditiondata) {
+        Either eitherRes = new Either();
+        Connection connection = null;
         try {
-            //Validation of data 
-            conditiondata.complyCondition(person);
-            PersonValidationsDB.veriryDataInDataBase(connection, person);
-            personRes = PersonCrud.insertrenterUser(connection, id, person);
-            connection.commit();
-        } catch (ErrorResponse errorResponse) {
-            errorContainer.addError(new ErrorResponse(errorResponse.getCode(), errorResponse.getMessage()));
-            OperationDataBase.connectionRollback(connection, errorContainer);
-        } finally {
-            OperationDataBase.connectionClose(connection, errorContainer);
-        }
-        if (errorContainer.size() > 0) {
-            throw new ErrorResponse(errorContainer.getCodeStatusEnd(), errorContainer.allMessagesError());
-        }
-        return personRes;
-    }
-
-    public Person deleteById(int idPerson, int idUserModify) throws Exception {
-        Person res = null;
-        ErrorContainer errorContainer = new ErrorContainer();
-        Connection connection = DataBasePostgres.getConection();
-        try {
-            verifyPerson(connection, idPerson);
-            res = PersonCrud.deleteById(connection, idPerson, idUserModify);
-            connection.commit();
-        } catch (ErrorResponse e) {
-            errorContainer.addError(new ErrorResponse(e.getCode(), e.getMessage()));
-            OperationDataBase.connectionRollback(connection, errorContainer);
-        } finally {
-            OperationDataBase.connectionClose(connection, errorContainer);
-        }
-        if (errorContainer.size() > 0) {
-            throw new ErrorResponse(errorContainer.getCodeStatusEnd(), errorContainer.allMessagesError());
-        }
-        return res;
-    }
-
-    private static void verifyPerson(Connection connection, int idPerson) throws Exception {
-        Person person = PersonCrud.getPerson(connection, idPerson);
-        if (person == null) {
-            throw new ErrorResponse(CodeStatus.NOT_FOUND, Message.NOT_RESOURCE);
-        }
-    }
-
-    public Person update(Person person, int idRenter, int idUserModify) throws Exception {
-        Person personRes = null;
-        ErrorContainer errorContainer = new ErrorContainer();
-        //open conection 
-        Connection connection = DataBasePostgres.getConection();
-        try {
-            //Validation of data             
-            verifyModifierUser(connection, idUserModify);
-            Job job = JobCrud.getJobOf(connection, idUserModify);
-            RenterUserUpdate rentUserUpdate = new RenterUserUpdate();
-            rentUserUpdate.setIdUserModify(job.getNameJob());
-            rentUserUpdate.complyCondition(person);
-            PersonValidationsDB.verifyDataUpdate(connection, idRenter, person);
-            String setString = Generator.getStringSet(person);
-            personRes = PersonCrud.updateRenterUser(connection, idRenter, idUserModify, setString);
-            connection.commit();
-        } catch (ErrorResponse exception) {
-            errorContainer.addError(new ErrorResponse(exception.getCode(), exception.getMessage()));
-            OperationDataBase.connectionRollback(connection, errorContainer);
-        } finally {
-            OperationDataBase.connectionClose(connection, errorContainer);
-        }
-        if (errorContainer.size() > 0) {
-            throw new ErrorResponse(errorContainer.getCodeStatusEnd(), errorContainer.allMessagesError());
-        }
-        return personRes;
-    }
-
-    private void verifyModifierUser(Connection connection, int idUserModify) throws Exception {
-        Job job = JobCrud.getJobOf(connection, idUserModify);
-        if (job != null) {
-            String nameJob = job.getNameJob();
-            try {
-               EmployeeWithPermissionModify employee = EmployeeWithPermissionModify.valueOf(nameJob);
-            } catch (Exception e) {
-                throw new ErrorResponse(CodeStatus.FORBIDDEN, Message.NOT_HAVE_PERMISSION_FOR_MODIFY);
+            //open conection 
+            connection = DataBasePostgres.getConection();
+            //Validation of permission 
+            eitherRes = permission.checkUserPermission(connection, idUserWhoCreate);
+            if (eitherRes.existError()) {
+                throw eitherRes;
             }
-        } else {
-            throw new ErrorResponse(CodeStatus.FORBIDDEN, Message.NOT_HAVE_PERMISSION_FOR_MODIFY);
+            OperationString.formatOfTheName(person);
+            eitherRes = conditiondata.complyCondition(person);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            eitherRes = PersonValidationsDB.veriryDataInDataBase(connection, person);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            eitherRes = PersonCrud.insertPerson(connection, idUserWhoCreate, person);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            eitherRes = PersonCrud.getPersonByIdentifier(connection, person.getTypeIdentifier(), person.getIdentifier());
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            OperationDataBase.connectionCommit(connection);
+        } catch (Either e) {
+            eitherRes = e;
+            OperationDataBase.connectionRollback(connection, eitherRes);
+        } finally {
+            OperationDataBase.connectionClose(connection, eitherRes);
         }
+        return eitherRes;
     }
 
+    public Either updateStatus(int idPerson, int idUserModify, String status) {
+        Either eitherRes = new Either();
+        Connection connection = null;
+        try {
+            //open conection 
+            connection = DataBasePostgres.getConection();
+            //Check if the user can modify
+            eitherRes = permission.checkUserPermission(connection, idUserModify);
+            if (eitherRes.existError()) {
+                //return eitherRes;
+                throw eitherRes;
+            }
+            //Check if exist person
+            eitherRes = getPerson(connection, idPerson, "");
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            //Validation Status(Active, Inactive)          
+            OperationModel operationModel = new OperationModel();
+            eitherRes = operationModel.verifyStatus(connection, status);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            eitherRes = PersonCrud.updateStatusPerson(connection, idPerson, idUserModify, status);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            eitherRes = PersonCrud.getPerson(connection, idPerson, "");
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            OperationDataBase.connectionCommit(connection);
+        } catch (Either e) {
+            eitherRes = e;
+            OperationDataBase.connectionRollback(connection, eitherRes);
+        } finally {
+            OperationDataBase.connectionClose(connection, eitherRes);
+        }
+        return eitherRes;
+    }
+
+    public Either update(Person person, int idRenter, int idUserModify) {
+        Either eitherRes = new Either();
+        Connection connection = null;
+        try {
+            //open conection 
+            connection = DataBasePostgres.getConection();
+            //Validation of data
+            eitherRes = permission.checkUserPermission(connection, idUserModify);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            eitherRes = PersonValidation.verifyId(person, idRenter);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            eitherRes = getPerson(connection, idRenter, "Active");
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            eitherRes = JobCrud.getJobOf(connection, idUserModify);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            //update is a class to specifically validate the conditions to update a person
+            PersonUpdate rentUserUpdate = new PersonUpdate(
+                    ((Job) eitherRes.getFirstObject()).getNameJob(),
+                    ConstantData.MINIMUM_AGE_RENTER);
+            OperationString.formatOfTheName(person);
+            eitherRes = rentUserUpdate.complyCondition(person);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            eitherRes = PersonValidationsDB.verifyDataUpdate(connection, idRenter, person);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            //add aphostrophe "'".
+            OperationString.addApostrophe(person);
+            eitherRes = PersonCrud.updatePerson(connection, idRenter, idUserModify, person);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            eitherRes = PersonCrud.getPerson(connection, idRenter, "Active");
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            OperationDataBase.connectionCommit(connection);
+        } catch (Either exception) {
+            eitherRes = exception;
+            OperationDataBase.connectionRollback(connection, eitherRes);
+        } finally {
+            OperationDataBase.connectionClose(connection, eitherRes);
+        }
+        return eitherRes;
+    }
+
+    private Either getPerson(Connection connection, int idPerson, String status) {
+        Either eitherRes = new Either();
+        Person person = new Person();
+        ArrayList<String> listError = new ArrayList<String>();
+        try {
+            eitherRes = PersonCrud.getPerson(connection, idPerson, status);
+            person = (Person) eitherRes.getFirstObject();
+        } catch (Exception exception) {
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+        if (person.isEmpty()) {
+            listData.clear();
+            listData.put("{object}", "Person");
+            String errorMgs = OperationString.generateMesage(Message.NOT_FOUND, listData);
+            listError.add(errorMgs);
+            return new Either(CodeStatus.NOT_FOUND, listError);
+        }
+        return eitherRes;
+    }
+
+    public Either get(int idUserSearch, String typeId, String identifier, String lastName, String firstName, String genre) {
+        Either eitherRes = new Either();
+        Connection connection = null;
+        try {
+            //open conection 
+            connection = DataBasePostgres.getConection();
+            //Check if the user can modify
+            eitherRes = permission.checkUserPermission(connection, idUserSearch);
+            if (eitherRes.existError()) {
+                //return eitherRes;
+                throw eitherRes;
+            }
+            if (StringUtils.isNotBlank(lastName)) {
+                lastName = OperationString.generateLastName(lastName);
+            }
+
+            if (StringUtils.isNotBlank(firstName)) {
+                firstName = OperationString.generateFirstName(firstName);
+            }
+            eitherRes = PersonCrud.getPersonBy(connection, typeId, identifier, lastName, firstName, genre);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+
+            OperationModel operationModel = new OperationModel();
+            eitherRes = operationModel.addDescription(eitherRes);
+            OperationDataBase.connectionCommit(connection);
+
+        } catch (Either e) {
+            eitherRes = e;
+            OperationDataBase.connectionRollback(connection, eitherRes);
+        } finally {
+            OperationDataBase.connectionClose(connection, eitherRes);
+        }
+        return eitherRes;
+    }
 }
