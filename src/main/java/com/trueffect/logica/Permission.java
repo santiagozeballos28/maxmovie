@@ -23,7 +23,7 @@ public class Permission {
         listData = new HashMap<String, String>();
     }
 
-    public Either checkUserPermission(Connection connection, int idUserModify) {
+    public Either checkUserPermission(Connection connection, int idUserModify, String operation) {
         Either eitherJob = JobCrud.getJobOf(connection, idUserModify);
         Either eitherRes = new Either();
         ArrayList<String> listError = new ArrayList<String>();
@@ -38,6 +38,7 @@ public class Permission {
                     return new Either();
                 default:
                     listData.clear();
+                    listData.put("{operation}", operation);
                     listData.put("{typeData}", "Person");
                     String errorMgs = OperationString.generateMesage(Message.NOT_HAVE_PERMISSION, listData);
                     listError.add(errorMgs);

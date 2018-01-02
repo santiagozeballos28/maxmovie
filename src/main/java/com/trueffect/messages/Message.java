@@ -19,7 +19,7 @@ public class Message {
     //Message duplicate
     public static String DUPLICATE = "The [{typeData}] [{data}] already exists";
     // Message of permission
-    public static String NOT_HAVE_PERMISSION = "The user don't have permission to modify the [{typeData}]";
+    public static String NOT_HAVE_PERMISSION = "The user don't have permission to [{operation}] the [{typeData}]";
     // Message of results
     public static String NOT_FOUND = "The [{object}] requested record was not found";
     public static String NOT_FOUND_USER_MODIFY = "the user who wants to modify does not exist";

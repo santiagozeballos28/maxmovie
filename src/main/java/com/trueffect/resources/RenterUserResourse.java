@@ -53,7 +53,7 @@ public class RenterUserResourse {
         Response response = mapper.toResponse(eitherRenter);
         return response;
     }
-
+  
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRenterUser(
@@ -63,7 +63,13 @@ public class RenterUserResourse {
             @QueryParam("lastName") String lastName,
             @QueryParam("firstName") String firstName,
             @QueryParam("genre") String genre) {
-        Either eitherRenter = personLogic.get(idUserSearch, typeIdentifier, identifier, lastName, firstName, genre);
+        Either eitherRenter = personLogic.get(
+                idUserSearch, 
+                typeIdentifier,
+                identifier, 
+                lastName, 
+                firstName, 
+                genre);
         Response response = mapper.toResponse(eitherRenter);
         return response;
     }

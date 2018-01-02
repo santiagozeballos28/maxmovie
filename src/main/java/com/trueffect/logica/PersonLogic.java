@@ -40,7 +40,7 @@ public class PersonLogic {
             //open conection 
             connection = DataBasePostgres.getConection();
             //Validation of permission 
-            eitherRes = permission.checkUserPermission(connection, idUserWhoCreate);
+            eitherRes = permission.checkUserPermission(connection, idUserWhoCreate, "create");
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -49,6 +49,7 @@ public class PersonLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
+            OperationString.addApostrophe(person);
             eitherRes = PersonValidationsDB.veriryDataInDataBase(connection, person);
             if (eitherRes.existError()) {
                 throw eitherRes;
@@ -78,7 +79,7 @@ public class PersonLogic {
             //open conection 
             connection = DataBasePostgres.getConection();
             //Check if the user can modify
-            eitherRes = permission.checkUserPermission(connection, idUserModify);
+            eitherRes = permission.checkUserPermission(connection, idUserModify, "update status");
             if (eitherRes.existError()) {
                 //return eitherRes;
                 throw eitherRes;
@@ -119,7 +120,7 @@ public class PersonLogic {
             //open conection 
             connection = DataBasePostgres.getConection();
             //Validation of data
-            eitherRes = permission.checkUserPermission(connection, idUserModify);
+            eitherRes = permission.checkUserPermission(connection, idUserModify, "update");
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -144,12 +145,13 @@ public class PersonLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
+              //add aphostrophe "'".
+            OperationString.addApostrophe(person);
             eitherRes = PersonValidationsDB.verifyDataUpdate(connection, idRenter, person);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            //add aphostrophe "'".
-            OperationString.addApostrophe(person);
+          
             eitherRes = PersonCrud.updatePerson(connection, idRenter, idUserModify, person);
             if (eitherRes.existError()) {
                 throw eitherRes;
@@ -196,17 +198,18 @@ public class PersonLogic {
             //open conection 
             connection = DataBasePostgres.getConection();
             //Check if the user can modify
-            eitherRes = permission.checkUserPermission(connection, idUserSearch);
+            eitherRes = permission.checkUserPermission(connection, idUserSearch, "list");
             if (eitherRes.existError()) {
                 //return eitherRes;
                 throw eitherRes;
             }
             if (StringUtils.isNotBlank(lastName)) {
-                lastName = OperationString.generateLastName(lastName);
+                lastName = OperationString.generateLastName(lastName.trim());
+                lastName = OperationString.addApostrophe(lastName);
             }
-
             if (StringUtils.isNotBlank(firstName)) {
-                firstName = OperationString.generateFirstName(firstName);
+                firstName = OperationString.generateFirstName(firstName.trim());
+                firstName = OperationString.addApostrophe(firstName);
             }
             eitherRes = PersonCrud.getPersonBy(connection, typeId, identifier, lastName, firstName, genre);
             if (eitherRes.existError()) {

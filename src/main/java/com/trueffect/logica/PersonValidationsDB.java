@@ -29,9 +29,10 @@ public class PersonValidationsDB {
         }
         eitherPerson = PersonCrud.getPersonByName(connection, personNew.getLastName(), personNew.getFirstName());
         if (eitherPerson.haveModelObject()) {
+            Person personDB = (Person) eitherPerson.getFirstObject();
             listData.clear();
             listData.put("{typeData}", Message.NAMES);
-            listData.put("{data}", personNew.getLastName() + " " + personNew.getFirstName());
+            listData.put("{data}", personDB.getLastName() + " " + personDB.getFirstName());
             errorMgs = OperationString.generateMesage(Message.DUPLICATE, listData);
             listError.add(errorMgs);
         }
@@ -73,7 +74,7 @@ public class PersonValidationsDB {
             if (id != personEither.getId()) {
                 listData.clear();
                 listData.put("{typeData}", Message.NAMES);
-                listData.put("{data}", personAux.getLastName() + " " + personAux.getFirstName());
+                listData.put("{data}", personEither.getLastName() + " " + personEither.getFirstName());
                 errorMgs = OperationString.generateMesage(Message.DUPLICATE, listData);
                 listError.add(errorMgs);
             }

@@ -74,6 +74,7 @@ public class PersonUpdate implements DataCondition {
                 listError.add(errorMessage);
             }
         } else {
+            listData.put("{operation}", "update");
             listData.put("{typeData}", Message.TYPE_IDENTIFIER);
             errorMessage = OperationString.generateMesage(Message.NOT_HAVE_PERMISSION, listData);
             listError.add(errorMessage);
@@ -92,6 +93,7 @@ public class PersonUpdate implements DataCondition {
                 listError.add(errorMessage);
             }
         } else {
+            listData.put("{operation}", "update");
             listData.put("{typeData}", Message.IDENTIFIER);
             errorMessage = OperationString.generateMesage(Message.NOT_HAVE_PERMISSION, listData);
             listError.add(errorMessage);
@@ -166,6 +168,7 @@ public class PersonUpdate implements DataCondition {
         //Validation of birthday
         if (!PersonValidation.isValidAge(birthday, ageMinimum)) {
             listData.clear();
+            listData.put("{data}", ageMinimum + "");
             errorMessage = OperationString.generateMesage(Message.NOT_MEET_THE_AGE, listData);
             listError.add(errorMessage);
         }

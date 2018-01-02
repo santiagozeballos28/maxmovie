@@ -159,7 +159,8 @@ public class PersonCrud {
                     + "   AND id"
                     + "   NOT IN("
                     + "SELECT id_person"
-                    + "  FROM DATA_JOB)";
+                    + "  FROM DATA_JOB"
+                    + " WHERE enable_rent = FALSE)";
             PreparedStatement st = connection.prepareStatement(query);
             st.setInt(1, idPerson);
             ResultSet rs = st.executeQuery();
@@ -213,7 +214,6 @@ public class PersonCrud {
 
     public static Either updatePerson(Connection connection, int idPerson, int idUserModifier, Person person) {
         try {
-            System.out.println("entre UPDATE PERSON");
             String sql
                     = "UPDATE PERSON\n"
                     + "   SET ";
@@ -245,7 +245,7 @@ public class PersonCrud {
             sql = sql
                     + "       date_modifier=  current_date,"
                     + "       user_modifier= ?"
-                    + " WHERE id = ?";
+                    + " WHERE id = ?;";
             PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, idUserModifier);
             st.setInt(2, idPerson);
@@ -301,10 +301,10 @@ public class PersonCrud {
                     + "    AND RENTER_USER.user_create = PERSON.id";
 
             if (StringUtils.isNotBlank(typeId)) {
-                query = query + " AND RENTER_USER.type_identifier = '" + typeId + "'";
+                query = query + " AND RENTER_USER.type_identifier = '" + typeId.trim() + "'";
             }
             if (StringUtils.isNotBlank(identifier)) {
-                query = query + " AND RENTER_USER.identifier= '" + identifier + "' ";
+                query = query + " AND RENTER_USER.identifier= '" + identifier.trim() + "' ";
             }
             if (StringUtils.isNotBlank(lastName)) {
                 query = query + " AND RENTER_USER.last_name LIKE '%" + lastName + "%'";
@@ -313,7 +313,7 @@ public class PersonCrud {
                 query = query + " AND RENTER_USER.first_name LIKE '%" + firstName + "%'";
             }
             if (StringUtils.isNotBlank(genre)) {
-                query = query + " AND RENTER_USER.genre= '" + genre + "'";
+                query = query + " AND RENTER_USER.genre= '" + genre.trim() + "'";
             }
             PreparedStatement st = connection.prepareStatement(query);
             ResultSet rs = st.executeQuery();

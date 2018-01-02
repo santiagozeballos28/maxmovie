@@ -44,7 +44,7 @@ public class EmployeeLogic {
             //open conection 
             connection = DataBasePostgres.getConection();
             //Validation of permission 
-            eitherRes = permission.checkUserPermission(connection, idUserCreate);
+            eitherRes = permission.checkUserPermission(connection, idUserCreate,"create");
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -131,7 +131,7 @@ public class EmployeeLogic {
             //open conection 
             connection = DataBasePostgres.getConection();
             //Validation of data
-            eitherRes = permission.checkUserPermission(connection, idModifyUser);
+            eitherRes = permission.checkUserPermission(connection, idModifyUser,"update");
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -346,7 +346,7 @@ public class EmployeeLogic {
             //open conection 
             connection = DataBasePostgres.getConection();
             //Check if the user can modify
-            eitherRes = permission.checkUserPermission(connection, idUserSearch);
+            eitherRes = permission.checkUserPermission(connection, idUserSearch,"list");
             if (eitherRes.existError()) {
                 //return eitherRes;
                 throw eitherRes;
@@ -385,7 +385,7 @@ public class EmployeeLogic {
             //open conection 
             connection = DataBasePostgres.getConection();
             //Check if the user can modify
-            eitherRes = permission.checkUserPermission(connection, idUserModify);
+            eitherRes = permission.checkUserPermission(connection, idUserModify,"update status");
             if (eitherRes.existError()) {
                 //return eitherRes;
                 throw eitherRes;

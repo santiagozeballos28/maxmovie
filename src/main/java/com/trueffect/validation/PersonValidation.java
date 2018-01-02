@@ -90,9 +90,14 @@ public class PersonValidation {
         boolean res = false;
         String yearUser = age.substring(0, 4).trim();
         try {
-            int yearNow = Calendar.getInstance().get(Calendar.YEAR);
-            int yearOfBirth = (int) Integer.parseInt(yearUser);
-            if ((yearNow - yearOfBirth) >= ageMin) {
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date datePerson = dateFormat.parse(age);
+            Date dateNow = Calendar.getInstance().getTime();
+            long deference = dateNow.getTime() - datePerson.getTime();
+            int deferenceDays = (int) (deference / (1000 * 60 * 60 * 24));
+            int deferenceYear = deferenceDays/365;
+            if (deferenceYear >= ageMin) {
                 res = true;
             }
         } catch (Exception e) {
