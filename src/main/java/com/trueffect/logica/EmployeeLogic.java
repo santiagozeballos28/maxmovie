@@ -13,7 +13,6 @@ import com.trueffect.sql.crud.JobCrud;
 import com.trueffect.sql.crud.PersonCrud;
 import com.trueffect.tools.CodeStatus;
 import com.trueffect.tools.ConstantData;
-import com.trueffect.tools.ConstantData.StatusPerson;
 import com.trueffect.util.ModelObject;
 import com.trueffect.util.OperationString;
 import com.trueffect.validation.EmployeeCreate;
@@ -361,7 +360,6 @@ public class EmployeeLogic {
             if (StringUtils.isNotBlank(job)) {
                 job = OperationString.generateNameJob(job);
             }
-
             //eitherRes = PersonCrud.getEmployeeBy(connection, typeId, identifier, lastName, firstName, genre);
             eitherRes = EmployeeCrud.getEmployeeBy(connection, typeId, identifier, lastName, firstName, genre, dateOfHire, job);
             if (eitherRes.existError()) {
@@ -392,12 +390,10 @@ public class EmployeeLogic {
                 //return eitherRes;
                 throw eitherRes;
             }
-
             eitherRes = getEmployee(connection, idEmployee, "");
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-
             //Validation Status(Active, Inactive)
             OperationModel operationModel = new OperationModel();
             eitherRes = operationModel.verifyStatus(connection, status);
@@ -435,15 +431,12 @@ public class EmployeeLogic {
                 //return eitherRes;
                 throw eitherRes;
             }
-
-            eitherRes = EmployeeCrud.getAllDataJob(connection,idUserModify,"Active");
+            eitherRes = EmployeeCrud.getAllDataJob(connection, idUserModify, "Active");
             if (eitherRes.existError()) {
                 //return eitherRes;
                 throw eitherRes;
             }
-
             OperationDataBase.connectionCommit(connection);
-
         } catch (Either e) {
             eitherRes = e;
             OperationDataBase.connectionRollback(connection, eitherRes);

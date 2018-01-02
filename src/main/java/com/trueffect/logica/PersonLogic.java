@@ -10,7 +10,6 @@ import com.trueffect.sql.crud.JobCrud;
 import com.trueffect.sql.crud.PersonCrud;
 import com.trueffect.tools.CodeStatus;
 import com.trueffect.tools.ConstantData;
-import com.trueffect.tools.ConstantData.StatusPerson;
 import com.trueffect.util.OperationString;
 import com.trueffect.validation.PersonCreate;
 import com.trueffect.validation.PersonValidation;
