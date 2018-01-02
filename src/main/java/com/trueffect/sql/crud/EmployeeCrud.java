@@ -1,6 +1,5 @@
 package com.trueffect.sql.crud;
 
-import com.trueffect.model.DataJob;
 import com.trueffect.model.Employee;
 import com.trueffect.model.EmployeeDetail;
 import com.trueffect.model.Job;
@@ -385,42 +384,6 @@ public class EmployeeCrud {
             if (st != null) {
                 st.close();
             }
-            eitherRes.setCode(CodeStatus.CREATED);
-            return eitherRes;
-        } catch (Exception exception) {
-            ArrayList<String> listError = new ArrayList<String>();
-            listError.add(exception.getMessage());
-            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
-        }
-    }
-
-    public static Either getAllDataJob(Connection connection, int idEmployee, String status) {
-        try {
-            String query
-                    = "SELECT id_person,"
-                    + "       date_of_hire, "
-                    + "       address"
-                    + "  FROM PERSON , DATA_JOB"
-                    + " WHERE PERSON.id = DATA_JOB.id_person";
-
-            if (StringUtils.isNotBlank(status)) {
-                query = query + " AND status = '" + status + "'";
-            }
-            PreparedStatement st = connection.prepareStatement(query);
-            ResultSet rs = st.executeQuery();
-            Either eitherRes = new Either();
-            DataJob dataJob = new DataJob();
-            while (rs.next()) {
-                dataJob = new DataJob(
-                        rs.getInt("id_person"),
-                        rs.getString("date_of_hire"),
-                        rs.getString("address"));
-                eitherRes.addModeloObjet(dataJob);
-            }
-            if (st != null) {
-                st.close();
-            }
-
             eitherRes.setCode(CodeStatus.CREATED);
             return eitherRes;
         } catch (Exception exception) {
