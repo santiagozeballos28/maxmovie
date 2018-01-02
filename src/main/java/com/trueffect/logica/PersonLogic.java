@@ -31,6 +31,7 @@ public class PersonLogic {
     public PersonLogic() {
         listData = new HashMap<String, String>();
         permission = new Permission();
+        permission.setNameObject("Person");
     }
 
     public Either createPerson(int idUserWhoCreate, Person person, PersonCreate conditiondata) {
@@ -215,7 +216,6 @@ public class PersonLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-
             OperationModel operationModel = new OperationModel();
             eitherRes = operationModel.addDescription(eitherRes);
             OperationDataBase.connectionCommit(connection);

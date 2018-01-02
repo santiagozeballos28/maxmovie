@@ -243,13 +243,14 @@ public class PersonCrud {
                 sql = sql + "birthday= '" + varSet + "',";
             }
             sql = sql
-                    + "       date_modifier=  current_date,"
-                    + "       user_modifier= ?"
-                    + " WHERE id = ?;";
+                    + "       date_modifier =  current_date,"
+                    + "       user_modifier = ?"
+                    + " WHERE id = ?";
             PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, idUserModifier);
             st.setInt(2, idPerson);
             st.execute();
+
             if (st != null) {
                 st.close();
             }

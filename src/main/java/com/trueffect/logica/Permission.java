@@ -18,9 +18,14 @@ import java.util.HashMap;
 public class Permission {
 
     private HashMap<String, String> listData;
+    private String nameObject;
 
     public Permission() {
         listData = new HashMap<String, String>();
+    }
+
+    public void setNameObject(String nameObject) {
+        this.nameObject = nameObject;
     }
 
     public Either checkUserPermission(Connection connection, int idUserModify, String operation) {
@@ -39,7 +44,7 @@ public class Permission {
                 default:
                     listData.clear();
                     listData.put("{operation}", operation);
-                    listData.put("{typeData}", "Person");
+                    listData.put("{typeData}", nameObject);
                     String errorMgs = OperationString.generateMesage(Message.NOT_HAVE_PERMISSION, listData);
                     listError.add(errorMgs);
                     return new Either(CodeStatus.FORBIDDEN, listError);
