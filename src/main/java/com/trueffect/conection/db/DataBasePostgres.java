@@ -1,10 +1,10 @@
 package com.trueffect.conection.db;
 
+import com.trueffect.response.Either;
 import com.trueffect.tools.CodeStatus;
-import com.trueffect.response.ErrorResponse;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  * @author santiago.mamani
@@ -16,22 +16,26 @@ public class DataBasePostgres {
     public DataBasePostgres() {
     }
 
-    public static Connection getConection() throws Exception {
+    public static Connection getConection()  throws Either{
         try {
             Class.forName(DataConection.DRIVER);
             connection = DriverManager.getConnection(DataConection.SERVER, DataConection.USER, DataConection.PASSWORD);
             connection.setAutoCommit(false);
-        } catch (Exception e) {
-            new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } catch (Exception exception) {
+            ArrayList<String> listError =  new ArrayList<String>();
+            listError.add(exception.getMessage());
+          throw new Either(CodeStatus.INTERNAL_SERVER_ERROR,listError);
         }
         return connection;
     }
 
-    public static void close() throws Exception {
+    public static void close() throws Either {
         try {
             connection.close();
-        } catch (SQLException ex) {
-            new ErrorResponse(CodeStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+        } catch (Exception exception) {
+            ArrayList<String> listError =  new ArrayList<String>();
+            listError.add(exception.getMessage());
+          throw new Either(CodeStatus.INTERNAL_SERVER_ERROR,listError);
         }
     }
 }

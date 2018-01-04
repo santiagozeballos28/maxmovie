@@ -1,8 +1,15 @@
 package com.trueffect.validation;
 
-import com.trueffect.tools.DataResourse.Genre;
-import com.trueffect.tools.DataResourse.TypeIdentifier;
+import com.trueffect.messages.Message;
+import com.trueffect.model.Person;
+import com.trueffect.response.Either;
+import com.trueffect.tools.CodeStatus;
+import com.trueffect.tools.ConstantData.Genre;
+import com.trueffect.tools.ConstantData.TypeIdentifier;
 import com.trueffect.tools.RegularExpression;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Pattern;
 
@@ -11,8 +18,8 @@ import java.util.regex.Pattern;
  */
 public class PersonValidation {
 
-    public static boolean isEmpty(String typeId) {
-        return typeId == null;
+    public static boolean isEmpty(String data) {
+        return data == null;
     }
 
     public static boolean isValidTypeIdentifier(String typeId) {
@@ -29,7 +36,6 @@ public class PersonValidation {
         return Pattern.matches(RegularExpression.CI, identifier)
                 || Pattern.matches(RegularExpression.PASS, identifier)
                 || Pattern.matches(RegularExpression.NIT, identifier);
-
     }
 
     public static boolean isValidFirstName(String firstName) {
@@ -53,19 +59,45 @@ public class PersonValidation {
         return genre.equals(genreEnum.M.name()) || genre.equals(genreEnum.F.name());
     }
 
-    public static boolean isValidBirthday(String date) {
-        return Pattern.matches(RegularExpression.DATE, date);
+    public static boolean isValidBirthday(String dateBirthday) {
+        if (!Pattern.matches(RegularExpression.DATE, dateBirthday)) {
+            return false;
+        }
+        String[] dates = dateBirthday.split("-");
+        int year = Integer.parseInt(dates[0]);
+        int month = Integer.parseInt(dates[1]);
+        int dayOfMonth = Integer.parseInt(dates[2]);
+
+        if (year < 1900) {
+            return false;
+        }
+        try {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setLenient(false);
+            calendar.set(Calendar.YEAR, year);
+            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            calendar.set(Calendar.MONTH, month - 1); // [0,...,11]
+            Date date = calendar.getTime();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            System.out.println(sdf.format(date)); // 01/01/2016
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
-    public static boolean isValidAge(String age) {
+    public static boolean isValidAge(String age, int ageMin) {
         boolean res = false;
-        Date date = new Date();
-        String yearUser = age.substring(6).trim();      
+        String yearUser = age.substring(0, 4).trim();
         try {
-            int yearNow =(int) date.getYear()%100;
-            yearNow =  yearNow + 2000;
-            int yearOfBirth = (int) Integer.parseInt(yearUser);
-            if ((yearNow - yearOfBirth) >= 15) {
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date datePerson = dateFormat.parse(age);
+            Date dateNow = Calendar.getInstance().getTime();
+            long deference = dateNow.getTime() - datePerson.getTime();
+            int deferenceDays = (int) (deference / (1000 * 60 * 60 * 24));
+            int deferenceYear = deferenceDays/365;
+            if (deferenceYear >= ageMin) {
                 res = true;
             }
         } catch (Exception e) {
@@ -95,11 +127,20 @@ public class PersonValidation {
                         res = true;
                     }
                     break;
-
             }
         } catch (Exception e) {
         }
         return res;
     }
 
+    public static Either verifyId(Person person, int idRenter) {
+        ArrayList<String> listError = new ArrayList<String>();
+        if (person.getId() != 0) {
+            if (person.getId() != idRenter) {
+                listError.add(Message.CONFLCT_ID);
+                return new Either(CodeStatus.CONFLICT, listError);
+            }
+        }
+        return new Either();
+    }
 }

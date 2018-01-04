@@ -1,13 +1,13 @@
-
 package com.trueffect.model;
 
 import com.trueffect.util.ModelObject;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
- *
  * @author santiago.mamani
  */
-public class Job extends ModelObject{
+public class Job extends ModelObject {
+
     private int id;
     protected String nameJob;
 
@@ -34,8 +34,13 @@ public class Job extends ModelObject{
     public void setNameJob(String nameJob) {
         this.nameJob = nameJob;
     }
-    public int compareTo(Job o){
-    return nameJob.compareTo(o.nameJob);
+
+    public int compareTo(Job o) {
+        return nameJob.compareTo(o.nameJob);
     }
-    
+
+    @JsonIgnore
+    public boolean isEmpty() {
+        return id == 0 && nameJob == null;
+    }
 }

@@ -1,19 +1,20 @@
 package com.trueffect.model;
 
 import com.trueffect.util.ModelObject;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /*
  * @author santiago.mamani
  */
 public class Person extends ModelObject {
 
-    private int id;
-    public String typeIdentifier;
-    public String identifier;
-    public String lastName;
-    public String firstName;
-    public String genre;
-    public String birthday;
+    protected int id;
+    protected String typeIdentifier;
+    protected String identifier;
+    protected String lastName;
+    protected String firstName;
+    protected String genre;
+    protected String birthday;
 
     public Person() {
     }
@@ -24,6 +25,14 @@ public class Person extends ModelObject {
         this.identifier = identifier.trim();
         this.lastName = lastName.trim();
         this.firstName = firstName.trim();
+        this.genre = genre.trim();
+        this.birthday = birthday.trim();
+    }
+
+    public Person(int id, String typeIdentifier, String identifier, String genre, String birthday) {
+        this.id = id;
+        this.typeIdentifier = typeIdentifier.trim();
+        this.identifier = identifier.trim();
         this.genre = genre.trim();
         this.birthday = birthday.trim();
     }
@@ -61,27 +70,27 @@ public class Person extends ModelObject {
     }
 
     public void setTypeIdentifier(String typeIdentifier) {
-        this.typeIdentifier = typeIdentifier;
+        this.typeIdentifier = typeIdentifier.trim();
     }
 
     public void setIdentifier(String identifier) {
-        this.identifier = identifier;
+        this.identifier = identifier.trim();
     }
 
     public void setLastName(String lastName) {
-        this.lastName = lastName;
+        this.lastName = lastName.trim();
     }
 
     public void setFirstName(String firstName) {
-        this.firstName = firstName;
+        this.firstName = firstName.trim();
     }
 
     public void setGenre(String genre) {
-        this.genre = genre;
+        this.genre = genre.trim();
     }
 
     public void setBirthday(String birthday) {
-        this.birthday = birthday;
+        this.birthday = birthday.trim();
     }
 
     public int compareTo(Person o) {
@@ -93,4 +102,13 @@ public class Person extends ModelObject {
                 ? 0 : -1;
     }
 
+    @JsonIgnore
+    public boolean isEmpty() {
+        return id == 0
+                && typeIdentifier == null
+                && lastName == null
+                && firstName == null
+                && genre == null
+                && birthday == null;
+    }
 }

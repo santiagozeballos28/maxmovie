@@ -29,5 +29,4 @@ public class MyStatusType implements StatusType {
     public int getStatusCode() {
         return statusCode;
     }
-
 }
