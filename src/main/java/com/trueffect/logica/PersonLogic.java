@@ -1,7 +1,6 @@
 package com.trueffect.logica;
 
 import com.trueffect.conection.db.DataBasePostgres;
-import com.trueffect.conection.db.OperationDataBase;
 import com.trueffect.messages.Message;
 import com.trueffect.model.Job;
 import com.trueffect.model.Person;
@@ -63,12 +62,12 @@ public class PersonLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            OperationDataBase.connectionCommit(connection);
+            DataBasePostgres.connectionCommit(connection);
         } catch (Either e) {
             eitherRes = e;
-            OperationDataBase.connectionRollback(connection, eitherRes);
+            DataBasePostgres.connectionRollback(connection, eitherRes);
         } finally {
-            OperationDataBase.connectionClose(connection, eitherRes);
+            DataBasePostgres.connectionClose(connection, eitherRes);
         }
         return eitherRes;
     }
@@ -104,12 +103,12 @@ public class PersonLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            OperationDataBase.connectionCommit(connection);
+            DataBasePostgres.connectionCommit(connection);
         } catch (Either e) {
             eitherRes = e;
-            OperationDataBase.connectionRollback(connection, eitherRes);
+            DataBasePostgres.connectionRollback(connection, eitherRes);
         } finally {
-            OperationDataBase.connectionClose(connection, eitherRes);
+            DataBasePostgres.connectionClose(connection, eitherRes);
         }
         return eitherRes;
     }
@@ -148,12 +147,12 @@ public class PersonLogic {
             }
               //add aphostrophe "'".
             OperationString.addApostrophe(person);
-            eitherRes = PersonValidationsDB.verifyDataUpdate(connection, idRenter, person);
+            eitherRes = PersonValidationsDB.verifyDataUpdate(connection, person);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
           
-            eitherRes = PersonCrud.updatePerson(connection, idRenter, idUserModify, person);
+            eitherRes = PersonCrud.updatePerson(connection,idUserModify, person);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -161,12 +160,12 @@ public class PersonLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            OperationDataBase.connectionCommit(connection);
+            DataBasePostgres.connectionCommit(connection);
         } catch (Either exception) {
             eitherRes = exception;
-            OperationDataBase.connectionRollback(connection, eitherRes);
+            DataBasePostgres.connectionRollback(connection, eitherRes);
         } finally {
-            OperationDataBase.connectionClose(connection, eitherRes);
+            DataBasePostgres.connectionClose(connection, eitherRes);
         }
         return eitherRes;
     }
@@ -217,14 +216,13 @@ public class PersonLogic {
                 throw eitherRes;
             }
             OperationModel operationModel = new OperationModel();
-            eitherRes = operationModel.addDescription(eitherRes);
-            OperationDataBase.connectionCommit(connection);
+            DataBasePostgres.connectionCommit(connection);
 
         } catch (Either e) {
             eitherRes = e;
-            OperationDataBase.connectionRollback(connection, eitherRes);
+            DataBasePostgres.connectionRollback(connection, eitherRes);
         } finally {
-            OperationDataBase.connectionClose(connection, eitherRes);
+            DataBasePostgres.connectionClose(connection, eitherRes);
         }
         return eitherRes;
     }

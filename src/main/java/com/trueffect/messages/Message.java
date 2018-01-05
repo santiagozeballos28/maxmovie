@@ -31,8 +31,7 @@ public class Message {
     public static String FIRST_NAME = "First name";
     public static String GENRE = "Genre";
     public static String BIRTHDAY = "Birthday";
-    public static String IDENTIFIERS = "Identifiers";
-    public static String NAMES = "Names";
+    public static String NAME = "Name";
     // Data employee max movie
     public static String DATE_OF_HIRE = "Date of hire";
     public static String ADDRESS = "Address";
@@ -49,10 +48,4 @@ public class Message {
     //data Valid Employee
     public static String VALID_JOB = "Cashier, Custom care , Manager";
     public static String VALID_PHONE = "77973186, 71XXXXXX";
-    //Description
-    public static String CI_DESCRIPTION = "Identity Card";
-    public static String PASS_DESCRIPTION = "Passport";
-    public static String NIT_DESCRIPTION = "Tributary Identification Number";
-    public static String M_DESCRIPTION = "Male";
-    public static String F_DESCRIPTION = "Female";
 }

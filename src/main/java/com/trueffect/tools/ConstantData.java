@@ -15,18 +15,45 @@ public class ConstantData {
     public static int MINIMUM_AMOUNT_PHONE = 2;
 
     public enum Genre {
-        M, F
+        M("Male"), F("Female");
+        private String nameGenre;
+
+        private Genre(String nameGenre) {
+            this.nameGenre = nameGenre;
+        }
+
+        public String getNameGenre() {
+            return nameGenre;
+        }
+        
     }
 
     public enum TypeIdentifier {
-        CI, PASS, NIT
+        CI("Identity Card"), PASS("Passport"), NIT("Tributary Identification Number");
+        private String description;
+
+        private TypeIdentifier(String typeId) {
+            this.description = typeId;
+        }
+
+        public String getDescription() {
+            return description;
+        }
     }
 
-    public enum StatusPerson {
+    public enum Status {
         Active, Inactive
     }
 
     public enum JobName {
         Cashier, CustomCare, Manager, Administrator
+    }
+
+    public enum Crud {
+        create, get, update, delete
+    }
+
+    public enum ObjectMovie {
+        RennterUser, Employee, Movie
     }
 }

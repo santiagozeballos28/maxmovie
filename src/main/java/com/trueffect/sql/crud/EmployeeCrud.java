@@ -1,11 +1,15 @@
 package com.trueffect.sql.crud;
 
+import com.trueffect.model.DataJob;
 import com.trueffect.model.Employee;
 import com.trueffect.model.EmployeeDetail;
 import com.trueffect.model.Job;
 import com.trueffect.model.Phone;
 import com.trueffect.response.Either;
 import com.trueffect.tools.CodeStatus;
+import com.trueffect.tools.ConstantData;
+import com.trueffect.tools.ConstantData.Genre;
+import com.trueffect.tools.ConstantData.TypeIdentifier;
 import com.trueffect.util.ModelObject;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,15 +24,13 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class EmployeeCrud {
 
-    public static Either insertDataJob(Connection connection, Employee employee) {
+    public static Either insertDataJob(Connection connection, DataJob dataJob) {
         Statement query = null;
         try {
-            String dateOfHire = employee.getDateOfHire();
-            String address = employee.getAddress();
-            String job = employee.getJob();
-            Either eitherJob = JobCrud.getJobOfName(connection, job);//is Valid?
-            int idPerson = employee.getId();
-            int idJob = ((Job) eitherJob.getFirstObject()).getId();
+            int idEmployee = dataJob.getIdEmployee();
+            int idJob = dataJob.getIdJob();
+            String dateOfHire = dataJob.getDateOfHire();
+            String address = dataJob.getAddress();
             query = (Statement) connection.createStatement();
             String sql = "";
             sql = sql
@@ -39,7 +41,7 @@ public class EmployeeCrud {
                     + "id_job,"
                     + "enable_rent) "
                     + "VALUES("
-                    + idPerson + ",'"
+                    + idEmployee + ",'"
                     + dateOfHire + "','"
                     + address + "',"
                     + idJob + ","
@@ -56,22 +58,20 @@ public class EmployeeCrud {
         }
     }
 
-    public static Either insertPhone(Connection connection, Employee employee) {
+    public static Either insertPhone(Connection connection, int idEmployee, ArrayList<Integer> listPhones) {
         Statement query = null;
         try {
-            int idPerson = employee.getId();
-            ArrayList<Integer> phones = employee.getPhones();
             query = (Statement) connection.createStatement();
             String sql = "";
-            for (int i = 0; i < phones.size(); i++) {
+            for (int i = 0; i < listPhones.size(); i++) {
                 sql = sql
                         + "INSERT INTO PHONE("
                         + "number_phone,"
                         + "id_person,"
                         + "status) "
                         + "VALUES("
-                        + phones.get(i) + ","
-                        + idPerson + ","
+                        + listPhones.get(i) + ","
+                        + idEmployee + ","
                         + "'Active');";
             }
             query.execute(sql);
@@ -237,7 +237,7 @@ public class EmployeeCrud {
         }
     }
 
-    public static Either updateDataJob(Connection connection, int idEmployee, int idJob, Employee employee) {
+    public static Either updateDataJob(Connection connection, int idJob, Employee employee) {
         try {
             String sql
                     = "UPDATE DATA_JOB\n"
@@ -254,6 +254,7 @@ public class EmployeeCrud {
 
             sql = sql + "     id_job= ?"
                     + " WHERE id_person = ?";
+            int idEmployee = employee.getId();
             PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, idJob);
             st.setInt(2, idEmployee);
@@ -278,7 +279,8 @@ public class EmployeeCrud {
                 sql = sql
                         + "UPDATE PHONE"
                         + "   SET status= '" + phone.getStatus() + "'"
-                        + " WHERE number_phone= " + phone.getNumberPhone() + ";";
+                        + " WHERE id_person = " + idEmployee
+                        + "   AND number_phone= " + phone.getNumberPhone() + ";";
             }
             query.execute(sql);
             if (query != null) {
@@ -363,16 +365,21 @@ public class EmployeeCrud {
 
             PreparedStatement st = connection.prepareStatement(query);
             ResultSet rs = st.executeQuery();
-            EmployeeDetail employeeDetail = new EmployeeDetail();
             while (rs.next()) {
-                employeeDetail = new EmployeeDetail(
+                //null is passed as parameter of the type identifier description
+                //null is passed as parameter of the genre description
+                String typeIdentifier = rs.getString("type_identifier");
+                String gentePerson = rs.getString("genre");
+                TypeIdentifier typeIdenEnum = TypeIdentifier.valueOf(typeIdentifier);
+                Genre genreEnum = Genre.valueOf(gentePerson);
+                EmployeeDetail employeeDetail = new EmployeeDetail(
                         rs.getInt("id"),
                         rs.getString("type_identifier"),
-                        "",
+                        typeIdenEnum.getDescription(),
                         rs.getString("identifier"),
                         rs.getString("last_name") + " " + rs.getString("first_name"),
                         rs.getString("genre"),
-                        "",
+                        genreEnum.getNameGenre(),
                         rs.getString("birthday"),
                         rs.getString("date_create"),
                         rs.getString("date_of_hire"),

@@ -4,6 +4,9 @@ import com.trueffect.model.Person;
 import com.trueffect.model.PersonDetail;
 import com.trueffect.response.Either;
 import com.trueffect.tools.CodeStatus;
+import com.trueffect.tools.ConstantData;
+import com.trueffect.tools.ConstantData.Genre;
+import com.trueffect.tools.ConstantData.TypeIdentifier;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -212,7 +215,7 @@ public class PersonCrud {
         }
     }
 
-    public static Either updatePerson(Connection connection, int idPerson, int idUserModifier, Person person) {
+    public static Either updatePerson(Connection connection, int idUserModifier, Person person) {
         try {
             String sql
                     = "UPDATE PERSON\n"
@@ -246,6 +249,7 @@ public class PersonCrud {
                     + "       date_modifier =  current_date,"
                     + "       user_modifier = ?"
                     + " WHERE id = ?";
+            int idPerson = person.getId();
             PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, idUserModifier);
             st.setInt(2, idPerson);
@@ -320,14 +324,18 @@ public class PersonCrud {
             ResultSet rs = st.executeQuery();
             PersonDetail person = new PersonDetail();
             while (rs.next()) {
+                String typeIdentifier = rs.getString("type_identifier");
+                String gentePerson = rs.getString("genre");
+                TypeIdentifier typeIdenEnum = TypeIdentifier.valueOf(typeIdentifier);
+                Genre genreEnum = Genre.valueOf(gentePerson);
                 person = new PersonDetail(
                         rs.getInt("id"),
                         rs.getString("type_identifier"),
-                        "",
+                        typeIdenEnum.getDescription(),
                         rs.getString("identifier"),
                         rs.getString("last_name") + " " + rs.getString("first_name"),
                         rs.getString("genre"),
-                        "",
+                        genreEnum.getNameGenre(),
                         rs.getString("birthday"),
                         rs.getString("date_create"),
                         rs.getString("last_name_user_create") + " " + rs.getString("first_name_user_create"));

@@ -1,8 +1,8 @@
 package com.trueffect.logica;
 
 import com.trueffect.conection.db.DataBasePostgres;
-import com.trueffect.conection.db.OperationDataBase;
 import com.trueffect.messages.Message;
+import com.trueffect.model.DataJob;
 import com.trueffect.model.Employee;
 import com.trueffect.model.Job;
 import com.trueffect.model.Person;
@@ -13,6 +13,9 @@ import com.trueffect.sql.crud.JobCrud;
 import com.trueffect.sql.crud.PersonCrud;
 import com.trueffect.tools.CodeStatus;
 import com.trueffect.tools.ConstantData;
+import com.trueffect.tools.ConstantData.Crud;
+import com.trueffect.tools.ConstantData.ObjectMovie;
+import com.trueffect.tools.ConstantData.Status;
 import com.trueffect.util.ModelObject;
 import com.trueffect.util.OperationString;
 import com.trueffect.validation.EmployeeCreate;
@@ -33,9 +36,10 @@ public class EmployeeLogic {
     private Permission permission;
 
     public EmployeeLogic() {
+        String object = ObjectMovie.Employee.name();
         listData = new HashMap<String, String>();
         permission = new Permission();
-        permission.setNameObject("Employee");
+        permission.setNameObject(object);
     }
 
     public Either createEmployee(int idUserCreate, Employee employee, EmployeeCreate employeeCreate) {
@@ -44,13 +48,15 @@ public class EmployeeLogic {
         try {
             //open conection 
             connection = DataBasePostgres.getConection();
+            String create = Crud.create.name();
             //Validation of permission 
-
-            eitherRes = permission.checkUserPermission(connection, idUserCreate, "create");
+            eitherRes = permission.checkUserPermission(connection, idUserCreate, create);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
+            //the names are converted into a valid format (example, sanTiAgo = Santiago)
             OperationString.formatOfTheName(employee);
+            //the name job is converted into a valid format (example, cusTOm caRe = customCare)
             OperationString.formatOfNameJob(employee);
             eitherRes = employeeCreate.complyCondition(employee);
             if (eitherRes.existError()) {
@@ -60,7 +66,7 @@ public class EmployeeLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            //Isert Person
+            //Insert Person
             eitherRes = PersonCrud.insertPerson(connection, idUserCreate, employee);
             if (eitherRes.existError()) {
                 throw eitherRes;
@@ -68,15 +74,24 @@ public class EmployeeLogic {
             String typeIdentifier = employee.getTypeIdentifier();
             String identifier = employee.getIdentifier();
             Either eitherInserted = PersonCrud.getPersonByIdentifier(connection, typeIdentifier, identifier);
-            int idPerson = ((Person) eitherInserted.getFirstObject()).getId();
-            employee.setId(idPerson);
-            //Isert data job
-            eitherRes = EmployeeCrud.insertDataJob(connection, employee);
+            int idEmployee = ((Person) eitherInserted.getFirstObject()).getId();
+            employee.setId(idEmployee);
+
+            eitherRes = JobCrud.getJobOfName(connection, employee.getJob());
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            //Isert phones
-            eitherRes = EmployeeCrud.insertPhone(connection, employee);
+            int idJob = ((Job) eitherRes.getFirstObject()).getId();
+            //Create object DataJob
+            DataJob dataJob = new DataJob(idEmployee, idJob, employee.getDateOfHire(), employee.getAddress());
+            //Insert data job
+            eitherRes = EmployeeCrud.insertDataJob(connection, dataJob);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            //Insert phones
+            ArrayList<Integer> listPhones = employee.getPhones();
+            eitherRes = EmployeeCrud.insertPhone(connection, idEmployee, listPhones);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -87,7 +102,7 @@ public class EmployeeLogic {
             }
             Employee employeeInserted = (Employee) eitherRes.getFirstObject();
             // Get phones
-            eitherRes = EmployeeCrud.getPhones(connection, idPerson);
+            eitherRes = EmployeeCrud.getPhones(connection, idEmployee);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -95,12 +110,12 @@ public class EmployeeLogic {
             employeeInserted.setPhones(phones);
             eitherRes = new Either(CodeStatus.CREATED, employeeInserted);
             //Commit
-            OperationDataBase.connectionCommit(connection);
+            DataBasePostgres.connectionCommit(connection);
         } catch (Either e) {
             eitherRes = e;
-            OperationDataBase.connectionRollback(connection, eitherRes);
+            DataBasePostgres.connectionRollback(connection, eitherRes);
         } finally {
-            OperationDataBase.connectionClose(connection, eitherRes);
+            DataBasePostgres.connectionClose(connection, eitherRes);
         }
         return eitherRes;
     }
@@ -111,17 +126,15 @@ public class EmployeeLogic {
         try {
             //open conection 
             connection = DataBasePostgres.getConection();
-            //eitherRes = PersonCrud.insertPerson(connection, idUserWhoCreate, employee);
             eitherRes = EmployeeCrud.getEmployeeByIdentifier(connection, typeId, identifier);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            OperationDataBase.connectionCommit(connection);
+            DataBasePostgres.connectionCommit(connection);
         } catch (Either e) {
             eitherRes = e;
-            OperationDataBase.connectionRollback(connection, eitherRes);
         } finally {
-            OperationDataBase.connectionClose(connection, eitherRes);
+            DataBasePostgres.connectionClose(connection, eitherRes);
         }
         return eitherRes;
     }
@@ -132,8 +145,10 @@ public class EmployeeLogic {
         try {
             //open conection 
             connection = DataBasePostgres.getConection();
+            String statusActive = Status.Active.name();
+            String update = Crud.update.name();
             //Validation of data
-            eitherRes = permission.checkUserPermission(connection, idModifyUser, "update");
+            eitherRes = permission.checkUserPermission(connection, idModifyUser, update);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -141,8 +156,8 @@ public class EmployeeLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            employee.setId(idEmployee);
-            eitherRes = getEmployee(connection, idEmployee, "Active");
+            //employee.setId(idEmployee);
+            eitherRes = getEmployee(connection, idEmployee, statusActive);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -150,7 +165,9 @@ public class EmployeeLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
+            //the names are converted into a valid format (example, sanTiAgo = Santiago)
             OperationString.formatOfTheName(employee);
+            //the name job is converted into a valid format (example, cusTOm caRe = customCare)
             OperationString.formatOfNameJob(employee);
             //update is a class to specifically validate the conditions to update a person
             EmployeeUpdate employeeUpdate
@@ -163,26 +180,28 @@ public class EmployeeLogic {
             }
             //add aphostrophe "'".
             OperationString.addApostrophe(employee);
-            eitherRes = PersonValidationsDB.verifyDataUpdate(connection, idEmployee, employee);
+            eitherRes = PersonValidationsDB.verifyDataUpdate(connection, employee);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            eitherRes = PersonCrud.updatePerson(connection, idEmployee, idModifyUser, employee);
+            eitherRes = PersonCrud.updatePerson(connection, idModifyUser, employee);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            eitherRes = getJob(connection, employee, idEmployee);
+            String nameJob = employee.getJob();
+            eitherRes = getJob(connection, nameJob, idEmployee);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
             Job job = (Job) eitherRes.getFirstObject();
             if (employee.haveDataJob()) {
-                eitherRes = EmployeeCrud.updateDataJob(connection, idEmployee, job.getId(), employee);
+                eitherRes = EmployeeCrud.updateDataJob(connection, job.getId(), employee);
                 if (eitherRes.existError()) {
                     throw eitherRes;
                 }
             }
-            eitherRes = getPhonesUpdate(connection, idEmployee, employee);
+            ArrayList<Integer> phonesInput = employee.getPhones();
+            eitherRes = getPhonesUpdate(connection, idEmployee, phonesInput);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -194,40 +213,48 @@ public class EmployeeLogic {
                     throw eitherRes;
                 }
             }
-            eitherRes = getPhonesInsert(connection, idEmployee, employee);
+            eitherRes = getPhonesInsert(connection, idEmployee, phonesInput);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
             ArrayList<ModelObject> listPhoneInsert = eitherRes.getListObject();
             if (!listPhoneInsert.isEmpty()) {
                 ArrayList<Integer> listPhonesI = getListPhonesInsert(listPhoneInsert);
-                employee.setPhones(listPhonesI);
-                eitherRes = EmployeeCrud.insertPhone(connection, employee);
+                eitherRes = EmployeeCrud.insertPhone(connection, idEmployee, listPhonesI);
                 if (eitherRes.existError()) {
                     throw eitherRes;
                 }
             }
-            eitherRes = getEmployee(connection, idEmployee, "Active");
+            //estoy aqui
+            eitherRes = getEmployee(connection, idEmployee, statusActive);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            OperationDataBase.connectionCommit(connection);
+            DataBasePostgres.connectionCommit(connection);
         } catch (Either exception) {
             eitherRes = exception;
-            OperationDataBase.connectionRollback(connection, eitherRes);
+            DataBasePostgres.connectionRollback(connection, eitherRes);
         } finally {
-            OperationDataBase.connectionClose(connection, eitherRes);
+            DataBasePostgres.connectionClose(connection, eitherRes);
         }
         return eitherRes;
     }
 
-    private Either getEmployee(Connection connection, int idEmployee, String active) {
+    private Either getEmployee(Connection connection, int idEmployee, String status) {
         Either eitherRes = new Either();
         ArrayList<String> listError = new ArrayList<String>();
         Employee employee = new Employee();
         try {
-            Either eitherEmployee = EmployeeCrud.getEmployee(connection, idEmployee, active);
+            Either eitherEmployee = EmployeeCrud.getEmployee(connection, idEmployee, status);
             employee = (Employee) eitherEmployee.getFirstObject();
+            if (employee.isEmpty()) {
+                String object = ObjectMovie.Employee.name();
+                listData.clear();
+                listData.put("{object}", object);
+                String errorMgs = OperationString.generateMesage(Message.NOT_FOUND, listData);
+                listError.add(errorMgs);
+                return new Either(CodeStatus.NOT_FOUND, listError);
+            }
             Either eitherPhone = EmployeeCrud.getPhones(connection, idEmployee);
             ArrayList<Integer> phones = ((Employee) eitherPhone.getFirstObject()).getPhones();
             employee.setPhones(phones);
@@ -236,25 +263,21 @@ public class EmployeeLogic {
             listError.add(exception.getMessage());
             return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
         }
-        if (employee.isEmpty()) {
-            listData.clear();
-            listData.put("{object}", "Employee");
-            String errorMgs = OperationString.generateMesage(Message.NOT_FOUND, listData);
-            listError.add(errorMgs);
-            return new Either(CodeStatus.NOT_FOUND, listError);
-        }
         return eitherRes;
     }
-
-    private Either getJob(Connection connection, Employee employee, int idEmployee) {
-        if (StringUtils.isNotBlank(employee.getJob())) {
-            return JobCrud.getJobOfName(connection, employee.getJob());
+    /*
+     *when you want to update the job you search for the name you want to add,
+     *if you do not update the office you will find your current job.
+     */
+    private Either getJob(Connection connection, String nameJob, int idEmployee) {
+        if (StringUtils.isNotBlank(nameJob)) {
+            return JobCrud.getJobOfName(connection, nameJob);
         } else {
             return JobCrud.getJobOf(connection, idEmployee);
         }
     }
 
-    private Either getPhonesUpdate(Connection connection, int idEmployee, Employee employee) {
+    private Either getPhonesUpdate(Connection connection, int idEmployee, ArrayList<Integer> phonesInput) {
         //list of phones that are in the database
         ArrayList<ModelObject> phonesDataBase = new ArrayList<ModelObject>();
         Either eitherPhone = new Either();
@@ -264,13 +287,12 @@ public class EmployeeLogic {
         } catch (Exception e) {
             return eitherPhone;
         }
-        //Lis of input phones
-        ArrayList<Integer> phonesInput = employee.getPhones();
+        String statusActive = Status.Active.name();
+        String statusInactive = Status.Inactive.name();
         //Lis to update phones
         ArrayList<ModelObject> phoneOfUdate = new ArrayList<ModelObject>();
-        for (int i = 0; i < phonesDataBase.size(); i++) {
-
-            Phone phoneDB = (Phone) phonesDataBase.get(i);
+        for (ModelObject modelObject : phonesDataBase) {
+            Phone phoneDB = (Phone) modelObject;
             int numberPhoneDB = phoneDB.getNumberPhone();
             boolean findPhone = false;
             int j = 0;
@@ -279,7 +301,7 @@ public class EmployeeLogic {
                 if (numberPhoneDB == numberPhoneI) {
                     findPhone = true;
                     if (!phoneDB.isActive()) {
-                        phoneDB.setStatus("Active");
+                        phoneDB.setStatus(statusActive);
                         phoneOfUdate.add(phoneDB);
                     }
                 }
@@ -287,7 +309,7 @@ public class EmployeeLogic {
             }
             if (!findPhone) {
                 if (phoneDB.isActive()) {
-                    phoneDB.setStatus("Inactive");
+                    phoneDB.setStatus(statusInactive);
                     phoneOfUdate.add(phoneDB);
                 }
             }
@@ -297,7 +319,7 @@ public class EmployeeLogic {
         return eitherRes;
     }
 
-    private Either getPhonesInsert(Connection connection, int idEmployee, Employee employee) {
+    private Either getPhonesInsert(Connection connection, int idEmployee, ArrayList<Integer> phonesInput) {
         //list of phones that are in the database
         ArrayList<ModelObject> phonesDataBase = new ArrayList<ModelObject>();
         Either eitherPhone = new Either();
@@ -307,12 +329,10 @@ public class EmployeeLogic {
         } catch (Exception e) {
             return eitherPhone;
         }
-        //Lis of input phones
-        ArrayList<Integer> phonesInput = employee.getPhones();
         //Lis to insert phones
         ArrayList<ModelObject> phonesToInsert = new ArrayList<ModelObject>();
-        for (int i = 0; i < phonesInput.size(); i++) {
-            int numberPhoneI = phonesInput.get(i);
+        for (Integer numberPhoneI : phonesInput) {
+
             int j = 0;
             boolean findPhone = false;
             while (j < phonesDataBase.size() && !findPhone) {
@@ -347,8 +367,9 @@ public class EmployeeLogic {
         try {
             //open conection 
             connection = DataBasePostgres.getConection();
+            String get = Crud.get.name();
             //Check if the user can modify
-            eitherRes = permission.checkUserPermission(connection, idUserSearch, "list");
+            eitherRes = permission.checkUserPermission(connection, idUserSearch, get);
             if (eitherRes.existError()) {
                 //return eitherRes;
                 throw eitherRes;
@@ -368,14 +389,12 @@ public class EmployeeLogic {
                 throw eitherRes;
             }
             OperationModel operationModel = new OperationModel();
-            eitherRes = operationModel.addDescription(eitherRes);
-            OperationDataBase.connectionCommit(connection);
+             DataBasePostgres.connectionCommit(connection);
 
         } catch (Either e) {
             eitherRes = e;
-            OperationDataBase.connectionRollback(connection, eitherRes);
         } finally {
-            OperationDataBase.connectionClose(connection, eitherRes);
+            DataBasePostgres.connectionClose(connection, eitherRes);
         }
         return eitherRes;
     }
@@ -386,13 +405,14 @@ public class EmployeeLogic {
         try {
             //open conection 
             connection = DataBasePostgres.getConection();
+            String delete = Crud.delete.name();
             //Check if the user can modify
-            eitherRes = permission.checkUserPermission(connection, idUserModify, "update status");
+            eitherRes = permission.checkUserPermission(connection, idUserModify, delete);
             if (eitherRes.existError()) {
                 //return eitherRes;
                 throw eitherRes;
             }
-            eitherRes = getEmployee(connection, idEmployee, "");
+            eitherRes = getEmployee(connection, idEmployee, null);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -406,17 +426,17 @@ public class EmployeeLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            eitherRes = getEmployee(connection, idEmployee, "");
+            eitherRes = getEmployee(connection, idEmployee, null);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            OperationDataBase.connectionCommit(connection);
+            DataBasePostgres.connectionCommit(connection);
 
         } catch (Either e) {
             eitherRes = e;
-            OperationDataBase.connectionRollback(connection, eitherRes);
+            DataBasePostgres.connectionRollback(connection, eitherRes);
         } finally {
-            OperationDataBase.connectionClose(connection, eitherRes);
+            DataBasePostgres.connectionClose(connection, eitherRes);
         }
         return eitherRes;
     }

@@ -22,7 +22,7 @@ public class PersonValidationsDB {
         HashMap<String, String> listData = new HashMap<String, String>();
         Either eitherPerson = PersonCrud.getPersonByIdentifier(connection, personNew.getTypeIdentifier(), personNew.getIdentifier());
         if (eitherPerson.haveModelObject()) {
-            listData.put("{typeData}", Message.IDENTIFIERS);
+            listData.put("{typeData}", Message.IDENTIFIER);
             listData.put("{data}", personNew.getTypeIdentifier() + " = " + personNew.getIdentifier());
             errorMgs = OperationString.generateMesage(Message.DUPLICATE, listData);
             listError.add(errorMgs);
@@ -31,7 +31,7 @@ public class PersonValidationsDB {
         if (eitherPerson.haveModelObject()) {
             Person personDB = (Person) eitherPerson.getFirstObject();
             listData.clear();
-            listData.put("{typeData}", Message.NAMES);
+            listData.put("{typeData}", Message.NAME);
             listData.put("{data}", personDB.getLastName() + " " + personDB.getFirstName());
             errorMgs = OperationString.generateMesage(Message.DUPLICATE, listData);
             listError.add(errorMgs);
@@ -42,11 +42,12 @@ public class PersonValidationsDB {
         return new Either();
     }
 
-    public static Either verifyDataUpdate(Connection connection, int id, Person personNew) {
+    public static Either verifyDataUpdate(Connection connection, Person personNew) {
+        int idPerson = personNew.getId();
         String errorMgs = "";
         ArrayList<String> listError = new ArrayList<String>();
         HashMap<String, String> listData = new HashMap<String, String>();
-        Either eitherPersonOld = PersonCrud.getPerson(connection, id, "");
+        Either eitherPersonOld = PersonCrud.getPerson(connection, idPerson, "");
         Person personAux = generatePersonAuxiliary((Person) eitherPersonOld.getFirstObject(), personNew);
         if (!PersonValidation.isValidIdentifier(personAux.getTypeIdentifier(), personAux.getIdentifier())) {
             listData.clear();
@@ -61,8 +62,8 @@ public class PersonValidationsDB {
         Either eitherPersonById = PersonCrud.getPersonByIdentifier(connection, personAux.getTypeIdentifier(), personAux.getIdentifier());
         if (eitherPersonById.haveModelObject()) {
             Person personEither = (Person) eitherPersonById.getFirstObject();
-            if (id != personEither.getId()) {
-                listData.put("{typeData}", Message.IDENTIFIERS);
+            if (idPerson != personEither.getId()) {
+                listData.put("{typeData}", Message.IDENTIFIER);
                 listData.put("{data}", personAux.getTypeIdentifier() + " = " + personAux.getIdentifier());
                 errorMgs = OperationString.generateMesage(Message.DUPLICATE, listData);
                 listError.add(errorMgs);
@@ -71,9 +72,9 @@ public class PersonValidationsDB {
         Either eitherPersonByName = PersonCrud.getPersonByName(connection, personAux.getLastName(), personAux.getFirstName());
         if (eitherPersonByName.haveModelObject()) {
             Person personEither = (Person) eitherPersonByName.getFirstObject();
-            if (id != personEither.getId()) {
+            if (idPerson != personEither.getId()) {
                 listData.clear();
-                listData.put("{typeData}", Message.NAMES);
+                listData.put("{typeData}", Message.NAME);
                 listData.put("{data}", personEither.getLastName() + " " + personEither.getFirstName());
                 errorMgs = OperationString.generateMesage(Message.DUPLICATE, listData);
                 listError.add(errorMgs);

@@ -35,10 +35,11 @@ public class PersonUpdate implements DataCondition {
         if (!PersonValidation.isEmpty(renterUser.getTypeIdentifier())) {
             intentUpdateTypeIdentifier(renterUser, listError);
         }
-        //Validation empty type identifier
+        //Validation empty identifier
         if (!PersonValidation.isEmpty(renterUser.getIdentifier())) {
             intentUpdateIdentifier(renterUser, listError);
         }
+        //Validation empty last name
         if (!PersonValidation.isEmpty(renterUser.getLastName())) {
             validateLastName(renterUser.getLastName(), listError);
         }
@@ -131,7 +132,7 @@ public class PersonUpdate implements DataCondition {
             errorMessage = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
             listError.add(errorMessage);
         }
-        //Validation of last name size
+        //Validation of first name size
         if (!PersonValidation.isValidSize(firstName, ConstantData.MAXIMUM_NAMES)) {
             listData.clear();
             listData.put("{typeData}", Message.FIRST_NAME);
