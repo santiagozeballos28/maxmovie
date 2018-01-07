@@ -42,14 +42,14 @@ public class EmployeeValidation {
     }
 
     public static boolean isValidAddress(String address) {
-        return address.length() < ConstantData.MAXIMUM_ADDRESS;
+        return address.length() < ConstantData.MAX_LENGTH_ADDRESS;
     }
 
     public static boolean isValidJob(String job) {
         try {
             JobName jobEnum = JobName.valueOf(job);
             switch (jobEnum) {
-                case Administrator:
+                case ADMIN:
                     return false;
                 default:
                     return true;

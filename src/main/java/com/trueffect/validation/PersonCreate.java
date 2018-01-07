@@ -6,6 +6,8 @@ import com.trueffect.model.Person;
 import com.trueffect.response.Either;
 import com.trueffect.tools.CodeStatus;
 import com.trueffect.tools.ConstantData;
+import com.trueffect.tools.ConstantData.GenrePerson;
+import com.trueffect.tools.ConstantData.TypeIdentifier;
 import com.trueffect.util.DataCondition;
 import com.trueffect.util.OperationString;
 import java.util.ArrayList;
@@ -94,11 +96,13 @@ public class PersonCreate implements DataCondition {
         boolean validIdentifier = true;
         //Validation of identifier
         if (!PersonValidation.isValidTypeIdentifier(renterUser.getTypeIdentifier())) {
+            
+            
             validTypeIdentifier = false;
             listData.clear();
             listData.put("{typeData}", Message.TYPE_IDENTIFIER);
             listData.put("{data}", renterUser.getTypeIdentifier());
-            listData.put("{valid}", Message.VALID_TI);
+            listData.put("{valid}", TypeIdentifier.CI+ ", " +TypeIdentifier.NIT +", "+TypeIdentifier.PASS);
             errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
             listError.add(errorMessages);
         }
@@ -108,7 +112,7 @@ public class PersonCreate implements DataCondition {
             listData.clear();
             listData.put("{typeData}", Message.IDENTIFIER);
             listData.put("{data}", renterUser.getIdentifier());
-            listData.put("{valid}", Message.VALID_I);
+            listData.put("{valid}", Message.VALID_IDENTIFIER);
             errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
             listError.add(errorMessages);
         }
@@ -125,21 +129,21 @@ public class PersonCreate implements DataCondition {
             }
         }
         //Validation of identifier size
-        if (!PersonValidation.isValidSize(renterUser.getIdentifier(), ConstantData.MAXIMUM_IDENTIFIER)) {
+        if (!PersonValidation.isValidSize(renterUser.getIdentifier(), ConstantData.MAX_LENGTH_IDENTIFIER)) {
             listData.clear();
             listData.put("{typeData}", Message.IDENTIFIER);
             listData.put("{data}", renterUser.getIdentifier());
-            listData.put("{size}", ConstantData.MAXIMUM_IDENTIFIER + "");
+            listData.put("{size}", ConstantData.MAX_LENGTH_IDENTIFIER + "");
             errorMessages = OperationString.generateMesage(Message.SIZE_MAX, listData);
             listError.add(errorMessages);
         }
 
         //Validation of last name size
-        if (!PersonValidation.isValidSize(renterUser.getLastName(), ConstantData.MAXIMUM_NAMES)) {
+        if (!PersonValidation.isValidSize(renterUser.getLastName(), ConstantData.MAX_LENGTH_NAME)) {
             listData.clear();
             listData.put("{typeData}", Message.LAST_NAME);
             listData.put("{data}", renterUser.getLastName());
-            listData.put("{size}", ConstantData.MAXIMUM_NAMES + "");
+            listData.put("{size}", ConstantData.MAX_LENGTH_NAME + "");
             errorMessages = OperationString.generateMesage(Message.SIZE_MAX, listData);
             listError.add(errorMessages);
         }
@@ -148,16 +152,16 @@ public class PersonCreate implements DataCondition {
             listData.clear();;
             listData.put("{typeData}", Message.LAST_NAME);
             listData.put("{data}", renterUser.getLastName());
-            listData.put("{valid}", Message.VALID_LN);
+            listData.put("{valid}", Message.VALID_LASTNAME);
             errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
             listError.add(errorMessages);
         }
         //Validation of first name size
-        if (!PersonValidation.isValidSize(renterUser.getFirstName(), ConstantData.MAXIMUM_NAMES)) {
+        if (!PersonValidation.isValidSize(renterUser.getFirstName(), ConstantData.MAX_LENGTH_NAME)) {
             listData.clear();
             listData.put("{typeData}", Message.FIRST_NAME);
             listData.put("{data}", renterUser.getFirstName());
-            listData.put("{size}", ConstantData.MAXIMUM_NAMES + "");
+            listData.put("{size}", ConstantData.MAX_LENGTH_NAME + "");
             errorMessages = OperationString.generateMesage(Message.SIZE_MAX, listData);
             listError.add(errorMessages);
         }
@@ -166,7 +170,7 @@ public class PersonCreate implements DataCondition {
             listData.clear();
             listData.put("{typeData}", Message.FIRST_NAME);
             listData.put("{data}", renterUser.getFirstName());
-            listData.put("{valid}", Message.VALID_FN);
+            listData.put("{valid}", Message.VALID_FIRSTNAME);
             errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
             listError.add(errorMessages);
         }
@@ -175,7 +179,7 @@ public class PersonCreate implements DataCondition {
             listData.clear();
             listData.put("{typeData}", Message.GENRE);
             listData.put("{data}", renterUser.getGenre());
-            listData.put("{valid}", Message.VALID_G);
+            listData.put("{valid}", GenrePerson.F.getNameGenre()+", " +GenrePerson.M.getNameGenre());
             errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
             listError.add(errorMessages);
         }
@@ -184,7 +188,7 @@ public class PersonCreate implements DataCondition {
             listData.clear();
             listData.put("{typeData}", Message.BIRTHDAY);
             listData.put("{data}", renterUser.getBirthday());
-            listData.put("{valid}", Message.VALID_B);
+            listData.put("{valid}", Message.VALID_BIRTHDAY);
             errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
             listError.add(errorMessages);
         }

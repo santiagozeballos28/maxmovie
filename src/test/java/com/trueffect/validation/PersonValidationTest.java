@@ -229,7 +229,7 @@ public class PersonValidationTest {
 
         boolean expected = false;
         String birthday = "2005-12-12";
-        int minimumAge =  ConstantData.MINIMUM_AGE_RENTER;
+        int minimumAge =  ConstantData.MIN_AGE_RENTER;
         Assert.assertEquals(PersonValidation.isValidAge(birthday,minimumAge), expected);
     }
      @Test
@@ -237,7 +237,7 @@ public class PersonValidationTest {
 
         boolean expected = true;
         String birthday = "2002-12-12";
-        int minimumAge =  ConstantData.MINIMUM_AGE_RENTER;
+        int minimumAge =  ConstantData.MIN_AGE_RENTER;
         Assert.assertEquals(PersonValidation.isValidAge(birthday,minimumAge), expected);
     }
 }

@@ -1,12 +1,10 @@
 package com.trueffect.logica;
 
 import com.trueffect.messages.Message;
-import com.trueffect.model.PersonDetail;
 import com.trueffect.response.Either;
 import com.trueffect.tools.CodeStatus;
 import com.trueffect.tools.ConstantData;
-import com.trueffect.tools.ConstantData.TypeIdentifier;
-import com.trueffect.util.ModelObject;
+import com.trueffect.tools.ConstantData.Status;
 import com.trueffect.util.OperationString;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -33,7 +31,7 @@ public class OperationModel {
             listData.clear();
             listData.put("{typeData}", "Status");
             listData.put("{data}", status);
-            listData.put("{valid}", Message.VALID_STATUS);
+            listData.put("{valid}",Status.Active+", "+Status.Inactive);
             String errorMgs = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
             listError.add(errorMgs);
             return new Either(CodeStatus.BAD_REQUEST, listError);

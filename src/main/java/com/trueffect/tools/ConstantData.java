@@ -6,26 +6,25 @@ package com.trueffect.tools;
 public class ConstantData {
 
     //DATA MAXIMUN
-    public static int MAXIMUM_NAMES = 50;
-    public static int MAXIMUM_IDENTIFIER = 10;
-    public static int MAXIMUM_ADDRESS = 100;
+    public static int MAX_LENGTH_NAME = 50;
+    public static int MAX_LENGTH_IDENTIFIER = 10;
+    public static int MAX_LENGTH_ADDRESS = 100;
     //DATA MINIMUM 
-    public static int MINIMUM_AGE_RENTER = 15;
-    public static int MINIMUM_AGE_EMPLOYEE = 18;
-    public static int MINIMUM_AMOUNT_PHONE = 2;
+    public static int MIN_AGE_RENTER = 15;
+    public static int MIN_AGE_EMPLOYEE = 18;
+    public static int MIN_AMOUNT_PHONE = 2;
 
-    public enum Genre {
+    public enum GenrePerson {
         M("Male"), F("Female");
         private String nameGenre;
 
-        private Genre(String nameGenre) {
+        private GenrePerson(String nameGenre) {
             this.nameGenre = nameGenre;
         }
 
         public String getNameGenre() {
             return nameGenre;
         }
-        
     }
 
     public enum TypeIdentifier {
@@ -39,6 +38,11 @@ public class ConstantData {
         public String getDescription() {
             return description;
         }
+
+        @Override
+        public String toString() {
+            return CI + ", " + NIT + ", " + PASS;
+        }
     }
 
     public enum Status {
@@ -46,7 +50,16 @@ public class ConstantData {
     }
 
     public enum JobName {
-        Cashier, CustomCare, Manager, Administrator
+        CSHR("Cashier"), CC("Custom care"), MGR("Manager"), ADMIN("Administrator");
+        private String descriptionJobName;
+
+        private JobName(String descriptionJobName) {
+            this.descriptionJobName = descriptionJobName;
+        }
+
+        public String getDescriptionJobName() {
+            return descriptionJobName;
+        }
     }
 
     public enum Crud {

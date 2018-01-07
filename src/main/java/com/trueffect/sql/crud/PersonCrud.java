@@ -5,7 +5,7 @@ import com.trueffect.model.PersonDetail;
 import com.trueffect.response.Either;
 import com.trueffect.tools.CodeStatus;
 import com.trueffect.tools.ConstantData;
-import com.trueffect.tools.ConstantData.Genre;
+import com.trueffect.tools.ConstantData.GenrePerson;
 import com.trueffect.tools.ConstantData.TypeIdentifier;
 
 import java.sql.Connection;
@@ -327,7 +327,7 @@ public class PersonCrud {
                 String typeIdentifier = rs.getString("type_identifier");
                 String gentePerson = rs.getString("genre");
                 TypeIdentifier typeIdenEnum = TypeIdentifier.valueOf(typeIdentifier);
-                Genre genreEnum = Genre.valueOf(gentePerson);
+                GenrePerson genreEnum = GenrePerson.valueOf(gentePerson);
                 person = new PersonDetail(
                         rs.getInt("id"),
                         rs.getString("type_identifier"),

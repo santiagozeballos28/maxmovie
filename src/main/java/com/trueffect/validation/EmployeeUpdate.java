@@ -2,10 +2,10 @@ package com.trueffect.validation;
 
 import com.trueffect.messages.Message;
 import com.trueffect.model.Employee;
-import com.trueffect.model.Person;
 import com.trueffect.response.Either;
 import com.trueffect.tools.CodeStatus;
 import com.trueffect.tools.ConstantData;
+import com.trueffect.tools.ConstantData.JobName;
 import com.trueffect.util.ModelObject;
 import com.trueffect.util.OperationString;
 import java.util.ArrayList;
@@ -58,7 +58,7 @@ public class EmployeeUpdate extends PersonUpdate {
             listData.clear();
             listData.put("{typeData}", Message.DATE_OF_HIRE);
             listData.put("{data}", dateOfHire);
-            listData.put("{valid}", Message.VALID_B);
+            listData.put("{valid}", Message.VALID_BIRTHDAY);
             errorMessage = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
             listError.add(errorMessage);
         }
@@ -70,7 +70,7 @@ public class EmployeeUpdate extends PersonUpdate {
             listData.clear();
             listData.put("{typeData}", Message.ADDRESS);
             listData.put("{data}", address);
-            listData.put("{size}", ConstantData.MAXIMUM_ADDRESS + "");
+            listData.put("{size}", ConstantData.MAX_LENGTH_ADDRESS + "");
             errorMessage = OperationString.generateMesage(Message.SIZE_MAX, listData);
             listError.add(errorMessage);
         }
@@ -78,20 +78,24 @@ public class EmployeeUpdate extends PersonUpdate {
 
     private void validationJob(String job, ArrayList<String> listError) {
         if (!EmployeeValidation.isValidJob(job)) {
+                     String validNameJob
+                    = JobName.MGR.getDescriptionJobName() + ", "
+                    + JobName.CSHR.getDescriptionJobName() + ", "
+                    + JobName.CC.getDescriptionJobName();
             String errorMessage = "";
             listData.clear();
             listData.put("{typeData}", Message.JOB);
             listData.put("{data}", job);
-            listData.put("{valid}", Message.VALID_JOB);
+            listData.put("{valid}", validNameJob);
             errorMessage = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
             listError.add(errorMessage);
         }
     }
 
     private void validationPhone(ArrayList<Integer> phones, ArrayList<String> listError) {
-        if (phones.size() < ConstantData.MINIMUM_AMOUNT_PHONE) {
+        if (phones.size() < ConstantData.MIN_AMOUNT_PHONE) {
             listData.clear();
-            listData.put("{data}", ConstantData.MINIMUM_AMOUNT_PHONE + "");
+            listData.put("{data}", ConstantData.MIN_AMOUNT_PHONE + "");
             String errorMessages = OperationString.generateMesage(Message.REFERENCE_PHONE, listData);
             listError.add(errorMessages);
         }

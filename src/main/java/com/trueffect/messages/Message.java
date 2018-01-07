@@ -38,14 +38,14 @@ public class Message {
     public static String JOB = "Job";
     public static String PHONE = "Reference Phone";
     //Data Valid person
-    public static String VALID_TI = "CI, PASS , NIT";
-    public static String VALID_I = "CI = 123455, PASS = ABD122334X , NIT=8679232456";
-    public static String VALID_LN = "Letters = A-Za-z, apostrophes = '";
-    public static String VALID_FN = "Letters = A-Za-z, apostrophes = '";
-    public static String VALID_G = "M,F";
-    public static String VALID_B = "YYYY-MM-DD";
-    public static String VALID_STATUS = "Active, Inactive";
+    //public static String VALID_TI = "CI, PASS , NIT";
+    public static String VALID_IDENTIFIER = "CI = 123455, PASS = ABD122334X , NIT=8679232456";
+    public static String VALID_LASTNAME = "Letters = A-Za-z, apostrophes = '";
+    public static String VALID_FIRSTNAME = "Letters = A-Za-z, apostrophes = '";
+    // public static String VALID_G = "M,F";
+    public static String VALID_BIRTHDAY = "YYYY-MM-DD";
+    //public static String VALID_STATUS = "Active, Inactive";
     //data Valid Employee
-    public static String VALID_JOB = "Cashier, Custom care , Manager";
+    //   public static String VALID_JOB = "Cashier, Custom care , Manager";
     public static String VALID_PHONE = "77973186, 71XXXXXX";
 }

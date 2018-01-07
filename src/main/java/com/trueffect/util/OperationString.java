@@ -66,8 +66,6 @@ public class OperationString {
     public static String generateFirstName(String firstName) {
         String resFirstName = "";
         resFirstName = StringUtils.capitalize(firstName.toLowerCase());
-        System.out.println("NAME_SIZE:" + resFirstName.length());
-        System.out.println("NAME:" + resFirstName);
         return resFirstName;
     }
 

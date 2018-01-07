@@ -31,7 +31,7 @@ public class EmployeeResourse {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response insertEmployee(@QueryParam("idUserCreate") int idUserCreate, Employee employee) {
-        Either eitherEmployee = employeeLogic.createEmployee(idUserCreate, employee, new EmployeeCreate(ConstantData.MINIMUM_AGE_EMPLOYEE));
+        Either eitherEmployee = employeeLogic.createEmployee(idUserCreate, employee, new EmployeeCreate(ConstantData.MIN_AGE_EMPLOYEE));
         Response response = mapper.toResponse(eitherEmployee);
         return response;
     }

@@ -18,7 +18,7 @@ public class OperationStringTest {
         HashMap<String, String> listData = new HashMap<String, String>();
         listData.put("{typeData}", Message.LAST_NAME);
         listData.put("{data}", "Manti$ago");
-        listData.put("{valid}", Message.VALID_LN);
+        listData.put("{valid}", Message.VALID_LASTNAME);
         String res = OperationString.generateMesage(msgInput, listData);
         Assert.assertTrue(res.equals(msgOutputExpected));
     }

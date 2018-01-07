@@ -37,9 +37,9 @@ public class Permission {
 
             JobName employee = JobName.valueOf(nameJob);
             switch (employee) {
-                case Administrator:
+                case ADMIN:
                     return new Either();
-                case Manager:
+                case MGR:
                     return new Either();
                 default:
                     listData.clear();

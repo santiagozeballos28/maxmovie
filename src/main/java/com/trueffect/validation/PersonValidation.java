@@ -4,7 +4,7 @@ import com.trueffect.messages.Message;
 import com.trueffect.model.Person;
 import com.trueffect.response.Either;
 import com.trueffect.tools.CodeStatus;
-import com.trueffect.tools.ConstantData.Genre;
+import com.trueffect.tools.ConstantData.GenrePerson;
 import com.trueffect.tools.ConstantData.TypeIdentifier;
 import com.trueffect.tools.RegularExpression;
 import java.text.SimpleDateFormat;
@@ -55,7 +55,7 @@ public class PersonValidation {
     }
 
     public static boolean isValidGenre(String genre) {
-        Genre genreEnum = null;
+        GenrePerson genreEnum = null;
         return genre.equals(genreEnum.M.name()) || genre.equals(genreEnum.F.name());
     }
 

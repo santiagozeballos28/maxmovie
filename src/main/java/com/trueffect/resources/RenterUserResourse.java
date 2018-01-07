@@ -31,7 +31,7 @@ public class RenterUserResourse {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response insertRenterUser(@QueryParam("idModifyUser") int idModifyUser, Person renterUser) {
-        Either either = personLogic.createPerson(idModifyUser, renterUser, new PersonCreate(ConstantData.MINIMUM_AGE_RENTER));
+        Either either = personLogic.createPerson(idModifyUser, renterUser, new PersonCreate(ConstantData.MIN_AGE_RENTER));
         Response response = mapper.toResponse(either);
         return response;
     }

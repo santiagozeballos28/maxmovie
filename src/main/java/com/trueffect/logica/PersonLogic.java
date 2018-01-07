@@ -139,7 +139,7 @@ public class PersonLogic {
             //update is a class to specifically validate the conditions to update a person
             PersonUpdate rentUserUpdate = new PersonUpdate(
                     ((Job) eitherRes.getFirstObject()).getNameJob(),
-                    ConstantData.MINIMUM_AGE_RENTER);
+                    ConstantData.MIN_AGE_RENTER);
             OperationString.formatOfTheName(person);
             eitherRes = rentUserUpdate.complyCondition(person);
             if (eitherRes.existError()) {

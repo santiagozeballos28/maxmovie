@@ -173,7 +173,7 @@ public class EmployeeLogic {
             EmployeeUpdate employeeUpdate
                     = new EmployeeUpdate(
                             ((Job) eitherRes.getFirstObject()).getNameJob(),
-                            ConstantData.MINIMUM_AGE_EMPLOYEE);
+                            ConstantData.MIN_AGE_EMPLOYEE);
             eitherRes = employeeUpdate.complyCondition(employee);
             if (eitherRes.existError()) {
                 throw eitherRes;
