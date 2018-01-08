@@ -28,21 +28,21 @@ public class PersonValidationTest {
 
     @Test
     public void testTypeIdentifierCiLowerCase() {
-        boolean expected = false;
+        boolean expected = true;
         String typeIdentifier = "ci";
         Assert.assertEquals(PersonValidation.isValidTypeIdentifier(typeIdentifier), expected);
     }
 
     @Test
     public void testTypeIdentifierPassLowerCase() {
-        boolean expected = false;
+        boolean expected = true;
         String typeIdentifier = "pass";
         Assert.assertEquals(PersonValidation.isValidTypeIdentifier(typeIdentifier), expected);
     }
 
     @Test
     public void testTypeIdentifierNitLowerCase() {
-        boolean expected = false;
+        boolean expected = true;
         String typeIdentifier = "nit";
         Assert.assertEquals(PersonValidation.isValidTypeIdentifier(typeIdentifier), expected);
     }

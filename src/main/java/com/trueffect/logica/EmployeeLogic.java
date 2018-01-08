@@ -14,6 +14,7 @@ import com.trueffect.sql.crud.PersonCrud;
 import com.trueffect.tools.CodeStatus;
 import com.trueffect.tools.ConstantData;
 import com.trueffect.tools.ConstantData.Crud;
+import com.trueffect.tools.ConstantData.JobName;
 import com.trueffect.tools.ConstantData.ObjectMovie;
 import com.trueffect.tools.ConstantData.Status;
 import com.trueffect.util.ModelObject;
@@ -250,7 +251,7 @@ public class EmployeeLogic {
             if (employee.isEmpty()) {
                 String object = ObjectMovie.Employee.name();
                 listData.clear();
-                listData.put("{object}", object);
+                listData.put(ConstantData.OBJECT, object);
                 String errorMgs = OperationString.generateMesage(Message.NOT_FOUND, listData);
                 listError.add(errorMgs);
                 return new Either(CodeStatus.NOT_FOUND, listError);
@@ -265,6 +266,7 @@ public class EmployeeLogic {
         }
         return eitherRes;
     }
+
     /*
      *when you want to update the job you search for the name you want to add,
      *if you do not update the office you will find your current job.
@@ -380,16 +382,18 @@ public class EmployeeLogic {
             if (StringUtils.isNotBlank(firstName)) {
                 firstName = OperationString.generateFirstName(firstName);
             }
+            String jobName = "";
             if (StringUtils.isNotBlank(job)) {
-                job = OperationString.generateNameJob(job);
+                JobName jobEnum = JobName.valueOf(job);
+                jobName = jobEnum.getDescriptionJobName();
+
             }
-            //eitherRes = PersonCrud.getEmployeeBy(connection, typeId, identifier, lastName, firstName, genre);
-            eitherRes = EmployeeCrud.getEmployeeBy(connection, typeId, identifier, lastName, firstName, genre, dateOfHire, job);
+            eitherRes = EmployeeCrud.getEmployeeBy(connection, typeId, identifier, lastName, firstName, genre, dateOfHire, jobName);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
             OperationModel operationModel = new OperationModel();
-             DataBasePostgres.connectionCommit(connection);
+            DataBasePostgres.connectionCommit(connection);
 
         } catch (Either e) {
             eitherRes = e;

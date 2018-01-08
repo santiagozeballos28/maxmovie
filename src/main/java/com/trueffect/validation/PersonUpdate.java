@@ -5,7 +5,9 @@ import com.trueffect.model.Person;
 import com.trueffect.response.Either;
 import com.trueffect.tools.CodeStatus;
 import com.trueffect.tools.ConstantData;
+import com.trueffect.tools.ConstantData.Crud;
 import com.trueffect.tools.ConstantData.GenrePerson;
+import com.trueffect.tools.ConstantData.JobName;
 import com.trueffect.tools.ConstantData.TypeIdentifier;
 import com.trueffect.util.DataCondition;
 import com.trueffect.util.ModelObject;
@@ -67,18 +69,19 @@ public class PersonUpdate implements DataCondition {
 
     private void intentUpdateTypeIdentifier(Person renterUser, ArrayList<String> listError) {
         String errorMessage = "";
+        String nameAdmi = JobName.ADMIN.getDescriptionJobName();
         listData.clear();
-        if (job.equals("Administrator")) {
+        if (job.equals(nameAdmi)) {
             if (!PersonValidation.isValidTypeIdentifier(renterUser.getTypeIdentifier())) {
-                listData.put("{typeData}", Message.TYPE_IDENTIFIER);
-                listData.put("{data}", renterUser.getTypeIdentifier());
-                listData.put("{valid}",TypeIdentifier.CI+ ", " +TypeIdentifier.NIT +", "+TypeIdentifier.PASS);
+                listData.put(ConstantData.TYPE_DATA, ConstantData.TYPE_IDENTIFIER);
+                listData.put(ConstantData.DATA, renterUser.getTypeIdentifier());
+                listData.put(ConstantData.VALID, TypeIdentifier.CI + ", " + TypeIdentifier.NIT + ", " + TypeIdentifier.PASS);
                 errorMessage = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
                 listError.add(errorMessage);
             }
         } else {
-            listData.put("{operation}", "update");
-            listData.put("{typeData}", Message.TYPE_IDENTIFIER);
+            listData.put(ConstantData.OPERATION, Crud.update.name());
+            listData.put(ConstantData.TYPE_DATA, ConstantData.TYPE_IDENTIFIER);
             errorMessage = OperationString.generateMesage(Message.NOT_HAVE_PERMISSION, listData);
             listError.add(errorMessage);
         }
@@ -86,18 +89,19 @@ public class PersonUpdate implements DataCondition {
 
     private void intentUpdateIdentifier(Person renterUser, ArrayList<String> listError) {
         String errorMessage = "";
+        String nameAdmi = JobName.ADMIN.getDescriptionJobName();
         listData.clear();
-        if (job.equals("Administrator")) {
+        if (job.equals(nameAdmi)) {
             if (!PersonValidation.isValidIdentifier(renterUser.getIdentifier())) {
-                listData.put("{typeData}", Message.IDENTIFIER);
-                listData.put("{data}", renterUser.getIdentifier());
-                listData.put("{valid}", Message.VALID_IDENTIFIER);
+                listData.put(ConstantData.TYPE_DATA, ConstantData.IDENTIFIER);
+                listData.put(ConstantData.DATA, renterUser.getIdentifier());
+                listData.put(ConstantData.VALID, ConstantData.VALID_IDENTIFIER);
                 errorMessage = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
                 listError.add(errorMessage);
             }
         } else {
-            listData.put("{operation}", "update");
-            listData.put("{typeData}", Message.IDENTIFIER);
+            listData.put(ConstantData.OPERATION, Crud.update.name());
+            listData.put(ConstantData.TYPE_DATA, ConstantData.IDENTIFIER);
             errorMessage = OperationString.generateMesage(Message.NOT_HAVE_PERMISSION, listData);
             listError.add(errorMessage);
         }
@@ -107,18 +111,18 @@ public class PersonUpdate implements DataCondition {
         String errorMessage = "";
         if (!PersonValidation.isValidLastName(lastName)) {
             listData.clear();
-            listData.put("{typeData}", Message.LAST_NAME);
-            listData.put("{data}", lastName);
-            listData.put("{valid}", Message.VALID_LASTNAME);
+            listData.put(ConstantData.TYPE_DATA, ConstantData.LAST_NAME);
+            listData.put(ConstantData.DATA, lastName);
+            listData.put(ConstantData.VALID, ConstantData.VALID_LASTNAME);
             errorMessage = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
             listError.add(errorMessage);
         }
         //Validation of last name size
         if (!PersonValidation.isValidSize(lastName, ConstantData.MAX_LENGTH_NAME)) {
             listData.clear();
-            listData.put("{typeData}", Message.LAST_NAME);
-            listData.put("{data}", lastName);
-            listData.put("{size}", ConstantData.MAX_LENGTH_NAME + "");
+            listData.put(ConstantData.TYPE_DATA, ConstantData.LAST_NAME);
+            listData.put(ConstantData.DATA, lastName);
+            listData.put(ConstantData.SIZE, ConstantData.MAX_LENGTH_NAME + "");
             errorMessage = OperationString.generateMesage(Message.SIZE_MAX, listData);
             listError.add(errorMessage);
         }
@@ -128,18 +132,18 @@ public class PersonUpdate implements DataCondition {
         String errorMessage = "";
         if (!PersonValidation.isValidLastName(firstName)) {
             listData.clear();
-            listData.put("{typeData}", Message.FIRST_NAME);
-            listData.put("{data}", firstName);
-            listData.put("{valid}", Message.VALID_FIRSTNAME);
+            listData.put(ConstantData.TYPE_DATA, ConstantData.FIRST_NAME);
+            listData.put(ConstantData.DATA, firstName);
+            listData.put(ConstantData.VALID,ConstantData.VALID_FIRSTNAME);
             errorMessage = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
             listError.add(errorMessage);
         }
         //Validation of first name size
         if (!PersonValidation.isValidSize(firstName, ConstantData.MAX_LENGTH_NAME)) {
             listData.clear();
-            listData.put("{typeData}", Message.FIRST_NAME);
-            listData.put("{data}", firstName);
-            listData.put("{size}", ConstantData.MAX_LENGTH_NAME + "");
+            listData.put(ConstantData.TYPE_DATA, ConstantData.FIRST_NAME);
+            listData.put(ConstantData.DATA, firstName);
+            listData.put(ConstantData.SIZE, ConstantData.MAX_LENGTH_NAME + "");
             errorMessage = OperationString.generateMesage(Message.SIZE_MAX, listData);
             listError.add(errorMessage);
         }
@@ -150,9 +154,9 @@ public class PersonUpdate implements DataCondition {
         if (!PersonValidation.isValidGenre(genre)) {
             String errorMessage = "";
             listData.clear();
-            listData.put("{typeData}", Message.GENRE);
-            listData.put("{data}", genre);
-            listData.put("{valid}", GenrePerson.F.getNameGenre()+", " +GenrePerson.M.getNameGenre());
+            listData.put(ConstantData.TYPE_DATA, ConstantData.GENRE);
+            listData.put(ConstantData.DATA, genre);
+            listData.put(ConstantData.VALID, GenrePerson.F.getNameGenre() + ", " + GenrePerson.M.getNameGenre());
             errorMessage = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
             listError.add(errorMessage);
         }
@@ -162,16 +166,16 @@ public class PersonUpdate implements DataCondition {
         String errorMessage = "";
         if (!PersonValidation.isValidBirthday(birthday)) {
             listData.clear();
-            listData.put("{typeData}", Message.BIRTHDAY);
-            listData.put("{data}", birthday);
-            listData.put("{valid}", Message.VALID_BIRTHDAY);
+            listData.put(ConstantData.TYPE_DATA, ConstantData.BIRTHDAY);
+            listData.put(ConstantData.DATA, birthday);
+            listData.put(ConstantData.VALID, ConstantData.VALID_BIRTHDAY);
             errorMessage = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
             listError.add(errorMessage);
         }
         //Validation of birthday
         if (!PersonValidation.isValidAge(birthday, ageMinimum)) {
             listData.clear();
-            listData.put("{data}", ageMinimum + "");
+            listData.put(ConstantData.DATA, ageMinimum + "");
             errorMessage = OperationString.generateMesage(Message.NOT_MEET_THE_AGE, listData);
             listError.add(errorMessage);
         }

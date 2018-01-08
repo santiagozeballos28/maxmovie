@@ -29,9 +29,9 @@ public class OperationModel {
             return new Either();
         } catch (Exception e) {
             listData.clear();
-            listData.put("{typeData}", "Status");
-            listData.put("{data}", status);
-            listData.put("{valid}",Status.Active+", "+Status.Inactive);
+            listData.put(ConstantData.TYPE_DATA, "Status22");
+            listData.put(ConstantData.DATA, status);
+            listData.put(ConstantData.VALID,Status.Active+", "+Status.Inactive);
             String errorMgs = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
             listError.add(errorMgs);
             return new Either(CodeStatus.BAD_REQUEST, listError);

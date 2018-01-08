@@ -42,7 +42,7 @@ public class EmployeeValidationTest {
     @Test
     public void testJob() {
         boolean expected = true;
-        String dateOfHire = "Manager";
+        String dateOfHire = "MGR";
         Assert.assertEquals(EmployeeValidation.isValidJob(dateOfHire), expected);
     }
 

@@ -4,7 +4,6 @@ import com.trueffect.model.Person;
 import com.trueffect.model.PersonDetail;
 import com.trueffect.response.Either;
 import com.trueffect.tools.CodeStatus;
-import com.trueffect.tools.ConstantData;
 import com.trueffect.tools.ConstantData.GenrePerson;
 import com.trueffect.tools.ConstantData.TypeIdentifier;
 
@@ -39,10 +38,10 @@ public class PersonCrud {
                     + "first_name, "
                     + "genre, "
                     + "birthday, "
-                    + "date_create, "
-                    + "user_create, "
-                    + "date_modifier, "
-                    + "user_modifier, "
+                    + "create_date, "
+                    + "create_user, "
+                    + "modifier_date, "
+                    + "modifier_date, "
                     + "status) \n"
                     + "VALUES ('"
                     + typeIdentifier + "','"
@@ -72,7 +71,7 @@ public class PersonCrud {
         try {
             Statement query = (Statement) connection.createStatement();
             String sql
-                    = "SELECT id,"
+                    = "SELECT person_id,"
                     + "       type_identifier, "
                     + "       identifier, "
                     + "       last_name, "
@@ -86,7 +85,7 @@ public class PersonCrud {
             Person person = new Person();
             if (rs.next()) {
                 person = new Person(
-                        rs.getInt("id"),
+                        rs.getInt("person_id"),
                         rs.getString("type_identifier"),
                         rs.getString("identifier"),
                         rs.getString("last_name"),
@@ -108,7 +107,7 @@ public class PersonCrud {
     public static Either getPersonByName(Connection connection, String lastName, String firstName) {
         try {
             String sqlGet
-                    = "SELECT id, "
+                    = "SELECT person_id, "
                     + "       type_identifier, "
                     + "       identifier, "
                     + "       last_name, "
@@ -124,7 +123,7 @@ public class PersonCrud {
             Person person = new Person();
             if (rs.next()) {
                 person = new Person(
-                        rs.getInt("id"),
+                        rs.getInt("person_id"),
                         rs.getString("type_identifier"),
                         rs.getString("identifier"),
                         rs.getString("last_name"),
@@ -146,7 +145,7 @@ public class PersonCrud {
     public static Either getPerson(Connection connection, int idPerson, String status) {
         try {
             String query
-                    = "SELECT id, "
+                    = "SELECT PERSON.person_id, "
                     + "       type_identifier, "
                     + "       identifier, "
                     + "       last_name, "
@@ -154,14 +153,14 @@ public class PersonCrud {
                     + "       genre, "
                     + "       birthday"
                     + "  FROM PERSON"
-                    + " WHERE id= ? ";
+                    + " WHERE person_id= ? ";
             if (StringUtils.isNotBlank(status)) {
                 query = query + " AND status = '" + status + "'";
             }
             query = query
-                    + "   AND id"
+                    + "   AND person_id"
                     + "   NOT IN("
-                    + "SELECT id_person"
+                    + "SELECT person_id"
                     + "  FROM DATA_JOB"
                     + " WHERE enable_rent = FALSE)";
             PreparedStatement st = connection.prepareStatement(query);
@@ -170,7 +169,7 @@ public class PersonCrud {
             Person person = new Person();
             if (rs.next()) {
                 person = new Person(
-                        rs.getInt("id"),
+                        rs.getInt("person_id"),
                         rs.getString("type_identifier"),
                         rs.getString("identifier"),
                         rs.getString("last_name"),
@@ -195,9 +194,9 @@ public class PersonCrud {
             String sql
                     = "UPDATE PERSON\n"
                     + "   SET status=?, "
-                    + "       date_modifier =  current_date ,"
-                    + "       user_modifier= ?"
-                    + " WHERE id = ?";
+                    + "       modifier_date =  current_date ,"
+                    + "       modifier_user= ?"
+                    + " WHERE person_id = ?";
 
             PreparedStatement st = connection.prepareStatement(sql);
             st.setString(1, status);
@@ -246,9 +245,9 @@ public class PersonCrud {
                 sql = sql + "birthday= '" + varSet + "',";
             }
             sql = sql
-                    + "       date_modifier =  current_date,"
-                    + "       user_modifier = ?"
-                    + " WHERE id = ?";
+                    + "       modifier_date =  current_date,"
+                    + "       modifier_date = ?"
+                    + " WHERE person_id = ?";
             int idPerson = person.getId();
             PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, idUserModifier);
@@ -276,34 +275,34 @@ public class PersonCrud {
         Either eitherRes = new Either();
         try {
             String query
-                    = " SELECT RENTER_USER.id, "
+                    = " SELECT RENTER_USER.person_id, "
                     + "        RENTER_USER.type_identifier, "
                     + "        RENTER_USER.identifier,"
                     + "        RENTER_USER.last_name,"
                     + "        RENTER_USER.first_name,"
                     + "        RENTER_USER.genre,"
                     + "        RENTER_USER.birthday,"
-                    + "        RENTER_USER.date_create,"
+                    + "        RENTER_USER.create_date,"
                     + "        PERSON.last_name AS last_name_user_create,"
                     + "        PERSON.first_name AS first_name_user_create"
                     + "   FROM "
-                    + "(SELECT id, "
+                    + "(SELECT person_id, "
                     + "        type_identifier, "
                     + "        identifier, "
                     + "        last_name, "
                     + "        first_name, "
                     + "        genre,"
                     + "        birthday, "
-                    + "        date_create, "
-                    + "        user_create,"
+                    + "        create_date, "
+                    + "        create_user,"
                     + "        status"
                     + "   FROM person "
-                    + "  WHERE id NOT IN"
-                    + "(SELECT id_person"
+                    + "  WHERE person_id NOT IN"
+                    + "(SELECT person_id"
                     + "   FROM DATA_JOB"
                     + "  WHERE enable_rent = false)) RENTER_USER,PERSON"
                     + "  WHERE RENTER_USER.status= 'Active' "
-                    + "    AND RENTER_USER.user_create = PERSON.id";
+                    + "    AND RENTER_USER.create_user = PERSON.person_id";
 
             if (StringUtils.isNotBlank(typeId)) {
                 query = query + " AND RENTER_USER.type_identifier = '" + typeId.trim() + "'";
@@ -329,7 +328,7 @@ public class PersonCrud {
                 TypeIdentifier typeIdenEnum = TypeIdentifier.valueOf(typeIdentifier);
                 GenrePerson genreEnum = GenrePerson.valueOf(gentePerson);
                 person = new PersonDetail(
-                        rs.getInt("id"),
+                        rs.getInt("person_id"),
                         rs.getString("type_identifier"),
                         typeIdenEnum.getDescription(),
                         rs.getString("identifier"),
@@ -337,7 +336,7 @@ public class PersonCrud {
                         rs.getString("genre"),
                         genreEnum.getNameGenre(),
                         rs.getString("birthday"),
-                        rs.getString("date_create"),
+                        rs.getString("create_date"),
                         rs.getString("last_name_user_create") + " " + rs.getString("first_name_user_create"));
                 eitherRes.addModeloObjet(person);
             }

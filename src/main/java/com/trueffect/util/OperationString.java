@@ -71,18 +71,8 @@ public class OperationString {
 
     public static void formatOfNameJob(Employee employee) {
         if (StringUtils.isNotBlank(employee.getJob())) {
-            String job = generateNameJob(employee.getJob());
+            String job = employee.getJob().toUpperCase();
             employee.setJob(job);
         }
-    }
-
-    public static String generateNameJob(String job) {
-        String resJob = "";
-        String[] jobSplit = job.toLowerCase().split(" ");
-        for (String nameOfJob : jobSplit) {
-            resJob = resJob + StringUtils.capitalize(nameOfJob);
-        }
-        resJob = resJob.trim();
-        return resJob;
     }
 }

@@ -39,14 +39,14 @@ public class EmployeeCreate extends PersonCreate {
         //Validation empty date of hire
         if (PersonValidation.isEmpty(employee.getDateOfHire())) {
             listData.clear();
-            listData.put("{typeData}", Message.DATE_OF_HIRE);
+            listData.put(ConstantData.TYPE_DATA, ConstantData.DATE_OF_HIRE);
             errorMessages = OperationString.generateMesage(Message.EMPTY_DATA, listData);
             listError.add(errorMessages);
         }
         //Validation empty address
         if (PersonValidation.isEmpty(employee.getAddress())) {
             listData.clear();
-            listData.put("{typeData}", Message.ADDRESS);
+            listData.put(ConstantData.TYPE_DATA, ConstantData.ADDRESS);
             errorMessages = OperationString.generateMesage(Message.EMPTY_DATA, listData);
             listError.add(errorMessages);
 
@@ -54,14 +54,14 @@ public class EmployeeCreate extends PersonCreate {
         //Validation empty job
         if (PersonValidation.isEmpty(employee.getJob())) {
             listData.clear();
-            listData.put("{typeData}", Message.JOB);
+            listData.put(ConstantData.TYPE_DATA, ConstantData.JOB);
             errorMessages = OperationString.generateMesage(Message.EMPTY_DATA, listData);
             listError.add(errorMessages);
         }
         //Validation empty phones
         if (employee.getPhones().isEmpty()) {
             listData.clear();
-            listData.put("{typeData}", Message.PHONE);
+            listData.put(ConstantData.TYPE_DATA, ConstantData.PHONE);
             errorMessages = OperationString.generateMesage(Message.EMPTY_DATA, listData);
             listError.add(errorMessages);
         }
@@ -82,18 +82,18 @@ public class EmployeeCreate extends PersonCreate {
         //Validation date of hire
         if (!EmployeeValidation.isValidDateOfHire(employee.getDateOfHire())) {
             listData.clear();
-            listData.put("{typeData}", Message.DATE_OF_HIRE);
-            listData.put("{data}", employee.getDateOfHire());
-            listData.put("{valid}", Message.VALID_BIRTHDAY);
+            listData.put(ConstantData.TYPE_DATA, ConstantData.DATE_OF_HIRE);
+            listData.put(ConstantData.DATA, employee.getDateOfHire());
+            listData.put(ConstantData.VALID, ConstantData.VALID_BIRTHDAY);
             errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
             listError.add(errorMessages);
         }
         //Validation of job
         if (!EmployeeValidation.isValidAddress(employee.getAddress())) {
             listData.clear();
-            listData.put("{typeData}", Message.ADDRESS);
-            listData.put("{data}", employee.getAddress());
-            listData.put("{size}", ConstantData.MAX_LENGTH_ADDRESS + "");
+            listData.put(ConstantData.TYPE_DATA, ConstantData.ADDRESS);
+            listData.put(ConstantData.DATA, employee.getAddress());
+            listData.put(ConstantData.SIZE, ConstantData.MAX_LENGTH_ADDRESS + "");
             errorMessages = OperationString.generateMesage(Message.SIZE_MAX, listData);
             listError.add(errorMessages);
         }
@@ -104,9 +104,9 @@ public class EmployeeCreate extends PersonCreate {
                     + JobName.CSHR.getDescriptionJobName() + ", "
                     + JobName.CC.getDescriptionJobName();
             listData.clear();
-            listData.put("{typeData}", Message.JOB);
-            listData.put("{data}", employee.getJob());
-            listData.put("{valid}", validNameJob);
+            listData.put(ConstantData.TYPE_DATA, ConstantData.JOB);
+            listData.put(ConstantData.DATA, employee.getJob());
+            listData.put(ConstantData.VALID, validNameJob);
             errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
             listError.add(errorMessages);
         }
@@ -123,16 +123,16 @@ public class EmployeeCreate extends PersonCreate {
     private void validPhones(ArrayList<Integer> phones, ArrayList<String> listError) {
         if (phones.size() < ConstantData.MIN_AMOUNT_PHONE) {
             listData.clear();
-            listData.put("{data}", ConstantData.MIN_AMOUNT_PHONE + "");
+            listData.put(ConstantData.DATA, ConstantData.MIN_AMOUNT_PHONE + "");
             String errorMessages = OperationString.generateMesage(Message.REFERENCE_PHONE, listData);
             listError.add(errorMessages);
         }
         for (int i = 0; i < phones.size(); i++) {
             if (!EmployeeValidation.isValidPhone(phones.get(i))) {
                 listData.clear();
-                listData.put("{typeData}", Message.PHONE);
-                listData.put("{data}", phones.get(i) + "");
-                listData.put("{valid}", Message.VALID_PHONE);
+                listData.put(ConstantData.TYPE_DATA, ConstantData.PHONE);
+                listData.put(ConstantData.DATA, phones.get(i) + "");
+                listData.put(ConstantData.VALID, ConstantData.VALID_PHONE);
                 String errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
                 listError.add(errorMessages);
             }

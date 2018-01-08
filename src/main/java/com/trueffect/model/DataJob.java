@@ -9,8 +9,8 @@ import com.trueffect.util.ModelObject;
  */
 public class DataJob extends ModelObject{
 
-    private int idEmployee;
-    private int idJob;
+    private int employeeId;
+    private int jobId;
     private String dateOfHire;
     private String address;
     
@@ -18,21 +18,21 @@ public class DataJob extends ModelObject{
     public DataJob() {
     }
 
-    public DataJob(int idEmployee, int idJob, String dateOfHire, String address) {
-        this.idEmployee = idEmployee;
-        this.idJob = idJob;
+    public DataJob(int employeeId, int jobId, String dateOfHire, String address) {
+        this.employeeId = employeeId;
+        this.jobId = jobId;
         this.dateOfHire = dateOfHire;
         this.address = address;
     }
 
 
 
-    public int getIdEmployee() {
-        return idEmployee;
+    public int getEmployeeId() {
+        return employeeId;
     }
 
-    public int getIdJob() {
-        return idJob;
+    public int getJobId() {
+        return jobId;
     }
 
     public String getDateOfHire() {
@@ -43,12 +43,12 @@ public class DataJob extends ModelObject{
         return address;
     }
 
-    public void setIdEmployee(int idEmployee) {
-        this.idEmployee = idEmployee;
+    public void setEmployeeId(int employeeId) {
+        this.employeeId = employeeId;
     }
 
-    public void setIdJob(int idJob) {
-        this.idJob = idJob;
+    public void setJobId(int jobId) {
+        this.jobId = jobId;
     }
     
 

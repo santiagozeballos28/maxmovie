@@ -5,6 +5,7 @@ import com.trueffect.model.Job;
 import com.trueffect.response.Either;
 import com.trueffect.sql.crud.JobCrud;
 import com.trueffect.tools.CodeStatus;
+import com.trueffect.tools.ConstantData;
 import com.trueffect.tools.ConstantData.JobName;
 import com.trueffect.util.OperationString;
 import java.sql.Connection;
@@ -43,13 +44,15 @@ public class Permission {
                     return new Either();
                 default:
                     listData.clear();
-                    listData.put("{operation}", operation);
-                    listData.put("{typeData}", nameObject);
+                    listData.put(ConstantData.OPERATION, operation);
+                    listData.put(ConstantData.TYPE_DATA, nameObject);
                     String errorMgs = OperationString.generateMesage(Message.NOT_HAVE_PERMISSION, listData);
                     listError.add(errorMgs);
                     return new Either(CodeStatus.FORBIDDEN, listError);
             }
         } else {
+            listData.clear();
+            listData.put(ConstantData.OPERATION, operation);
             listError.add(Message.NOT_FOUND_USER_MODIFY);
             return new Either(CodeStatus.BAD_REQUEST, listError);
         }

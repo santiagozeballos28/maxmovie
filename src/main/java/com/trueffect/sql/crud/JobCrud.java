@@ -16,12 +16,12 @@ public class JobCrud {
         Either either = new Either();
         try {
             String sql
-                    = "SELECT id, "
-                    + "       name_job\n"
+                    = "SELECT job_id, "
+                    + "       job_name\n"
                     + "  FROM data_job,"
                     + "       job\n"
-                    + " WHERE data_job.id_job= job.id "
-                    + "   AND id_person=?;";
+                    + " WHERE data_job.job_id= job.job_id "
+                    + "   AND person_id = ?;";
 
             PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, idUser);
@@ -29,8 +29,8 @@ public class JobCrud {
             Job job = new Job();
             if (rs.next()) {
                 job = new Job(
-                        rs.getInt("id"),
-                        rs.getString("name_job"));
+                        rs.getInt("job_id"),
+                        rs.getString("job_name"));
             }
             either.setCode(CodeStatus.OK);
             either.addModeloObjet(job);
@@ -45,10 +45,10 @@ public class JobCrud {
         Either either = new Either();
         try {
             String sql
-                    = "SELECT id, "
-                    + "       name_job"
+                    = "SELECT job_id, "
+                    + "       job_name"
                     + "  FROM job"
-                    + "  WHERE name_job=?";
+                    + "  WHERE job_name=?";
 
             PreparedStatement st = connection.prepareStatement(sql);
             st.setString(1, name);
@@ -56,8 +56,8 @@ public class JobCrud {
             Job job = new Job();
             if (rs.next()) {
                 job = new Job(
-                        rs.getInt("id"),
-                        rs.getString("name_job"));
+                        rs.getInt("job_id"),
+                        rs.getString("job_name"));
             }
             either.setCode(CodeStatus.OK);
             either.addModeloObjet(job);

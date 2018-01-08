@@ -1,16 +1,21 @@
 package com.trueffect.validation;
 
 import com.trueffect.messages.Message;
+import com.trueffect.model.Employee;
 import com.trueffect.model.Person;
 import com.trueffect.response.Either;
 import com.trueffect.tools.CodeStatus;
+import com.trueffect.tools.ConstantData;
 import com.trueffect.tools.ConstantData.GenrePerson;
+import com.trueffect.tools.ConstantData.ObjectMovie;
 import com.trueffect.tools.ConstantData.TypeIdentifier;
 import com.trueffect.tools.RegularExpression;
+import com.trueffect.util.OperationString;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.regex.Pattern;
 
 /*
@@ -25,7 +30,7 @@ public class PersonValidation {
     public static boolean isValidTypeIdentifier(String typeId) {
         boolean res = true;
         try {
-            TypeIdentifier typeIdentifier = TypeIdentifier.valueOf(typeId);
+            TypeIdentifier typeIdentifier = TypeIdentifier.valueOf(typeId.toUpperCase());
         } catch (Exception e) {
             res = false;
         }
@@ -34,7 +39,7 @@ public class PersonValidation {
 
     public static boolean isValidIdentifier(String identifier) {
         return Pattern.matches(RegularExpression.CI, identifier)
-                || Pattern.matches(RegularExpression.PASS, identifier)
+                || Pattern.matches(RegularExpression.PASS, identifier.toUpperCase())
                 || Pattern.matches(RegularExpression.NIT, identifier);
     }
 
@@ -79,7 +84,6 @@ public class PersonValidation {
             calendar.set(Calendar.MONTH, month - 1); // [0,...,11]
             Date date = calendar.getTime();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            System.out.println(sdf.format(date)); // 01/01/2016
             return true;
         } catch (Exception e) {
             return false;
@@ -96,7 +100,7 @@ public class PersonValidation {
             Date dateNow = Calendar.getInstance().getTime();
             long deference = dateNow.getTime() - datePerson.getTime();
             int deferenceDays = (int) (deference / (1000 * 60 * 60 * 24));
-            int deferenceYear = deferenceDays/365;
+            int deferenceYear = deferenceDays / 365;
             if (deferenceYear >= ageMin) {
                 res = true;
             }
@@ -133,10 +137,19 @@ public class PersonValidation {
         return res;
     }
 
-    public static Either verifyId(Person person, int idRenter) {
+    public static Either verifyId(Person person, int idPerson) {
         ArrayList<String> listError = new ArrayList<String>();
         if (person.getId() != 0) {
-            if (person.getId() != idRenter) {
+            if (person.getId() != idPerson) {
+                String nameObject = "";
+                if (person instanceof Employee) {
+                    nameObject = ObjectMovie.Employee.name();
+                } else {
+                    nameObject = ObjectMovie.RennterUser.name();
+                }
+                HashMap<String, String> listData = new HashMap<String, String>();
+                listData.put(ConstantData.OBJECT, nameObject);
+                String errorMessage = OperationString.generateMesage(Message.CONFLCT_ID, listData);
                 listError.add(Message.CONFLCT_ID);
                 return new Either(CodeStatus.CONFLICT, listError);
             }

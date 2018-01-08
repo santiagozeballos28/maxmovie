@@ -5,6 +5,7 @@ import com.trueffect.model.Person;
 import com.trueffect.response.Either;
 import com.trueffect.sql.crud.PersonCrud;
 import com.trueffect.tools.CodeStatus;
+import com.trueffect.tools.ConstantData;
 import com.trueffect.util.OperationString;
 import com.trueffect.validation.PersonValidation;
 import java.sql.Connection;
@@ -22,8 +23,8 @@ public class PersonValidationsDB {
         HashMap<String, String> listData = new HashMap<String, String>();
         Either eitherPerson = PersonCrud.getPersonByIdentifier(connection, personNew.getTypeIdentifier(), personNew.getIdentifier());
         if (eitherPerson.haveModelObject()) {
-            listData.put("{typeData}", Message.IDENTIFIER);
-            listData.put("{data}", personNew.getTypeIdentifier() + " = " + personNew.getIdentifier());
+            listData.put(ConstantData.TYPE_DATA, ConstantData.IDENTIFIER);
+            listData.put(ConstantData.DATA, personNew.getTypeIdentifier() + " = " + personNew.getIdentifier());
             errorMgs = OperationString.generateMesage(Message.DUPLICATE, listData);
             listError.add(errorMgs);
         }
@@ -31,8 +32,8 @@ public class PersonValidationsDB {
         if (eitherPerson.haveModelObject()) {
             Person personDB = (Person) eitherPerson.getFirstObject();
             listData.clear();
-            listData.put("{typeData}", Message.NAME);
-            listData.put("{data}", personDB.getLastName() + " " + personDB.getFirstName());
+            listData.put(ConstantData.TYPE_DATA, ConstantData.NAME);
+            listData.put(ConstantData.DATA, personDB.getLastName() + " " + personDB.getFirstName());
             errorMgs = OperationString.generateMesage(Message.DUPLICATE, listData);
             listError.add(errorMgs);
         }
@@ -51,10 +52,10 @@ public class PersonValidationsDB {
         Person personAux = generatePersonAuxiliary((Person) eitherPersonOld.getFirstObject(), personNew);
         if (!PersonValidation.isValidIdentifier(personAux.getTypeIdentifier(), personAux.getIdentifier())) {
             listData.clear();
-            listData.put("{typeData1}", Message.IDENTIFIER);
-            listData.put("{typeData2}", Message.TYPE_IDENTIFIER);
-            listData.put("{data1}", personAux.getIdentifier());
-            listData.put("{data2}", personAux.getTypeIdentifier());
+            listData.put(ConstantData.TYPE_DATA, ConstantData.IDENTIFIER);
+            listData.put(ConstantData.TYPE_DATA_TWO, ConstantData.TYPE_IDENTIFIER);
+            listData.put(ConstantData.DATA, personAux.getIdentifier());
+            listData.put(ConstantData.DATA_TWO, personAux.getTypeIdentifier());
             errorMgs = OperationString.generateMesage(Message.NOT_SAME_TYPE, listData);
             listError.add(errorMgs);
             return new Either(CodeStatus.BAD_REQUEST, listError);
@@ -63,8 +64,8 @@ public class PersonValidationsDB {
         if (eitherPersonById.haveModelObject()) {
             Person personEither = (Person) eitherPersonById.getFirstObject();
             if (idPerson != personEither.getId()) {
-                listData.put("{typeData}", Message.IDENTIFIER);
-                listData.put("{data}", personAux.getTypeIdentifier() + " = " + personAux.getIdentifier());
+                listData.put(ConstantData.TYPE_DATA, ConstantData.IDENTIFIER);
+                listData.put(ConstantData.DATA, personAux.getTypeIdentifier() + " = " + personAux.getIdentifier());
                 errorMgs = OperationString.generateMesage(Message.DUPLICATE, listData);
                 listError.add(errorMgs);
             }
@@ -74,8 +75,8 @@ public class PersonValidationsDB {
             Person personEither = (Person) eitherPersonByName.getFirstObject();
             if (idPerson != personEither.getId()) {
                 listData.clear();
-                listData.put("{typeData}", Message.NAME);
-                listData.put("{data}", personEither.getLastName() + " " + personEither.getFirstName());
+                listData.put(ConstantData.TYPE_DATA, ConstantData.NAME);
+                listData.put(ConstantData.DATA, personEither.getLastName() + " " + personEither.getFirstName());
                 errorMgs = OperationString.generateMesage(Message.DUPLICATE, listData);
                 listError.add(errorMgs);
             }
