@@ -20,7 +20,6 @@ import com.trueffect.validation.PersonUpdate;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
-import javax.ws.rs.core.Response;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -60,6 +59,12 @@ public class PersonLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
+            String identifier = person.getIdentifier().toUpperCase();
+            String typeIdentifier = person.getTypeIdentifier().toUpperCase();
+            String genre = person.getGenre().toUpperCase();
+            person.setIdentifier(identifier);
+            person.setTypeIdentifier(typeIdentifier);
+            person.setGenre(genre);
             eitherRes = PersonCrud.insertPerson(connection, idUserWhoCreate, person);
             if (eitherRes.existError()) {
                 throw eitherRes;

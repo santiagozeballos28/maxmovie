@@ -38,8 +38,9 @@ public class PersonValidation {
     }
 
     public static boolean isValidIdentifier(String identifier) {
+        identifier = identifier.toUpperCase();
         return Pattern.matches(RegularExpression.CI, identifier)
-                || Pattern.matches(RegularExpression.PASS, identifier.toUpperCase())
+                || Pattern.matches(RegularExpression.PASS, identifier)
                 || Pattern.matches(RegularExpression.NIT, identifier);
     }
 
@@ -61,6 +62,7 @@ public class PersonValidation {
 
     public static boolean isValidGenre(String genre) {
         GenrePerson genreEnum = null;
+        genre = genre.toUpperCase();
         return genre.equals(genreEnum.M.name()) || genre.equals(genreEnum.F.name());
     }
 
@@ -111,6 +113,8 @@ public class PersonValidation {
     }
 
     public static boolean isValidIdentifier(String typeIdentifier, String identifier) {
+        typeIdentifier = typeIdentifier.toUpperCase();
+        identifier = identifier.toUpperCase();
         boolean res = false;
         try {
             TypeIdentifier typeIden = TypeIdentifier.valueOf(typeIdentifier);

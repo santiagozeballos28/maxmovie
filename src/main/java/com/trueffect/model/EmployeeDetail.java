@@ -1,9 +1,25 @@
 package com.trueffect.model;
 
+import org.codehaus.jackson.annotate.JsonPropertyOrder;
+
 /**
  *
  * @author santiago.mamani
  */
+@JsonPropertyOrder({
+    "id",
+    "typeIdentifier",
+    "typeIdDescription",
+    "identifier",
+    "namePerson",
+    "genre",
+    "genreDescription",
+    "birthday",
+    "dateOfHire",
+    "address",
+    "job",
+    "dateCreate",
+    "nameCreateUser"})
 public class EmployeeDetail extends PersonDetail {
 
     private String dateOfHire;

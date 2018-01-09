@@ -23,24 +23,36 @@ public class ConstantData {
     public static String OPERATION = "{operation}";
     public static String OBJECT = "{object}";
     // valid data
-    public static String VALID_IDENTIFIER = "CI = 123455, PASS = ABD122334X , NIT=8679232456";
     public static String VALID_LASTNAME = "Letters = A-Za-z, apostrophes = '";
     public static String VALID_FIRSTNAME = "Letters = A-Za-z, apostrophes = '";
     public static String VALID_BIRTHDAY = "YYYY-MM-DD";
     public static String VALID_PHONE = "77973186, 71XXXXXX";
     // Data renter user
-    public static String TYPE_IDENTIFIER = "Type identifier";
-    public static String IDENTIFIER = "Identifier";
-    public static String LAST_NAME = "Last name";
-    public static String FIRST_NAME = "First name";
-    public static String GENRE = "Genre";
-    public static String BIRTHDAY = "Birthday";
-    public static String NAME = "Name";
+    public static String TYPE_IDENTIFIER = "type identifier";
+    public static String IDENTIFIER = "identifier";
+    public static String LAST_NAME = "last name";
+    public static String FIRST_NAME = "lirst name";
+    public static String GENRE = "genre";
+    public static String BIRTHDAY = "birthday";
+    public static String NAME = "name";
     // Data employee max movie
-    public static String DATE_OF_HIRE = "Date of hire";
-    public static String ADDRESS = "Address";
-    public static String JOB = "Job";
-    public static String PHONE = "Reference Phone";
+    public static String DATE_OF_HIRE = "date of hire";
+    public static String ADDRESS = "address";
+    public static String JOB = "job";
+    public static String PHONE = "reference phone";
+
+    public enum ValidIdentifier {
+        CI(" all number"), PASS("3 letters 6 numbers [0-1] letter"), NIT("number");
+        private String validIdentifier;
+
+        private ValidIdentifier(String validIdentifier) {
+            this.validIdentifier = validIdentifier;
+        }
+
+        public String getValidIdentifier() {
+            return validIdentifier;
+        }
+    }
 
     public enum GenrePerson {
         M("Male"), F("Female");
@@ -56,15 +68,15 @@ public class ConstantData {
     }
 
     public enum TypeIdentifier {
-        CI("Identity Card"), PASS("Passport"), NIT("Tax Identification Numbe");
-        private String description;
+        CI("Identity Card"), PASS("Passport"), NIT("Tax Identification Number");
+        private String descriptionIdentifier;
 
-        private TypeIdentifier(String typeId) {
-            this.description = typeId;
+        private TypeIdentifier(String description) {
+            this.descriptionIdentifier = description;
         }
 
-        public String getDescription() {
-            return description;
+        public String getDescriptionIdentifier() {
+            return descriptionIdentifier;
         }
     }
 
@@ -91,5 +103,9 @@ public class ConstantData {
 
     public enum ObjectMovie {
         RennterUser, Employee, Movie
+    }
+
+    public enum Ocupation {
+        Rents, Works
     }
 }

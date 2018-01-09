@@ -41,7 +41,7 @@ public class PersonCrud {
                     + "create_date, "
                     + "create_user, "
                     + "modifier_date, "
-                    + "modifier_date, "
+                    + "modifier_user, "
                     + "status) \n"
                     + "VALUES ('"
                     + typeIdentifier + "','"
@@ -319,18 +319,19 @@ public class PersonCrud {
             if (StringUtils.isNotBlank(genre)) {
                 query = query + " AND RENTER_USER.genre= '" + genre.trim() + "'";
             }
+            System.out.println("SQL GET: " + query);
             PreparedStatement st = connection.prepareStatement(query);
             ResultSet rs = st.executeQuery();
             PersonDetail person = new PersonDetail();
             while (rs.next()) {
-                String typeIdentifier = rs.getString("type_identifier");
-                String gentePerson = rs.getString("genre");
+                String typeIdentifier = rs.getString("type_identifier").trim();
+                String genrePerson = rs.getString("genre");
                 TypeIdentifier typeIdenEnum = TypeIdentifier.valueOf(typeIdentifier);
-                GenrePerson genreEnum = GenrePerson.valueOf(gentePerson);
+                GenrePerson genreEnum = GenrePerson.valueOf(genrePerson);
                 person = new PersonDetail(
                         rs.getInt("person_id"),
                         rs.getString("type_identifier"),
-                        typeIdenEnum.getDescription(),
+                        typeIdenEnum.getDescriptionIdentifier(),
                         rs.getString("identifier"),
                         rs.getString("last_name") + " " + rs.getString("first_name"),
                         rs.getString("genre"),
@@ -343,7 +344,7 @@ public class PersonCrud {
             if (st != null) {
                 st.close();
             }
-            eitherRes.setCode(CodeStatus.CREATED);
+            eitherRes.setCode(CodeStatus.OK);
             return eitherRes;
         } catch (Exception exception) {
             ArrayList<String> listError = new ArrayList<String>();

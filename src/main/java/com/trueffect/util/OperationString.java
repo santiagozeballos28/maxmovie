@@ -39,9 +39,11 @@ public class OperationString {
     public static String addApostrophe(String name) {
         return StringUtils.replace(name, "'", "''");
     }
-   public static String lessAnApostrophe(String name) {
+
+    public static String lessAnApostrophe(String name) {
         return StringUtils.replace(name, "''", "'");
     }
+
     public static void formatOfTheName(Person person) {
         if (StringUtils.isNotBlank(person.getLastName())) {
             String lastName = generateLastName(person.getLastName());
@@ -74,5 +76,12 @@ public class OperationString {
             String job = employee.getJob().toUpperCase();
             employee.setJob(job);
         }
+    }
+
+    public static String toUpperCase(String name) {
+        if (StringUtils.isNotBlank(name)) {
+            return name.toUpperCase();
+        }
+        return name;
     }
 }

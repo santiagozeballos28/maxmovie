@@ -35,7 +35,6 @@ public class Permission {
         ArrayList<String> listError = new ArrayList<String>();
         if (eitherJob.haveModelObject()) {
             String nameJob = ((Job) eitherJob.getFirstObject()).getNameJob();
-
             JobName employee = JobName.valueOf(nameJob);
             switch (employee) {
                 case ADMIN:
@@ -53,7 +52,8 @@ public class Permission {
         } else {
             listData.clear();
             listData.put(ConstantData.OPERATION, operation);
-            listError.add(Message.NOT_FOUND_USER_MODIFY);
+            String errorMgs = OperationString.generateMesage(Message.NOT_FOUND_USER_OPERATION, listData);
+            listError.add(errorMgs);
             return new Either(CodeStatus.BAD_REQUEST, listError);
         }
     }

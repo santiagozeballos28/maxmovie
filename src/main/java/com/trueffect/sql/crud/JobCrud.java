@@ -16,13 +16,13 @@ public class JobCrud {
         Either either = new Either();
         try {
             String sql
-                    = "SELECT job_id, "
+                    = "SELECT JOB.job_id, "
                     + "       job_name\n"
-                    + "  FROM data_job,"
-                    + "       job\n"
-                    + " WHERE data_job.job_id= job.job_id "
+                    + "  FROM DATA_JOB,"
+                    + "       JOB\n"
+                    + " WHERE DATA_JOB.job_id= JOB.job_id "
                     + "   AND person_id = ?;";
-
+            System.out.println("SQL: " +sql);
             PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, idUser);
             ResultSet rs = st.executeQuery();

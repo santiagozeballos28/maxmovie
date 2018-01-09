@@ -6,7 +6,9 @@ import com.trueffect.model.EmployeeDetail;
 import com.trueffect.model.Phone;
 import com.trueffect.response.Either;
 import com.trueffect.tools.CodeStatus;
+import com.trueffect.tools.ConstantData;
 import com.trueffect.tools.ConstantData.GenrePerson;
+import com.trueffect.tools.ConstantData.JobName;
 import com.trueffect.tools.ConstantData.TypeIdentifier;
 import com.trueffect.util.ModelObject;
 import java.sql.Connection;
@@ -364,16 +366,16 @@ public class EmployeeCrud {
             PreparedStatement st = connection.prepareStatement(query);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
-                //null is passed as parameter of the type identifier description
-                //null is passed as parameter of the genre description
-                String typeIdentifier = rs.getString("type_identifier");
+                String typeIdentifier = rs.getString("type_identifier").trim();
                 String gentePerson = rs.getString("genre");
+                String jobEmployee = rs.getString("job_name");
                 TypeIdentifier typeIdenEnum = TypeIdentifier.valueOf(typeIdentifier);
                 GenrePerson genreEnum = GenrePerson.valueOf(gentePerson);
+                JobName jobNameEnum = JobName.valueOf(jobEmployee);
                 EmployeeDetail employeeDetail = new EmployeeDetail(
                         rs.getInt("person_id"),
                         rs.getString("type_identifier"),
-                        typeIdenEnum.getDescription(),
+                        typeIdenEnum.getDescriptionIdentifier(),
                         rs.getString("identifier"),
                         rs.getString("last_name") + " " + rs.getString("first_name"),
                         rs.getString("genre"),
@@ -382,7 +384,7 @@ public class EmployeeCrud {
                         rs.getString("create_date"),
                         rs.getString("date_of_hire"),
                         rs.getString("address"),
-                        rs.getString("job_name"),
+                        jobNameEnum.getDescriptionJobName(),
                         rs.getString("last_name_user_create") + " " + rs.getString("first_name_user_create"));
                 eitherRes.addModeloObjet(employeeDetail);
             }

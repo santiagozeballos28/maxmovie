@@ -85,7 +85,7 @@ public class EmployeeCreate extends PersonCreate {
             listData.put(ConstantData.TYPE_DATA, ConstantData.DATE_OF_HIRE);
             listData.put(ConstantData.DATA, employee.getDateOfHire());
             listData.put(ConstantData.VALID, ConstantData.VALID_BIRTHDAY);
-            errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
+            errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessages);
         }
         //Validation of job
@@ -107,7 +107,7 @@ public class EmployeeCreate extends PersonCreate {
             listData.put(ConstantData.TYPE_DATA, ConstantData.JOB);
             listData.put(ConstantData.DATA, employee.getJob());
             listData.put(ConstantData.VALID, validNameJob);
-            errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
+            errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessages);
         }
         //Validation the numbers phones
@@ -133,7 +133,7 @@ public class EmployeeCreate extends PersonCreate {
                 listData.put(ConstantData.TYPE_DATA, ConstantData.PHONE);
                 listData.put(ConstantData.DATA, phones.get(i) + "");
                 listData.put(ConstantData.VALID, ConstantData.VALID_PHONE);
-                String errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
+                String errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
                 listError.add(errorMessages);
             }
         }

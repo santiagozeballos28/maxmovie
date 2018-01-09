@@ -32,7 +32,7 @@ public class OperationModel {
             listData.put(ConstantData.TYPE_DATA, "Status22");
             listData.put(ConstantData.DATA, status);
             listData.put(ConstantData.VALID,Status.Active+", "+Status.Inactive);
-            String errorMgs = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
+            String errorMgs = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
             listError.add(errorMgs);
             return new Either(CodeStatus.BAD_REQUEST, listError);
         }

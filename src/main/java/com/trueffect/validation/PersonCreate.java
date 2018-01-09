@@ -96,14 +96,17 @@ public class PersonCreate implements DataCondition {
         boolean validIdentifier = true;
         //Validation of identifier
         if (!PersonValidation.isValidTypeIdentifier(renterUser.getTypeIdentifier())) {
-            
-            
+
+            String validTypesId
+                    = TypeIdentifier.CI.getDescriptionIdentifier() + ", "
+                    + TypeIdentifier.NIT.getDescriptionIdentifier() + ", "
+                    + TypeIdentifier.PASS.getDescriptionIdentifier();
             validTypeIdentifier = false;
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.TYPE_IDENTIFIER);
             listData.put(ConstantData.DATA, renterUser.getTypeIdentifier());
-            listData.put(ConstantData.VALID, TypeIdentifier.CI+ ", " +TypeIdentifier.NIT +", "+TypeIdentifier.PASS);
-            errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
+            listData.put(ConstantData.VALID, validTypesId);
+            errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessages);
         }
         //Validation of identifier
@@ -112,18 +115,18 @@ public class PersonCreate implements DataCondition {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.IDENTIFIER);
             listData.put(ConstantData.DATA, renterUser.getIdentifier());
-            listData.put(ConstantData.VALID, ConstantData.VALID_IDENTIFIER);
             errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
             listError.add(errorMessages);
         }
         //Validation if the identifier belongs to the same type identifier
         if (validTypeIdentifier && validIdentifier) {
             if (!PersonValidation.isValidIdentifier(renterUser.getTypeIdentifier(), renterUser.getIdentifier())) {
+                TypeIdentifier typeId = TypeIdentifier.valueOf(renterUser.getTypeIdentifier().toUpperCase());
                 listData.clear();
                 listData.put(ConstantData.TYPE_DATA, ConstantData.IDENTIFIER);
                 listData.put(ConstantData.TYPE_DATA_TWO, ConstantData.TYPE_IDENTIFIER);
                 listData.put(ConstantData.DATA, renterUser.getIdentifier());
-                listData.put(ConstantData.DATA_TWO, renterUser.getTypeIdentifier());
+                listData.put(ConstantData.DATA_TWO, typeId.getDescriptionIdentifier());
                 errorMessages = OperationString.generateMesage(Message.NOT_SAME_TYPE, listData);
                 listError.add(errorMessages);
             }
@@ -153,7 +156,7 @@ public class PersonCreate implements DataCondition {
             listData.put(ConstantData.TYPE_DATA, ConstantData.LAST_NAME);
             listData.put(ConstantData.DATA, renterUser.getLastName());
             listData.put(ConstantData.VALID, ConstantData.VALID_LASTNAME);
-            errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
+            errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessages);
         }
         //Validation of first name size
@@ -171,7 +174,7 @@ public class PersonCreate implements DataCondition {
             listData.put(ConstantData.TYPE_DATA, ConstantData.FIRST_NAME);
             listData.put(ConstantData.DATA, renterUser.getFirstName());
             listData.put(ConstantData.VALID, ConstantData.VALID_FIRSTNAME);
-            errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
+            errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessages);
         }
         //Validation of genre
@@ -179,8 +182,8 @@ public class PersonCreate implements DataCondition {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.GENRE);
             listData.put(ConstantData.DATA, renterUser.getGenre());
-            listData.put(ConstantData.VALID, GenrePerson.F.getNameGenre()+", " +GenrePerson.M.getNameGenre());
-            errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
+            listData.put(ConstantData.VALID, GenrePerson.F.getNameGenre() + ", " + GenrePerson.M.getNameGenre());
+            errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessages);
         }
         //Validation of birthday
@@ -189,7 +192,7 @@ public class PersonCreate implements DataCondition {
             listData.put(ConstantData.TYPE_DATA, ConstantData.BIRTHDAY);
             listData.put(ConstantData.DATA, renterUser.getBirthday());
             listData.put(ConstantData.VALID, ConstantData.VALID_BIRTHDAY);
-            errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
+            errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessages);
         }
         //Validation of birthday

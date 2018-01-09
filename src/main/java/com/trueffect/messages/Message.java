@@ -8,20 +8,21 @@ public class Message {
     // Message of Empty
     public static String EMPTY_DATA = "The {typeData} is required";
     //Message dates incorrect
-    public static String NOT_VALID_DATA = "The {typeData} ({data}) is not valid. The valid format is as follows: [{valid}]";
+    public static String NOT_VALID_DATA_THE_VALID_DATA_ARE = "The {typeData} ({data}) is not valid. The valid values are: [{valid}]";
+    public static String NOT_VALID_DATA = "The {typeData} ({data}) is not valid";
     //Message same type identifier
     public static String NOT_SAME_TYPE = "The {typeData} ({data}) is not of the ({data2}) {typeData2}";
     //Message de restrictions    
     public static String SIZE_MAX = "The {typeData} ({data}) is very long, must be less than [{size} characters]";
     public static String REFERENCE_PHONE = "At least [{data} phone numbers] are required.";
     //Message Age
-    public static String NOT_MEET_THE_AGE = "To be registered must be greater than [{data} years]";
+    public static String NOT_MEET_THE_AGE = "The person, must be  at least [{data} years] old";
     //Message duplicate
-    public static String DUPLICATE = "The {typeData} ({data}) already exists";
+    public static String DUPLICATE = "Someone already has that {typeData} ({data})";
     // Message of permission
     public static String NOT_HAVE_PERMISSION = "The user don't have permission to {operation} the {typeData}";
     // Message of results
     public static String NOT_FOUND = "The {object} requested record was not found";
-    public static String NOT_FOUND_USER_MODIFY = "The user who wants to {operation} does not exist";
+    public static String NOT_FOUND_USER_OPERATION = "The user who wants to {operation} does not exist";
     public static String CONFLCT_ID = "The identifier not corresponde to value of {object}";
 }

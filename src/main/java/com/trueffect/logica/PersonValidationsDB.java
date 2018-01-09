@@ -6,6 +6,7 @@ import com.trueffect.response.Either;
 import com.trueffect.sql.crud.PersonCrud;
 import com.trueffect.tools.CodeStatus;
 import com.trueffect.tools.ConstantData;
+import com.trueffect.tools.ConstantData.TypeIdentifier;
 import com.trueffect.util.OperationString;
 import com.trueffect.validation.PersonValidation;
 import java.sql.Connection;
@@ -21,10 +22,11 @@ public class PersonValidationsDB {
         String errorMgs = "";
         ArrayList<String> listError = new ArrayList<String>();
         HashMap<String, String> listData = new HashMap<String, String>();
-        Either eitherPerson = PersonCrud.getPersonByIdentifier(connection, personNew.getTypeIdentifier(), personNew.getIdentifier());
+        Either eitherPerson = PersonCrud.getPersonByIdentifier(connection, personNew.getTypeIdentifier().toUpperCase(), personNew.getIdentifier().toUpperCase());
         if (eitherPerson.haveModelObject()) {
+            TypeIdentifier typeIdenEnum = TypeIdentifier.valueOf(personNew.getTypeIdentifier().toUpperCase());
             listData.put(ConstantData.TYPE_DATA, ConstantData.IDENTIFIER);
-            listData.put(ConstantData.DATA, personNew.getTypeIdentifier() + " = " + personNew.getIdentifier());
+            listData.put(ConstantData.DATA, typeIdenEnum.getDescriptionIdentifier() + " = " + personNew.getIdentifier());
             errorMgs = OperationString.generateMesage(Message.DUPLICATE, listData);
             listError.add(errorMgs);
         }
@@ -50,7 +52,7 @@ public class PersonValidationsDB {
         HashMap<String, String> listData = new HashMap<String, String>();
         Either eitherPersonOld = PersonCrud.getPerson(connection, idPerson, "");
         Person personAux = generatePersonAuxiliary((Person) eitherPersonOld.getFirstObject(), personNew);
-        if (!PersonValidation.isValidIdentifier(personAux.getTypeIdentifier(), personAux.getIdentifier())) {
+        if (!PersonValidation.isValidIdentifier(personAux.getTypeIdentifier().toUpperCase(), personAux.getIdentifier().toUpperCase())) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.IDENTIFIER);
             listData.put(ConstantData.TYPE_DATA_TWO, ConstantData.TYPE_IDENTIFIER);
@@ -60,7 +62,7 @@ public class PersonValidationsDB {
             listError.add(errorMgs);
             return new Either(CodeStatus.BAD_REQUEST, listError);
         }
-        Either eitherPersonById = PersonCrud.getPersonByIdentifier(connection, personAux.getTypeIdentifier(), personAux.getIdentifier());
+        Either eitherPersonById = PersonCrud.getPersonByIdentifier(connection, personAux.getTypeIdentifier().toUpperCase(), personAux.getIdentifier().toUpperCase());
         if (eitherPersonById.haveModelObject()) {
             Person personEither = (Person) eitherPersonById.getFirstObject();
             if (idPerson != personEither.getId()) {
