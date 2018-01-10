@@ -1,10 +1,12 @@
 package com.trueffect.logica;
 
 import com.trueffect.messages.Message;
+import com.trueffect.model.Phone;
 import com.trueffect.response.Either;
 import com.trueffect.tools.CodeStatus;
 import com.trueffect.tools.ConstantData;
 import com.trueffect.tools.ConstantData.Status;
+import com.trueffect.util.ModelObject;
 import com.trueffect.util.OperationString;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -31,10 +33,27 @@ public class OperationModel {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, "Status22");
             listData.put(ConstantData.DATA, status);
-            listData.put(ConstantData.VALID,Status.Active+", "+Status.Inactive);
+            listData.put(ConstantData.VALID, Status.Active + ", " + Status.Inactive);
             String errorMgs = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
             listError.add(errorMgs);
             return new Either(CodeStatus.BAD_REQUEST, listError);
         }
+    }
+
+    public Either verifyId(int idUrl, int idPayload, String nameObject) {
+        ArrayList<String> listError = new ArrayList<String>();
+        listData.clear();
+        if (idPayload == 0) {
+            listData.put(ConstantData.OBJECT, nameObject);
+            String errorMessage = OperationString.generateMesage(Message.MANDATORY_ID, listData);
+            listError.add(errorMessage);
+            return new Either(CodeStatus.CONFLICT, listError);
+        } else if (idUrl != idPayload) {
+            listData.put(ConstantData.OBJECT, nameObject);
+            String errorMessage = OperationString.generateMesage(Message.CONFLCT_ID, listData);
+            listError.add(errorMessage);
+            return new Either(CodeStatus.CONFLICT, listError);
+        }
+        return new Either();
     }
 }

@@ -141,23 +141,4 @@ public class PersonValidation {
         return res;
     }
 
-    public static Either verifyId(Person person, int idPerson) {
-        ArrayList<String> listError = new ArrayList<String>();
-        if (person.getId() != 0) {
-            if (person.getId() != idPerson) {
-                String nameObject = "";
-                if (person instanceof Employee) {
-                    nameObject = ObjectMovie.Employee.name();
-                } else {
-                    nameObject = ObjectMovie.RennterUser.name();
-                }
-                HashMap<String, String> listData = new HashMap<String, String>();
-                listData.put(ConstantData.OBJECT, nameObject);
-                String errorMessage = OperationString.generateMesage(Message.CONFLCT_ID, listData);
-                listError.add(Message.CONFLCT_ID);
-                return new Either(CodeStatus.CONFLICT, listError);
-            }
-        }
-        return new Either();
-    }
 }

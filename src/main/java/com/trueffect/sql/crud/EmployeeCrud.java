@@ -24,7 +24,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class EmployeeCrud {
 
-    public static Either insertDataJob(Connection connection, DataJob dataJob) {
+    public static Either insertDataJob(Connection connection, DataJob dataJob, boolean enabledRenterUser) {
         Statement query = null;
         try {
             int idEmployee = dataJob.getEmployeeId();
@@ -41,11 +41,11 @@ public class EmployeeCrud {
                     + "job_id,"
                     + "enable_rent) "
                     + "VALUES("
-                    + idEmployee + ",'"
-                    + dateOfHire + "','"
-                    + address + "',"
-                    + idJob + ","
-                    + "FALSE);";
+                    + idEmployee + ", '"
+                    + dateOfHire + "', '"
+                    + address + "', "
+                    + idJob + ", "
+                    + enabledRenterUser + ");";
             query.execute(sql);
             if (query != null) {
                 query.close();
@@ -58,7 +58,7 @@ public class EmployeeCrud {
         }
     }
 
-    public static Either insertPhone(Connection connection, int idEmployee, ArrayList<Integer> listPhones) {
+    public static Either insertPhone(Connection connection, int idEmployee, int idCreateUser, ArrayList<Integer> listPhones) {
         Statement query = null;
         try {
             query = (Statement) connection.createStatement();
@@ -68,11 +68,19 @@ public class EmployeeCrud {
                         + "INSERT INTO PHONE("
                         + "number_phone,"
                         + "person_id,"
-                        + "status) "
+                        + "status,"
+                        + "create_user,"
+                        + "modifier_user,"
+                        + "create_date,"
+                        + "modifier_date) "
                         + "VALUES("
                         + listPhones.get(i) + ","
                         + idEmployee + ","
-                        + "'Active');";
+                        + "'Active',"
+                        + idCreateUser + ","
+                        + "null,"
+                        + "current_timestamp,"
+                        + "null);";
             }
             query.execute(sql);
             if (query != null) {
@@ -392,6 +400,48 @@ public class EmployeeCrud {
                 st.close();
             }
             eitherRes.setCode(CodeStatus.CREATED);
+            return eitherRes;
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+    }
+
+    public static Either getPhonesByNumeber(Connection connection, ArrayList<Integer> phones, String status) {
+        try {
+            String query
+                    = "SELECT person_id,"
+                    + "       number_phone, "
+                    + "       status\n"
+                    + "  FROM phone\n"
+                    + " where (";
+            for (Integer phone : phones) {
+                query = query + "number_phone = " + phone + " OR ";
+                System.out.println("NUPAY: " + phone);
+            }
+            query = query.substring(0, query.length() - 4);
+            query = query + ") ";
+            
+            if (StringUtils.isNotBlank(status)) {
+                query =  query + "AND status = '" + status + "'";
+            }
+            System.out.println("SQL_PHONE: " +query);
+            PreparedStatement st = connection.prepareStatement(query);
+            ResultSet rs = st.executeQuery();
+            Either eitherRes = new Either();
+            while (rs.next()) {
+                System.out.println("NUDB: " + rs.getInt("number_phone"));
+                Phone phoneRes = new Phone(
+                        rs.getInt("person_id"),
+                        rs.getInt("number_phone"),
+                        rs.getString("status"));
+                eitherRes.addModeloObjet(phoneRes);
+            }
+            if (st != null) {
+                st.close();
+            }
+            eitherRes.setCode(CodeStatus.OK);
             return eitherRes;
         } catch (Exception exception) {
             ArrayList<String> listError = new ArrayList<String>();

@@ -28,12 +28,14 @@ import org.apache.commons.lang3.StringUtils;
 public class PersonLogic {
 
     private HashMap<String, String> listData;
+    private PersonValidationsDB personValidationsDB;
     private Permission permission;
 
     public PersonLogic() {
         String renterUser = ObjectMovie.RennterUser.name();
         listData = new HashMap<String, String>();
         permission = new Permission();
+        personValidationsDB = new PersonValidationsDB();
         permission.setNameObject(renterUser);
     }
 
@@ -43,6 +45,7 @@ public class PersonLogic {
         try {
             //open conection 
             connection = DataBasePostgres.getConection();
+            
             String create = Crud.create.name();
             //Validation of permission 
             eitherRes = permission.checkUserPermission(connection, idUserWhoCreate, create);
@@ -55,7 +58,7 @@ public class PersonLogic {
                 throw eitherRes;
             }
             OperationString.addApostrophe(person);
-            eitherRes = PersonValidationsDB.veriryDataInDataBase(connection, person);
+            eitherRes = personValidationsDB.veriryDataInDataBase(connection, person);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -132,12 +135,14 @@ public class PersonLogic {
             connection = DataBasePostgres.getConection();
             String update = Crud.update.name();
             String statusActive = Status.Active.name();
+            String renterUser = ObjectMovie.RennterUser.name();
             //Validation of data
             eitherRes = permission.checkUserPermission(connection, idUserModify, update);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            eitherRes = PersonValidation.verifyId(person, idRenter);
+            OperationModel operationModel = new OperationModel();
+            eitherRes = operationModel.verifyId(idRenter, person.getId(), renterUser);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -160,7 +165,7 @@ public class PersonLogic {
             }
             //add aphostrophe "'".
             OperationString.addApostrophe(person);
-            eitherRes = PersonValidationsDB.verifyDataUpdate(connection, person);
+            eitherRes = personValidationsDB.verifyDataUpdate(connection, person);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -230,7 +235,6 @@ public class PersonLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            OperationModel operationModel = new OperationModel();
             DataBasePostgres.connectionCommit(connection);
 
         } catch (Either e) {

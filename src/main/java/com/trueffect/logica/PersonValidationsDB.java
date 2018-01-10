@@ -18,12 +18,18 @@ import java.util.HashMap;
  */
 public class PersonValidationsDB {
 
-    public static Either veriryDataInDataBase(Connection connection, Person personNew) {
+    protected HashMap<String, String> listData;
+
+    public PersonValidationsDB() {
+        this.listData = new HashMap<String, String>();
+    }
+
+    public Either veriryDataInDataBase(Connection connection, Person personNew) {
         String errorMgs = "";
         ArrayList<String> listError = new ArrayList<String>();
-        HashMap<String, String> listData = new HashMap<String, String>();
         Either eitherPerson = PersonCrud.getPersonByIdentifier(connection, personNew.getTypeIdentifier().toUpperCase(), personNew.getIdentifier().toUpperCase());
         if (eitherPerson.haveModelObject()) {
+            listData.clear();
             TypeIdentifier typeIdenEnum = TypeIdentifier.valueOf(personNew.getTypeIdentifier().toUpperCase());
             listData.put(ConstantData.TYPE_DATA, ConstantData.IDENTIFIER);
             listData.put(ConstantData.DATA, typeIdenEnum.getDescriptionIdentifier() + " = " + personNew.getIdentifier());
@@ -45,11 +51,10 @@ public class PersonValidationsDB {
         return new Either();
     }
 
-    public static Either verifyDataUpdate(Connection connection, Person personNew) {
+    public Either verifyDataUpdate(Connection connection, Person personNew) {
         int idPerson = personNew.getId();
         String errorMgs = "";
         ArrayList<String> listError = new ArrayList<String>();
-        HashMap<String, String> listData = new HashMap<String, String>();
         Either eitherPersonOld = PersonCrud.getPerson(connection, idPerson, "");
         Person personAux = generatePersonAuxiliary((Person) eitherPersonOld.getFirstObject(), personNew);
         if (!PersonValidation.isValidIdentifier(personAux.getTypeIdentifier().toUpperCase(), personAux.getIdentifier().toUpperCase())) {
@@ -66,6 +71,7 @@ public class PersonValidationsDB {
         if (eitherPersonById.haveModelObject()) {
             Person personEither = (Person) eitherPersonById.getFirstObject();
             if (idPerson != personEither.getId()) {
+                listData.clear();
                 listData.put(ConstantData.TYPE_DATA, ConstantData.IDENTIFIER);
                 listData.put(ConstantData.DATA, personAux.getTypeIdentifier() + " = " + personAux.getIdentifier());
                 errorMgs = OperationString.generateMesage(Message.DUPLICATE, listData);
@@ -89,7 +95,7 @@ public class PersonValidationsDB {
         return new Either();
     }
 
-    private static Person generatePersonAuxiliary(Person personOld, Person personNew) {
+    private Person generatePersonAuxiliary(Person personOld, Person personNew) {
         Person personAuxiliary = personOld;
         if (personNew.getTypeIdentifier() != null) {
             personAuxiliary.setTypeIdentifier(personNew.getTypeIdentifier());

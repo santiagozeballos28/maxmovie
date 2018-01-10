@@ -43,37 +43,42 @@ public class EmployeeLogic {
         permission.setNameObject(object);
     }
 
-    public Either createEmployee(int idUserCreate, Employee employee, EmployeeCreate employeeCreate) {
+    public Either createEmployee(int idUserCreate, boolean enabledRenterUser, Employee employee, EmployeeCreate employeeCreate) {
         Either eitherRes = new Either();
         Connection connection = null;
         try {
             //open conection 
             connection = DataBasePostgres.getConection();
             String create = Crud.create.name();
-            //Validation of permission 
+            EmployeeValidationDB employeeValidationDB = new EmployeeValidationDB(create);
+            //Validation of permission           
             eitherRes = permission.checkUserPermission(connection, idUserCreate, create);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
             //the names are converted into a valid format (example, sanTiAgo = Santiago)
             OperationString.formatOfTheName(employee);
-            //the name job is converted into a valid format (example, cusTOm caRe = customCare)
+            //the name job is converted into a valid format (example, CshR = CSHR)
             OperationString.formatOfNameJob(employee);
             eitherRes = employeeCreate.complyCondition(employee);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            eitherRes = PersonValidationsDB.veriryDataInDataBase(connection, employee);
+            eitherRes = employeeValidationDB.veriryDataInDataBase(connection, employee);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
+            String identifier = employee.getIdentifier().toUpperCase();
+            String typeIdentifier = employee.getTypeIdentifier().toUpperCase();
+            String genre = employee.getGenre().toUpperCase();
+            employee.setIdentifier(identifier);
+            employee.setTypeIdentifier(typeIdentifier);
+            employee.setGenre(genre);
             //Insert Person
             eitherRes = PersonCrud.insertPerson(connection, idUserCreate, employee);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            String typeIdentifier = employee.getTypeIdentifier();
-            String identifier = employee.getIdentifier();
             Either eitherInserted = PersonCrud.getPersonByIdentifier(connection, typeIdentifier, identifier);
             int idEmployee = ((Person) eitherInserted.getFirstObject()).getId();
             employee.setId(idEmployee);
@@ -86,13 +91,13 @@ public class EmployeeLogic {
             //Create object DataJob
             DataJob dataJob = new DataJob(idEmployee, idJob, employee.getDateOfHire(), employee.getAddress());
             //Insert data job
-            eitherRes = EmployeeCrud.insertDataJob(connection, dataJob);
+            eitherRes = EmployeeCrud.insertDataJob(connection, dataJob, enabledRenterUser);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
             //Insert phones
             ArrayList<Integer> listPhones = employee.getPhones();
-            eitherRes = EmployeeCrud.insertPhone(connection, idEmployee, listPhones);
+            eitherRes = EmployeeCrud.insertPhone(connection, idEmployee, idUserCreate, listPhones);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -146,14 +151,17 @@ public class EmployeeLogic {
         try {
             //open conection 
             connection = DataBasePostgres.getConection();
+            OperationModel operationModel = new OperationModel();
             String statusActive = Status.Active.name();
             String update = Crud.update.name();
+            String nameEmployee = ObjectMovie.Employee.name();
+            EmployeeValidationDB employeeValidationDB = new EmployeeValidationDB(update);
             //Validation of data
             eitherRes = permission.checkUserPermission(connection, idModifyUser, update);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            eitherRes = PersonValidation.verifyId(employee, idEmployee);
+            eitherRes = operationModel.verifyId(idEmployee, employee.getId(), nameEmployee);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -181,7 +189,7 @@ public class EmployeeLogic {
             }
             //add aphostrophe "'".
             OperationString.addApostrophe(employee);
-            eitherRes = PersonValidationsDB.verifyDataUpdate(connection, employee);
+            eitherRes = employeeValidationDB.verifyDataUpdate(connection, employee);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -220,8 +228,8 @@ public class EmployeeLogic {
             }
             ArrayList<ModelObject> listPhoneInsert = eitherRes.getListObject();
             if (!listPhoneInsert.isEmpty()) {
-                ArrayList<Integer> listPhonesI = getListPhonesInsert(listPhoneInsert);
-                eitherRes = EmployeeCrud.insertPhone(connection, idEmployee, listPhonesI);
+                ArrayList<Integer> listPhonesI = getListNumberPhones(listPhoneInsert);
+                eitherRes = EmployeeCrud.insertPhone(connection, idEmployee, idModifyUser, listPhonesI);
                 if (eitherRes.existError()) {
                     throw eitherRes;
                 }
@@ -354,10 +362,10 @@ public class EmployeeLogic {
         return eitherRes;
     }
 
-    private ArrayList<Integer> getListPhonesInsert(ArrayList<ModelObject> listPhoneInsert) {
+    public ArrayList<Integer> getListNumberPhones(ArrayList<ModelObject> listPhone) {
         ArrayList<Integer> resPhones = new ArrayList<Integer>();
-        for (int i = 0; i < listPhoneInsert.size(); i++) {
-            int numberPhone = ((Phone) listPhoneInsert.get(i)).getNumberPhone();
+        for (int i = 0; i < listPhone.size(); i++) {
+            int numberPhone = ((Phone) listPhone.get(i)).getNumberPhone();
             resPhones.add(numberPhone);
         }
         return resPhones;
@@ -443,5 +451,24 @@ public class EmployeeLogic {
             DataBasePostgres.connectionClose(connection, eitherRes);
         }
         return eitherRes;
+    }
+
+    public Either verifyPhonesDuplicates(int id, ArrayList<ModelObject> listPhone) {
+        ArrayList<Integer> phonesDuplicates = new ArrayList<Integer>();
+        ArrayList<String> listError = new ArrayList<String>();
+        for (ModelObject modelObject : listPhone) {
+            Phone phone = (Phone) modelObject;
+            if (id != phone.getIdPerson()) {
+                phonesDuplicates.add(phone.getNumberPhone());
+            }
+        }
+        if (!phonesDuplicates.isEmpty()) {
+            listData.put(ConstantData.TYPE_DATA, ConstantData.PHONE);
+            listData.put(ConstantData.DATA, phonesDuplicates.toString());
+            String errorMgs = OperationString.generateMesage(Message.DUPLICATE, listData);
+            listError.add(errorMgs);
+            return new Either(CodeStatus.BAD_REQUEST, listError);
+        }
+        return new Either();
     }
 }

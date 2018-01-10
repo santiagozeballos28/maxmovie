@@ -30,8 +30,8 @@ public class EmployeeResourse {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response insertEmployee(@QueryParam("idUserCreate") int idUserCreate, Employee employee) {
-        Either eitherEmployee = employeeLogic.createEmployee(idUserCreate, employee, new EmployeeCreate(ConstantData.MIN_AGE_EMPLOYEE));
+    public Response insertEmployee(@QueryParam("idUserCreate") int idUserCreate,@QueryParam("enabledRenterUser") boolean enabledRenterUser, Employee employee) {
+        Either eitherEmployee = employeeLogic.createEmployee(idUserCreate,enabledRenterUser, employee, new EmployeeCreate(ConstantData.MIN_AGE_EMPLOYEE));
         Response response = mapper.toResponse(eitherEmployee);
         return response;
     }
