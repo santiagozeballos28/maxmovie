@@ -2,8 +2,10 @@ package com.trueffect.logica;
 
 import com.trueffect.messages.Message;
 import com.trueffect.model.Job;
+import com.trueffect.model.Person;
 import com.trueffect.response.Either;
 import com.trueffect.sql.crud.JobCrud;
+import com.trueffect.sql.crud.PersonCrud;
 import com.trueffect.tools.CodeStatus;
 import com.trueffect.tools.ConstantData;
 import com.trueffect.tools.ConstantData.JobName;
@@ -52,9 +54,30 @@ public class Permission {
         } else {
             listData.clear();
             listData.put(ConstantData.OPERATION, operation);
-            String errorMgs = OperationString.generateMesage(Message.NOT_FOUND_USER_OPERATION, listData);
+            String errorMgs = OperationString.generateMesage(Message.NOT_HAVE_PERMISSION_OPERATION, listData);
             listError.add(errorMgs);
             return new Either(CodeStatus.BAD_REQUEST, listError);
         }
+    }
+
+    public Either getPerson(Connection connection, long idPerson, String status, String operation) {
+        Either eitherRes = new Either();
+        Person person = new Person();
+        ArrayList<String> listError = new ArrayList<String>();
+        try {
+            eitherRes = PersonCrud.getPerson(connection, idPerson, status);
+            person = (Person) eitherRes.getFirstObject();
+        } catch (Exception exception) {
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+        if (person.isEmpty()) {
+            listData.clear();
+            listData.put(ConstantData.OPERATION, operation);
+            String errorMgs = OperationString.generateMesage(Message.NOT_FOUND_USER_REQUEST, listData);
+            listError.add(errorMgs);
+            return new Either(CodeStatus.NOT_FOUND, listError);
+        }
+        return eitherRes;
     }
 }

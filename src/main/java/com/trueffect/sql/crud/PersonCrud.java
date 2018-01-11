@@ -142,7 +142,7 @@ public class PersonCrud {
         }
     }
 
-    public static Either getPerson(Connection connection, long idPerson, String status) {
+    public static Either getRenterUser(Connection connection, long idPerson, String status) {
         try {
             String query
                     = "SELECT PERSON.person_id, "
@@ -286,44 +286,48 @@ public class PersonCrud {
                     + "        PERSON.last_name AS last_name_user_create,"
                     + "        PERSON.first_name AS first_name_user_create"
                     + "   FROM "
-                    + "(SELECT person_id, "
-                    + "        type_identifier, "
-                    + "        identifier, "
-                    + "        last_name, "
-                    + "        first_name, "
-                    + "        genre,"
-                    + "        birthday, "
-                    + "        create_date, "
-                    + "        create_user,"
-                    + "        status"
-                    + "   FROM person "
-                    + "  WHERE person_id NOT IN"
+                    + "(SELECT PERSON.person_id, "
+                    + "        PERSON.type_identifier, "
+                    + "        PERSON.identifier, "
+                    + "        PERSON.last_name, "
+                    + "        PERSON.first_name, "
+                    + "        PERSON.genre,"
+                    + "        PERSON.birthday, "
+                    + "        PERSON.create_date, "
+                    + "        PERSON.create_user,"
+                    + "        PERSON.status"
+                    + "   FROM PERSON "
+                    + "  WHERE PERSON.person_id NOT IN"
                     + "(SELECT person_id"
                     + "   FROM DATA_JOB"
                     + "  WHERE enable_rent = false)) RENTER_USER,PERSON"
                     + "  WHERE RENTER_USER.status= 'Active' "
                     + "    AND RENTER_USER.create_user = PERSON.person_id";
-
+            String conditionQuery = "";
             if (StringUtils.isNotBlank(typeId)) {
-                query = query + " AND RENTER_USER.type_identifier = '" + typeId.trim() + "'";
+                conditionQuery = conditionQuery + " RENTER_USER.type_identifier = '" + typeId.trim().toUpperCase() + "' OR";
             }
             if (StringUtils.isNotBlank(identifier)) {
-                query = query + " AND RENTER_USER.identifier= '" + identifier.trim() + "' ";
+                conditionQuery = conditionQuery + " RENTER_USER.identifier= '" + identifier.trim().toUpperCase() + "' OR";
             }
             if (StringUtils.isNotBlank(lastName)) {
-                 query = query
-                        + " AND ( last_name LIKE '%" + lastName + "%' "
-                        + "OR last_name LIKE '%" + lastName.toLowerCase() +"%')";
+                conditionQuery = conditionQuery
+                        + " RENTER_USER.last_name LIKE '%" + lastName.trim() + "%' OR"
+                        + " RENTER_USER.last_name LIKE '%" + lastName.trim().toLowerCase() + "%' OR";
             }
             if (StringUtils.isNotBlank(firstName)) {
-                     query = query
-                        + " AND ( first_name LIKE '%" + firstName + "%' "
-                        + "OR first_name LIKE '%" + firstName.toLowerCase() +"%')";
+                conditionQuery = conditionQuery
+                        + " RENTER_USER.first_name LIKE '%" + firstName.trim() + "%' OR"
+                        + " RENTER_USER.first_name LIKE '%" + firstName.trim().toLowerCase() + "%' OR";
             }
             if (StringUtils.isNotBlank(genre)) {
-                query = query + " AND RENTER_USER.genre= '" + genre.trim() + "'";
+                conditionQuery = conditionQuery + " RENTER_USER.genre= '" + genre.trim().toUpperCase() + "' OR";
             }
-            System.out.println("SQL GET: " + query);
+            if (conditionQuery.length() > 0) {
+                conditionQuery = conditionQuery.substring(0, conditionQuery.length() - 2);
+                query = query + " AND (" + conditionQuery + ")";
+            }
+
             PreparedStatement st = connection.prepareStatement(query);
             ResultSet rs = st.executeQuery();
             PersonDetail person = new PersonDetail();
@@ -356,4 +360,45 @@ public class PersonCrud {
             return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
         }
     }
+
+    public static Either getPerson(Connection connection, long idPerson, String status) {
+        try {
+            String query
+                    = "SELECT PERSON.person_id, "
+                    + "       type_identifier, "
+                    + "       identifier, "
+                    + "       last_name, "
+                    + "       first_name, "
+                    + "       genre, "
+                    + "       birthday"
+                    + "  FROM PERSON"
+                    + " WHERE person_id= ? ";
+            if (StringUtils.isNotBlank(status)) {
+                query = query + " AND status = '" + status + "'";
+            }
+            PreparedStatement st = connection.prepareStatement(query);
+            st.setLong(1, idPerson);
+            ResultSet rs = st.executeQuery();
+            Person person = new Person();
+            if (rs.next()) {
+                person = new Person(
+                        rs.getLong("person_id"),
+                        rs.getString("type_identifier"),
+                        rs.getString("identifier"),
+                        rs.getString("last_name"),
+                        rs.getString("first_name"),
+                        rs.getString("genre"),
+                        rs.getString("birthday"));
+            }
+            if (st != null) {
+                st.close();
+            }
+            return new Either(CodeStatus.OK, person);
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+    }
+
 }

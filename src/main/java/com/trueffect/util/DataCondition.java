@@ -6,7 +6,7 @@ import com.trueffect.response.Either;
  * @author Santiago
  */
 public interface DataCondition {
-    
+
     abstract Either complyCondition(ModelObject resource);
 
 }

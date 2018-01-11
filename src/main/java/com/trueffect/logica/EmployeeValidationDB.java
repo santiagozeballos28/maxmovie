@@ -40,7 +40,6 @@ public class EmployeeValidationDB extends PersonValidationsDB {
         Either eitherPhone = EmployeeCrud.getPhonesByNumeber(connection, employee.getPhones(), null);
         ArrayList<ModelObject> listPhone = eitherPhone.getListObject();
         if (listPhone.isEmpty()) {
-            System.out.println("Es VACIO lA lista DE telfonos");
             return new Either();
         }
         String errorMgs = "";
@@ -50,7 +49,6 @@ public class EmployeeValidationDB extends PersonValidationsDB {
         Crud crud = Crud.valueOf(nameCrud);
         switch (crud) {
             case create:
-                System.out.println("Switch create");
                 listData.clear();
                 ArrayList<Integer> listNumbersPhones = employeeLogic.getListNumberPhones(listPhone);
                 listData.put(ConstantData.TYPE_DATA, ConstantData.PHONE);
@@ -59,7 +57,6 @@ public class EmployeeValidationDB extends PersonValidationsDB {
                 listError.add(errorMgs);
                 return new Either(CodeStatus.BAD_REQUEST, listError);
             case update:
-                 System.out.println("Switch update");
                 return employeeLogic.verifyPhonesDuplicates(employee.getId(), listPhone);
         }
         return new Either();

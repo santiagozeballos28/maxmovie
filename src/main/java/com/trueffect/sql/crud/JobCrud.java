@@ -21,8 +21,9 @@ public class JobCrud {
                     + "  FROM DATA_JOB,"
                     + "       JOB\n"
                     + " WHERE DATA_JOB.job_id= JOB.job_id "
+                    + "   AND status = 'Active'"
                     + "   AND person_id = ?;";
-            System.out.println("SQL: " +sql);
+            System.out.println("SQL: " + sql);
             PreparedStatement st = connection.prepareStatement(sql);
             //st.setInt(1, idUser);
             st.setLong(1, idUser);
@@ -32,6 +33,9 @@ public class JobCrud {
                 job = new Job(
                         rs.getInt("job_id"),
                         rs.getString("job_name"));
+            }
+            if (st != null) {
+                st.close();
             }
             either.setCode(CodeStatus.OK);
             either.addModeloObjet(job);
@@ -48,7 +52,7 @@ public class JobCrud {
             String sql
                     = "SELECT job_id, "
                     + "       job_name"
-                    + "  FROM job"
+                    + "  FROM JOB"
                     + "  WHERE job_name=?";
 
             PreparedStatement st = connection.prepareStatement(sql);
@@ -59,6 +63,9 @@ public class JobCrud {
                 job = new Job(
                         rs.getLong("job_id"),
                         rs.getString("job_name"));
+            }
+            if (st != null) {
+                st.close();
             }
             either.setCode(CodeStatus.OK);
             either.addModeloObjet(job);

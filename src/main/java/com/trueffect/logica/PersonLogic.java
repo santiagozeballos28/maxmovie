@@ -38,7 +38,7 @@ public class PersonLogic {
         permission.setNameObject(renterUser);
     }
 
-    public Either createPerson(long idUserWhoCreate, Person person, PersonCreate conditiondata) {
+    public Either createPerson(long idUserCreate, Person person, PersonCreate conditiondata) {
         Either eitherRes = new Either();
         Connection connection = null;
         try {
@@ -46,8 +46,14 @@ public class PersonLogic {
             connection = DataBasePostgres.getConection();
 
             String create = Crud.create.name();
+            String status = Status.Active.name();
+            //checks if the employee exists
+            eitherRes = permission.getPerson(connection, idUserCreate, status, create);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
             //Validation of permission 
-            eitherRes = permission.checkUserPermission(connection, idUserWhoCreate, create);
+            eitherRes = permission.checkUserPermission(connection, idUserCreate, create);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -67,7 +73,7 @@ public class PersonLogic {
             person.setIdentifier(identifier);
             person.setTypeIdentifier(typeIdentifier);
             person.setGenre(genre);
-            eitherRes = PersonCrud.insertPerson(connection, idUserWhoCreate, person);
+            eitherRes = PersonCrud.insertPerson(connection, idUserCreate, person);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -92,6 +98,12 @@ public class PersonLogic {
             //open conection 
             connection = DataBasePostgres.getConection();
             String delete = Crud.delete.name();
+            String statusActive = Status.Active.name();
+            //checks if the employee exists
+            eitherRes = permission.getPerson(connection, idUserModify, statusActive, delete);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
             //Check if the user can modify
             eitherRes = permission.checkUserPermission(connection, idUserModify, delete);
             if (eitherRes.existError()) {
@@ -112,7 +124,7 @@ public class PersonLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            eitherRes = PersonCrud.getPerson(connection, idPerson, null);
+            eitherRes = PersonCrud.getRenterUser(connection, idPerson, null);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -135,6 +147,11 @@ public class PersonLogic {
             String update = Crud.update.name();
             String statusActive = Status.Active.name();
             String renterUser = ObjectMovie.RennterUser.name();
+            //checks if the employee exists
+            eitherRes = permission.getPerson(connection, idUserModify, statusActive, update);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
             //Validation of data
             eitherRes = permission.checkUserPermission(connection, idUserModify, update);
             if (eitherRes.existError()) {
@@ -168,17 +185,23 @@ public class PersonLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            String identifier = OperationString.toUpperCase(person.getIdentifier());
-            String typeIdentifier = OperationString.toUpperCase(person.getTypeIdentifier());
-            String genre = OperationString.toUpperCase(person.getGenre());
-            person.setIdentifier(identifier);
-            person.setTypeIdentifier(typeIdentifier);
-            person.setGenre(genre);
+            String typeIdentifier = person.getTypeIdentifier();
+            if (StringUtils.isNotBlank(typeIdentifier)) {
+                person.setTypeIdentifier(typeIdentifier.toUpperCase());
+            }
+            String identifier = person.getIdentifier();
+            if (StringUtils.isNotBlank(identifier)) {
+                person.setIdentifier(identifier.toUpperCase());
+            }
+            String genre = person.getGenre();
+            if (StringUtils.isNotBlank(genre)) {
+                person.setGenre(genre.toUpperCase());
+            }
             eitherRes = PersonCrud.updatePerson(connection, idUserModify, person);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            eitherRes = PersonCrud.getPerson(connection, idRenter, statusActive);
+            eitherRes = PersonCrud.getRenterUser(connection, idRenter, statusActive);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -198,7 +221,7 @@ public class PersonLogic {
         Person person = new Person();
         ArrayList<String> listError = new ArrayList<String>();
         try {
-            eitherRes = PersonCrud.getPerson(connection, idPerson, status);
+            eitherRes = PersonCrud.getRenterUser(connection, idPerson, status);
             person = (Person) eitherRes.getFirstObject();
         } catch (Exception exception) {
             listError.add(exception.getMessage());
@@ -218,11 +241,15 @@ public class PersonLogic {
         Either eitherRes = new Either();
         Connection connection = null;
         try {
-            System.out.println("ID_TO long: " + idUserSearch);                        
-
             //open conection 
             connection = DataBasePostgres.getConection();
             String get = Crud.get.name();
+            String status = Status.Active.name();
+            //checks if the employee exists
+            eitherRes = permission.getPerson(connection, idUserSearch, status, get);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
             //Check if the user can modify
             eitherRes = permission.checkUserPermission(connection, idUserSearch, get);
             if (eitherRes.existError()) {

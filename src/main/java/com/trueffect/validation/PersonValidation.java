@@ -1,6 +1,5 @@
 package com.trueffect.validation;
 
-
 import com.trueffect.tools.ConstantData.GenrePerson;
 import com.trueffect.tools.ConstantData.TypeIdentifier;
 import com.trueffect.tools.RegularExpression;

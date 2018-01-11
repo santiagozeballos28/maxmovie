@@ -23,7 +23,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class EmployeeCrud {
 
-    public static Either insertDataJob(Connection connection, DataJob dataJob, boolean enabledRenterUser) {
+    public static Either insertDataJob(Connection connection, long idCreateUser, DataJob dataJob, boolean enabledRenterUser) {
         Statement query = null;
         try {
             long idEmployee = dataJob.getEmployeeId();
@@ -38,13 +38,23 @@ public class EmployeeCrud {
                     + "date_of_hire,"
                     + "address,"
                     + "job_id,"
-                    + "enable_rent) "
+                    + "enable_rent,"
+                    + "create_user,"
+                    + "create_date,"
+                    + "modifier_user,"
+                    + "modifier_date,"
+                    + "status) "
                     + "VALUES("
                     + idEmployee + ", '"
                     + dateOfHire + "', '"
                     + address + "', "
                     + idJob + ", "
-                    + enabledRenterUser + ");";
+                    + enabledRenterUser + ","
+                    + idCreateUser + ","
+                    + "current_timestamp,"
+                    + "null,"
+                    + "null,"
+                    + "'Active');";
             query.execute(sql);
             if (query != null) {
                 query.close();
@@ -60,7 +70,6 @@ public class EmployeeCrud {
     public static Either insertPhone(Connection connection, long idCreateUser, long idEmployee, ArrayList<Integer> listPhones) {
         Statement query = null;
         try {
-            System.out.println("ESTOY EN INSERT PHONE");
             query = (Statement) connection.createStatement();
             String sql = "";
             for (int i = 0; i < listPhones.size(); i++) {
@@ -82,14 +91,12 @@ public class EmployeeCrud {
                         + "current_timestamp,"
                         + "null); ";
             }
-            System.out.println("SQL IN: " + sql);
             query.execute(sql);
             if (query != null) {
                 query.close();
             }
             return new Either();
         } catch (Exception exception) {
-            System.out.println("ESTOY ERROR SQL");
             ArrayList<String> listError = new ArrayList<String>();
             listError.add(exception.getMessage());
             return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
@@ -114,7 +121,8 @@ public class EmployeeCrud {
                     + " WHERE PERSON.type_identifier='" + typeIdentifier + "' "
                     + "   AND PERSON.identifier='" + identifier + "'"
                     + "   AND PERSON.person_id = DATA_JOB.person_id"
-                    + "   AND DATA_JOB.job_id = JOB.job_id";
+                    + "   AND DATA_JOB.job_id = JOB.job_id"
+                    + "   AND DATA_JOB.status ='Active'";
             ResultSet rs = query.executeQuery(sql);
             Employee employee = new Employee();
             if (rs.next()) {
@@ -175,7 +183,7 @@ public class EmployeeCrud {
                     + "       number_phone, "
                     + "       status"
                     + "  FROM phone"
-                    + " WHERE id_person = ?";
+                    + " WHERE person_id = ?";
             PreparedStatement st = connection.prepareStatement(query);
             st.setLong(1, idEmployee);
             ResultSet rs = st.executeQuery();
@@ -213,11 +221,12 @@ public class EmployeeCrud {
                     + "       job_name\n"
                     + "  FROM PERSON, DATA_JOB, JOB\n"
                     + " WHERE PERSON.person_id = ? "
+                    + "   AND DATA_JOB.status = 'Active'"
                     + "   AND PERSON.person_id = DATA_JOB.person_id "
                     + "   AND DATA_JOB.job_id = JOB.job_id";
 
             if (StringUtils.isNotBlank(status)) {
-                query = query + " AND status = '" + status + "'";
+                query = query + " AND PERSON.status = '" + status + "'";
             }
             PreparedStatement st = connection.prepareStatement(query);
             st.setLong(1, idEmployee);
@@ -247,27 +256,18 @@ public class EmployeeCrud {
         }
     }
 
-    public static Either updateDataJob(Connection connection, long idJob, Employee employee) {
+    public static Either updateDataJob(Connection connection, long idModifierUser, long idEmployee, long idJob, String status) {
         try {
             String sql
                     = "UPDATE DATA_JOB\n"
-                    + "   SET ";
-            // variable to store the person attributes
-            String varSet = employee.getDateOfHire();
-            if (StringUtils.isNotBlank(varSet)) {
-                sql = sql + "date_of_hire= '" + varSet + "',";
-            }
-            varSet = employee.getAddress();
-            if (StringUtils.isNotBlank(varSet)) {
-                sql = sql + "address= '" + varSet + "',";
-            }
+                    + "   SET modifier_user = " + idModifierUser + ","
+                    + "       modifier_date = current_timestamp" + ","
+                    + "       status = '" + status + "'"
+                    + " WHERE person_id = ? AND job_id = ?";
 
-            sql = sql + "     job_id = ?"
-                    + " WHERE person_id = ?";
-            long idEmployee = employee.getId();
             PreparedStatement st = connection.prepareStatement(sql);
-            st.setLong(1, idJob);
-            st.setLong(2, idEmployee);
+            st.setLong(1, idEmployee);
+            st.setLong(2, idJob);
             st.execute();
             if (st != null) {
                 st.close();
@@ -290,7 +290,7 @@ public class EmployeeCrud {
                         + "UPDATE PHONE"
                         + "   SET status= '" + phone.getStatus() + "',"
                         + "       modifier_user = " + idModifierUser + ","
-                        + "       modifier_date = current_timestamp,"
+                        + "       modifier_date = current_timestamp"
                         + " WHERE person_id = " + idEmployee
                         + "   AND number_phone= " + phone.getNumberPhone() + ";";
             }
@@ -333,48 +333,53 @@ public class EmployeeCrud {
                     + "        PERSON.first_name AS first_name_user_create "
                     + "   FROM "
                     + "(SELECT PERSON.person_id, "
-                    + "        type_identifier, "
-                    + "        identifier, "
-                    + "        last_name, "
-                    + "        first_name, "
-                    + "        genre, "
-                    + "        birthday, "
-                    + "        create_date, "
-                    + "        date_of_hire,"
-                    + "        address , "
-                    + "        job_name, "
-                    + "        create_user "
+                    + "        PERSON.type_identifier, "
+                    + "        PERSON.identifier, "
+                    + "        PERSON.last_name, "
+                    + "        PERSON.first_name, "
+                    + "        PERSON.genre, "
+                    + "        PERSON.birthday, "
+                    + "        PERSON.create_date, "
+                    + "        DATA_JOB.date_of_hire,"
+                    + "        DATA_JOB.address , "
+                    + "        JOB.job_name, "
+                    + "        PERSON.create_user "
                     + "   FROM PERSON, DATA_JOB, JOB "
-                    + "  WHERE status = 'Active' "
+                    + "  WHERE PERSON.status = 'Active' "
+                    + "    AND DATA_JOB.status= 'Active'"
                     + "    AND PERSON.person_id=DATA_JOB.person_id "
                     + "    AND DATA_JOB.job_id = JOB.job_id "
                     + "    AND DATA_JOB.job_id = JOB.job_id ";
-
+            String conditionQuery = "";
             if (StringUtils.isNotBlank(typeId)) {
-                query = query + " AND type_identifier = '" + typeId + "'";
+                conditionQuery = conditionQuery + " type_identifier = '" + typeId.trim().toUpperCase() + "' OR";
             }
             if (StringUtils.isNotBlank(identifier)) {
-                query = query + " AND identifier= '" + identifier + "' ";
+                conditionQuery = conditionQuery + " identifier= '" + identifier.trim().toUpperCase() + "' OR";
             }
             if (StringUtils.isNotBlank(lastName)) {
-                query = query
-                        + " AND ( last_name LIKE '%" + lastName + "%' "
-                        + "OR last_name LIKE '%" + lastName.toLowerCase() +"%')";
+                conditionQuery = conditionQuery
+                        + " last_name LIKE '%" + lastName.trim() + "%' OR"
+                        + " last_name LIKE '%" + lastName.trim().toLowerCase() + "%' OR";
             }
             if (StringUtils.isNotBlank(firstName)) {
-                query = query
-                        + " AND ( first_name LIKE '%" + firstName + "%' "
-                        + "OR first_name LIKE '%" + firstName.toLowerCase() +"%')";
+                conditionQuery = conditionQuery
+                        + " first_name LIKE '%" + firstName.trim() + "%' OR"
+                        + " first_name LIKE '%" + firstName.trim().toLowerCase() + "%' OR";
             }
             if (StringUtils.isNotBlank(genre)) {
-                query = query + " AND genre= '" + genre + "'";
+                conditionQuery = conditionQuery + " genre= '" + genre.trim().toUpperCase() + "' OR";
             }
 
             if (StringUtils.isNotBlank(nameJob)) {
-                query = query + " AND job_name= '" + nameJob + "'";
+                conditionQuery = conditionQuery + " job_name= '" + nameJob.trim().toUpperCase() + "' OR";
             }
             if (StringUtils.isNotBlank(dateOfHire)) {
-                query = query + " AND  date_of_hire = '" + dateOfHire + "'";
+                conditionQuery = conditionQuery + " date_of_hire = '" + dateOfHire.trim() + "' OR";
+            }
+            if (conditionQuery.length() > 0) {
+                conditionQuery = conditionQuery.substring(0, conditionQuery.length() - 2);
+                query = query + " AND ( " + conditionQuery + " )";
             }
             query = query + ") EMPLOYEE, PERSON "
                     + " WHERE EMPLOYEE.create_user = PERSON.person_id";
@@ -447,6 +452,46 @@ public class EmployeeCrud {
                 st.close();
             }
             eitherRes.setCode(CodeStatus.OK);
+            return eitherRes;
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+    }
+
+    public static Either getDataJob(Connection connection, long idEmployee, String status) {
+        try {
+            String query
+                    = "SELECT person_id,"
+                    + "       job_id, "
+                    + "       date_of_hire, "
+                    + "       address,"
+                    + "       status"
+                    + "  FROM DATA_JOB"
+                    + " WHERE DATA_JOB.person_id = " + idEmployee;
+
+            if (StringUtils.isNotBlank(status)) {
+                query = query + " AND status = '" + status + "'";
+            }
+            PreparedStatement st = connection.prepareStatement(query);
+            ResultSet rs = st.executeQuery();
+            Either eitherRes = new Either();
+            DataJob dataJob = new DataJob();
+            while (rs.next()) {
+                dataJob = new DataJob(
+                        rs.getLong("person_id"),
+                        rs.getLong("job_id"),
+                        rs.getString("date_of_hire"),
+                        rs.getString("address"),
+                        rs.getString("status"));
+                eitherRes.addModeloObjet(dataJob);
+            }
+            if (st != null) {
+                st.close();
+            }
+
+            eitherRes.setCode(CodeStatus.CREATED);
             return eitherRes;
         } catch (Exception exception) {
             ArrayList<String> listError = new ArrayList<String>();

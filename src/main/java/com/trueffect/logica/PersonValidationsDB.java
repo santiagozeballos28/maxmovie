@@ -55,7 +55,7 @@ public class PersonValidationsDB {
         long idPerson = personNew.getId();
         String errorMgs = "";
         ArrayList<String> listError = new ArrayList<String>();
-        Either eitherPersonOld = PersonCrud.getPerson(connection, idPerson, "");
+        Either eitherPersonOld = PersonCrud.getRenterUser(connection, idPerson, "");
         Person personAux = generatePersonAuxiliary((Person) eitherPersonOld.getFirstObject(), personNew);
         if (!PersonValidation.isValidIdentifier(personAux.getTypeIdentifier().toUpperCase(), personAux.getIdentifier().toUpperCase())) {
             listData.clear();

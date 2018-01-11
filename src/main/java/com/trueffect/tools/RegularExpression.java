@@ -15,4 +15,3 @@ public class RegularExpression {
     public static String PHONE = "^[0-9]{8}$";
     public static String PHONE_FIJO = "^[0-9]{7}$";
 }
-

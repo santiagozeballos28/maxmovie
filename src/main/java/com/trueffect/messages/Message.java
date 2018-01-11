@@ -4,7 +4,8 @@ package com.trueffect.messages;
  * @author santiago.mamani
  */
 public class Message {
-         // Message of Empty
+    // Message of Empty
+
     public static String MANDATORY_ID = "The {object} primary key is mandatory";
     // Message of Empty
     public static String EMPTY_DATA = "The {typeData} is required";
@@ -24,6 +25,7 @@ public class Message {
     public static String NOT_HAVE_PERMISSION = "The user don't have permission to {operation} the {typeData}";
     // Message of results
     public static String NOT_FOUND = "The {object} requested record was not found";
-    public static String NOT_FOUND_USER_OPERATION = "The user who wants to {operation} does not exist";
+    public static String NOT_FOUND_USER_REQUEST = "The user requesting to {operation} does not exist";
+    public static String NOT_HAVE_PERMISSION_OPERATION = "The user don't have permission to {operation}";
     public static String CONFLCT_ID = "The identifier not corresponde to value of {object}";
 }

@@ -122,30 +122,35 @@ public class PersonValidationTest {
         String firstName = "Sant#iago$";
         Assert.assertEquals(PersonValidation.isValidFirstName(firstName), expected);
     }
-   @Test
+
+    @Test
     public void testFirstNameUpperCase() {
         boolean expected = true;
         String lastName = "elIa's";
         Assert.assertEquals(PersonValidation.isValidLastName(lastName), expected);
     }
-       @Test
+
+    @Test
     public void testFirstNameLowerCase() {
         boolean expected = true;
         String lastName = "e'lias";
         Assert.assertEquals(PersonValidation.isValidLastName(lastName), expected);
     }
+
     @Test
     public void testOneLastName() {
         boolean expected = true;
         String lastName = "Zeballo's";
         Assert.assertEquals(PersonValidation.isValidLastName(lastName), expected);
     }
-     @Test
+
+    @Test
     public void testLastNameTwoSimbolValid() {
         boolean expected = true;
         String lastName = "mamaN'i zeballo's";
         Assert.assertEquals(PersonValidation.isValidLastName(lastName), expected);
     }
+
     @Test
     public void testLastNameSymbol() {
         boolean expected = false;
@@ -159,13 +164,15 @@ public class PersonValidationTest {
         String lastName = "mamani";
         Assert.assertEquals(PersonValidation.isValidLastName(lastName), expected);
     }
-        @Test
+
+    @Test
     public void testLastNameUpperCase() {
         boolean expected = true;
         String lastName = "zebAllos";
         Assert.assertEquals(PersonValidation.isValidLastName(lastName), expected);
     }
-            @Test
+
+    @Test
     public void testLastNameUpperCaseAndLowerCase() {
         boolean expected = true;
         String lastName = "zebAllos mamANi";
@@ -210,13 +217,15 @@ public class PersonValidationTest {
         String birthday = "-12-2014";
         Assert.assertEquals(PersonValidation.isValidBirthday(birthday), expected);
     }
-      @Test
+
+    @Test
     public void testBirthday3() {
 
         boolean expected = false;
         String birthday = "2014-15-02";
         Assert.assertEquals(PersonValidation.isValidBirthday(birthday), expected);
     }
+
     @Test
     public void testBirthday4() {
 
@@ -224,20 +233,22 @@ public class PersonValidationTest {
         String birthday = "2015-12-30";
         Assert.assertEquals(PersonValidation.isValidBirthday(birthday), expected);
     }
-       @Test
+
+    @Test
     public void testAgeIvalid() {
 
         boolean expected = false;
         String birthday = "2005-12-12";
-        int minimumAge =  ConstantData.MIN_AGE_RENTER;
-        Assert.assertEquals(PersonValidation.isValidAge(birthday,minimumAge), expected);
+        int minimumAge = ConstantData.MIN_AGE_RENTER;
+        Assert.assertEquals(PersonValidation.isValidAge(birthday, minimumAge), expected);
     }
-     @Test
+
+    @Test
     public void testAgeValid() {
 
         boolean expected = true;
         String birthday = "2002-12-12";
-        int minimumAge =  ConstantData.MIN_AGE_RENTER;
-        Assert.assertEquals(PersonValidation.isValidAge(birthday,minimumAge), expected);
+        int minimumAge = ConstantData.MIN_AGE_RENTER;
+        Assert.assertEquals(PersonValidation.isValidAge(birthday, minimumAge), expected);
     }
 }

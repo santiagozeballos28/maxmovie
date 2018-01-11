@@ -30,8 +30,8 @@ public class EmployeeResourse {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response insertEmployee(@QueryParam("idUserCreate") long idUserCreate,@QueryParam("enabledRenterUser") boolean enabledRenterUser, Employee employee) {
-        Either eitherEmployee = employeeLogic.createEmployee(idUserCreate,enabledRenterUser, employee, new EmployeeCreate(ConstantData.MIN_AGE_EMPLOYEE));
+    public Response insertEmployee(@QueryParam("idUserCreate") long idUserCreate, @QueryParam("enabledRenterUser") boolean enabledRenterUser, Employee employee) {
+        Either eitherEmployee = employeeLogic.createEmployee(idUserCreate, enabledRenterUser, employee, new EmployeeCreate(ConstantData.MIN_AGE_EMPLOYEE));
         Response response = mapper.toResponse(eitherEmployee);
         return response;
     }
@@ -39,8 +39,12 @@ public class EmployeeResourse {
     @PUT
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateEmployee(@PathParam("id") long idUser, @QueryParam("idModifyUser") long idModifyUser, Employee employee) {
-        Either eitherEmployee = employeeLogic.update(employee, idUser, idModifyUser);
+    public Response updateEmployee(
+            @PathParam("id") long idUser,
+            @QueryParam("idModifyUser") long idModifyUser,
+            @QueryParam("enabledRenterUser") boolean enabledRenterUser,
+            Employee employee) {
+        Either eitherEmployee = employeeLogic.update(employee, enabledRenterUser, idUser, idModifyUser);
         Response response = mapper.toResponse(eitherEmployee);
         return response;
     }
@@ -54,7 +58,7 @@ public class EmployeeResourse {
         return response;
     }
 
-     @GET
+    @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getEmployee(
             @QueryParam("idUserSearch") long idUserSearch,

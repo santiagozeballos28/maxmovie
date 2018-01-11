@@ -15,17 +15,17 @@ public class DataBasePostgres {
 
     public DataBasePostgres() {
     }
-    
-       public static Connection getConection()  throws Either{
-        Connection connection= null;
+
+    public static Connection getConection() throws Either {
+        Connection connection = null;
         try {
             Class.forName(DataConection.DRIVER);
             connection = DriverManager.getConnection(DataConection.SERVER, DataConection.USER, DataConection.PASSWORD);
             connection.setAutoCommit(false);
         } catch (Exception exception) {
-            ArrayList<String> listError =  new ArrayList<String>();
+            ArrayList<String> listError = new ArrayList<String>();
             listError.add(exception.getMessage());
-          throw new Either(CodeStatus.INTERNAL_SERVER_ERROR,listError);
+            throw new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
         }
         return connection;
     }

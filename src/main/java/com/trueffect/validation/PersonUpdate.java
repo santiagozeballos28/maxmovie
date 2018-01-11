@@ -73,9 +73,9 @@ public class PersonUpdate implements DataCondition {
         listData.clear();
         if (job.equals(nameAdmi)) {
             if (!PersonValidation.isValidTypeIdentifier(renterUser.getTypeIdentifier())) {
-                String validTypeId 
-                        = TypeIdentifier.CI.getDescriptionIdentifier() + ", " 
-                        + TypeIdentifier.NIT.getDescriptionIdentifier() + ", " 
+                String validTypeId
+                        = TypeIdentifier.CI.getDescriptionIdentifier() + ", "
+                        + TypeIdentifier.NIT.getDescriptionIdentifier() + ", "
                         + TypeIdentifier.PASS.getDescriptionIdentifier();
                 listData.put(ConstantData.TYPE_DATA, ConstantData.TYPE_IDENTIFIER);
                 listData.put(ConstantData.DATA, renterUser.getTypeIdentifier());
@@ -99,7 +99,7 @@ public class PersonUpdate implements DataCondition {
             if (!PersonValidation.isValidIdentifier(renterUser.getIdentifier())) {
                 listData.put(ConstantData.TYPE_DATA, ConstantData.IDENTIFIER);
                 listData.put(ConstantData.DATA, renterUser.getIdentifier());
-                
+
                 errorMessage = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
                 listError.add(errorMessage);
             }
@@ -138,7 +138,7 @@ public class PersonUpdate implements DataCondition {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.FIRST_NAME);
             listData.put(ConstantData.DATA, firstName);
-            listData.put(ConstantData.VALID,ConstantData.VALID_FIRSTNAME);
+            listData.put(ConstantData.VALID, ConstantData.VALID_FIRSTNAME);
             errorMessage = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessage);
         }
