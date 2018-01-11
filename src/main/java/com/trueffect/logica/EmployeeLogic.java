@@ -14,14 +14,12 @@ import com.trueffect.sql.crud.PersonCrud;
 import com.trueffect.tools.CodeStatus;
 import com.trueffect.tools.ConstantData;
 import com.trueffect.tools.ConstantData.Crud;
-import com.trueffect.tools.ConstantData.JobName;
 import com.trueffect.tools.ConstantData.ObjectMovie;
 import com.trueffect.tools.ConstantData.Status;
 import com.trueffect.util.ModelObject;
 import com.trueffect.util.OperationString;
 import com.trueffect.validation.EmployeeCreate;
 import com.trueffect.validation.EmployeeUpdate;
-import com.trueffect.validation.PersonValidation;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,7 +41,7 @@ public class EmployeeLogic {
         permission.setNameObject(object);
     }
 
-    public Either createEmployee(int idUserCreate, boolean enabledRenterUser, Employee employee, EmployeeCreate employeeCreate) {
+    public Either createEmployee(long idUserCreate, boolean enabledRenterUser, Employee employee, EmployeeCreate employeeCreate) {
         Either eitherRes = new Either();
         Connection connection = null;
         try {
@@ -80,14 +78,14 @@ public class EmployeeLogic {
                 throw eitherRes;
             }
             Either eitherInserted = PersonCrud.getPersonByIdentifier(connection, typeIdentifier, identifier);
-            int idEmployee = ((Person) eitherInserted.getFirstObject()).getId();
+            long idEmployee = ((Person) eitherInserted.getFirstObject()).getId();
             employee.setId(idEmployee);
 
             eitherRes = JobCrud.getJobOfName(connection, employee.getJob());
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            int idJob = ((Job) eitherRes.getFirstObject()).getId();
+            long idJob = ((Job) eitherRes.getFirstObject()).getId();
             //Create object DataJob
             DataJob dataJob = new DataJob(idEmployee, idJob, employee.getDateOfHire(), employee.getAddress());
             //Insert data job
@@ -97,7 +95,7 @@ public class EmployeeLogic {
             }
             //Insert phones
             ArrayList<Integer> listPhones = employee.getPhones();
-            eitherRes = EmployeeCrud.insertPhone(connection, idEmployee, idUserCreate, listPhones);
+            eitherRes = EmployeeCrud.insertPhone(connection, idUserCreate, idEmployee, listPhones);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -145,7 +143,7 @@ public class EmployeeLogic {
         return eitherRes;
     }
 
-    public Either update(Employee employee, int idEmployee, int idModifyUser) {
+    public Either update(Employee employee, long idEmployee, long idModifyUser) {
         Either eitherRes = new Either();
         Connection connection = null;
         try {
@@ -193,15 +191,23 @@ public class EmployeeLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
+            String identifier = OperationString.toUpperCase(employee.getIdentifier());
+            String typeIdentifier = OperationString.toUpperCase(employee.getTypeIdentifier());
+            String genre = OperationString.toUpperCase(employee.getGenre());
+            employee.setIdentifier(identifier);
+            employee.setTypeIdentifier(typeIdentifier);
+            employee.setGenre(genre);
             eitherRes = PersonCrud.updatePerson(connection, idModifyUser, employee);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
+            System.out.println("Despues de insertar employee");
             String nameJob = employee.getJob();
             eitherRes = getJob(connection, nameJob, idEmployee);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
+            System.out.println("get Job");
             Job job = (Job) eitherRes.getFirstObject();
             if (employee.haveDataJob()) {
                 eitherRes = EmployeeCrud.updateDataJob(connection, job.getId(), employee);
@@ -209,6 +215,7 @@ public class EmployeeLogic {
                     throw eitherRes;
                 }
             }
+            System.out.println(" update data crud");
             ArrayList<Integer> phonesInput = employee.getPhones();
             eitherRes = getPhonesUpdate(connection, idEmployee, phonesInput);
             if (eitherRes.existError()) {
@@ -217,23 +224,26 @@ public class EmployeeLogic {
             // Update the phones, if there is data to update
             ArrayList<ModelObject> listPhoneUpdate = eitherRes.getListObject();
             if (!listPhoneUpdate.isEmpty()) {
-                eitherRes = EmployeeCrud.updatePhone(connection, idEmployee, listPhoneUpdate);
+                eitherRes = EmployeeCrud.updatePhone(connection, idModifyUser, idEmployee, listPhoneUpdate);
                 if (eitherRes.existError()) {
                     throw eitherRes;
                 }
             }
+            System.out.println(" update PHONE");
             eitherRes = getPhonesInsert(connection, idEmployee, phonesInput);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
+            System.out.println(" getPhonesInsert(connection, idEmployee, phonesInput);");
             ArrayList<ModelObject> listPhoneInsert = eitherRes.getListObject();
             if (!listPhoneInsert.isEmpty()) {
                 ArrayList<Integer> listPhonesI = getListNumberPhones(listPhoneInsert);
-                eitherRes = EmployeeCrud.insertPhone(connection, idEmployee, idModifyUser, listPhonesI);
+                eitherRes = EmployeeCrud.insertPhone(connection, idModifyUser, idEmployee, listPhonesI);
                 if (eitherRes.existError()) {
                     throw eitherRes;
                 }
             }
+            System.out.println(" insert PHONE");
             //estoy aqui
             eitherRes = getEmployee(connection, idEmployee, statusActive);
             if (eitherRes.existError()) {
@@ -249,7 +259,7 @@ public class EmployeeLogic {
         return eitherRes;
     }
 
-    private Either getEmployee(Connection connection, int idEmployee, String status) {
+    private Either getEmployee(Connection connection, long idEmployee, String status) {
         Either eitherRes = new Either();
         ArrayList<String> listError = new ArrayList<String>();
         Employee employee = new Employee();
@@ -279,7 +289,7 @@ public class EmployeeLogic {
      *when you want to update the job you search for the name you want to add,
      *if you do not update the office you will find your current job.
      */
-    private Either getJob(Connection connection, String nameJob, int idEmployee) {
+    private Either getJob(Connection connection, String nameJob, long idEmployee) {
         if (StringUtils.isNotBlank(nameJob)) {
             return JobCrud.getJobOfName(connection, nameJob);
         } else {
@@ -287,7 +297,7 @@ public class EmployeeLogic {
         }
     }
 
-    private Either getPhonesUpdate(Connection connection, int idEmployee, ArrayList<Integer> phonesInput) {
+    private Either getPhonesUpdate(Connection connection, long idEmployee, ArrayList<Integer> phonesInput) {
         //list of phones that are in the database
         ArrayList<ModelObject> phonesDataBase = new ArrayList<ModelObject>();
         Either eitherPhone = new Either();
@@ -329,7 +339,7 @@ public class EmployeeLogic {
         return eitherRes;
     }
 
-    private Either getPhonesInsert(Connection connection, int idEmployee, ArrayList<Integer> phonesInput) {
+    private Either getPhonesInsert(Connection connection, long idEmployee, ArrayList<Integer> phonesInput) {
         //list of phones that are in the database
         ArrayList<ModelObject> phonesDataBase = new ArrayList<ModelObject>();
         Either eitherPhone = new Either();
@@ -371,7 +381,7 @@ public class EmployeeLogic {
         return resPhones;
     }
 
-    public Either get(int idUserSearch, String typeId, String identifier, String lastName, String firstName, String genre, String dateOfHire, String job) {
+    public Either get(long idUserSearch, String typeId, String identifier, String lastName, String firstName, String genre, String dateOfHire, String job) {
         Either eitherRes = new Either();
         Connection connection = null;
         try {
@@ -392,9 +402,7 @@ public class EmployeeLogic {
             }
             String jobName = "";
             if (StringUtils.isNotBlank(job)) {
-                JobName jobEnum = JobName.valueOf(job);
-                jobName = jobEnum.getDescriptionJobName();
-
+                jobName = job.toUpperCase();
             }
             eitherRes = EmployeeCrud.getEmployeeBy(connection, typeId, identifier, lastName, firstName, genre, dateOfHire, jobName);
             if (eitherRes.existError()) {
@@ -411,7 +419,7 @@ public class EmployeeLogic {
         return eitherRes;
     }
 
-    public Either updateStatus(int idEmployee, int idUserModify, String status) {
+    public Either updateStatus(long idEmployee, long idUserModify, String status) {
         Either eitherRes = new Either();
         Connection connection = null;
         try {
@@ -453,7 +461,7 @@ public class EmployeeLogic {
         return eitherRes;
     }
 
-    public Either verifyPhonesDuplicates(int id, ArrayList<ModelObject> listPhone) {
+    public Either verifyPhonesDuplicates(long id, ArrayList<ModelObject> listPhone) {
         ArrayList<Integer> phonesDuplicates = new ArrayList<Integer>();
         ArrayList<String> listError = new ArrayList<String>();
         for (ModelObject modelObject : listPhone) {

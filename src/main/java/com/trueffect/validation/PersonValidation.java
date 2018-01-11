@@ -1,21 +1,12 @@
 package com.trueffect.validation;
 
-import com.trueffect.messages.Message;
-import com.trueffect.model.Employee;
-import com.trueffect.model.Person;
-import com.trueffect.response.Either;
-import com.trueffect.tools.CodeStatus;
-import com.trueffect.tools.ConstantData;
+
 import com.trueffect.tools.ConstantData.GenrePerson;
-import com.trueffect.tools.ConstantData.ObjectMovie;
 import com.trueffect.tools.ConstantData.TypeIdentifier;
 import com.trueffect.tools.RegularExpression;
-import com.trueffect.util.OperationString;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.regex.Pattern;
 
 /*

@@ -6,7 +6,6 @@ import com.trueffect.model.EmployeeDetail;
 import com.trueffect.model.Phone;
 import com.trueffect.response.Either;
 import com.trueffect.tools.CodeStatus;
-import com.trueffect.tools.ConstantData;
 import com.trueffect.tools.ConstantData.GenrePerson;
 import com.trueffect.tools.ConstantData.JobName;
 import com.trueffect.tools.ConstantData.TypeIdentifier;
@@ -27,8 +26,8 @@ public class EmployeeCrud {
     public static Either insertDataJob(Connection connection, DataJob dataJob, boolean enabledRenterUser) {
         Statement query = null;
         try {
-            int idEmployee = dataJob.getEmployeeId();
-            int idJob = dataJob.getJobId();
+            long idEmployee = dataJob.getEmployeeId();
+            long idJob = dataJob.getJobId();
             String dateOfHire = dataJob.getDateOfHire();
             String address = dataJob.getAddress();
             query = (Statement) connection.createStatement();
@@ -58,9 +57,10 @@ public class EmployeeCrud {
         }
     }
 
-    public static Either insertPhone(Connection connection, int idEmployee, int idCreateUser, ArrayList<Integer> listPhones) {
+    public static Either insertPhone(Connection connection, long idCreateUser, long idEmployee, ArrayList<Integer> listPhones) {
         Statement query = null;
         try {
+            System.out.println("ESTOY EN INSERT PHONE");
             query = (Statement) connection.createStatement();
             String sql = "";
             for (int i = 0; i < listPhones.size(); i++) {
@@ -80,14 +80,16 @@ public class EmployeeCrud {
                         + idCreateUser + ","
                         + "null,"
                         + "current_timestamp,"
-                        + "null);";
+                        + "null); ";
             }
+            System.out.println("SQL IN: " + sql);
             query.execute(sql);
             if (query != null) {
                 query.close();
             }
             return new Either();
         } catch (Exception exception) {
+            System.out.println("ESTOY ERROR SQL");
             ArrayList<String> listError = new ArrayList<String>();
             listError.add(exception.getMessage());
             return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
@@ -117,7 +119,7 @@ public class EmployeeCrud {
             Employee employee = new Employee();
             if (rs.next()) {
                 employee = new Employee(
-                        rs.getInt("person_id"),
+                        rs.getLong("person_id"),
                         rs.getString("type_identifier"),
                         rs.getString("identifier"),
                         rs.getString("last_name"),
@@ -132,7 +134,7 @@ public class EmployeeCrud {
             if (query != null) {
                 query.close();
             }
-            return new Either(CodeStatus.CREATED, employee);
+            return new Either(CodeStatus.OK, employee);
         } catch (Exception exception) {
             ArrayList<String> listError = new ArrayList<String>();
             listError.add(exception.getMessage());
@@ -140,14 +142,14 @@ public class EmployeeCrud {
         }
     }
 
-    public static Either getPhones(Connection connection, int idPerson) {
+    public static Either getPhones(Connection connection, long idPerson) {
         try {
             String query
                     = "SELECT number_phone"
                     + "  FROM PHONE"
                     + " WHERE person_id = ? AND status = 'Active'";
             PreparedStatement st = connection.prepareStatement(query);
-            st.setInt(1, idPerson);
+            st.setLong(1, idPerson);
             ResultSet rs = st.executeQuery();
             ArrayList<Integer> phones = new ArrayList<Integer>();
             while (rs.next()) {
@@ -158,7 +160,7 @@ public class EmployeeCrud {
             if (st != null) {
                 st.close();
             }
-            return new Either(CodeStatus.CREATED, employee);
+            return new Either(CodeStatus.OK, employee);
         } catch (Exception exception) {
             ArrayList<String> listError = new ArrayList<String>();
             listError.add(exception.getMessage());
@@ -166,7 +168,7 @@ public class EmployeeCrud {
         }
     }
 
-    public static Either getDetailOfPhones(Connection connection, int idEmployee) {
+    public static Either getDetailOfPhones(Connection connection, long idEmployee) {
         try {
             String query
                     = "SELECT person_id, "
@@ -175,16 +177,16 @@ public class EmployeeCrud {
                     + "  FROM phone"
                     + " WHERE id_person = ?";
             PreparedStatement st = connection.prepareStatement(query);
-            st.setInt(1, idEmployee);
+            st.setLong(1, idEmployee);
             ResultSet rs = st.executeQuery();
             Either eitherRes = new Either();
             while (rs.next()) {
                 eitherRes.addModeloObjet(new Phone(
-                        rs.getInt("person_id"),
+                        rs.getLong("person_id"),
                         rs.getInt("number_phone"),
                         rs.getString("status")));
             }
-            eitherRes.setCode(CodeStatus.CREATED);
+            eitherRes.setCode(CodeStatus.OK);
             if (st != null) {
                 st.close();
             }
@@ -196,7 +198,7 @@ public class EmployeeCrud {
         }
     }
 
-    public static Either getEmployee(Connection connection, int idEmployee, String status) {
+    public static Either getEmployee(Connection connection, long idEmployee, String status) {
         try {
             String query
                     = "SELECT PERSON.person_id, "
@@ -218,12 +220,12 @@ public class EmployeeCrud {
                 query = query + " AND status = '" + status + "'";
             }
             PreparedStatement st = connection.prepareStatement(query);
-            st.setInt(1, idEmployee);
+            st.setLong(1, idEmployee);
             ResultSet rs = st.executeQuery();
             Employee employee = new Employee();
             if (rs.next()) {
                 employee = new Employee(
-                        rs.getInt("person_id"),
+                        rs.getLong("person_id"),
                         rs.getString("type_identifier"),
                         rs.getString("identifier"),
                         rs.getString("last_name"),
@@ -237,7 +239,7 @@ public class EmployeeCrud {
             if (st != null) {
                 st.close();
             }
-            return new Either(CodeStatus.CREATED, employee);
+            return new Either(CodeStatus.OK, employee);
         } catch (Exception exception) {
             ArrayList<String> listError = new ArrayList<String>();
             listError.add(exception.getMessage());
@@ -245,7 +247,7 @@ public class EmployeeCrud {
         }
     }
 
-    public static Either updateDataJob(Connection connection, int idJob, Employee employee) {
+    public static Either updateDataJob(Connection connection, long idJob, Employee employee) {
         try {
             String sql
                     = "UPDATE DATA_JOB\n"
@@ -262,10 +264,10 @@ public class EmployeeCrud {
 
             sql = sql + "     job_id = ?"
                     + " WHERE person_id = ?";
-            int idEmployee = employee.getId();
+            long idEmployee = employee.getId();
             PreparedStatement st = connection.prepareStatement(sql);
-            st.setInt(1, idJob);
-            st.setInt(2, idEmployee);
+            st.setLong(1, idJob);
+            st.setLong(2, idEmployee);
             st.execute();
             if (st != null) {
                 st.close();
@@ -278,7 +280,7 @@ public class EmployeeCrud {
         }
     }
 
-    public static Either updatePhone(Connection connection, int idEmployee, ArrayList<ModelObject> listPhone) {
+    public static Either updatePhone(Connection connection, long idModifierUser, long idEmployee, ArrayList<ModelObject> listPhone) {
         try {
             Statement query = (Statement) connection.createStatement();
             String sql = "";
@@ -286,7 +288,9 @@ public class EmployeeCrud {
                 Phone phone = (Phone) listPhone.get(i);
                 sql = sql
                         + "UPDATE PHONE"
-                        + "   SET status= '" + phone.getStatus() + "'"
+                        + "   SET status= '" + phone.getStatus() + "',"
+                        + "       modifier_user = " + idModifierUser + ","
+                        + "       modifier_date = current_timestamp,"
                         + " WHERE person_id = " + idEmployee
                         + "   AND number_phone= " + phone.getNumberPhone() + ";";
             }
@@ -353,10 +357,14 @@ public class EmployeeCrud {
                 query = query + " AND identifier= '" + identifier + "' ";
             }
             if (StringUtils.isNotBlank(lastName)) {
-                query = query + " AND last_name LIKE '%" + lastName + "%'";
+                query = query
+                        + " AND ( last_name LIKE '%" + lastName + "%' "
+                        + "OR last_name LIKE '%" + lastName.toLowerCase() +"%')";
             }
             if (StringUtils.isNotBlank(firstName)) {
-                query = query + " AND first_name LIKE '%" + firstName + "%'";
+                query = query
+                        + " AND ( first_name LIKE '%" + firstName + "%' "
+                        + "OR first_name LIKE '%" + firstName.toLowerCase() +"%')";
             }
             if (StringUtils.isNotBlank(genre)) {
                 query = query + " AND genre= '" + genre + "'";
@@ -381,7 +389,7 @@ public class EmployeeCrud {
                 GenrePerson genreEnum = GenrePerson.valueOf(gentePerson);
                 JobName jobNameEnum = JobName.valueOf(jobEmployee);
                 EmployeeDetail employeeDetail = new EmployeeDetail(
-                        rs.getInt("person_id"),
+                        rs.getLong("person_id"),
                         rs.getString("type_identifier"),
                         typeIdenEnum.getDescriptionIdentifier(),
                         rs.getString("identifier"),
@@ -399,7 +407,7 @@ public class EmployeeCrud {
             if (st != null) {
                 st.close();
             }
-            eitherRes.setCode(CodeStatus.CREATED);
+            eitherRes.setCode(CodeStatus.OK);
             return eitherRes;
         } catch (Exception exception) {
             ArrayList<String> listError = new ArrayList<String>();
@@ -418,22 +426,19 @@ public class EmployeeCrud {
                     + " where (";
             for (Integer phone : phones) {
                 query = query + "number_phone = " + phone + " OR ";
-                System.out.println("NUPAY: " + phone);
             }
             query = query.substring(0, query.length() - 4);
             query = query + ") ";
-            
+
             if (StringUtils.isNotBlank(status)) {
-                query =  query + "AND status = '" + status + "'";
+                query = query + "AND status = '" + status + "'";
             }
-            System.out.println("SQL_PHONE: " +query);
             PreparedStatement st = connection.prepareStatement(query);
             ResultSet rs = st.executeQuery();
             Either eitherRes = new Either();
             while (rs.next()) {
-                System.out.println("NUDB: " + rs.getInt("number_phone"));
                 Phone phoneRes = new Phone(
-                        rs.getInt("person_id"),
+                        rs.getLong("person_id"),
                         rs.getInt("number_phone"),
                         rs.getString("status"));
                 eitherRes.addModeloObjet(phoneRes);

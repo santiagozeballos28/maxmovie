@@ -29,7 +29,7 @@ public class Permission {
         this.nameObject = nameObject;
     }
 
-    public Either checkUserPermission(Connection connection, int idUserModify, String operation) {
+    public Either checkUserPermission(Connection connection, long idUserModify, String operation) {
         Either eitherJob = JobCrud.getJobOf(connection, idUserModify);
         Either eitherRes = new Either();
         ArrayList<String> listError = new ArrayList<String>();

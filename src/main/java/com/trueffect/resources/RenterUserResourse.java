@@ -30,7 +30,7 @@ public class RenterUserResourse {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response insertRenterUser(@QueryParam("idModifyUser") int idModifyUser, Person renterUser) {
+    public Response insertRenterUser(@QueryParam("idModifyUser") long idModifyUser, Person renterUser) {
         Either either = personLogic.createPerson(idModifyUser, renterUser, new PersonCreate(ConstantData.MIN_AGE_RENTER));
         Response response = mapper.toResponse(either);
         return response;
@@ -39,7 +39,7 @@ public class RenterUserResourse {
     @PUT
     @Path("/{id}/updateStatus")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateStatus(@PathParam("id") int idUser, @QueryParam("idUserModify") int idUserModify, @QueryParam("status") String status) {
+    public Response updateStatus(@PathParam("id") long idUser, @QueryParam("idUserModify") long idUserModify, @QueryParam("status") String status) {
         Either either = personLogic.updateStatus(idUser, idUserModify, status);
         Response response = mapper.toResponse(either);
         return response;
@@ -48,7 +48,7 @@ public class RenterUserResourse {
     @PUT
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateRenterUser(@PathParam("id") int idUser, @QueryParam("idModifyUser") int idModifyUser, Person renterUser) {
+    public Response updateRenterUser(@PathParam("id") long idUser, @QueryParam("idModifyUser") long idModifyUser, Person renterUser) {
         Either eitherRenter = personLogic.update(renterUser, idUser, idModifyUser);
         Response response = mapper.toResponse(eitherRenter);
         return response;
@@ -57,7 +57,7 @@ public class RenterUserResourse {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRenterUser(
-            @QueryParam("idUserSearch") int idUserSearch,
+            @QueryParam("idUserSearch") long idUserSearch,
             @QueryParam("typeIdentifier") String typeIdentifier,
             @QueryParam("identifier") String identifier,
             @QueryParam("lastName") String lastName,

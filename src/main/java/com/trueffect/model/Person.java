@@ -8,7 +8,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  */
 public class Person extends ModelObject {
 
-    protected int id;
+    protected long id;
     protected String typeIdentifier;
     protected String identifier;
     protected String lastName;
@@ -19,7 +19,7 @@ public class Person extends ModelObject {
     public Person() {
     }
 
-    public Person(int id, String typeIdentifier, String identifier, String lastName, String firstName, String genre, String birthday) {
+    public Person(long id, String typeIdentifier, String identifier, String lastName, String firstName, String genre, String birthday) {
         this.id = id;
         this.typeIdentifier = typeIdentifier.trim();
         this.identifier = identifier.trim();
@@ -29,7 +29,7 @@ public class Person extends ModelObject {
         this.birthday = birthday.trim();
     }
 
-    public Person(int id, String typeIdentifier, String identifier, String genre, String birthday) {
+    public Person(long id, String typeIdentifier, String identifier, String genre, String birthday) {
         this.id = id;
         this.typeIdentifier = typeIdentifier.trim();
         this.identifier = identifier.trim();
@@ -37,7 +37,7 @@ public class Person extends ModelObject {
         this.birthday = birthday.trim();
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -65,7 +65,7 @@ public class Person extends ModelObject {
         return birthday;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

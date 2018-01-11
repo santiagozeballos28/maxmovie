@@ -26,7 +26,6 @@ public class EmployeeValidationDB extends PersonValidationsDB {
 
     public Either veriryDataInDataBase(Connection connection, Employee employeeNew) {
         ArrayList<String> listError = new ArrayList<String>();
-        String errorMessages = "";
         Either eitherPerson = super.veriryDataInDataBase(connection, employeeNew);
         listError.addAll(eitherPerson.getListError());
         Either eitherPhone = verifyPhone(connection, employeeNew);
@@ -54,12 +53,26 @@ public class EmployeeValidationDB extends PersonValidationsDB {
                 System.out.println("Switch create");
                 listData.clear();
                 ArrayList<Integer> listNumbersPhones = employeeLogic.getListNumberPhones(listPhone);
+                listData.put(ConstantData.TYPE_DATA, ConstantData.PHONE);
                 listData.put(ConstantData.DATA, listNumbersPhones.toString());
                 errorMgs = OperationString.generateMesage(Message.DUPLICATE, listData);
                 listError.add(errorMgs);
                 return new Either(CodeStatus.BAD_REQUEST, listError);
             case update:
+                 System.out.println("Switch update");
                 return employeeLogic.verifyPhonesDuplicates(employee.getId(), listPhone);
+        }
+        return new Either();
+    }
+
+    public Either verifyDataUpdate(Connection connection, Employee employeeNew) {
+        ArrayList<String> listError = new ArrayList<String>();
+        Either eitherPerson = super.verifyDataUpdate(connection, employeeNew);
+        listError.addAll(eitherPerson.getListError());
+        Either eitherPhone = verifyPhone(connection, employeeNew);
+        listError.addAll(eitherPhone.getListError());
+        if (!listError.isEmpty()) {
+            return new Either(CodeStatus.BAD_REQUEST, listError);
         }
         return new Either();
     }

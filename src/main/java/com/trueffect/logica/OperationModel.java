@@ -1,12 +1,10 @@
 package com.trueffect.logica;
 
 import com.trueffect.messages.Message;
-import com.trueffect.model.Phone;
 import com.trueffect.response.Either;
 import com.trueffect.tools.CodeStatus;
 import com.trueffect.tools.ConstantData;
 import com.trueffect.tools.ConstantData.Status;
-import com.trueffect.util.ModelObject;
 import com.trueffect.util.OperationString;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -40,7 +38,7 @@ public class OperationModel {
         }
     }
 
-    public Either verifyId(int idUrl, int idPayload, String nameObject) {
+    public Either verifyId(long idUrl, long idPayload, String nameObject) {
         ArrayList<String> listError = new ArrayList<String>();
         listData.clear();
         if (idPayload == 0) {

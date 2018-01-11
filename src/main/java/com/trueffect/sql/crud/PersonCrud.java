@@ -19,7 +19,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class PersonCrud {
 
-    public static Either insertPerson(Connection connection, int idJob, Person person) {
+    public static Either insertPerson(Connection connection, long idJob, Person person) {
         Statement query = null;
         try {
             String typeIdentifier = person.getTypeIdentifier();
@@ -85,7 +85,7 @@ public class PersonCrud {
             Person person = new Person();
             if (rs.next()) {
                 person = new Person(
-                        rs.getInt("person_id"),
+                        rs.getLong("person_id"),
                         rs.getString("type_identifier"),
                         rs.getString("identifier"),
                         rs.getString("last_name"),
@@ -96,7 +96,7 @@ public class PersonCrud {
             if (query != null) {
                 query.close();
             }
-            return new Either(CodeStatus.CREATED, person);
+            return new Either(CodeStatus.OK, person);
         } catch (Exception exception) {
             ArrayList<String> listError = new ArrayList<String>();
             listError.add(exception.getMessage());
@@ -123,7 +123,7 @@ public class PersonCrud {
             Person person = new Person();
             if (rs.next()) {
                 person = new Person(
-                        rs.getInt("person_id"),
+                        rs.getLong("person_id"),
                         rs.getString("type_identifier"),
                         rs.getString("identifier"),
                         rs.getString("last_name"),
@@ -134,7 +134,7 @@ public class PersonCrud {
             if (st != null) {
                 st.close();
             }
-            return new Either(CodeStatus.CREATED, person);
+            return new Either(CodeStatus.OK, person);
         } catch (Exception exception) {
             ArrayList<String> listError = new ArrayList<String>();
             listError.add(exception.getMessage());
@@ -142,7 +142,7 @@ public class PersonCrud {
         }
     }
 
-    public static Either getPerson(Connection connection, int idPerson, String status) {
+    public static Either getPerson(Connection connection, long idPerson, String status) {
         try {
             String query
                     = "SELECT PERSON.person_id, "
@@ -164,12 +164,12 @@ public class PersonCrud {
                     + "  FROM DATA_JOB"
                     + " WHERE enable_rent = FALSE)";
             PreparedStatement st = connection.prepareStatement(query);
-            st.setInt(1, idPerson);
+            st.setLong(1, idPerson);
             ResultSet rs = st.executeQuery();
             Person person = new Person();
             if (rs.next()) {
                 person = new Person(
-                        rs.getInt("person_id"),
+                        rs.getLong("person_id"),
                         rs.getString("type_identifier"),
                         rs.getString("identifier"),
                         rs.getString("last_name"),
@@ -180,7 +180,7 @@ public class PersonCrud {
             if (st != null) {
                 st.close();
             }
-            return new Either(CodeStatus.CREATED, person);
+            return new Either(CodeStatus.OK, person);
         } catch (Exception exception) {
             ArrayList<String> listError = new ArrayList<String>();
             listError.add(exception.getMessage());
@@ -188,7 +188,7 @@ public class PersonCrud {
         }
     }
 
-    public static Either updateStatusPerson(Connection connection, int idPerson, int idUserModifier, String status) {
+    public static Either updateStatusPerson(Connection connection, long idPerson, long idUserModifier, String status) {
 
         try {
             String sql
@@ -200,8 +200,8 @@ public class PersonCrud {
 
             PreparedStatement st = connection.prepareStatement(sql);
             st.setString(1, status);
-            st.setInt(2, idUserModifier);
-            st.setInt(3, idPerson);
+            st.setLong(2, idUserModifier);
+            st.setLong(3, idPerson);
             st.execute();
             if (st != null) {
                 st.close();
@@ -214,7 +214,7 @@ public class PersonCrud {
         }
     }
 
-    public static Either updatePerson(Connection connection, int idUserModifier, Person person) {
+    public static Either updatePerson(Connection connection, long idUserModifier, Person person) {
         try {
             String sql
                     = "UPDATE PERSON\n"
@@ -246,12 +246,12 @@ public class PersonCrud {
             }
             sql = sql
                     + "       modifier_date =  current_date,"
-                    + "       modifier_date = ?"
+                    + "       modifier_user = ?"
                     + " WHERE person_id = ?";
-            int idPerson = person.getId();
+            long idPerson = person.getId();
             PreparedStatement st = connection.prepareStatement(sql);
-            st.setInt(1, idUserModifier);
-            st.setInt(2, idPerson);
+            st.setLong(1, idUserModifier);
+            st.setLong(2, idPerson);
             st.execute();
 
             if (st != null) {
@@ -311,10 +311,14 @@ public class PersonCrud {
                 query = query + " AND RENTER_USER.identifier= '" + identifier.trim() + "' ";
             }
             if (StringUtils.isNotBlank(lastName)) {
-                query = query + " AND RENTER_USER.last_name LIKE '%" + lastName + "%'";
+                 query = query
+                        + " AND ( last_name LIKE '%" + lastName + "%' "
+                        + "OR last_name LIKE '%" + lastName.toLowerCase() +"%')";
             }
             if (StringUtils.isNotBlank(firstName)) {
-                query = query + " AND RENTER_USER.first_name LIKE '%" + firstName + "%'";
+                     query = query
+                        + " AND ( first_name LIKE '%" + firstName + "%' "
+                        + "OR first_name LIKE '%" + firstName.toLowerCase() +"%')";
             }
             if (StringUtils.isNotBlank(genre)) {
                 query = query + " AND RENTER_USER.genre= '" + genre.trim() + "'";
@@ -329,7 +333,7 @@ public class PersonCrud {
                 TypeIdentifier typeIdenEnum = TypeIdentifier.valueOf(typeIdentifier);
                 GenrePerson genreEnum = GenrePerson.valueOf(genrePerson);
                 person = new PersonDetail(
-                        rs.getInt("person_id"),
+                        rs.getLong("person_id"),
                         rs.getString("type_identifier"),
                         typeIdenEnum.getDescriptionIdentifier(),
                         rs.getString("identifier"),

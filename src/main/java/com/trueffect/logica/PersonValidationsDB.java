@@ -52,7 +52,7 @@ public class PersonValidationsDB {
     }
 
     public Either verifyDataUpdate(Connection connection, Person personNew) {
-        int idPerson = personNew.getId();
+        long idPerson = personNew.getId();
         String errorMgs = "";
         ArrayList<String> listError = new ArrayList<String>();
         Either eitherPersonOld = PersonCrud.getPerson(connection, idPerson, "");

@@ -13,5 +13,6 @@ public class RegularExpression {
     public static String LAST_NAME_ONE = "^[A-Za-z]{1,}[A-Za-z']{1,}[A-Za-z]{1,}$";
     public static String FIRST_NAME = "^[A-Za-z]{1,}[A-Za-z']{1,}[A-Za-z]{1,}$";
     public static String PHONE = "^[0-9]{8}$";
+    public static String PHONE_FIJO = "^[0-9]{7}$";
 }
 

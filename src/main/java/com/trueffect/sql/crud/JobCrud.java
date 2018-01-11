@@ -12,7 +12,7 @@ import java.sql.ResultSet;
  */
 public class JobCrud {
 
-    public static Either getJobOf(Connection connection, int idUser) {
+    public static Either getJobOf(Connection connection, long idUser) {
         Either either = new Either();
         try {
             String sql
@@ -24,7 +24,8 @@ public class JobCrud {
                     + "   AND person_id = ?;";
             System.out.println("SQL: " +sql);
             PreparedStatement st = connection.prepareStatement(sql);
-            st.setInt(1, idUser);
+            //st.setInt(1, idUser);
+            st.setLong(1, idUser);
             ResultSet rs = st.executeQuery();
             Job job = new Job();
             if (rs.next()) {
@@ -56,7 +57,7 @@ public class JobCrud {
             Job job = new Job();
             if (rs.next()) {
                 job = new Job(
-                        rs.getInt("job_id"),
+                        rs.getLong("job_id"),
                         rs.getString("job_name"));
             }
             either.setCode(CodeStatus.OK);

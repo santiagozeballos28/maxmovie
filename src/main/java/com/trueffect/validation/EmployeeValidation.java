@@ -60,6 +60,7 @@ public class EmployeeValidation {
     }
 
     public static boolean isValidPhone(int phone) {
-        return Pattern.matches(RegularExpression.PHONE, phone + "");
+        return Pattern.matches(RegularExpression.PHONE, phone + "")
+                || Pattern.matches(RegularExpression.PHONE_FIJO, phone + "");
     }
 }

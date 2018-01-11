@@ -8,18 +8,18 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  */
 public class Job extends ModelObject {
 
-    private int id;
+    private long id;
     protected String nameJob;
 
     public Job() {
     }
 
-    public Job(int id, String nameJob) {
+    public Job(long id, String nameJob) {
         this.id = id;
         this.nameJob = nameJob;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -27,7 +27,7 @@ public class Job extends ModelObject {
         return nameJob;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

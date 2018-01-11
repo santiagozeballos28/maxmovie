@@ -18,7 +18,7 @@ public class Employee extends Person {
     }
 
     public Employee(
-            int id,
+            long id,
             String typeIdentifier,
             String identifier,
             String lastName,

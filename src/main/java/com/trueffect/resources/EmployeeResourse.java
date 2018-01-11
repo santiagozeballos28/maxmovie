@@ -30,7 +30,7 @@ public class EmployeeResourse {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response insertEmployee(@QueryParam("idUserCreate") int idUserCreate,@QueryParam("enabledRenterUser") boolean enabledRenterUser, Employee employee) {
+    public Response insertEmployee(@QueryParam("idUserCreate") long idUserCreate,@QueryParam("enabledRenterUser") boolean enabledRenterUser, Employee employee) {
         Either eitherEmployee = employeeLogic.createEmployee(idUserCreate,enabledRenterUser, employee, new EmployeeCreate(ConstantData.MIN_AGE_EMPLOYEE));
         Response response = mapper.toResponse(eitherEmployee);
         return response;
@@ -39,7 +39,7 @@ public class EmployeeResourse {
     @PUT
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateEmployee(@PathParam("id") int idUser, @QueryParam("idModifyUser") int idModifyUser, Employee employee) {
+    public Response updateEmployee(@PathParam("id") long idUser, @QueryParam("idModifyUser") long idModifyUser, Employee employee) {
         Either eitherEmployee = employeeLogic.update(employee, idUser, idModifyUser);
         Response response = mapper.toResponse(eitherEmployee);
         return response;
@@ -48,7 +48,7 @@ public class EmployeeResourse {
     @PUT
     @Path("/{id}/updateStatus")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateStatus(@PathParam("id") int idEmployee, @QueryParam("idUserModify") int idUserModify, @QueryParam("status") String status) {
+    public Response updateStatus(@PathParam("id") long idEmployee, @QueryParam("idUserModify") long idUserModify, @QueryParam("status") String status) {
         Either either = employeeLogic.updateStatus(idEmployee, idUserModify, status);
         Response response = mapper.toResponse(either);
         return response;
@@ -57,7 +57,7 @@ public class EmployeeResourse {
      @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getEmployee(
-            @QueryParam("idUserSearch") int idUserSearch,
+            @QueryParam("idUserSearch") long idUserSearch,
             @QueryParam("typeIdentifier") String typeIdentifier,
             @QueryParam("identifier") String identifier,
             @QueryParam("lastName") String lastName,

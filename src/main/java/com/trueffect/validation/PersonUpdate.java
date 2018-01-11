@@ -69,13 +69,17 @@ public class PersonUpdate implements DataCondition {
 
     private void intentUpdateTypeIdentifier(Person renterUser, ArrayList<String> listError) {
         String errorMessage = "";
-        String nameAdmi = JobName.ADMIN.getDescriptionJobName();
+        String nameAdmi = JobName.ADMIN.name();
         listData.clear();
         if (job.equals(nameAdmi)) {
             if (!PersonValidation.isValidTypeIdentifier(renterUser.getTypeIdentifier())) {
+                String validTypeId 
+                        = TypeIdentifier.CI.getDescriptionIdentifier() + ", " 
+                        + TypeIdentifier.NIT.getDescriptionIdentifier() + ", " 
+                        + TypeIdentifier.PASS.getDescriptionIdentifier();
                 listData.put(ConstantData.TYPE_DATA, ConstantData.TYPE_IDENTIFIER);
                 listData.put(ConstantData.DATA, renterUser.getTypeIdentifier());
-                listData.put(ConstantData.VALID, TypeIdentifier.CI + ", " + TypeIdentifier.NIT + ", " + TypeIdentifier.PASS);
+                listData.put(ConstantData.VALID, validTypeId);
                 errorMessage = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
                 listError.add(errorMessage);
             }
@@ -89,7 +93,7 @@ public class PersonUpdate implements DataCondition {
 
     private void intentUpdateIdentifier(Person renterUser, ArrayList<String> listError) {
         String errorMessage = "";
-        String nameAdmi = JobName.ADMIN.getDescriptionJobName();
+        String nameAdmi = JobName.ADMIN.name();
         listData.clear();
         if (job.equals(nameAdmi)) {
             if (!PersonValidation.isValidIdentifier(renterUser.getIdentifier())) {

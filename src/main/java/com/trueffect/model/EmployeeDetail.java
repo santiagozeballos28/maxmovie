@@ -30,7 +30,7 @@ public class EmployeeDetail extends PersonDetail {
     }
 
     public EmployeeDetail(
-            int id,
+            long id,
             String typeIdentifier,
             String typeIdDescription,
             String identifier,

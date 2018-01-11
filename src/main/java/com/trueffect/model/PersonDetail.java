@@ -28,7 +28,7 @@ public class PersonDetail extends Person {
     public PersonDetail() {
     }
 
-    public PersonDetail(int id, String typeIdentifier, String typeIdDescription, String identifier, String namePerson, String genre, String genreDescription, String birthday, String dateCreate, String nameCreateUser) {
+    public PersonDetail(long id, String typeIdentifier, String typeIdDescription, String identifier, String namePerson, String genre, String genreDescription, String birthday, String dateCreate, String nameCreateUser) {
         super(id, typeIdentifier, identifier, genre, birthday);
         this.typeIdDescription = typeIdDescription.trim();
         this.namePerson = namePerson.trim();

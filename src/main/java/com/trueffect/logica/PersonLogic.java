@@ -14,7 +14,6 @@ import com.trueffect.tools.ConstantData.ObjectMovie;
 import com.trueffect.tools.ConstantData.Status;
 import com.trueffect.util.OperationString;
 import com.trueffect.validation.PersonCreate;
-import com.trueffect.validation.PersonValidation;
 import com.trueffect.validation.PersonUpdate;
 
 import java.sql.Connection;
@@ -39,13 +38,13 @@ public class PersonLogic {
         permission.setNameObject(renterUser);
     }
 
-    public Either createPerson(int idUserWhoCreate, Person person, PersonCreate conditiondata) {
+    public Either createPerson(long idUserWhoCreate, Person person, PersonCreate conditiondata) {
         Either eitherRes = new Either();
         Connection connection = null;
         try {
             //open conection 
             connection = DataBasePostgres.getConection();
-            
+
             String create = Crud.create.name();
             //Validation of permission 
             eitherRes = permission.checkUserPermission(connection, idUserWhoCreate, create);
@@ -86,7 +85,7 @@ public class PersonLogic {
         return eitherRes;
     }
 
-    public Either updateStatus(int idPerson, int idUserModify, String status) {
+    public Either updateStatus(long idPerson, long idUserModify, String status) {
         Either eitherRes = new Either();
         Connection connection = null;
         try {
@@ -127,7 +126,7 @@ public class PersonLogic {
         return eitherRes;
     }
 
-    public Either update(Person person, int idRenter, int idUserModify) {
+    public Either update(Person person, long idRenter, long idUserModify) {
         Either eitherRes = new Either();
         Connection connection = null;
         try {
@@ -169,7 +168,12 @@ public class PersonLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-
+            String identifier = OperationString.toUpperCase(person.getIdentifier());
+            String typeIdentifier = OperationString.toUpperCase(person.getTypeIdentifier());
+            String genre = OperationString.toUpperCase(person.getGenre());
+            person.setIdentifier(identifier);
+            person.setTypeIdentifier(typeIdentifier);
+            person.setGenre(genre);
             eitherRes = PersonCrud.updatePerson(connection, idUserModify, person);
             if (eitherRes.existError()) {
                 throw eitherRes;
@@ -188,7 +192,7 @@ public class PersonLogic {
         return eitherRes;
     }
 
-    private Either getPerson(Connection connection, int idPerson, String status) {
+    private Either getPerson(Connection connection, long idPerson, String status) {
         String renterUser = ObjectMovie.RennterUser.name();
         Either eitherRes = new Either();
         Person person = new Person();
@@ -210,10 +214,12 @@ public class PersonLogic {
         return eitherRes;
     }
 
-    public Either get(int idUserSearch, String typeId, String identifier, String lastName, String firstName, String genre) {
+    public Either get(long idUserSearch, String typeId, String identifier, String lastName, String firstName, String genre) {
         Either eitherRes = new Either();
         Connection connection = null;
         try {
+            System.out.println("ID_TO long: " + idUserSearch);                        
+
             //open conection 
             connection = DataBasePostgres.getConection();
             String get = Crud.get.name();
