@@ -23,7 +23,6 @@ public class JobCrud {
                     + " WHERE DATA_JOB.job_id= JOB.job_id "
                     + "   AND status = 'Active'"
                     + "   AND person_id = ?;";
-            System.out.println("SQL: " + sql);
             PreparedStatement st = connection.prepareStatement(sql);
             //st.setInt(1, idUser);
             st.setLong(1, idUser);

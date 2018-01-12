@@ -56,52 +56,6 @@ public class PersonValidation {
         return genre.equals(genreEnum.M.name()) || genre.equals(genreEnum.F.name());
     }
 
-    public static boolean isValidBirthday(String dateBirthday) {
-        if (!Pattern.matches(RegularExpression.DATE, dateBirthday)) {
-            return false;
-        }
-        String[] dates = dateBirthday.split("-");
-        int year = Integer.parseInt(dates[0]);
-        int month = Integer.parseInt(dates[1]);
-        int dayOfMonth = Integer.parseInt(dates[2]);
-
-        if (year < 1900) {
-            return false;
-        }
-        try {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setLenient(false);
-            calendar.set(Calendar.YEAR, year);
-            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            calendar.set(Calendar.MONTH, month - 1); // [0,...,11]
-            Date date = calendar.getTime();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public static boolean isValidAge(String age, int ageMin) {
-        boolean res = false;
-        String yearUser = age.substring(0, 4).trim();
-        try {
-
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Date datePerson = dateFormat.parse(age);
-            Date dateNow = Calendar.getInstance().getTime();
-            long deference = dateNow.getTime() - datePerson.getTime();
-            int deferenceDays = (int) (deference / (1000 * 60 * 60 * 24));
-            int deferenceYear = deferenceDays / 365;
-            if (deferenceYear >= ageMin) {
-                res = true;
-            }
-        } catch (Exception e) {
-            res = false;
-        }
-        return res;
-    }
-
     public static boolean isValidIdentifier(String typeIdentifier, String identifier) {
         typeIdentifier = typeIdentifier.toUpperCase();
         identifier = identifier.toUpperCase();

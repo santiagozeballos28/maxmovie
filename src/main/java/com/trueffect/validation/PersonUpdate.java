@@ -1,5 +1,6 @@
 package com.trueffect.validation;
 
+import com.trueffect.logica.DateOperation;
 import com.trueffect.messages.Message;
 import com.trueffect.model.Person;
 import com.trueffect.response.Either;
@@ -168,20 +169,29 @@ public class PersonUpdate implements DataCondition {
 
     private void validationBirthday(String birthday, ArrayList<String> listError) {
         String errorMessage = "";
-        if (!PersonValidation.isValidBirthday(birthday)) {
+        //Validation of birthday
+        if (!DateOperation.isValidDateFormat(birthday)) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.BIRTHDAY);
             listData.put(ConstantData.DATA, birthday);
             listData.put(ConstantData.VALID, ConstantData.VALID_BIRTHDAY);
             errorMessage = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessage);
-        }
-        //Validation of birthday
-        if (!PersonValidation.isValidAge(birthday, ageMinimum)) {
-            listData.clear();
-            listData.put(ConstantData.DATA, ageMinimum + "");
-            errorMessage = OperationString.generateMesage(Message.NOT_MEET_THE_AGE, listData);
-            listError.add(errorMessage);
+        } else //Validation of age
+        {
+            if (!DateOperation.dateIsInRangeValid(birthday)) {
+                listData.clear();
+                listData.put(ConstantData.DATA, birthday);
+                listData.put(ConstantData.DATA_TWO, DateOperation.getDataCurrent());
+                errorMessage = OperationString.generateMesage(Message.DATE_FUTURE, listData);
+                listError.add(errorMessage);
+            }
+            if (!DateOperation.yearIsGreaterThan(birthday, ageMinimum)) {
+                listData.clear();
+                listData.put(ConstantData.DATA, ageMinimum + "");
+                errorMessage = OperationString.generateMesage(Message.NOT_MEET_THE_AGE, listData);
+                listError.add(errorMessage);
+            }
         }
     }
 }

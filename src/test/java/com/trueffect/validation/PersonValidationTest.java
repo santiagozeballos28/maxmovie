@@ -1,6 +1,5 @@
 package com.trueffect.validation;
 
-import com.trueffect.tools.ConstantData;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -198,57 +197,5 @@ public class PersonValidationTest {
         boolean expected = true;
         String lastName = "Mamani Nina";
         Assert.assertEquals(PersonValidation.isValidLastName(lastName), expected);
-    }
-
-    /*Test Briday
-     */
-    @Test
-    public void testBirthDay() {
-
-        boolean expected = true;
-        String birthday = "2002-12-15";
-        Assert.assertEquals(PersonValidation.isValidBirthday(birthday), expected);
-    }
-
-    @Test
-    public void testBirthday2() {
-
-        boolean expected = false;
-        String birthday = "-12-2014";
-        Assert.assertEquals(PersonValidation.isValidBirthday(birthday), expected);
-    }
-
-    @Test
-    public void testBirthday3() {
-
-        boolean expected = false;
-        String birthday = "2014-15-02";
-        Assert.assertEquals(PersonValidation.isValidBirthday(birthday), expected);
-    }
-
-    @Test
-    public void testBirthday4() {
-
-        boolean expected = true;
-        String birthday = "2015-12-30";
-        Assert.assertEquals(PersonValidation.isValidBirthday(birthday), expected);
-    }
-
-    @Test
-    public void testAgeIvalid() {
-
-        boolean expected = false;
-        String birthday = "2005-12-12";
-        int minimumAge = ConstantData.MIN_AGE_RENTER;
-        Assert.assertEquals(PersonValidation.isValidAge(birthday, minimumAge), expected);
-    }
-
-    @Test
-    public void testAgeValid() {
-
-        boolean expected = true;
-        String birthday = "2002-12-12";
-        int minimumAge = ConstantData.MIN_AGE_RENTER;
-        Assert.assertEquals(PersonValidation.isValidAge(birthday, minimumAge), expected);
     }
 }

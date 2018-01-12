@@ -1,5 +1,6 @@
 package com.trueffect.validation;
 
+import com.trueffect.logica.DateOperation;
 import com.trueffect.messages.Message;
 import com.trueffect.util.ModelObject;
 import com.trueffect.model.Person;
@@ -187,20 +188,28 @@ public class PersonCreate implements DataCondition {
             listError.add(errorMessages);
         }
         //Validation of birthday
-        if (!PersonValidation.isValidBirthday(renterUser.getBirthday())) {
+        if (!DateOperation.isValidDateFormat(renterUser.getBirthday())) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.BIRTHDAY);
             listData.put(ConstantData.DATA, renterUser.getBirthday());
             listData.put(ConstantData.VALID, ConstantData.VALID_BIRTHDAY);
             errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessages);
-        }
-        //Validation of birthday
-        if (!PersonValidation.isValidAge(renterUser.getBirthday(), ageMinimum)) {
-            listData.clear();
-            listData.put(ConstantData.DATA, ageMinimum + "");
-            errorMessages = OperationString.generateMesage(Message.NOT_MEET_THE_AGE, listData);
-            listError.add(errorMessages);
+        } else //Validation of age
+        {
+            if (!DateOperation.dateIsInRangeValid(renterUser.getBirthday())) {
+                listData.clear();
+                listData.put(ConstantData.DATA, renterUser.getBirthday());
+                listData.put(ConstantData.DATA_TWO, DateOperation.getDataCurrent());
+                errorMessages = OperationString.generateMesage(Message.DATE_FUTURE, listData);
+                listError.add(errorMessages);
+            }
+            if (!DateOperation.yearIsGreaterThan(renterUser.getBirthday(), ageMinimum)) {
+                listData.clear();
+                listData.put(ConstantData.DATA, ageMinimum + "");
+                errorMessages = OperationString.generateMesage(Message.NOT_MEET_THE_AGE, listData);
+                listError.add(errorMessages);
+            }
         }
         //To check if there was an error
         if (!listError.isEmpty()) {
@@ -209,4 +218,23 @@ public class PersonCreate implements DataCondition {
         }
         return new Either();
     }
+
+//    protected boolean verifyBirthday(ArrayList<String> listError, String birthday) {
+//        boolean validBirthday = true;
+//        String errorMessages = "";
+//        if (!PersonValidation.isValidDateFormat(birthday)) {
+//            listData.clear();
+//            listData.put(ConstantData.TYPE_DATA, ConstantData.BIRTHDAY);
+//            listData.put(ConstantData.DATA, birthday);
+//            listData.put(ConstantData.VALID, ConstantData.VALID_BIRTHDAY);
+//            errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
+//            listError.add(errorMessages);
+//        } else if (!PersonValidation.isValidAge(birthday, ageMinimum)) {
+//            listData.clear();
+//            listData.put(ConstantData.DATA, ageMinimum + "");
+//            errorMessages = OperationString.generateMesage(Message.NOT_MEET_THE_AGE, listData);
+//            listError.add(errorMessages);
+//        }
+//        return 
+//    }
 }

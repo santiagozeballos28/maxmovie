@@ -1,5 +1,6 @@
 package com.trueffect.validation;
 
+import com.trueffect.logica.DateOperation;
 import com.trueffect.messages.Message;
 import com.trueffect.model.Employee;
 import com.trueffect.response.Either;
@@ -78,16 +79,38 @@ public class EmployeeCreate extends PersonCreate {
         String errorMessages = "";
         Either eitherPerson = super.verifyData(resource);
         listError.addAll(eitherPerson.getListError());
-
+        boolean validDateOfHire = true;
         //Validation date of hire
-        if (!EmployeeValidation.isValidDateOfHire(employee.getDateOfHire())) {
+        if (!DateOperation.isValidDateFormat(employee.getDateOfHire())) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.DATE_OF_HIRE);
             listData.put(ConstantData.DATA, employee.getDateOfHire());
             listData.put(ConstantData.VALID, ConstantData.VALID_BIRTHDAY);
             errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessages);
+        } else {
+            if (!DateOperation.dateIsInRangeValid(employee.getDateOfHire())) {
+                listData.clear();
+                listData.put(ConstantData.DATA, employee.getDateOfHire());
+                listData.put(ConstantData.DATA_TWO, DateOperation.getDataCurrent());
+                errorMessages = OperationString.generateMesage(Message.DATE_FUTURE, listData);
+                listError.add(errorMessages);
+            }
+            String birthday = employee.getBirthday();
+            boolean validDateFormat = DateOperation.isValidDateFormat(birthday);
+            boolean validDateRange = DateOperation.dateIsInRangeValid(birthday);
+            if (validDateFormat && validDateRange) {
+                if (!DateOperation.isLess(birthday, employee.getDateOfHire())) {
+                    listData.clear();
+                    listData.put(ConstantData.DATA, employee.getDateOfHire());
+                    listData.put(ConstantData.DATA_TWO, DateOperation.getDataCurrent());
+                    errorMessages = OperationString.generateMesage(Message.DATE_INCOHERENT, listData);
+                    listError.add(errorMessages);
+                }
+            }
+
         }
+
         //Validation of job
         if (!EmployeeValidation.isValidAddress(employee.getAddress())) {
             listData.clear();
