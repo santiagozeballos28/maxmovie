@@ -181,6 +181,7 @@ public class EmployeeLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
+            String birthdayCurrent = ((Employee)eitherRes.getFirstObject()).getBirthday();
             eitherRes = JobCrud.getJobOf(connection, idModifyUser);
             if (eitherRes.existError()) {
                 throw eitherRes;
@@ -194,6 +195,7 @@ public class EmployeeLogic {
                     = new EmployeeUpdate(
                             ((Job) eitherRes.getFirstObject()).getNameJob(),
                             ConstantData.MIN_AGE_EMPLOYEE);
+            employeeUpdate.setBirthdayCurrent(birthdayCurrent);
             eitherRes = employeeUpdate.complyCondition(employee);
             if (eitherRes.existError()) {
                 throw eitherRes;
@@ -306,7 +308,7 @@ public class EmployeeLogic {
             Either eitherPhone = EmployeeCrud.getPhones(connection, idEmployee);
             ArrayList<Integer> phones = ((Employee) eitherPhone.getFirstObject()).getPhones();
             employee.setPhones(phones);
-            eitherRes = new Either(CodeStatus.CREATED, employee);
+            eitherRes = new Either(CodeStatus.OK, employee);
         } catch (Exception exception) {
             listError.add(exception.getMessage());
             return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);

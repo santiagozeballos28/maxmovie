@@ -1,5 +1,6 @@
 package com.trueffect.validation;
 
+import com.trueffect.logica.DateOperation;
 import com.trueffect.messages.Message;
 import com.trueffect.model.Employee;
 import com.trueffect.response.Either;
@@ -9,6 +10,7 @@ import com.trueffect.tools.ConstantData.JobName;
 import com.trueffect.util.ModelObject;
 import com.trueffect.util.OperationString;
 import java.util.ArrayList;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -16,8 +18,15 @@ import java.util.ArrayList;
  */
 public class EmployeeUpdate extends PersonUpdate {
 
+    private String birthdayCurrent;
+
     public EmployeeUpdate(String job, int ageMinimum) {
         super(job, ageMinimum);
+        birthdayCurrent = "";
+    }
+
+    public void setBirthdayCurrent(String birthdayCurrent) {
+        this.birthdayCurrent = birthdayCurrent;
     }
 
     @Override
@@ -31,7 +40,7 @@ public class EmployeeUpdate extends PersonUpdate {
 
         //Validation date of hire
         if (!PersonValidation.isEmpty(employee.getDateOfHire())) {
-            validationDateOfHire(employee.getDateOfHire(), listError);
+            validationDateOfHire(employee.getDateOfHire(), employee.getBirthday(), listError);
         }
         //Validation date of hire
         if (!PersonValidation.isEmpty(employee.getAddress())) {
@@ -52,15 +61,45 @@ public class EmployeeUpdate extends PersonUpdate {
         return new Either();
     }
 
-    private void validationDateOfHire(String dateOfHire, ArrayList<String> listError) {
-        if (!EmployeeValidation.isValidDateOfHire(dateOfHire)) {
-            String errorMessage = "";
+    private void validationDateOfHire(String dateOfHire, String birthday, ArrayList<String> listError) {
+        boolean validDateOfHire = true;
+        String errorMessage = "";
+        //Validation date of hire
+        if (!DateOperation.isValidDateFormat(dateOfHire)) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.DATE_OF_HIRE);
             listData.put(ConstantData.DATA, dateOfHire);
             listData.put(ConstantData.VALID, ConstantData.VALID_BIRTHDAY);
             errorMessage = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessage);
+        } else {
+            if (!DateOperation.dateIsInRangeValid(dateOfHire)) {
+                listData.clear();
+                listData.put(ConstantData.DATA, dateOfHire);
+                listData.put(ConstantData.DATA_TWO, DateOperation.getDataCurrent());
+                errorMessage = OperationString.generateMesage(Message.DATE_FUTURE, listData);
+                listError.add(errorMessage);
+            }
+            boolean validDateFormat = true;
+            boolean validDateRange = true;
+            String birthdayAux = birthdayCurrent;
+            if (StringUtils.isNotBlank(birthday)) {
+                validDateFormat = DateOperation.isValidDateFormat(birthday);
+                validDateRange = DateOperation.dateIsInRangeValid(birthday);
+                birthdayAux = birthday;
+            }
+            if (validDateFormat && validDateRange) {
+                if (!DateOperation.isLess(birthdayAux, dateOfHire)) {
+                    listData.clear();
+                    listData.put(ConstantData.TYPE_DATA, ConstantData.DATE_OF_HIRE);
+                    listData.put(ConstantData.DATA, dateOfHire);
+                    listData.put(ConstantData.TYPE_DATA_TWO, ConstantData.BIRTHDAY);
+                    listData.put(ConstantData.DATA_TWO, birthdayAux);
+                    errorMessage = OperationString.generateMesage(Message.DATE_INCOHERENT, listData);
+                    listError.add(errorMessage);
+                }
+            }
+
         }
     }
 

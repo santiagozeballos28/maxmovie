@@ -12,6 +12,7 @@ import com.trueffect.validation.PersonValidation;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author santiago.mamani
@@ -55,7 +56,8 @@ public class PersonValidationsDB {
         long idPerson = personNew.getId();
         String errorMgs = "";
         ArrayList<String> listError = new ArrayList<String>();
-        Either eitherPersonOld = PersonCrud.getRenterUser(connection, idPerson, "");
+        Either eitherPersonOld = PersonCrud.getPerson(connection, idPerson, null);
+        String typeIdOld = ((Person) eitherPersonOld.getFirstObject()).getTypeIdentifier();
         Person personAux = generatePersonAuxiliary((Person) eitherPersonOld.getFirstObject(), personNew);
         if (!PersonValidation.isValidIdentifier(personAux.getTypeIdentifier().toUpperCase(), personAux.getIdentifier().toUpperCase())) {
             listData.clear();
@@ -97,16 +99,16 @@ public class PersonValidationsDB {
 
     private Person generatePersonAuxiliary(Person personOld, Person personNew) {
         Person personAuxiliary = personOld;
-        if (personNew.getTypeIdentifier() != null) {
+        if (StringUtils.isNotBlank(personNew.getTypeIdentifier())) {
             personAuxiliary.setTypeIdentifier(personNew.getTypeIdentifier());
         }
-        if (personNew.getIdentifier() != null) {
+        if (StringUtils.isNotBlank(personNew.getIdentifier())) {
             personAuxiliary.setIdentifier(personNew.getIdentifier());
         }
-        if (personNew.getLastName() != null) {
+        if (StringUtils.isNotBlank(personNew.getLastName())) {
             personAuxiliary.setLastName(personNew.getLastName());
         }
-        if (personNew.getFirstName() != null) {
+        if (StringUtils.isNotBlank(personNew.getFirstName())) {
             personAuxiliary.setFirstName(personNew.getFirstName());
         }
         return personAuxiliary;

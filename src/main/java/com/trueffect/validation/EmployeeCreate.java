@@ -104,8 +104,8 @@ public class EmployeeCreate extends PersonCreate {
                     listData.clear();
                     listData.put(ConstantData.TYPE_DATA, ConstantData.DATE_OF_HIRE);
                     listData.put(ConstantData.DATA, employee.getDateOfHire());
-                    listData.put(ConstantData.TYPE_DATA, ConstantData.BIRTHDAY);
-                    listData.put(ConstantData.DATA, birthday);
+                    listData.put(ConstantData.TYPE_DATA_TWO, ConstantData.BIRTHDAY);
+                    listData.put(ConstantData.DATA_TWO, birthday);
                     errorMessages = OperationString.generateMesage(Message.DATE_INCOHERENT, listData);
                     listError.add(errorMessages);
                 }

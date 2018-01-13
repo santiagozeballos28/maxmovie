@@ -58,8 +58,9 @@ public class OperationString {
 
     public static String generateLastName(String lastName) {
         String resLastName = "";
-        String[] lastNameAux = lastName.toLowerCase().split(" ");
-        for (String lastN : lastNameAux) {
+        String[] lastNameArrayAux = lastName.toLowerCase().split(" ");
+        ArrayList<String> lastNames = removeEmpty(lastNameArrayAux);
+        for (String lastN : lastNames) {
             resLastName = resLastName + " " + StringUtils.capitalize(lastN);
         }
         resLastName = resLastName.trim();
@@ -84,5 +85,15 @@ public class OperationString {
             return name.toUpperCase();
         }
         return name;
+    }
+
+    public static ArrayList<String> removeEmpty(String[] array) {
+        ArrayList<String> res = new ArrayList<String>();
+        for (String string : array) {
+            if (!string.isEmpty()) {
+                res.add(string);
+            }
+        }
+        return res;
     }
 }

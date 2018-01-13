@@ -26,7 +26,7 @@ public class ConstantData {
     public static String VALID_LASTNAME = "Letters = A-Za-z, apostrophes = '";
     public static String VALID_FIRSTNAME = "Letters = A-Za-z, apostrophes = '";
     public static String VALID_BIRTHDAY = "YYYY-MM-DD";
-    public static String VALID_PHONE = "77973186, 71XXXXXX";
+    public static String VALID_PHONE = "7XXXXXXX(eight numbers), 6XXXXXXX(seven numbers), XXXXXXX(seven numbers)";
     // Data renter user
     public static String TYPE_IDENTIFIER = "type identifier";
     public static String IDENTIFIER = "identifier";
