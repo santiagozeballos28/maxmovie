@@ -42,7 +42,7 @@ public class ConstantData {
     public static String PHONE = "reference phone";
 
     public enum ValidIdentifier {
-        CI(" all number"), PASS("3 letters 6 numbers [0-1] letter"), NIT("number");
+        CI("all number"), PASS("3 letters 6 numbers [0-1] letter"), NIT("all number");
         private String validIdentifier;
 
         private ValidIdentifier(String validIdentifier) {

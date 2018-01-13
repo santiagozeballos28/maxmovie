@@ -187,8 +187,8 @@ public class PersonValidationTest {
 
     @Test
     public void testLastNameTwoSpace() {
-        boolean expected = false;
-        String lastName = "Mamani  Zeballos";
+        boolean expected = true;
+        String lastName = "Mamani     Zeballos";
         Assert.assertEquals(PersonValidation.isValidLastName(lastName), expected);
     }
 

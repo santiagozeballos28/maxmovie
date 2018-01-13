@@ -10,6 +10,7 @@ import com.trueffect.tools.ConstantData.Crud;
 import com.trueffect.tools.ConstantData.GenrePerson;
 import com.trueffect.tools.ConstantData.JobName;
 import com.trueffect.tools.ConstantData.TypeIdentifier;
+import com.trueffect.tools.ConstantData.ValidIdentifier;
 import com.trueffect.util.DataCondition;
 import com.trueffect.util.ModelObject;
 import com.trueffect.util.OperationString;
@@ -98,10 +99,15 @@ public class PersonUpdate implements DataCondition {
         listData.clear();
         if (job.equals(nameAdmi)) {
             if (!PersonValidation.isValidIdentifier(renterUser.getIdentifier())) {
+                String validIden
+                        = TypeIdentifier.CI.getDescriptionIdentifier() + " = " + ValidIdentifier.CI.getValidIdentifier() + ", "
+                        + TypeIdentifier.PASS.getDescriptionIdentifier() + " = " + ValidIdentifier.PASS.getValidIdentifier() + ", "
+                        + TypeIdentifier.NIT.getDescriptionIdentifier() + " = " + ValidIdentifier.NIT.getValidIdentifier();
+                listData.clear();
                 listData.put(ConstantData.TYPE_DATA, ConstantData.IDENTIFIER);
                 listData.put(ConstantData.DATA, renterUser.getIdentifier());
-
-                errorMessage = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
+                listData.put(ConstantData.VALID, validIden);
+                errorMessage = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
                 listError.add(errorMessage);
             }
         } else {

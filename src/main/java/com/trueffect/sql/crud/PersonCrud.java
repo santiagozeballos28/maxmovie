@@ -19,7 +19,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class PersonCrud {
 
-    public static Either insertPerson(Connection connection, long idJob, Person person) {
+    public static Either insertPerson(Connection connection, long idCreateUser, Person person) {
         Statement query = null;
         try {
             String typeIdentifier = person.getTypeIdentifier();
@@ -38,10 +38,10 @@ public class PersonCrud {
                     + "first_name, "
                     + "genre, "
                     + "birthday, "
-                    + "create_date, "
                     + "create_user, "
-                    + "modifier_date, "
                     + "modifier_user, "
+                    + "create_date, "
+                    + "modifier_date, "
                     + "status) \n"
                     + "VALUES ('"
                     + typeIdentifier + "','"
@@ -50,9 +50,9 @@ public class PersonCrud {
                     + firstName + "','"
                     + genre + "','"
                     + birthay + "', "
-                    + "current_date ,'"
-                    + idJob + "',"
+                    + idCreateUser + ","
                     + "null,"
+                    + "current_timestamp ,"
                     + "null,"
                     + "'Active')";
             query.execute(sql);
@@ -194,7 +194,7 @@ public class PersonCrud {
             String sql
                     = "UPDATE PERSON\n"
                     + "   SET status=?, "
-                    + "       modifier_date =  current_date ,"
+                    + "       modifier_date =  current_timestamp ,"
                     + "       modifier_user= ?"
                     + " WHERE person_id = ?";
 
@@ -245,7 +245,7 @@ public class PersonCrud {
                 sql = sql + "birthday= '" + varSet + "',";
             }
             sql = sql
-                    + "       modifier_date =  current_date,"
+                    + "       modifier_date =  current_timestamp,"
                     + "       modifier_user = ?"
                     + " WHERE person_id = ?";
             long idPerson = person.getId();
@@ -312,13 +312,13 @@ public class PersonCrud {
             }
             if (StringUtils.isNotBlank(lastName)) {
                 conditionQuery = conditionQuery
-                        + " RENTER_USER.last_name LIKE '%" + lastName.trim() + "%' OR"
-                        + " RENTER_USER.last_name LIKE '%" + lastName.trim().toLowerCase() + "%' OR";
+                        + " RENTER_USER.last_name LIKE '%" + lastName + "%' OR"
+                        + " RENTER_USER.last_name LIKE '%" + lastName.toLowerCase() + "%' OR";
             }
             if (StringUtils.isNotBlank(firstName)) {
                 conditionQuery = conditionQuery
-                        + " RENTER_USER.first_name LIKE '%" + firstName.trim() + "%' OR"
-                        + " RENTER_USER.first_name LIKE '%" + firstName.trim().toLowerCase() + "%' OR";
+                        + " RENTER_USER.first_name LIKE '%" + firstName + "%' OR"
+                        + " RENTER_USER.first_name LIKE '%" + firstName.toLowerCase() + "%' OR";
             }
             if (StringUtils.isNotBlank(genre)) {
                 conditionQuery = conditionQuery + " RENTER_USER.genre= '" + genre.trim().toUpperCase() + "' OR";
@@ -327,7 +327,6 @@ public class PersonCrud {
                 conditionQuery = conditionQuery.substring(0, conditionQuery.length() - 2);
                 query = query + " AND (" + conditionQuery + ")";
             }
-
             PreparedStatement st = connection.prepareStatement(query);
             ResultSet rs = st.executeQuery();
             PersonDetail person = new PersonDetail();
@@ -400,5 +399,4 @@ public class PersonCrud {
             return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
         }
     }
-
 }

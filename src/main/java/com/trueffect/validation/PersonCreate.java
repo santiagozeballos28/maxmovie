@@ -9,6 +9,7 @@ import com.trueffect.tools.CodeStatus;
 import com.trueffect.tools.ConstantData;
 import com.trueffect.tools.ConstantData.GenrePerson;
 import com.trueffect.tools.ConstantData.TypeIdentifier;
+import com.trueffect.tools.ConstantData.ValidIdentifier;
 import com.trueffect.util.DataCondition;
 import com.trueffect.util.OperationString;
 import java.util.ArrayList;
@@ -97,12 +98,11 @@ public class PersonCreate implements DataCondition {
         boolean validIdentifier = true;
         //Validation of identifier
         if (!PersonValidation.isValidTypeIdentifier(renterUser.getTypeIdentifier())) {
-
+            validTypeIdentifier = false;
             String validTypesId
                     = TypeIdentifier.CI.getDescriptionIdentifier() + ", "
                     + TypeIdentifier.NIT.getDescriptionIdentifier() + ", "
                     + TypeIdentifier.PASS.getDescriptionIdentifier();
-            validTypeIdentifier = false;
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.TYPE_IDENTIFIER);
             listData.put(ConstantData.DATA, renterUser.getTypeIdentifier());
@@ -113,10 +113,15 @@ public class PersonCreate implements DataCondition {
         //Validation of identifier
         if (!PersonValidation.isValidIdentifier(renterUser.getIdentifier())) {
             validIdentifier = false;
+            String validIden
+                    = TypeIdentifier.CI.getDescriptionIdentifier() + " = " + ValidIdentifier.CI.getValidIdentifier() + ", "
+                    + TypeIdentifier.PASS.getDescriptionIdentifier() + " = " + ValidIdentifier.PASS.getValidIdentifier() + ", "
+                    + TypeIdentifier.NIT.getDescriptionIdentifier() + " = " + ValidIdentifier.NIT.getValidIdentifier();
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.IDENTIFIER);
             listData.put(ConstantData.DATA, renterUser.getIdentifier());
-            errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA, listData);
+            listData.put(ConstantData.VALID, validIden);
+            errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessages);
         }
         //Validation if the identifier belongs to the same type identifier

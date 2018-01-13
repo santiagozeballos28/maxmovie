@@ -102,8 +102,10 @@ public class EmployeeCreate extends PersonCreate {
             if (validDateFormat && validDateRange) {
                 if (!DateOperation.isLess(birthday, employee.getDateOfHire())) {
                     listData.clear();
+                    listData.put(ConstantData.TYPE_DATA, ConstantData.DATE_OF_HIRE);
                     listData.put(ConstantData.DATA, employee.getDateOfHire());
-                    listData.put(ConstantData.DATA_TWO, DateOperation.getDataCurrent());
+                    listData.put(ConstantData.TYPE_DATA, ConstantData.BIRTHDAY);
+                    listData.put(ConstantData.DATA, birthday);
                     errorMessages = OperationString.generateMesage(Message.DATE_INCOHERENT, listData);
                     listError.add(errorMessages);
                 }

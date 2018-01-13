@@ -54,7 +54,8 @@ public class Permission {
         } else {
             listData.clear();
             listData.put(ConstantData.OPERATION, operation);
-            String errorMgs = OperationString.generateMesage(Message.NOT_HAVE_PERMISSION_OPERATION, listData);
+            listData.put(ConstantData.TYPE_DATA, nameObject);
+            String errorMgs = OperationString.generateMesage(Message.NOT_HAVE_PERMISSION, listData);
             listError.add(errorMgs);
             return new Either(CodeStatus.BAD_REQUEST, listError);
         }
@@ -62,8 +63,15 @@ public class Permission {
 
     public Either getPerson(Connection connection, long idPerson, String status, String operation) {
         Either eitherRes = new Either();
-        Person person = new Person();
         ArrayList<String> listError = new ArrayList<String>();
+        if (idPerson == 0) {
+            listData.clear();
+            listData.put(ConstantData.OPERATION, operation);
+            String errorMgs = OperationString.generateMesage(Message.MANDATORY_IDENTIFY, listData);
+            listError.add(errorMgs);
+            return new Either(CodeStatus.FORBIDDEN, listError);
+        }
+        Person person = new Person();
         try {
             eitherRes = PersonCrud.getPerson(connection, idPerson, status);
             person = (Person) eitherRes.getFirstObject();

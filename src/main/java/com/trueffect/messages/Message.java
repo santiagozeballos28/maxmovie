@@ -26,8 +26,8 @@ public class Message {
     // Message of results
     public static String NOT_FOUND = "The {object} requested record was not found";
     public static String NOT_FOUND_USER_REQUEST = "The user requesting to {operation} does not exist";
-    public static String NOT_HAVE_PERMISSION_OPERATION = "The user don't have permission to {operation}";
     public static String CONFLCT_ID = "The identifier not corresponde to value of {object}";
-    public static String DATE_FUTURE = "The date ({data})is not valid, because it is a date greater than now ({data2})";
-    public static String DATE_INCOHERENT = "The date of hire, is not consistent with the date birthday";
+    public static String DATE_FUTURE = "The date({data})is not valid, because it is a date greater than now ({data2})";
+    public static String DATE_INCOHERENT = "The {typeData}({data}), is not consistent with the date {typeDate2}({data2})";
+    public static String MANDATORY_IDENTIFY = "It is mandatory to identify yourself to {operation}";
 }
