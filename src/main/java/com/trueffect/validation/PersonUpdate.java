@@ -180,7 +180,7 @@ public class PersonUpdate implements DataCondition {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.BIRTHDAY);
             listData.put(ConstantData.DATA, birthday);
-            listData.put(ConstantData.VALID, ConstantData.VALID_BIRTHDAY);
+            listData.put(ConstantData.VALID, ConstantData.VALID_DATE);
             errorMessage = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessage);
         } else //Validation of age

@@ -29,7 +29,7 @@ public class OperationModel {
             return new Either();
         } catch (Exception e) {
             listData.clear();
-            listData.put(ConstantData.TYPE_DATA, "Status22");
+            listData.put(ConstantData.TYPE_DATA, ConstantData.STATUS);
             listData.put(ConstantData.DATA, status);
             listData.put(ConstantData.VALID, Status.Active + ", " + Status.Inactive);
             String errorMgs = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
@@ -42,8 +42,8 @@ public class OperationModel {
         ArrayList<String> listError = new ArrayList<String>();
         listData.clear();
         if (idPayload == 0) {
-            listData.put(ConstantData.OBJECT, nameObject);
-            String errorMessage = OperationString.generateMesage(Message.MANDATORY_ID, listData);
+            listData.put(ConstantData.TYPE_DATA, ConstantData.ID);
+            String errorMessage = OperationString.generateMesage(Message.EMPTY_DATA, listData);
             listError.add(errorMessage);
             return new Either(CodeStatus.CONFLICT, listError);
         } else if (idUrl != idPayload) {

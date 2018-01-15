@@ -146,7 +146,6 @@ public class PersonCreate implements DataCondition {
             errorMessages = OperationString.generateMesage(Message.SIZE_MAX, listData);
             listError.add(errorMessages);
         }
-
         //Validation of last name size
         if (!PersonValidation.isValidSize(renterUser.getLastName(), ConstantData.MAX_LENGTH_NAME)) {
             listData.clear();
@@ -197,7 +196,7 @@ public class PersonCreate implements DataCondition {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.BIRTHDAY);
             listData.put(ConstantData.DATA, renterUser.getBirthday());
-            listData.put(ConstantData.VALID, ConstantData.VALID_BIRTHDAY);
+            listData.put(ConstantData.VALID, ConstantData.VALID_DATE);
             errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessages);
         } else //Validation of age
@@ -223,23 +222,4 @@ public class PersonCreate implements DataCondition {
         }
         return new Either();
     }
-
-//    protected boolean verifyBirthday(ArrayList<String> listError, String birthday) {
-//        boolean validBirthday = true;
-//        String errorMessages = "";
-//        if (!PersonValidation.isValidDateFormat(birthday)) {
-//            listData.clear();
-//            listData.put(ConstantData.TYPE_DATA, ConstantData.BIRTHDAY);
-//            listData.put(ConstantData.DATA, birthday);
-//            listData.put(ConstantData.VALID, ConstantData.VALID_BIRTHDAY);
-//            errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
-//            listError.add(errorMessages);
-//        } else if (!PersonValidation.isValidAge(birthday, ageMinimum)) {
-//            listData.clear();
-//            listData.put(ConstantData.DATA, ageMinimum + "");
-//            errorMessages = OperationString.generateMesage(Message.NOT_MEET_THE_AGE, listData);
-//            listError.add(errorMessages);
-//        }
-//        return 
-//    }
 }

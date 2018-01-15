@@ -25,7 +25,6 @@ public class ConstantData {
     // valid data
     public static String VALID_LASTNAME = "Letters = A-Za-z, apostrophes = '";
     public static String VALID_FIRSTNAME = "Letters = A-Za-z, apostrophes = '";
-    public static String VALID_BIRTHDAY = "YYYY-MM-DD";
     public static String VALID_PHONE = "7XXXXXXX(eight numbers), 6XXXXXXX(seven numbers), XXXXXXX(seven numbers)";
     // Data renter user
     public static String TYPE_IDENTIFIER = "type identifier";
@@ -40,6 +39,11 @@ public class ConstantData {
     public static String ADDRESS = "address";
     public static String JOB = "job";
     public static String PHONE = "reference phone";
+    //Data Generic
+    public static String ID = "id";
+    public static String STATUS = "status";
+    // Valid data generic
+    public static String VALID_DATE = "YYYY-MM-DD";
 
     public enum ValidIdentifier {
         CI("all number"), PASS("3 letters 6 numbers [0-1] letter"), NIT("all number");

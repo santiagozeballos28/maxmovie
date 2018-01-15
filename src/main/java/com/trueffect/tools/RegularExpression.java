@@ -12,6 +12,6 @@ public class RegularExpression {
     public static String LAST_NAME_TWO = "^[A-Za-z]{1,}[A-Za-z']{1,}[A-Za-z]{1,}\\s{1,}[A-Za-z]{1,}[A-Za-z']{1,}[A-Za-z]{1,}$";
     public static String LAST_NAME_ONE = "^[A-Za-z]{1,}[A-Za-z']{1,}[A-Za-z]{1,}$";
     public static String FIRST_NAME = "^[A-Za-z]{1,}[A-Za-z']{1,}[A-Za-z]{1,}$";
-    public static String PHONE = "^(591|\\+591)?(6|7){1}\\d{7}$";
-    public static String PHONE_FIJO = "^[0-9]{7}$";
+    public static String PHONE_CELL = "^(6|7){1}\\d{7}$";
+    public static String PHONE_FIXED = "^(2|3|4){1}\\d{6}$";
 }

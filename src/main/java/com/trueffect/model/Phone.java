@@ -1,6 +1,5 @@
 package com.trueffect.model;
 
-import com.trueffect.tools.ConstantData;
 import com.trueffect.tools.ConstantData.Status;
 import com.trueffect.util.ModelObject;
 

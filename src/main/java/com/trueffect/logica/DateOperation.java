@@ -4,7 +4,6 @@ import com.trueffect.tools.RegularExpression;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Pattern;
 import org.joda.time.LocalDate;
@@ -70,7 +69,6 @@ public class DateOperation {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         return dateFormat.format(date);
-
     }
 
     public static boolean isLess(String dateFirst, String dateSecond) {
@@ -92,5 +90,4 @@ public class DateOperation {
         }
         return false;
     }
-
 }

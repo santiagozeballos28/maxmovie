@@ -9,20 +9,6 @@ import org.junit.Test;
  */
 public class EmployeeValidationTest {
 
-    @Test
-    public void testDateOfHire() {
-        boolean expected = true;
-        String dateOfHire = "2017-12-04";
-        Assert.assertEquals(EmployeeValidation.isValidDateOfHire(dateOfHire), expected);
-    }
-
-    @Test
-    public void testDateOfHire2() {
-        boolean expected = false;
-        String dateOfHire = "201712-04";
-        Assert.assertEquals(EmployeeValidation.isValidDateOfHire(dateOfHire), expected);
-    }
-
     //Test Address
     @Test
     public void testAddress() {

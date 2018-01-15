@@ -69,7 +69,7 @@ public class EmployeeUpdate extends PersonUpdate {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.DATE_OF_HIRE);
             listData.put(ConstantData.DATA, dateOfHire);
-            listData.put(ConstantData.VALID, ConstantData.VALID_BIRTHDAY);
+            listData.put(ConstantData.VALID, ConstantData.VALID_DATE);
             errorMessage = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessage);
         } else {
@@ -99,7 +99,6 @@ public class EmployeeUpdate extends PersonUpdate {
                     listError.add(errorMessage);
                 }
             }
-
         }
     }
 

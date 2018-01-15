@@ -71,5 +71,4 @@ public class DataJob extends ModelObject {
     public void setStatus(String status) {
         this.status = status.trim();
     }
-
 }

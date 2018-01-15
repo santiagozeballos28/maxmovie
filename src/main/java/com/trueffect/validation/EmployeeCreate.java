@@ -85,7 +85,7 @@ public class EmployeeCreate extends PersonCreate {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.DATE_OF_HIRE);
             listData.put(ConstantData.DATA, employee.getDateOfHire());
-            listData.put(ConstantData.VALID, ConstantData.VALID_BIRTHDAY);
+            listData.put(ConstantData.VALID, ConstantData.VALID_DATE);
             errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessages);
         } else {
