@@ -1,5 +1,6 @@
 package com.trueffect.logica;
 
+import com.trueffect.tools.ConstantData;
 import com.trueffect.tools.RegularExpression;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -22,7 +23,7 @@ public class DateOperation {
     public static boolean dateIsInRangeValid(String date) {
 
         try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat dateFormat = new SimpleDateFormat(ConstantData.SIMPLE_DATE_FORMAT);
             Date dateOtherFormat = dateFormat.parse(date);
             LocalDate dateOther = LocalDate.fromDateFields(dateOtherFormat);
             LocalDate dateNow = LocalDate.now();
@@ -43,7 +44,7 @@ public class DateOperation {
     public static int diferenceYear(String date) {
         int year = -1;
         try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat dateFormat = new SimpleDateFormat(ConstantData.SIMPLE_DATE_FORMAT);
             Date dateO = dateFormat.parse(date);
             LocalDate pdate = LocalDate.fromDateFields(dateO);
             LocalDate now = LocalDate.now();
@@ -66,14 +67,14 @@ public class DateOperation {
     }
 
     public static String getDataCurrent() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat dateFormat = new SimpleDateFormat(ConstantData.SIMPLE_DATE_FORMAT);
         Date date = new Date();
         return dateFormat.format(date);
     }
 
     public static boolean isLess(String dateFirst, String dateSecond) {
         try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat dateFormat = new SimpleDateFormat(ConstantData.SIMPLE_DATE_FORMAT);
             Date dateFirstFormat = dateFormat.parse(dateFirst);
             Date dateSecondFormat = dateFormat.parse(dateSecond);
             LocalDate localDateFirst = LocalDate.fromDateFields(dateFirstFormat);

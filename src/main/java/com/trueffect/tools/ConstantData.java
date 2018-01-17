@@ -44,6 +44,8 @@ public class ConstantData {
     public static String STATUS = "status";
     // Valid data generic
     public static String VALID_DATE = "YYYY-MM-DD";
+    // Date format to validate
+    public static String SIMPLE_DATE_FORMAT = "yyyy-MM-dd";
 
     public enum ValidIdentifier {
         CI("all number"), PASS("3 letters 6 numbers [0-1] letter"), NIT("all number");

@@ -32,7 +32,8 @@ public class Permission {
     }
 
     public Either checkUserPermission(Connection connection, long idUserModify, String operation) {
-        Either eitherJob = JobCrud.getJobOf(connection, idUserModify);
+        JobCrud jobCrud = new JobCrud();
+        Either eitherJob = jobCrud.getJobOf(connection, idUserModify);
         Either eitherRes = new Either();
         ArrayList<String> listError = new ArrayList<String>();
         if (eitherJob.haveModelObject()) {
@@ -73,7 +74,8 @@ public class Permission {
         }
         Person person = new Person();
         try {
-            eitherRes = PersonCrud.getPerson(connection, idPerson, status);
+            PersonCrud personCrud = new PersonCrud();
+            eitherRes = personCrud.getPerson(connection, idPerson, status);
             person = (Person) eitherRes.getFirstObject();
         } catch (Exception exception) {
             listError.add(exception.getMessage());

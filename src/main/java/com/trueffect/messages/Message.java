@@ -7,7 +7,7 @@ public class Message {
 
     // Message of Empty
     public static String EMPTY_DATA = "The {typeData} is required";
-    //Message dates incorrect
+    //Message data incorrect
     public static String NOT_VALID_DATA_THE_VALID_DATA_ARE = "The {typeData} ({data}) is not valid. The valid values are: [{valid}]";
     public static String NOT_VALID_DATA = "The {typeData} ({data}) is not valid";
     //Message same type identifier
@@ -21,7 +21,6 @@ public class Message {
     public static String DUPLICATE = "Someone already has that {typeData} ({data})";
     // Message of permission
     public static String NOT_HAVE_PERMISSION = "The user don't have permission to {operation} the {typeData}";
-    // Message of results
     public static String NOT_FOUND = "The {object} requested record was not found";
     public static String NOT_FOUND_USER_REQUEST = "The user requesting to {operation} does not exist";
     public static String CONFLCT_ID = "The identifier not corresponde to value of {object}";

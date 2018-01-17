@@ -24,9 +24,9 @@ public class EmployeeValidationDB extends PersonValidationsDB {
         this.nameCrud = nameCrud;
     }
 
-    public Either veriryDataInDataBase(Connection connection, Employee employeeNew) {
+    public Either veriryDataCreate(Connection connection, Employee employeeNew) {
         ArrayList<String> listError = new ArrayList<String>();
-        Either eitherPerson = super.veriryDataInDataBase(connection, employeeNew);
+        Either eitherPerson = super.veriryDataCreate(connection, employeeNew);
         listError.addAll(eitherPerson.getListError());
         Either eitherPhone = verifyPhone(connection, employeeNew);
         listError.addAll(eitherPhone.getListError());
@@ -37,7 +37,8 @@ public class EmployeeValidationDB extends PersonValidationsDB {
     }
 
     public Either verifyPhone(Connection connection, Employee employee) {
-        Either eitherPhone = EmployeeCrud.getPhonesByNumeber(connection, employee.getPhones(), null);
+        EmployeeCrud employeeCrud = new EmployeeCrud();
+        Either eitherPhone = employeeCrud.getPhonesByNumeber(connection, employee.getPhones(), null);
         ArrayList<ModelObject> listPhone = eitherPhone.getListObject();
         if (listPhone.isEmpty()) {
             return new Either();

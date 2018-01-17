@@ -19,7 +19,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class PersonCrud {
 
-    public static Either insertPerson(Connection connection, long idCreateUser, Person person) {
+    public Either insertPerson(Connection connection, long idCreateUser, Person person) {
         Statement query = null;
         try {
             String typeIdentifier = person.getTypeIdentifier();
@@ -67,7 +67,7 @@ public class PersonCrud {
         }
     }
 
-    public static Either getPersonByIdentifier(Connection connection, String typeIdentifier, String identifier) {
+    public Either getPersonByIdentifier(Connection connection, String typeIdentifier, String identifier) {
         try {
             Statement query = (Statement) connection.createStatement();
             String sql
@@ -104,7 +104,7 @@ public class PersonCrud {
         }
     }
 
-    public static Either getPersonByName(Connection connection, String lastName, String firstName) {
+    public Either getPersonByName(Connection connection, String lastName, String firstName) {
         try {
             String sqlGet
                     = "SELECT person_id, "
@@ -142,7 +142,7 @@ public class PersonCrud {
         }
     }
 
-    public static Either getRenterUser(Connection connection, long idPerson, String status) {
+    public Either getRenterUser(Connection connection, long idPerson, String status) {
         try {
             String query
                     = "SELECT PERSON.person_id, "
@@ -188,7 +188,7 @@ public class PersonCrud {
         }
     }
 
-    public static Either updateStatusPerson(Connection connection, long idPerson, long idUserModifier, String status) {
+    public Either updateStatusPerson(Connection connection, long idPerson, long idUserModifier, String status) {
 
         try {
             String sql
@@ -214,7 +214,7 @@ public class PersonCrud {
         }
     }
 
-    public static Either updatePerson(Connection connection, long idUserModifier, Person person) {
+    public Either updatePerson(Connection connection, long idUserModifier, Person person) {
         try {
             String sql
                     = "UPDATE PERSON\n"
@@ -265,7 +265,7 @@ public class PersonCrud {
         }
     }
 
-    public static Either getPersonBy(
+    public Either getPersonBy(
             Connection connection,
             String typeId,
             String identifier,
@@ -360,7 +360,7 @@ public class PersonCrud {
         }
     }
 
-    public static Either getPerson(Connection connection, long idPerson, String status) {
+    public Either getPerson(Connection connection, long idPerson, String status) {
         try {
             String query
                     = "SELECT PERSON.person_id, "

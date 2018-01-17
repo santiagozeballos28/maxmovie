@@ -12,7 +12,7 @@ import java.sql.ResultSet;
  */
 public class JobCrud {
 
-    public static Either getJobOf(Connection connection, long idUser) {
+    public Either getJobOf(Connection connection, long idUser) {
         Either either = new Either();
         try {
             String sql
@@ -45,7 +45,7 @@ public class JobCrud {
         return either;
     }
 
-    public static Either getJobOfName(Connection connection, String name) {
+    public Either getJobOfName(Connection connection, String name) {
         Either either = new Either();
         try {
             String sql
