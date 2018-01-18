@@ -81,4 +81,12 @@ public class EmployeeResourse {
         Response response = mapper.toResponse(eitherRenter);
         return response;
     }
+
+    @PUT
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateBond(@QueryParam("idUserModify") int idUserModify) {
+        Either either = employeeLogic.updateBond(idUserModify);
+        Response response = mapper.toResponse(either);
+        return response;
+    }
 }

@@ -8,20 +8,20 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  * @author santiago.mamani
  */
 public class BondAssigned extends ModelObject{
-    private int idPerson;
-    private int idBond;
+    private long idPerson;
+    private long idBond;
     private String dateStart;
     private String dateEnd;
     private String status;
     public BondAssigned() {
     }
 
-    public BondAssigned(int idPerson, int idBond) {
+    public BondAssigned(long idPerson, long idBond) {
         this.idPerson = idPerson;
         this.idBond = idBond;
     }
     
-    public BondAssigned(int idPerson, int idBond, String dateStart, String dateEnd, String status) {
+    public BondAssigned(long idPerson, long idBond, String dateStart, String dateEnd, String status) {
         this.idPerson = idPerson;
         this.idBond = idBond;
         this.dateStart = dateStart.trim();
@@ -29,11 +29,11 @@ public class BondAssigned extends ModelObject{
         this.status = status.trim();
     }
 
-    public int getIdPerson() {
+    public long getIdPerson() {
         return idPerson;
     }
 
-    public int getIdBond() {
+    public long getIdBond() {
         return idBond;
     }
 

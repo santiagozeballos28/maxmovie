@@ -22,8 +22,8 @@ public class BondAssignedCrud {
             String sql = "";
             for (int i = 0; i < insertAssignBonds.size(); i++) {
                 BondAssigned bondAssigned = (BondAssigned) insertAssignBonds.get(i);
-                int idPerson = bondAssigned.getIdPerson();
-                int idBond = bondAssigned.getIdBond();
+                long idPerson = bondAssigned.getIdPerson();
+                long idBond = bondAssigned.getIdBond();
                 sql = sql
                         + "INSERT INTO bond_assigned ("
                         + "id_person, "
@@ -76,4 +76,5 @@ public class BondAssignedCrud {
             return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
         }
     }
+   
 }

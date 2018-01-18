@@ -1,5 +1,7 @@
 package com.trueffect.sql.crud;
 
+import com.trueffect.model.Bond;
+import com.trueffect.model.BondAssigned;
 import com.trueffect.model.DataJob;
 import com.trueffect.model.Employee;
 import com.trueffect.model.EmployeeDetail;
@@ -486,6 +488,108 @@ public class EmployeeCrud {
                         rs.getString("address"),
                         rs.getString("status"));
                 eitherRes.addModeloObjet(dataJob);
+            }
+            if (st != null) {
+                st.close();
+            }
+
+            eitherRes.setCode(CodeStatus.CREATED);
+            return eitherRes;
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+    }
+     public  Either getAllDataJob(Connection connection, String status) {
+        try {
+            String query
+                    = "SELECT id_person,"
+                    + "       date_of_hire, "
+                    + "       address"
+                    + "  FROM PERSON , DATA_JOB"
+                    + " WHERE PERSON.id = DATA_JOB.id_person";
+
+            if (StringUtils.isNotBlank(status)) {
+                query = query + " AND status = '" + status + "'";
+            }
+            PreparedStatement st = connection.prepareStatement(query);
+            ResultSet rs = st.executeQuery();
+            Either eitherRes = new Either();
+            DataJob dataJob = new DataJob();
+            while (rs.next()) {
+                dataJob = new DataJob(
+                        rs.getLong("id_person"),
+                        rs.getString("date_of_hire"),
+                        rs.getString("address"));
+                eitherRes.addModeloObjet(dataJob);
+            }
+            if (st != null) {
+                st.close();
+            }
+
+            eitherRes.setCode(CodeStatus.CREATED);
+            return eitherRes;
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+    }
+     public static Either getBond(Connection connection) {
+        try {
+            String query
+                    = "SELECT id,"
+                    + "       quantity, "
+                    + "       seniority"
+                    + "  FROM bond";
+
+            PreparedStatement st = connection.prepareStatement(query);
+            ResultSet rs = st.executeQuery();
+            Either eitherRes = new Either();
+            Bond bond = new Bond();
+            while (rs.next()) {
+                bond = new Bond(
+                        rs.getInt("id"),
+                        rs.getDouble("quantity"),
+                        rs.getInt("seniority"));
+                eitherRes.addModeloObjet(bond);
+            }
+            if (st != null) {
+                st.close();
+            }
+
+            eitherRes.setCode(CodeStatus.CREATED);
+            return eitherRes;
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+    }
+
+public Either getBondAssigned(Connection connection) {
+        try {
+            String query
+                    = "SELECT id_person, "
+                    + "       id_bond, "
+                    + "       start_date, "
+                    + "       end_date, "
+                    + "       status\n"
+                    + "  FROM bond_assigned;";
+
+            PreparedStatement st = connection.prepareStatement(query);
+            ResultSet rs = st.executeQuery();
+            Either eitherRes = new Either();
+            BondAssigned bondAssigned = new BondAssigned();
+            while (rs.next()) {
+                bondAssigned = new BondAssigned(
+                        rs.getLong("id_person"),
+                        rs.getLong("id_bond"),
+                        rs.getString("start_date"),
+                        rs.getString("end_date"),
+                        rs.getString("status"));
+                eitherRes.addModeloObjet(bondAssigned);
             }
             if (st != null) {
                 st.close();
