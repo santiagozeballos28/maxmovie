@@ -2,7 +2,6 @@ package com.trueffect.model;
 
 import com.trueffect.util.ModelObject;
 import java.util.ArrayList;
-import java.util.logging.Logger;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**

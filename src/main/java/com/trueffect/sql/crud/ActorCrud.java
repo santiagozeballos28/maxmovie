@@ -22,10 +22,11 @@ public class ActorCrud {
         try {
             Either eitherIdentifier = new Either();
             String sql = "";
-            query = (Statement) connection.createStatement();
+
             for (String actor : actors) {
-                sql = sql
-                        + "INSERT INTO ACTOR(\n"
+                query = (Statement) connection.createStatement();
+                sql
+                        = "INSERT INTO ACTOR(\n"
                         + "name_actor, "
                         + "create_user, "
                         + "create_date, "
@@ -117,7 +118,6 @@ public class ActorCrud {
                     eitherActor.addModeloObjet(actor);
                 }
             }
-
             if (query != null) {
                 query.close();
             }
@@ -129,5 +129,4 @@ public class ActorCrud {
             return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
         }
     }
-
 }

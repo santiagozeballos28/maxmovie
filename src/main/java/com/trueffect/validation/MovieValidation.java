@@ -2,8 +2,10 @@ package com.trueffect.validation;
 
 import com.trueffect.logic.DateOperation;
 import com.trueffect.messages.Message;
+import com.trueffect.model.GenreMovie;
 import com.trueffect.tools.ConstantData;
 import com.trueffect.tools.RegularExpression;
+import com.trueffect.util.ModelObject;
 import com.trueffect.util.OperationString;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
@@ -60,7 +62,6 @@ public class MovieValidation {
                 listError.add(errorMessages);
             }
         }
-
     }
 
     public void verifySizeNameActors(ArrayList<String> listActor, ArrayList<String> listError) {
@@ -79,7 +80,8 @@ public class MovieValidation {
 
     public void verifySize(String name, String typeData, int sizeMax, ArrayList<String> listError) {
         //Validation of name movie size
-        if (!MovieValidation.isValidSize(name, sizeMax)) {
+        String nameAux = OperationString.removeSpace(name);
+        if (!MovieValidation.isValidSize(nameAux, sizeMax)) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, typeData);
             listData.put(ConstantData.DATA, name);
@@ -151,4 +153,24 @@ public class MovieValidation {
         }
     }
 
+    public void verifyGenre(String genreId, ArrayList<ModelObject> listGenre, ArrayList<String> listError) {
+        boolean findId = false;
+        int i = 0;
+        while (i < listGenre.size() && !findId) {
+            GenreMovie genreMovie = (GenreMovie) listGenre.get(i);
+            String genreIdAux = genreId.toUpperCase();
+            if (genreIdAux.equals(genreMovie.getIdGenre())) {
+                findId = true;
+            }
+            i++;
+        }
+        if (!findId) {
+            listData.clear();
+            listData.put(ConstantData.TYPE_DATA, ConstantData.NAME_GENRE_MOVIE);
+            listData.put(ConstantData.DATA, genreId);
+            listData.put(ConstantData.VALID, ConstantData.VALID_NAME_GENRE_MOVIE);
+            String errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
+            listError.add(errorMessages);
+        }
+    }
 }

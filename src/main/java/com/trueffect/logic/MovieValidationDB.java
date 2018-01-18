@@ -4,7 +4,6 @@ import com.trueffect.messages.Message;
 import com.trueffect.model.Movie;
 import com.trueffect.response.Either;
 import com.trueffect.sql.crud.MovieCrud;
-import com.trueffect.sql.crud.PersonCrud;
 import com.trueffect.tools.CodeStatus;
 import com.trueffect.tools.ConstantData;
 import com.trueffect.util.OperationString;
@@ -23,12 +22,15 @@ public class MovieValidationDB {
 
     public MovieValidationDB() {
         listData = new HashMap<String, String>();
+        movieCrud = new MovieCrud();
     }
 
     public Either veriryDataInDataBase(Connection connection, Movie movieNew) {
         String errorMgs = "";
         ArrayList<String> listError = new ArrayList<String>();
-        Either eitherMovie = movieCrud.getMovieByName(connection, movieNew.getName());
+        String nameMovie = OperationString.removeSpace(movieNew.getName());
+        nameMovie = OperationString.addApostrophe(nameMovie);
+        Either eitherMovie = movieCrud.getMovieByName(connection, nameMovie, null);
         if (eitherMovie.haveModelObject()) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.NAME_MOVIE);
@@ -40,10 +42,6 @@ public class MovieValidationDB {
             return new Either(CodeStatus.BAD_REQUEST, listError);
         }
         return new Either();
-    }
-
-    public Either verifyDataUpdate(Connection connection, Movie movieNew) {
-        return null;
     }
 
     public Either veriryCopyDuplicate(Connection connection, long idMovie) {

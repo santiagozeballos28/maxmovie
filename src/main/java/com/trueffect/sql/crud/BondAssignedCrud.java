@@ -7,6 +7,7 @@ import com.trueffect.util.ModelObject;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.ArrayList;
+
 /**
  *
  * @author santiago.mamani
@@ -38,7 +39,6 @@ public class BondAssignedCrud {
                         + "'Active'); ";
 
             }
-
             query.execute(sql);
             if (query != null) {
                 query.close();
@@ -63,7 +63,7 @@ public class BondAssignedCrud {
                         + "   SET end_date = current_date , "
                         + "       status = '" + status + "'"
                         + " WHERE id_person = " + bondAssigned.getIdPerson() + " "
-                        + "   AND id_bond = " +bondAssigned.getIdBond() + ";";
+                        + "   AND id_bond = " + bondAssigned.getIdBond() + ";";
             }
             query.execute(sql);
             if (query != null) {

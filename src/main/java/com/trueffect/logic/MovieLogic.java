@@ -67,8 +67,12 @@ public class MovieLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            //the spaces are removed 
-            removeSpace(movie);
+            eitherRes = genreMovieCrud.getAllGenre(connection);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            ArrayList<ModelObject> listIdsGenre = eitherRes.getListObject();
+            movieCreate.setListIdsGenre(listIdsGenre);
             eitherRes = movieCreate.complyCondition(movie);
             if (eitherRes.existError()) {
                 throw eitherRes;
@@ -77,14 +81,19 @@ public class MovieLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
+            //The name is converted correctly
+            covertedCorrectlyName(movie);
+            covertedCorrectlyActor(movie);
+            covertedCorrectlyDirector(movie);
             String genreMovie = movie.getGenreId().toUpperCase();
             movie.setGenreId(genreMovie);
-            //Insert Movie
+            //Insert Movie           
             eitherRes = movieCrud.insertMovie(connection, idCreateUser, movie);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
             long idMovie = ((Identifier) eitherRes.getFirstObject()).getId();
+            // start insert actors
             eitherRes = actorCrud.getAllActors(connection, active);
             if (eitherRes.existError()) {
                 throw eitherRes;
@@ -92,7 +101,6 @@ public class MovieLogic {
             ArrayList<ModelObject> actorsDB = eitherRes.getListObject();
             ArrayList<String> actorMovie = movie.getActor();
             ArrayList<Identifier> identifiersActorsDB = getIdentifierActors(actorMovie, actorsDB);
-
             //Insert Movie. actorMovie have removed actors what is in data base
             eitherRes = actorCrud.insertActors(connection, idCreateUser, actorMovie);
             if (eitherRes.existError()) {
@@ -105,37 +113,24 @@ public class MovieLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
+            //end insert actor
             eitherRes = movieCrud.getMovie(connection, idMovie, null);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-
-            Movie movieUpdatedStatus = (Movie) eitherRes.getFirstObject();
-
-            //descomentar para poner la descripcion del genere
-            /*
-            String idGenreMovie = ((Movie) eitherRes.getFirstObject()).getGenreId();
-            eitherRes = genreMovieCrud.getGenre(connection, idGenreMovie);
-            if (eitherRes.existError()) {
-                throw eitherRes;
-            }
-            String genreName = ((GenreMovie)eitherRes.getFirstObject()).getNameGenre();
-            movieUpdated.setGenreId(genreName);
-             */
+            Movie movieCreated = (Movie) eitherRes.getFirstObject();
             eitherRes = participateCrud.getIdsActorOf(connection, idMovie, active);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
             ArrayList<ModelObject> identifiersActors = eitherRes.getListObject();
-
             eitherRes = actorCrud.getActorByIds(connection, identifiersActors, active);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
             ArrayList<String> actors = getActorsOf(eitherRes.getListObject());
-            movieUpdatedStatus.setActor(actors);
-
-            eitherRes = new Either(CodeStatus.CREATED, movieUpdatedStatus);
+            movieCreated.setActor(actors);
+            eitherRes = new Either(CodeStatus.CREATED, movieCreated);
             DataBasePostgres.connectionCommit(connection);
         } catch (Either e) {
             eitherRes = e;
@@ -161,7 +156,6 @@ public class MovieLogic {
                 }
                 i++;
             }
-
         }
         return identifierActors;
     }
@@ -196,17 +190,28 @@ public class MovieLogic {
             }
             //update is a class to specifically validate the conditions to update a movie
             MovieUpdate movieUpdate = new MovieUpdate();
-            //the spaces are removed 
-            removeSpace(movie);
+            eitherRes = genreMovieCrud.getAllGenre(connection);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            ArrayList<ModelObject> listIdsGenre = eitherRes.getListObject();
+            movieUpdate.setListGenre(listIdsGenre);
             eitherRes = movieUpdate.complyCondition(movie);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            //add aphostrophe "'".
-            //OperationString.addApostrophe(movie);
-            eitherRes = movieValidationDB.verifyDataUpdate(connection, movie);
-            if (eitherRes.existError()) {
-                throw eitherRes;
+            if (StringUtils.isNotBlank(movie.getName())) {
+                eitherRes = movieValidationDB.veriryDataInDataBase(connection, movie);
+                if (eitherRes.existError()) {
+                    throw eitherRes;
+                }
+                covertedCorrectlyName(movie);
+            }
+            if (StringUtils.isNotBlank(movie.getDirector())) {
+                covertedCorrectlyDirector(movie);
+            }
+            if (!movie.getActor().isEmpty()) {
+                covertedCorrectlyActor(movie);
             }
             String genreMovie = movie.getGenreId();
             if (StringUtils.isNotBlank(genreMovie)) {
@@ -217,37 +222,62 @@ public class MovieLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
+
+            eitherRes = participateCrud.getIdsActorOf(connection, idMovie, statusActive);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            //obtenemos los actores
+            ArrayList<ModelObject> idsActorDB = eitherRes.getListObject();
+            eitherRes = actorCrud.getActorByIds(connection, idsActorDB, statusActive);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            ArrayList<ModelObject> actorsDB = eitherRes.getListObject();
+            ArrayList<ModelObject> idsToUpdateStatus = getIdsToUpdateStatus(actorsDB, movie.getActor());
+            String statusInactive = ConstantData.Status.Inactive.name();
+            eitherRes = participateCrud.updateStatus(connection, idModifyUser, idMovie, idsToUpdateStatus, statusInactive);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            ArrayList<String> actorsToInsert = getActorsToInsert(movie.getActor(), actorsDB);
+            // start insert actors
+            eitherRes = actorCrud.getAllActors(connection, statusActive);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            ArrayList<ModelObject> allActorsDB = eitherRes.getListObject();
+            ArrayList<Identifier> identifiersActorsDB = getIdentifierActors(actorsToInsert, allActorsDB);
+            //Insert Movie. actorMovie have removed actors what is in data base
+            eitherRes = actorCrud.insertActors(connection, idModifyUser, actorsToInsert);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            ArrayList<ModelObject> idActors = eitherRes.getListObject();
+            idActors.addAll(identifiersActorsDB);
+            //Insert Participate
+            eitherRes = participateCrud.insertActorsAndMovie(connection, idModifyUser, idMovie, idActors);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            //end insert actor
             eitherRes = movieCrud.getMovie(connection, idMovie, null);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-
-            Movie movieUpdatedStatus = (Movie) eitherRes.getFirstObject();
-
-            //descomentar para poner la descripcion del genere
-            /*
-            String idGenreMovie = ((Movie) eitherRes.getFirstObject()).getGenreId();
-            eitherRes = genreMovieCrud.getGenre(connection, idGenreMovie);
-            if (eitherRes.existError()) {
-                throw eitherRes;
-            }
-            String genreName = ((GenreMovie)eitherRes.getFirstObject()).getNameGenre();
-            movieUpdated.setGenreId(genreName);
-             */
+            Movie movieUpdated = (Movie) eitherRes.getFirstObject();
             eitherRes = participateCrud.getIdsActorOf(connection, idMovie, statusActive);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
             ArrayList<ModelObject> identifiersActors = eitherRes.getListObject();
-
             eitherRes = actorCrud.getActorByIds(connection, identifiersActors, statusActive);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
             ArrayList<String> actors = getActorsOf(eitherRes.getListObject());
-            movieUpdatedStatus.setActor(actors);
-
-            eitherRes = new Either(CodeStatus.CREATED, movieUpdatedStatus);
+            movieUpdated.setActor(actors);
+            eitherRes = new Either(CodeStatus.CREATED, movieUpdated);
             DataBasePostgres.connectionCommit(connection);
         } catch (Either exception) {
             eitherRes = exception;
@@ -265,12 +295,7 @@ public class MovieLogic {
         try {
             Either eitherMovie = movieCrud.getMovie(connection, idMovie, status);
             movie = (Movie) eitherMovie.getFirstObject();
-            System.out.println(movie.getId());
-            System.out.println(movie.getName());
-            System.out.println(movie.getGenreId());
-            System.out.println(movie.getDirector());
             if (movie.isEmpty()) {
-                System.out.println("Esta vacio.....");
                 String object = ConstantData.ObjectMovie.Movie.name();
                 listData.clear();
                 listData.put(ConstantData.OBJECT, object);
@@ -324,19 +349,7 @@ public class MovieLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-
             Movie movieUpdatedStatus = (Movie) eitherRes.getFirstObject();
-
-            //descomentar para poner la descripcion del genere
-            /*
-            String idGenreMovie = ((Movie) eitherRes.getFirstObject()).getGenreId();
-            eitherRes = genreMovieCrud.getGenre(connection, idGenreMovie);
-            if (eitherRes.existError()) {
-                throw eitherRes;
-            }
-            String genreName = ((GenreMovie)eitherRes.getFirstObject()).getNameGenre();
-            movieUpdated.setGenreId(genreName);
-             */
             eitherRes = participateCrud.getIdsActorOf(connection, idMovie, statusActive);
             if (eitherRes.existError()) {
                 throw eitherRes;
@@ -349,11 +362,8 @@ public class MovieLogic {
             }
             ArrayList<String> actors = getActorsOf(eitherRes.getListObject());
             movieUpdatedStatus.setActor(actors);
-
             eitherRes = new Either(CodeStatus.CREATED, movieUpdatedStatus);
-
             DataBasePostgres.connectionCommit(connection);
-
         } catch (Either e) {
             eitherRes = e;
             DataBasePostgres.connectionRollback(connection, eitherRes);
@@ -361,27 +371,6 @@ public class MovieLogic {
             DataBasePostgres.connectionClose(connection, eitherRes);
         }
         return eitherRes;
-    }
-
-    public void removeSpace(Movie movie) {
-        if (StringUtils.isNotBlank(movie.getName())) {
-            String nameMovie = OperationString.removeSpace(movie.getName());
-            movie.setName(nameMovie);
-        }
-        if (StringUtils.isNotBlank(movie.getDirector())) {
-            String nameDirector = OperationString.removeSpace(movie.getDirector());
-            movie.setDirector(nameDirector);
-        }
-        ArrayList<String> listActors = movie.getActor();
-        if (!listActors.isEmpty()) {
-            ArrayList<String> actorsWithoutSpaces = new ArrayList<String>();
-            for (String actor : listActors) {
-                actor = OperationString.removeSpace(actor);
-                actorsWithoutSpaces.add(actor);
-            }
-            movie.setActor(actorsWithoutSpaces);
-        }
-
     }
 
     private ArrayList<String> getActorsOf(ArrayList<ModelObject> listObject) {
@@ -439,5 +428,66 @@ public class MovieLogic {
             DataBasePostgres.connectionClose(connection, eitherRes);
         }
         return eitherRes;
+    }
+
+    private void covertedCorrectlyName(Movie movie) {
+        String nameMovie = OperationString.removeSpace(movie.getName());
+        nameMovie = OperationString.addApostrophe(nameMovie);
+        movie.setName(nameMovie);
+    }
+
+    private void covertedCorrectlyActor(Movie movie) {
+        ArrayList<String> nameActors = movie.getActor();
+        ArrayList<String> nameActorsCorrectly = new ArrayList<String>();
+        for (String nameActor : nameActors) {
+            String actor = OperationString.removeSpace(nameActor);
+            actor = OperationString.addApostrophe(actor);
+            nameActorsCorrectly.add(actor);
+        }
+        movie.setActor(nameActorsCorrectly);
+    }
+
+    private void covertedCorrectlyDirector(Movie movie) {
+        String nameDirector = OperationString.removeSpace(movie.getDirector());
+        nameDirector = OperationString.addApostrophe(nameDirector);
+        movie.setDirector(nameDirector);
+    }
+
+    private ArrayList<ModelObject> getIdsToUpdateStatus(ArrayList<ModelObject> actorsDB, ArrayList<String> actors) {
+        ArrayList<ModelObject> idsActorUpdate = new ArrayList<ModelObject>();
+        for (ModelObject actorModelObject : actorsDB) {
+            Actor actorDB = (Actor) actorModelObject;
+            boolean findActorNew = false;
+            int i = 0;
+            while (i < actors.size() && !findActorNew) {
+                if (actorDB.getName().equals(actors.get(i))) {
+                    findActorNew = true;
+                }
+                i++;
+            }
+            if (!findActorNew) {
+                idsActorUpdate.add(new Identifier(actorDB.getId()));
+            }
+        }
+        return idsActorUpdate;
+    }
+
+    private ArrayList<String> getActorsToInsert(ArrayList<String> actors, ArrayList<ModelObject> actorsDB) {
+        ArrayList<String> actorsInsert = new ArrayList<String>();
+        for (String actorName : actors) {
+            boolean findActorDB = false;
+            int i = 0;
+            while (i < actorsDB.size() && !findActorDB) {
+                Actor actorDB = (Actor) actorsDB.get(i);
+                if (actorName.equals(actorDB.getName())) {
+                    findActorDB = true;
+                }
+                i++;
+            }
+            if (!findActorDB) {
+                actorsInsert.add(actorName);
+            }
+        }
+        return actorsInsert;
     }
 }

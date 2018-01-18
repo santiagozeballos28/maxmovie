@@ -256,7 +256,7 @@ public class EmployeeCrud {
         }
     }
 
-    public Either updateDataJob(Connection connection, long idModifierUser, long idEmployee, long idJob, String status) {
+    public Either updateStatusDataJob(Connection connection, long idModifierUser, long idEmployee, long idJob, String status) {
         try {
             String sql
                     = "UPDATE DATA_JOB\n"

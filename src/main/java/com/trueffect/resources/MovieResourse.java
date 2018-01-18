@@ -58,10 +58,9 @@ public class MovieResourse {
     @POST
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response insertCopy(@PathParam("id") long idMovie,@QueryParam("idCreateUser") long idCreateUser,@QueryParam("amountCopy") int amountCopy) {
-        Either either = movieLogic.insertCopy(idMovie,idCreateUser,amountCopy);
+    public Response insertCopy(@PathParam("id") long idMovie, @QueryParam("idCreateUser") long idCreateUser, @QueryParam("amountCopy") int amountCopy) {
+        Either either = movieLogic.insertCopy(idMovie, idCreateUser, amountCopy);
         Response response = mapper.toResponse(either);
         return response;
     }
-
 }

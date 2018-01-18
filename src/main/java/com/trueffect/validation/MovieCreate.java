@@ -1,6 +1,5 @@
 package com.trueffect.validation;
 
-import com.trueffect.logic.DateOperation;
 import com.trueffect.messages.Message;
 import com.trueffect.model.Movie;
 import com.trueffect.response.Either;
@@ -20,10 +19,16 @@ public class MovieCreate implements DataCondition {
 
     protected HashMap<String, String> listData;
     private MovieValidation movieValidation;
+    private ArrayList<ModelObject> listIdsGenre;
 
     public MovieCreate() {
         listData = new HashMap<String, String>();
         movieValidation = new MovieValidation();
+        listIdsGenre = new ArrayList<ModelObject>();
+    }
+
+    public void setListIdsGenre(ArrayList<ModelObject> listIdsGenre) {
+        this.listIdsGenre = listIdsGenre;
     }
 
     @Override
@@ -89,7 +94,7 @@ public class MovieCreate implements DataCondition {
         //Validation of name movie
         movieValidation.verifyName(movie.getName(), listError);
         //Validation of genre movie
-        movieValidation.verifyName(movie.getGenreId(), listError);
+        movieValidation.verifyGenre(movie.getGenreId(), listIdsGenre, listError);
         //Validation of the actor
         movieValidation.verifyNamesOfActors(movie.getActor(), listError);
         //Validation of the director

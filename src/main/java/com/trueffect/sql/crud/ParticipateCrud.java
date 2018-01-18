@@ -89,4 +89,31 @@ public class ParticipateCrud {
             return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
         }
     }
+
+    public Either updateStatus(Connection connection, long idModifierUser, long idMovie, ArrayList<ModelObject> idsToUpdateStatus, String status) {
+        try {
+            String sql = "";
+            for (ModelObject idUpdate : idsToUpdateStatus) {
+                Identifier identifier = (Identifier) idUpdate;
+                sql = sql
+                        + "UPDATE PARTICIPATE\n"
+                        + "   SET modifier_user = " + idModifierUser + ","
+                        + "       modifier_date = current_timestamp" + ","
+                        + "       status = '" + status + "'"
+                        + " WHERE movie_id = " + idMovie
+                        + "   AND actor_id = " + identifier.getId() + ";";
+
+            }
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.execute();
+            if (st != null) {
+                st.close();
+            }
+            return new Either();
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+    }
 }

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.trueffect.validation;
 
 import com.trueffect.model.Movie;
@@ -22,10 +17,16 @@ public class MovieUpdate implements DataCondition {
 
     protected HashMap<String, String> listData;
     private MovieValidation movieValidation;
+    private ArrayList<ModelObject> listGenre;
 
     public MovieUpdate() {
         listData = new HashMap<String, String>();
         movieValidation = new MovieValidation();
+        listGenre = new ArrayList<ModelObject>();
+    }
+
+    public void setListGenre(ArrayList<ModelObject> listGenre) {
+        this.listGenre = listGenre;
     }
 
     public Either complyCondition(ModelObject resource) {
@@ -39,7 +40,7 @@ public class MovieUpdate implements DataCondition {
         //Validation genre movie
         if (!movieValidation.isEmpty(movie.getGenreId())) {
             movieValidation.verifySize(movie.getGenreId(), ConstantData.NAME_GENRE_MOVIE, ConstantData.MAX_NAME_GENRE_MOVIE, listError);
-            movieValidation.verifyGenre(movie.getGenreId(), listError);
+            movieValidation.verifyGenre(movie.getGenreId(), listGenre, listError);
         }
         //Validation actors
         ArrayList<String> actors = movie.getActor();
@@ -65,5 +66,4 @@ public class MovieUpdate implements DataCondition {
         }
         return new Either();
     }
-
 }

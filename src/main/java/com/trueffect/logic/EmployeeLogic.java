@@ -232,14 +232,13 @@ public class EmployeeLogic {
             }
 
             if (employee.haveDataJob()) {
-                //Connection connection, long idModifierUser, long idEmployee, long idJob, String status
                 String statusInactive = Status.Inactive.name();
                 eitherRes = employeeCrud.getDataJob(connection, idEmployee, statusActive);
                 if (eitherRes.existError()) {
                     throw eitherRes;
                 }
                 DataJob dataJobCurrent = (DataJob) eitherRes.getFirstObject();
-                eitherRes = employeeCrud.updateDataJob(connection, idModifyUser, employee.getId(), dataJobCurrent.getJobId(), statusInactive);
+                eitherRes = employeeCrud.updateStatusDataJob(connection, idModifyUser, employee.getId(), dataJobCurrent.getJobId(), statusInactive);
                 if (eitherRes.existError()) {
                     throw eitherRes;
                 }

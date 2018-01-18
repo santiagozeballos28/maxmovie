@@ -6,7 +6,8 @@ import com.trueffect.util.ModelObject;
  *
  * @author santiago.mamani
  */
-public class Identifier extends ModelObject{
+public class Identifier extends ModelObject {
+
     private long id;
 
     public Identifier(long id) {
@@ -20,5 +21,4 @@ public class Identifier extends ModelObject{
     public void setId(long id) {
         this.id = id;
     }
-    
 }
