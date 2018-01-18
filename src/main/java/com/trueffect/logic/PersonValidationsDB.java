@@ -1,4 +1,4 @@
-package com.trueffect.logica;
+package com.trueffect.logic;
 
 import com.trueffect.messages.Message;
 import com.trueffect.model.Person;
@@ -20,15 +20,17 @@ import org.apache.commons.lang3.StringUtils;
 public class PersonValidationsDB {
 
     protected HashMap<String, String> listData;
+    private PersonCrud personCrud;
 
     public PersonValidationsDB() {
         this.listData = new HashMap<String, String>();
+        personCrud = new PersonCrud();
     }
 
     public Either veriryDataInDataBase(Connection connection, Person personNew) {
         String errorMgs = "";
         ArrayList<String> listError = new ArrayList<String>();
-        Either eitherPerson = PersonCrud.getPersonByIdentifier(connection, personNew.getTypeIdentifier().toUpperCase(), personNew.getIdentifier().toUpperCase());
+        Either eitherPerson = personCrud.getPersonByIdentifier(connection, personNew.getTypeIdentifier().toUpperCase(), personNew.getIdentifier().toUpperCase());
         if (eitherPerson.haveModelObject()) {
             listData.clear();
             TypeIdentifier typeIdenEnum = TypeIdentifier.valueOf(personNew.getTypeIdentifier().toUpperCase());
@@ -37,7 +39,7 @@ public class PersonValidationsDB {
             errorMgs = OperationString.generateMesage(Message.DUPLICATE, listData);
             listError.add(errorMgs);
         }
-        eitherPerson = PersonCrud.getPersonByName(connection, personNew.getLastName(), personNew.getFirstName());
+        eitherPerson = personCrud.getPersonByName(connection, personNew.getLastName(), personNew.getFirstName());
         if (eitherPerson.haveModelObject()) {
             Person personDB = (Person) eitherPerson.getFirstObject();
             listData.clear();
@@ -56,7 +58,7 @@ public class PersonValidationsDB {
         long idPerson = personNew.getId();
         String errorMgs = "";
         ArrayList<String> listError = new ArrayList<String>();
-        Either eitherPersonOld = PersonCrud.getPerson(connection, idPerson, null);
+        Either eitherPersonOld = personCrud.getPerson(connection, idPerson, null);
         String typeIdOld = ((Person) eitherPersonOld.getFirstObject()).getTypeIdentifier();
         Person personAux = generatePersonAuxiliary((Person) eitherPersonOld.getFirstObject(), personNew);
         if (!PersonValidation.isValidIdentifier(personAux.getTypeIdentifier().toUpperCase(), personAux.getIdentifier().toUpperCase())) {
@@ -69,7 +71,7 @@ public class PersonValidationsDB {
             listError.add(errorMgs);
             return new Either(CodeStatus.BAD_REQUEST, listError);
         }
-        Either eitherPersonById = PersonCrud.getPersonByIdentifier(connection, personAux.getTypeIdentifier().toUpperCase(), personAux.getIdentifier().toUpperCase());
+        Either eitherPersonById = personCrud.getPersonByIdentifier(connection, personAux.getTypeIdentifier().toUpperCase(), personAux.getIdentifier().toUpperCase());
         if (eitherPersonById.haveModelObject()) {
             Person personEither = (Person) eitherPersonById.getFirstObject();
             if (idPerson != personEither.getId()) {
@@ -80,7 +82,7 @@ public class PersonValidationsDB {
                 listError.add(errorMgs);
             }
         }
-        Either eitherPersonByName = PersonCrud.getPersonByName(connection, personAux.getLastName(), personAux.getFirstName());
+        Either eitherPersonByName = personCrud.getPersonByName(connection, personAux.getLastName(), personAux.getFirstName());
         if (eitherPersonByName.haveModelObject()) {
             Person personEither = (Person) eitherPersonByName.getFirstObject();
             if (idPerson != personEither.getId()) {

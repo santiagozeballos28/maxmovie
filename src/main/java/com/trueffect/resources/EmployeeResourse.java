@@ -1,6 +1,6 @@
 package com.trueffect.resources;
 
-import com.trueffect.logica.EmployeeLogic;
+import com.trueffect.logic.EmployeeLogic;
 import com.trueffect.model.Employee;
 import com.trueffect.response.Either;
 import com.trueffect.response.MapperResponse;

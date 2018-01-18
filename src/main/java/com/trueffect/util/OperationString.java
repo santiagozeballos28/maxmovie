@@ -1,6 +1,7 @@
 package com.trueffect.util;
 
 import com.trueffect.model.Employee;
+import com.trueffect.model.Movie;
 import com.trueffect.model.Person;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -96,4 +97,17 @@ public class OperationString {
         }
         return res;
     }
+
+    public static String removeSpace(String string) {
+        String resString = "";
+        String[] stringArrayAux = string.split(" ");
+        ArrayList<String> listString = removeEmpty(stringArrayAux);
+        for (String strg : listString) {
+            resString = resString + " " + strg;
+        }
+        resString = resString.trim();
+        return resString;
+    }
+
+   
 }

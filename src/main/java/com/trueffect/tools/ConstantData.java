@@ -9,10 +9,18 @@ public class ConstantData {
     public static int MAX_LENGTH_NAME = 50;
     public static int MAX_LENGTH_IDENTIFIER = 10;
     public static int MAX_LENGTH_ADDRESS = 100;
+    public static int MAX_NAME_MOVIE = 256;
+    public static int MAX_NAME_ACTOR_MOVIE = 256;
+    public static int MAX_NAME_DIRECTOR_MOVIE = 256;
+    public static int MAX_NAME_GENRE_MOVIE = 120;
+    public static int MAX_YEAR_MOVIE = 9999;
+    public static int MAX_OSCAR_NOMINATION_MOVIE = 100;
     //DATA MINIMUM 
     public static int MIN_AGE_RENTER = 15;
     public static int MIN_AGE_EMPLOYEE = 18;
     public static int MIN_AMOUNT_PHONE = 2;
+    public static int MIN_YEAR = 1900;
+    public static int MIN_OSCAR_NOMINATION = 0;
     // DATA FOR THE MESSAGES
     public static String TYPE_DATA = "{typeData}";
     public static String TYPE_DATA_TWO = "{typeData2}";
@@ -42,8 +50,24 @@ public class ConstantData {
     //Data Generic
     public static String ID = "id";
     public static String STATUS = "status";
+    public static String YEAR = "Year";
+    public static String US_ASCII = "US-ASCII";
     // Valid data generic
     public static String VALID_DATE = "YYYY-MM-DD";
+    //Data movie
+    public static String NAME_MOVIE = "Name movie";
+    public static String NAME_ACTOR_MOVIE = "Name actor";
+    public static String NAME_GENRE_MOVIE = "Name genre";
+    public static String NAME_DIRECTOR_MOVIE = "Name director";
+    public static String OSCAR_NOMINATION_MOVIE = "Oscar nomination";
+    //Valid data movie
+    public static String VALID_NAME_MOVIE = "Letters = A-Za-z, Numbers = 0-9";
+    public static String VALID_NAME_GENRE_MOVIE = "Letters = A-Za-z";
+    public static String VALID_US_ASCII = "US-ASCII";
+    public static String VALID_YEAR = "YYYY, Example: year = 1999";
+    public static String VALID_OSCAR_NOMINARION = "0-100";
+    // Date format to validate
+    public static String SIMPLE_DATE_FORMAT = "yyyy-MM-dd";
 
     public enum ValidIdentifier {
         CI("all number"), PASS("3 letters 6 numbers [0-1] letter"), NIT("all number");
@@ -106,7 +130,7 @@ public class ConstantData {
     }
 
     public enum ObjectMovie {
-        RennterUser, Employee, Movie
+        RennterUser, Employee, Movie, Copy
     }
 
     public enum Ocupation {

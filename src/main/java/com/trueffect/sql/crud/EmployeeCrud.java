@@ -23,7 +23,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class EmployeeCrud {
 
-    public static Either insertDataJob(Connection connection, long idCreateUser, DataJob dataJob, boolean enabledRenterUser) {
+    public Either insertDataJob(Connection connection, long idCreateUser, DataJob dataJob, boolean enabledRenterUser) {
         Statement query = null;
         try {
             long idEmployee = dataJob.getEmployeeId();
@@ -67,7 +67,7 @@ public class EmployeeCrud {
         }
     }
 
-    public static Either insertPhone(Connection connection, long idCreateUser, long idEmployee, ArrayList<Integer> listPhones) {
+    public Either insertPhone(Connection connection, long idCreateUser, long idEmployee, ArrayList<Integer> listPhones) {
         Statement query = null;
         try {
             query = (Statement) connection.createStatement();
@@ -103,7 +103,7 @@ public class EmployeeCrud {
         }
     }
 
-    public static Either getEmployeeByIdentifier(Connection connection, String typeIdentifier, String identifier) {
+    public Either getEmployeeByIdentifier(Connection connection, String typeIdentifier, String identifier) {
         try {
             Statement query = (Statement) connection.createStatement();
             String sql
@@ -150,7 +150,7 @@ public class EmployeeCrud {
         }
     }
 
-    public static Either getPhones(Connection connection, long idPerson) {
+    public Either getPhones(Connection connection, long idPerson) {
         try {
             String query
                     = "SELECT number_phone"
@@ -176,7 +176,7 @@ public class EmployeeCrud {
         }
     }
 
-    public static Either getDetailOfPhones(Connection connection, long idEmployee) {
+    public Either getDetailOfPhones(Connection connection, long idEmployee) {
         try {
             String query
                     = "SELECT person_id, "
@@ -206,7 +206,7 @@ public class EmployeeCrud {
         }
     }
 
-    public static Either getEmployee(Connection connection, long idEmployee, String status) {
+    public Either getEmployee(Connection connection, long idEmployee, String status) {
         try {
             String query
                     = "SELECT PERSON.person_id, "
@@ -256,7 +256,7 @@ public class EmployeeCrud {
         }
     }
 
-    public static Either updateDataJob(Connection connection, long idModifierUser, long idEmployee, long idJob, String status) {
+    public Either updateDataJob(Connection connection, long idModifierUser, long idEmployee, long idJob, String status) {
         try {
             String sql
                     = "UPDATE DATA_JOB\n"
@@ -280,7 +280,7 @@ public class EmployeeCrud {
         }
     }
 
-    public static Either updatePhone(Connection connection, long idModifierUser, long idEmployee, ArrayList<ModelObject> listPhone) {
+    public Either updatePhone(Connection connection, long idModifierUser, long idEmployee, ArrayList<ModelObject> listPhone) {
         try {
             Statement query = (Statement) connection.createStatement();
             String sql = "";
@@ -306,7 +306,7 @@ public class EmployeeCrud {
         }
     }
 
-    public static Either getEmployeeBy(
+    public Either getEmployeeBy(
             Connection connection,
             String typeId,
             String identifier,
@@ -421,7 +421,7 @@ public class EmployeeCrud {
         }
     }
 
-    public static Either getPhonesByNumeber(Connection connection, ArrayList<Integer> phones, String status) {
+    public Either getPhonesByNumeber(Connection connection, ArrayList<Integer> phones, String status) {
         try {
             String query
                     = "SELECT person_id,"
@@ -460,7 +460,7 @@ public class EmployeeCrud {
         }
     }
 
-    public static Either getDataJob(Connection connection, long idEmployee, String status) {
+    public Either getDataJob(Connection connection, long idEmployee, String status) {
         try {
             String query
                     = "SELECT person_id,"

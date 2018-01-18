@@ -28,4 +28,5 @@ public class Message {
     public static String DATE_FUTURE = "The date({data})is not valid, because it is a date greater than now ({data2})";
     public static String DATE_INCOHERENT = "The {typeData}({data}), is not consistent with the date {typeData2}({data2})";
     public static String MANDATORY_IDENTIFY = "It is mandatory to identify yourself to {operation}";
+    public static String NOT_VALID_DATA_NUMBERS_ALLOWED = "The {typeData} ({data}) is not valid. Only positive number is allowed, between [{valid}]";
 }

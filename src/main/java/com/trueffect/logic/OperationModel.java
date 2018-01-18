@@ -1,4 +1,4 @@
-package com.trueffect.logica;
+package com.trueffect.logic;
 
 import com.trueffect.messages.Message;
 import com.trueffect.response.Either;

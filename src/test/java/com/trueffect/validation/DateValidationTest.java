@@ -1,8 +1,8 @@
 package com.trueffect.validation;
 
-import com.trueffect.logica.DateOperation;
+import com.trueffect.logic.DateOperation;
 import com.trueffect.tools.ConstantData;
-import static com.trueffect.logica.DateOperation.getDataCurrent;
+import static com.trueffect.logic.DateOperation.getDataCurrent;
 import java.util.Date;
 import org.junit.Assert;
 import org.junit.Test;

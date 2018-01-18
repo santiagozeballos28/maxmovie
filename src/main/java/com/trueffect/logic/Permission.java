@@ -1,4 +1,4 @@
-package com.trueffect.logica;
+package com.trueffect.logic;
 
 import com.trueffect.messages.Message;
 import com.trueffect.model.Job;
@@ -32,7 +32,8 @@ public class Permission {
     }
 
     public Either checkUserPermission(Connection connection, long idUserModify, String operation) {
-        Either eitherJob = JobCrud.getJobOf(connection, idUserModify);
+        JobCrud jobCrud = new JobCrud();
+        Either eitherJob = jobCrud.getJobOf(connection, idUserModify);
         Either eitherRes = new Either();
         ArrayList<String> listError = new ArrayList<String>();
         if (eitherJob.haveModelObject()) {
@@ -52,11 +53,13 @@ public class Permission {
                     return new Either(CodeStatus.FORBIDDEN, listError);
             }
         } else {
+            System.out.println("NOES NANANNNNN");
             listData.clear();
             listData.put(ConstantData.OPERATION, operation);
             listData.put(ConstantData.TYPE_DATA, nameObject);
             String errorMgs = OperationString.generateMesage(Message.NOT_HAVE_PERMISSION, listData);
             listError.add(errorMgs);
+            System.out.println("SE ANIO el ERROR");
             return new Either(CodeStatus.BAD_REQUEST, listError);
         }
     }
@@ -73,7 +76,8 @@ public class Permission {
         }
         Person person = new Person();
         try {
-            eitherRes = PersonCrud.getPerson(connection, idPerson, status);
+            PersonCrud personCrud = new PersonCrud();
+            eitherRes = personCrud.getPerson(connection, idPerson, status);
             person = (Person) eitherRes.getFirstObject();
         } catch (Exception exception) {
             listError.add(exception.getMessage());

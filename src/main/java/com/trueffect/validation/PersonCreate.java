@@ -1,6 +1,6 @@
 package com.trueffect.validation;
 
-import com.trueffect.logica.DateOperation;
+import com.trueffect.logic.DateOperation;
 import com.trueffect.messages.Message;
 import com.trueffect.util.ModelObject;
 import com.trueffect.model.Person;

@@ -1,4 +1,4 @@
-package com.trueffect.logica;
+package com.trueffect.logic;
 
 import com.trueffect.messages.Message;
 import com.trueffect.model.Employee;
@@ -37,7 +37,8 @@ public class EmployeeValidationDB extends PersonValidationsDB {
     }
 
     public Either verifyPhone(Connection connection, Employee employee) {
-        Either eitherPhone = EmployeeCrud.getPhonesByNumeber(connection, employee.getPhones(), null);
+        EmployeeCrud employeeCrud = new EmployeeCrud();
+        Either eitherPhone = employeeCrud.getPhonesByNumeber(connection, employee.getPhones(), null);
         ArrayList<ModelObject> listPhone = eitherPhone.getListObject();
         if (listPhone.isEmpty()) {
             return new Either();
