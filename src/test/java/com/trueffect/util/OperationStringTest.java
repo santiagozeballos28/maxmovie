@@ -15,7 +15,7 @@ public class OperationStringTest {
 
     //@Test
     public void testTypeIdentifierPass() {
-        String msgInput = Message.NOT_VALID_DATA_THE_VALID_DATA_ARE;
+        String msgInput = Message.NOT_VALID_THE_VALID_DATA_ARE;
         String msgOutputExpected = "The Last name [Manti$ago] is not valid. The valid format is as follows: (Letters = A-Za-z, apostrophes = ')";
         HashMap<String, String> listData = new HashMap<String, String>();
         listData.put(ConstantData.TYPE_DATA, ConstantData.LAST_NAME);

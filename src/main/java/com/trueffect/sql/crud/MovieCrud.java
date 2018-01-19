@@ -221,4 +221,48 @@ public class MovieCrud {
             return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
         }
     }
+
+    public Either getMovie(Connection connection, ArrayList<Long> idsMovie, String status) {
+        String idsString = idsMovie.toString();
+        idsString = StringUtils.replace(idsString, "[", "(");
+        idsString = StringUtils.replace(idsString, "]", ")");
+        try {
+            String query
+                    = "SELECT movie_id,"
+                    + "       movie_name, "
+                    + "       director_name, "
+                    + "       movie_year, "
+                    + "       oscar_nomination, "
+                    + "       genre_movie_id\n"
+                    + "       status\n"
+                    + "  FROM MOVIE\n"
+                    + " WHERE movie_id IN " + idsString;
+            if (StringUtils.isNotBlank(status)) {
+                query = query + " AND status = '" + status + "'";
+            }
+            PreparedStatement st = connection.prepareStatement(query);
+            ResultSet rs = st.executeQuery();
+            Movie movie = new Movie();
+            if (rs.next()) {
+                movie = new Movie(
+                        rs.getLong("movie_id"),
+                        rs.getString("movie_name"),
+                        rs.getString("genre_movie_id"),
+                        rs.getString("director_name"),
+                        rs.getInt("movie_year"),
+                        rs.getInt("oscar_nomination"),
+                        rs.getString("status")
+                );
+            }
+            if (st != null) {
+                st.close();
+            }
+
+            return new Either(CodeStatus.OK, movie);
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+    }
 }

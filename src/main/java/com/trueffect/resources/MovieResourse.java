@@ -2,6 +2,7 @@ package com.trueffect.resources;
 
 import com.trueffect.logic.MovieLogic;
 import com.trueffect.model.Movie;
+import com.trueffect.model.Sale;
 import com.trueffect.response.Either;
 import com.trueffect.response.MapperResponse;
 import com.trueffect.validation.MovieCreate;

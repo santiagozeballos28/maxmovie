@@ -3,9 +3,6 @@ package com.trueffect.validation;
 import com.trueffect.tools.ConstantData;
 import com.trueffect.tools.ConstantData.JobName;
 import com.trueffect.tools.RegularExpression;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.regex.Pattern;
 
 /**

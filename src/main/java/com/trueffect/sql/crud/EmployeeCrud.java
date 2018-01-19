@@ -501,7 +501,8 @@ public class EmployeeCrud {
             return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
         }
     }
-     public  Either getAllDataJob(Connection connection, String status) {
+
+    public Either getAllDataJob(Connection connection, String status) {
         try {
             String query
                     = "SELECT id_person,"
@@ -536,12 +537,15 @@ public class EmployeeCrud {
             return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
         }
     }
-     public static Either getBond(Connection connection) {
+
+    public static Either getBond(Connection connection) {
         try {
             String query
                     = "SELECT id,"
                     + "       quantity, "
-                    + "       seniority"
+                    + "       seniority,"
+                    + "       start_date,"
+                    + "       end_date"
                     + "  FROM bond";
 
             PreparedStatement st = connection.prepareStatement(query);
@@ -552,7 +556,9 @@ public class EmployeeCrud {
                 bond = new Bond(
                         rs.getInt("id"),
                         rs.getDouble("quantity"),
-                        rs.getInt("seniority"));
+                        rs.getInt("seniority"),
+                        rs.getString("start_date"),
+                        rs.getString("end_date"));
                 eitherRes.addModeloObjet(bond);
             }
             if (st != null) {
@@ -568,11 +574,11 @@ public class EmployeeCrud {
         }
     }
 
-public Either getBondAssigned(Connection connection) {
+    public Either getBondAssigned(Connection connection) {
         try {
             String query
-                    = "SELECT id_person, "
-                    + "       id_bond, "
+                    = "SELECT data_job_id, "
+                    + "       bond_id, "
                     + "       start_date, "
                     + "       end_date, "
                     + "       status\n"
@@ -584,8 +590,8 @@ public Either getBondAssigned(Connection connection) {
             BondAssigned bondAssigned = new BondAssigned();
             while (rs.next()) {
                 bondAssigned = new BondAssigned(
-                        rs.getLong("id_person"),
-                        rs.getLong("id_bond"),
+                        rs.getLong("data_job_d"),
+                        rs.getLong("bond_id"),
                         rs.getString("start_date"),
                         rs.getString("end_date"),
                         rs.getString("status"));

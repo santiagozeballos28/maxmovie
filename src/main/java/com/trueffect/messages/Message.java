@@ -7,9 +7,12 @@ public class Message {
 
     // Message of Empty
     public static String EMPTY_DATA = "The {typeData} is required";
-    //Message dates incorrect
-    public static String NOT_VALID_DATA_THE_VALID_DATA_ARE = "The {typeData} ({data}) is not valid. The valid values are: [{valid}]";
-    public static String NOT_VALID_DATA = "The {typeData} ({data}) is not valid";
+    // Message of Empty sale
+    public static String EMPTY_DATA_SALE = "the {typeData} of the {nameObject} {object} is required";
+    //Message data incorrect
+    public static String NOT_VALID_THE_VALID_DATA_ARE = "The {typeData} ({data}) is not valid. The valid values are: [{valid}]";
+    //Message data incorrect sale
+    public static String NOT_VALID_SALE_VALID_DATA_ARE = "The {typeData} ({data}), of the {nameObject} {object}, is not valid. Valid values are: [{valid}]";
     //Message same type identifier
     public static String NOT_SAME_TYPE = "The {typeData} ({data}) is not of the ({data2}) {typeData2}";
     //Message de restrictions    
@@ -29,4 +32,6 @@ public class Message {
     public static String DATE_INCOHERENT = "The {typeData}({data}), is not consistent with the date {typeData2}({data2})";
     public static String MANDATORY_IDENTIFY = "It is mandatory to identify yourself to {operation}";
     public static String NOT_VALID_DATA_NUMBERS_ALLOWED = "The {typeData} ({data}) is not valid. Only positive number is allowed, between [{valid}]";
+    public static String NOT_FOUND_WITH_ID = "The {object} with the {typeData} ({data}) was not found.";
+    public static String AOMUNT_EMPTY_IDS = "There are {data} records that need the {typeData} of the {object}";
 }

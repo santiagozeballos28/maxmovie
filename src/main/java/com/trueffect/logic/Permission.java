@@ -1,9 +1,11 @@
 package com.trueffect.logic;
 
 import com.trueffect.messages.Message;
+import com.trueffect.model.Employee;
 import com.trueffect.model.Job;
 import com.trueffect.model.Person;
 import com.trueffect.response.Either;
+import com.trueffect.sql.crud.EmployeeCrud;
 import com.trueffect.sql.crud.JobCrud;
 import com.trueffect.sql.crud.PersonCrud;
 import com.trueffect.tools.CodeStatus;
@@ -53,14 +55,41 @@ public class Permission {
                     return new Either(CodeStatus.FORBIDDEN, listError);
             }
         } else {
-            System.out.println("NOES NANANNNNN");
             listData.clear();
             listData.put(ConstantData.OPERATION, operation);
             listData.put(ConstantData.TYPE_DATA, nameObject);
             String errorMgs = OperationString.generateMesage(Message.NOT_HAVE_PERMISSION, listData);
             listError.add(errorMgs);
-            System.out.println("SE ANIO el ERROR");
             return new Either(CodeStatus.BAD_REQUEST, listError);
+        }
+    }
+
+    public Either checkUserPermissionCustomerCare(Connection connection, long idUser, String operation) {
+        JobCrud jobCrud = new JobCrud();
+        Either eitherJob = jobCrud.getJobOf(connection, idUser);
+        Either eitherRes = new Either();
+        ArrayList<String> listError = new ArrayList<String>();
+        if (eitherJob.haveModelObject()) {
+            String nameJob = ((Job) eitherJob.getFirstObject()).getNameJob();
+            JobName employee = JobName.valueOf(nameJob);
+            switch (employee) {
+                case CC:
+                    return new Either();
+                default:
+                    listData.clear();
+                    listData.put(ConstantData.OPERATION, operation);
+                    listData.put(ConstantData.TYPE_DATA, nameObject);
+                    String errorMgs = OperationString.generateMesage(Message.NOT_HAVE_PERMISSION, listData);
+                    listError.add(errorMgs);
+                    return new Either(CodeStatus.FORBIDDEN, listError);
+            }
+        } else {
+            listData.clear();
+            listData.put(ConstantData.OPERATION, operation);
+            listData.put(ConstantData.TYPE_DATA, nameObject);
+            String errorMgs = OperationString.generateMesage(Message.NOT_HAVE_PERMISSION, listData);
+            listError.add(errorMgs);
+            return new Either(CodeStatus.FORBIDDEN, listError);
         }
     }
 
@@ -89,6 +118,57 @@ public class Permission {
             String errorMgs = OperationString.generateMesage(Message.NOT_FOUND_USER_REQUEST, listData);
             listError.add(errorMgs);
             return new Either(CodeStatus.NOT_FOUND, listError);
+        }
+        return eitherRes;
+    }
+
+    public Either getEmployee(Connection connection, long idEmployee, String status) {
+        Either eitherRes = new Either();
+        ArrayList<String> listError = new ArrayList<String>();
+        EmployeeCrud employeeCrud = new EmployeeCrud();
+        Employee employee = new Employee();
+        try {
+            Either eitherEmployee = employeeCrud.getEmployee(connection, idEmployee, status);
+            employee = (Employee) eitherEmployee.getFirstObject();
+            if (employee.isEmpty()) {
+                String object = ConstantData.ObjectMovie.Employee.name();
+                listData.clear();
+                listData.put(ConstantData.OBJECT, object);
+                String errorMgs = OperationString.generateMesage(Message.NOT_FOUND, listData);
+                listError.add(errorMgs);
+                return new Either(CodeStatus.NOT_FOUND, listError);
+            }
+            Either eitherPhone = employeeCrud.getPhones(connection, idEmployee);
+            ArrayList<Integer> phones = ((Employee) eitherPhone.getFirstObject()).getPhones();
+            employee.setPhones(phones);
+            eitherRes = new Either(CodeStatus.OK, employee);
+        } catch (Exception exception) {
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+        return eitherRes;
+    }
+
+    public Either getRenterUser(Connection connection, long idRenterUser, String status) {
+        Either eitherRes = new Either();
+        ArrayList<String> listError = new ArrayList<String>();
+        PersonCrud personCrud = new PersonCrud();
+        Person person = new Person();
+        try {
+            Either eitherEmployee = personCrud.getRenterUser(connection, idRenterUser, status);
+            person = (Person) eitherEmployee.getFirstObject();
+            if (person.isEmpty()) {
+                String object = ConstantData.ObjectMovie.RennterUser.name();
+                listData.clear();
+                listData.put(ConstantData.OBJECT, object);
+                String errorMgs = OperationString.generateMesage(Message.NOT_FOUND, listData);
+                listError.add(errorMgs);
+                return new Either(CodeStatus.NOT_FOUND, listError);
+            }
+            eitherRes = new Either(CodeStatus.OK, person);
+        } catch (Exception exception) {
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
         }
         return eitherRes;
     }

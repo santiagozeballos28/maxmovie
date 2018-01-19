@@ -576,7 +576,6 @@ public class EmployeeLogic {
             //list de bond
             ArrayList<ModelObject> listBond = eitherRes.getListObject();
             //bonus is assigned to each employee
-            System.out.println("bondAsigned(dataJobs, eitherRes)");
             eitherRes = bondAsigned(dataJobs, eitherRes);
             if (!eitherRes.haveModelObject()) {
                 throw eitherRes;// an error is thrown if nothing exists to update
@@ -584,58 +583,48 @@ public class EmployeeLogic {
             // List of bonus is assigned to each employee
             ArrayList<ModelObject> assignNewBonds = eitherRes.getListObject();
             //Get the assigned bonuses
-            System.out.println("EmployeeCrud.getBondAssigned(connection)");
             eitherRes = employeeCrud.getBondAssigned(connection);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
             ArrayList<ModelObject> assignCurrentBonds = eitherRes.getListObject();
             //processed to update asignedbonuses
-            System.out.println("getUpdateBondAsigned(assignNewBonds, assignCurrentBonds)");
             eitherRes = getUpdateBondAsigned(assignNewBonds, assignCurrentBonds);
 
             ArrayList<ModelObject> updateAssignBonds = eitherRes.getListObject();
             if (!updateAssignBonds.isEmpty()) {
-                System.out.println("!updateAssignBonds.isEmpty()");
                 //update    
-                eitherRes = bondAssignedCrud.updateStatus(connection, updateAssignBonds, "Inactive");
+                eitherRes = bondAssignedCrud.updateStatus(connection, updateAssignBonds, Inactive);
                 if (eitherRes.existError()) {
                     throw eitherRes;
                 }
-                eitherRes = salaryCrud.updateStatus(connection, updateAssignBonds, "Inactive");
+                eitherRes = salaryCrud.updateStatus(connection, updateAssignBonds, Inactive);
                 if (eitherRes.existError()) {
                     throw eitherRes;
                 }
-                System.out.println("se actualizo los bonos asignados y el salary");
             }
             //processed to insert assigned bonuses
-            System.out.println(" getInsertBondAsigned(assignNewBonds, assignCurrentBonds)");
             eitherRes = getInsertBondAsigned(assignNewBonds, assignCurrentBonds);
 
             ArrayList<ModelObject> insertAssignBonds = updateAssignBonds;
             insertAssignBonds.addAll(eitherRes.getListObject());
             if (!insertAssignBonds.isEmpty()) {
-                System.out.println("No esta vacio para insertar");
                 //Isert assigned bond
                 eitherRes = bondAssignedCrud.insert(connection, insertAssignBonds);
                 if (eitherRes.existError()) {
                     throw eitherRes;
                 }
-                System.out.println("Se inserto bondAssigned");
                 eitherRes = salaryCrud.getAll(connection);
                 if (eitherRes.existError()) {
                     throw eitherRes;
                 }
-                System.out.println("Get todos los salarios");
                 ArrayList<ModelObject> listSalary = eitherRes.getListObject();
                 //get object salary to update
                 ArrayList<Salary> listSalaryInsert = getSalaryToUpdate(listSalary, insertAssignBonds, listBond);
-                System.out.println("getSalaryToUpdate(listSalary, insertAssignBonds, listBond)");
                 eitherRes = salaryCrud.insert(connection, listSalaryInsert);
                 if (eitherRes.existError()) {
                     throw eitherRes;
                 }
-                System.out.println("se inserto los bonos y el salary");
                 //si entra aqui es porque existe actualizacion o insercion
             }
             eitherRes = new Either();
@@ -661,6 +650,7 @@ public class EmployeeLogic {
             int yearsEmployeeSeniority = DateOperation.diferenceYear(dataJob.getDateOfHire());
             int idBondOfEmployee = getIdBondOf(yearsEmployeeSeniority, listBond);
             if (idBondOfEmployee != -1) {
+                //el ide cambiar
                 eitherRes.addModeloObjet(new BondAssigned(dataJob.getEmployeeId(), idBondOfEmployee));
             }
 
@@ -762,7 +752,6 @@ public class EmployeeLogic {
             Bond bondAux = (Bond) listBond.get(i);
             if (yearsEmployeeSeniority < bondAux.getSeniority()) {
                 findSeniority = true;
-
             }
             i++;
         }

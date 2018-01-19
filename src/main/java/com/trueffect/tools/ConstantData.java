@@ -30,6 +30,7 @@ public class ConstantData {
     public static String SIZE = "{size}";
     public static String OPERATION = "{operation}";
     public static String OBJECT = "{object}";
+    public static String NAME_OBJECT = "{nameObject}";
     // valid data
     public static String VALID_LASTNAME = "Letters = A-Za-z, apostrophes = '";
     public static String VALID_FIRSTNAME = "Letters = A-Za-z, apostrophes = '";
@@ -68,6 +69,10 @@ public class ConstantData {
     public static String VALID_OSCAR_NOMINARION = "0-100";
     // Date format to validate
     public static String SIMPLE_DATE_FORMAT = "yyyy-MM-dd";
+    public static String POSITIVE_NUMBERS = "positive numbers";
+    //sale
+    public static String AMOUNT_MOVIES = "amount the movies";
+    public static String OPERATION_SALE = "type of sale";
 
     public enum ValidIdentifier {
         CI("all number"), PASS("3 letters 6 numbers [0-1] letter"), NIT("all number");
@@ -130,10 +135,23 @@ public class ConstantData {
     }
 
     public enum ObjectMovie {
-        RennterUser, Employee, Movie, Copy
+        RennterUser, Employee, Movie, Copy, Sale
     }
 
     public enum Ocupation {
         Rents, Works
+    }
+
+    public enum OperationSale {
+        R("Rental"), B("Buy");
+        private String description;
+
+        private OperationSale(String description) {
+            this.description = description;
+        }
+
+        public String getDescription() {
+            return description;
+        }
     }
 }

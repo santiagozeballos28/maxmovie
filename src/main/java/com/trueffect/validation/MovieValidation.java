@@ -58,7 +58,7 @@ public class MovieValidation {
                 listData.put(ConstantData.TYPE_DATA, ConstantData.NAME_ACTOR_MOVIE);
                 listData.put(ConstantData.DATA, nameActor);
                 listData.put(ConstantData.VALID, ConstantData.VALID_US_ASCII);
-                String errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
+                String errorMessages = OperationString.generateMesage(Message.NOT_VALID_THE_VALID_DATA_ARE, listData);
                 listError.add(errorMessages);
             }
         }
@@ -98,7 +98,7 @@ public class MovieValidation {
             listData.put(ConstantData.TYPE_DATA, ConstantData.NAME_MOVIE);
             listData.put(ConstantData.DATA, name);
             listData.put(ConstantData.VALID, ConstantData.VALID_NAME_MOVIE);
-            String errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
+            String errorMessages = OperationString.generateMesage(Message.NOT_VALID_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessages);
         }
     }
@@ -110,7 +110,7 @@ public class MovieValidation {
             listData.put(ConstantData.TYPE_DATA, ConstantData.NAME_GENRE_MOVIE);
             listData.put(ConstantData.DATA, genre);
             listData.put(ConstantData.VALID, ConstantData.VALID_NAME_GENRE_MOVIE);
-            String errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
+            String errorMessages = OperationString.generateMesage(Message.NOT_VALID_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessages);
         }
     }
@@ -122,7 +122,7 @@ public class MovieValidation {
             listData.put(ConstantData.TYPE_DATA, ConstantData.NAME_DIRECTOR_MOVIE);
             listData.put(ConstantData.DATA, director);
             listData.put(ConstantData.VALID, ConstantData.VALID_US_ASCII);
-            String errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
+            String errorMessages = OperationString.generateMesage(Message.NOT_VALID_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessages);
         }
     }
@@ -169,7 +169,7 @@ public class MovieValidation {
             listData.put(ConstantData.TYPE_DATA, ConstantData.NAME_GENRE_MOVIE);
             listData.put(ConstantData.DATA, genreId);
             listData.put(ConstantData.VALID, ConstantData.VALID_NAME_GENRE_MOVIE);
-            String errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
+            String errorMessages = OperationString.generateMesage(Message.NOT_VALID_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessages);
         }
     }
