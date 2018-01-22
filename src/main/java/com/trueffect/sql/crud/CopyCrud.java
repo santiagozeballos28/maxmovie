@@ -1,10 +1,14 @@
 package com.trueffect.sql.crud;
 
+import com.trueffect.model.CopyMovie;
 import com.trueffect.response.Either;
 import com.trueffect.tools.CodeStatus;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -39,6 +43,79 @@ public class CopyCrud {
                 query.close();
             }
             return new Either();
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+    }
+
+    public Either getCopyMovie(Connection connection, ArrayList<Long> idsMovie) {
+        String idsString = idsMovie.toString();
+        idsString = StringUtils.replace(idsString, "[", "(");
+        idsString = StringUtils.replace(idsString, "]", ")");
+        try {
+            String query
+                    = "SELECT copy_movie_id, "
+                    + "       amount_initial, "
+                    + "       amount_current,"
+                    + "       create_date,"
+                    + "       movie_id\n"
+                    + "  FROM copy_movie\n"
+                    + " WHERE movie_id IN " + idsString
+                    + " ORDER BY create_date asc";
+            PreparedStatement st = connection.prepareStatement(query);
+            ResultSet rs = st.executeQuery();
+            Either eitherRes = new Either();
+            CopyMovie copyMovie = new CopyMovie();
+            while (rs.next()) {
+                copyMovie = new CopyMovie(
+                        rs.getLong("copy_movie_id"),
+                        rs.getInt("amount_initial"),
+                        rs.getInt("amount_current"),
+                        rs.getString("create_date"),
+                        rs.getLong("movie_id"));
+                eitherRes.addModeloObjet(copyMovie);
+            }
+            if (st != null) {
+                st.close();
+            }
+            eitherRes.setCode(CodeStatus.OK);
+            return eitherRes;
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+    }
+
+    public Either getCopyAmountCurrent(Connection connection, ArrayList<Long> idsMovie) {
+        String idsString = idsMovie.toString();
+        idsString = StringUtils.replace(idsString, "[", "(");
+        idsString = StringUtils.replace(idsString, "]", ")");
+        try {
+            String query
+                    = "SELECT movie_id, "
+                    + "   SUM (amount_current ) total_current\n"
+                    + "  FROM copy_movie\n"
+                    + " WHERE movie_id IN " + idsString + "\n"
+                    + " GROUP BY movie_id";
+            PreparedStatement st = connection.prepareStatement(query);
+            ResultSet rs = st.executeQuery();
+            Either eitherRes = new Either();
+            CopyMovie copyMovie = new CopyMovie();
+            while (rs.next()) {
+                copyMovie = new CopyMovie(
+                        rs.getLong("movie_id"),
+                        rs.getInt("total_current")
+                );
+                eitherRes.addModeloObjet(copyMovie);
+            }
+            if (st != null) {
+                st.close();
+            }
+            eitherRes.setCode(CodeStatus.OK);
+            return eitherRes;
         } catch (Exception exception) {
             ArrayList<String> listError = new ArrayList<String>();
             listError.add(exception.getMessage());

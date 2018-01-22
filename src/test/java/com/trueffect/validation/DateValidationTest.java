@@ -174,4 +174,40 @@ public class DateValidationTest {
         String dateLast = "2002-12-12";
         Assert.assertEquals(DateOperation.isLess(dateFirst, dateLast), expected);
     }
+
+    @Test
+    public void testDateSameYearAndMonth() {
+
+        boolean expected = true;
+        String dateFirst = "2018-01-17 19:55:27.114";
+        String dateLast = "2018-01-29";
+        Assert.assertEquals(DateOperation.areSameMonthAndYear(dateFirst, dateLast), expected);
+    }
+
+    @Test
+    public void testDateSameYearAndMonth2() {
+
+        boolean expected = false;
+        String dateFirst = "2018-02-17 19:55:27.114";
+        String dateLast = "2018-01-29";
+        Assert.assertEquals(DateOperation.areSameMonthAndYear(dateFirst, dateLast), expected);
+    }
+
+    @Test
+    public void testDateSameYearAndMonth3() {
+
+        boolean expected = true;
+        String dateFirst = "2018-02-17";
+        String dateLast = "2018-02-23";
+        Assert.assertEquals(DateOperation.areSameMonthAndYear(dateFirst, dateLast), expected);
+    }
+
+    @Test
+    public void testDateSameYearAndMonth4() {
+
+        boolean expected = false;
+        String dateFirst = "2017-02-17";
+        String dateLast = "2018-02-23";
+        Assert.assertEquals(DateOperation.areSameMonthAndYear(dateFirst, dateLast), expected);
+    }
 }

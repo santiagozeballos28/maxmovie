@@ -242,8 +242,9 @@ public class MovieCrud {
             }
             PreparedStatement st = connection.prepareStatement(query);
             ResultSet rs = st.executeQuery();
+            Either eitherRes = new Either();
             Movie movie = new Movie();
-            if (rs.next()) {
+            while (rs.next()) {
                 movie = new Movie(
                         rs.getLong("movie_id"),
                         rs.getString("movie_name"),
@@ -253,12 +254,13 @@ public class MovieCrud {
                         rs.getInt("oscar_nomination"),
                         rs.getString("status")
                 );
+                eitherRes.addModeloObjet(movie);
             }
             if (st != null) {
                 st.close();
             }
-
-            return new Either(CodeStatus.OK, movie);
+            eitherRes.setCode(CodeStatus.OK);
+            return eitherRes;
         } catch (Exception exception) {
             ArrayList<String> listError = new ArrayList<String>();
             listError.add(exception.getMessage());

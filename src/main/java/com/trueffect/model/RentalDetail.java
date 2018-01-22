@@ -8,21 +8,28 @@ import com.trueffect.util.ModelObject;
  */
 public class RentalDetail extends ModelObject {
 
-    private int rentalAmount;
+    private long copyMovieId;//
+    private int rentalAmount;//
     private int returnAmount;
     private String returnDate;
-    private double rentalPrice;
+    private double rentalPrice;//
     private double rentalAmountOficial;
     private long employeeReceive;
-    private long masterDetailId;
+    private long masterDetailId;//
     private String note;
 
     public RentalDetail() {
     }
 
-    public RentalDetail(int rentalAmount, double rentalPrice) {
+    public RentalDetail(long copyMovieId, int rentalAmount) {
+        this.copyMovieId = copyMovieId;
         this.rentalAmount = rentalAmount;
-        this.rentalPrice = rentalPrice;
+        
+    }
+
+
+    public long getCopyMovieId() {
+        return copyMovieId;
     }
 
     public int getRentalAmount() {
@@ -55,6 +62,10 @@ public class RentalDetail extends ModelObject {
 
     public String getNote() {
         return note;
+    }
+
+    public void setCopyMovieId(long copyMovieId) {
+        this.copyMovieId = copyMovieId;
     }
 
     public void setRentalAmount(int rentalAmount) {

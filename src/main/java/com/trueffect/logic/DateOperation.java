@@ -97,4 +97,25 @@ public class DateOperation {
         Calendar cal = Calendar.getInstance();
         return cal.get(Calendar.YEAR);
     }
+
+    public static boolean areSameMonthAndYear(String dateFirst, String dateSecond) {
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat(ConstantData.SIMPLE_DATE_FORMAT);
+            Date dateFirstFormat = dateFormat.parse(dateFirst);
+            Date dateSecondFormat = dateFormat.parse(dateSecond);
+            LocalDate localDateFirst = LocalDate.fromDateFields(dateFirstFormat);
+            LocalDate localDateSecond = LocalDate.fromDateFields(dateSecondFormat);
+            Period diff = Period.fieldDifference(localDateFirst, localDateSecond);
+            System.out.println("LocalFirst: " +localDateFirst.toString());
+            System.out.println("LocalSecond: " +localDateSecond.toString());
+            if (diff.getYears() == 0 && diff.getMonths() == 0) {
+                    
+                return true;
+               
+            }
+            
+        } catch (ParseException ex) {
+        }
+        return false;
+    }
 }
