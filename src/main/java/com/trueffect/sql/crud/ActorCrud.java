@@ -18,11 +18,10 @@ import org.apache.commons.lang3.StringUtils;
 public class ActorCrud {
 
     public Either insertActors(Connection connection, long idCreateUser, ArrayList<String> actors) {
-        Statement query = null;
         try {
             Either eitherIdentifier = new Either();
             String sql = "";
-
+            Statement query = null;
             for (String actor : actors) {
                 query = (Statement) connection.createStatement();
                 sql

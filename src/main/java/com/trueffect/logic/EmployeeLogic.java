@@ -441,7 +441,6 @@ public class EmployeeLogic {
             //Check if the user can modify
             eitherRes = permission.checkUserPermission(connection, idUserSearch, get);
             if (eitherRes.existError()) {
-                //return eitherRes;
                 throw eitherRes;
             }
             if (StringUtils.isNotBlank(lastName)) {

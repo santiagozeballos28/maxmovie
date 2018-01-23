@@ -3,6 +3,7 @@ package com.trueffect.sql.crud;
 import com.trueffect.model.CopyMovie;
 import com.trueffect.response.Either;
 import com.trueffect.tools.CodeStatus;
+import com.trueffect.util.ModelObject;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -89,7 +90,7 @@ public class CopyCrud {
         }
     }
 
-    public Either getCopyAmountCurrent(Connection connection, ArrayList<Long> idsMovie) {
+    public Either getAmountCurrent(Connection connection, ArrayList<Long> idsMovie) {
         String idsString = idsMovie.toString();
         idsString = StringUtils.replace(idsString, "[", "(");
         idsString = StringUtils.replace(idsString, "]", ")");
@@ -108,6 +109,66 @@ public class CopyCrud {
                 copyMovie = new CopyMovie(
                         rs.getLong("movie_id"),
                         rs.getInt("total_current")
+                );
+                eitherRes.addModeloObjet(copyMovie);
+            }
+            if (st != null) {
+                st.close();
+            }
+            eitherRes.setCode(CodeStatus.OK);
+            return eitherRes;
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+    }
+
+    public Either updateAmountCurrent(Connection connection, long idModifierUser, ArrayList<ModelObject> copiesMovie) {
+
+        try {
+            String sql = "";
+            Statement query = null;
+            for (ModelObject modelObject : copiesMovie) {
+                CopyMovie copyMovie = (CopyMovie) modelObject;
+                long idCopyMovie = copyMovie.getCopyMovieId();
+                int amountCurrent = copyMovie.getAmountCurrent();
+                query = (Statement) connection.createStatement();
+                sql
+                        = "UPDATE COPY_MOVIE\n"
+                        + "   SET amount_current = " + amountCurrent + ","
+                        + "       modifier_user = " + idModifierUser + ","
+                        + "       modifier_date=current_timestamp\n"
+                        + " WHERE copy_movie_id = " + idCopyMovie;
+                ResultSet rs = query.executeQuery(sql);
+            }
+            if (query != null) {
+                query.close();
+            }
+            return new Either();
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+    }
+
+    public Either getAmountCurrentAll(Connection connection) {
+        try {
+            String query
+                    = " SELECT movie_id, "
+                    + "    SUM (amount_current )"
+                    + "        amount_available \n"
+                    + "   FROM COPY_MOVIE\n"
+                    + "  GROUP BY movie_id";
+            PreparedStatement st = connection.prepareStatement(query);
+            ResultSet rs = st.executeQuery();
+            Either eitherRes = new Either();
+            CopyMovie copyMovie = new CopyMovie();
+            while (rs.next()) {
+                copyMovie = new CopyMovie(
+                        rs.getLong("movie_id"),
+                        rs.getInt("amount_available")
                 );
                 eitherRes.addModeloObjet(copyMovie);
             }

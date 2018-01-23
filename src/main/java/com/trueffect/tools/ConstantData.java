@@ -135,7 +135,16 @@ public class ConstantData {
     }
 
     public enum ObjectMovie {
-        RennterUser, Employee, Movie, Copy, Sale
+        RennterUser("renter user"), Employee("employee"), Movie("movie"), Copy("copy"), Sale("sale"), MovieReport("movie report");
+        private String description;
+
+        private ObjectMovie(String description) {
+            this.description = description;
+        }
+
+        public String getDescription() {
+            return description;
+        }
     }
 
     public enum Ocupation {

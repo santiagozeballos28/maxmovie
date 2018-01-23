@@ -222,23 +222,20 @@ public class MovieCrud {
         }
     }
 
-    public Either getMovie(Connection connection, ArrayList<Long> idsMovie, String status) {
-        String idsString = idsMovie.toString();
-        idsString = StringUtils.replace(idsString, "[", "(");
-        idsString = StringUtils.replace(idsString, "]", ")");
+    public Either getMovie(Connection connection, String status) {
         try {
             String query
-                    = "SELECT movie_id,"
+                    = "SELECT movie_id, "
                     + "       movie_name, "
                     + "       director_name, "
                     + "       movie_year, "
                     + "       oscar_nomination, "
-                    + "       genre_movie_id\n"
+                    + "       genre_movie_id, "
                     + "       status\n"
-                    + "  FROM MOVIE\n"
-                    + " WHERE movie_id IN " + idsString;
+                    + "  FROM MOVIE\n";
+                    
             if (StringUtils.isNotBlank(status)) {
-                query = query + " AND status = '" + status + "'";
+                query = query + " WHERE status = '" + status + "'";
             }
             PreparedStatement st = connection.prepareStatement(query);
             ResultSet rs = st.executeQuery();
