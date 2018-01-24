@@ -1,5 +1,6 @@
 package com.trueffect.sql.crud;
 
+import com.trueffect.model.AmountSaleMovie;
 import com.trueffect.model.CopyMovie;
 import com.trueffect.model.SaleDetail;
 import com.trueffect.response.Either;
@@ -19,7 +20,6 @@ public class BuyDetailCrud {
     public Either insert(Connection connection, long idMasterDetail, ArrayList<SaleDetail> buyDetails) {
 
         try {
-
             String sql = "";
             Statement query = null;
             for (SaleDetail saleDetail : buyDetails) {
@@ -73,6 +73,42 @@ public class BuyDetailCrud {
             }
             if (st != null) {
                 st.close();
+            }
+            eitherRes.setCode(CodeStatus.OK);
+            return eitherRes;
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+    }
+
+    public Either getReportBuyAmount(Connection connection) {
+
+        try {
+            String sql = "";
+            Statement query = null;
+            query = (Statement) connection.createStatement();
+            sql
+                    = "SELECT COPY_MOVIE.movie_id, "
+                    + "   SUM (buy_amount) buy_amount \n"
+                    + "  FROM (SELECT BUY_DETAIL.copy_movie_id , "
+                    + "           SUM (buy_amount) buy_amount \n"
+                    + "          FROM BUY_DETAIL\n"
+                    + "         GROUP BY  BUY_DETAIL.copy_movie_id) BUY_AMOUNT,COPY_MOVIE\n"
+                    + " WHERE BUY_AMOUNT.copy_movie_id = COPY_MOVIE.copy_movie_id\n"
+                    + " GROUP BY  COPY_MOVIE.movie_id ";
+            ResultSet rs = query.executeQuery(sql);
+            Either eitherRes = new Either();
+            AmountSaleMovie amountSaleMovie = new AmountSaleMovie();
+            while (rs.next()) {
+                amountSaleMovie = new AmountSaleMovie(
+                        rs.getLong("movie_id"),
+                        rs.getInt("buy_amount"));
+                eitherRes.addModeloObjet(amountSaleMovie);
+            }
+            if (query != null) {
+                query.close();
             }
             eitherRes.setCode(CodeStatus.OK);
             return eitherRes;

@@ -1,12 +1,13 @@
 package com.trueffect.resources;
 
 import com.trueffect.logic.MovieLogic;
+import com.trueffect.logic.MovieReportLogic;
 import com.trueffect.model.Movie;
-import com.trueffect.model.Sale;
 import com.trueffect.response.Either;
 import com.trueffect.response.MapperResponse;
 import com.trueffect.validation.MovieCreate;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -24,6 +25,7 @@ import javax.ws.rs.core.Response;
 public class MovieResourse {
 
     private MovieLogic movieLogic = new MovieLogic();
+    private MovieReportLogic movieReportLogic = new MovieReportLogic();
     private MapperResponse mapper = new MapperResponse();
 
     @POST
@@ -61,6 +63,13 @@ public class MovieResourse {
     @Produces(MediaType.APPLICATION_JSON)
     public Response insertCopy(@PathParam("id") long idMovie, @QueryParam("idCreateUser") long idCreateUser, @QueryParam("amountCopy") int amountCopy) {
         Either either = movieLogic.insertCopy(idMovie, idCreateUser, amountCopy);
+        Response response = mapper.toResponse(either);
+        return response;
+    }
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response reportMovieSale(@QueryParam("idSearchUser") long idSearchUser) {
+        Either either = movieReportLogic.getInformationOfMovies(idSearchUser);
         Response response = mapper.toResponse(either);
         return response;
     }
