@@ -1,6 +1,8 @@
 package com.trueffect.sql.crud;
 
 import com.trueffect.model.CopyMovie;
+import com.trueffect.model.Identifier;
+import com.trueffect.model.ReportCopyMovie;
 import com.trueffect.response.Either;
 import com.trueffect.tools.CodeStatus;
 import com.trueffect.util.ModelObject;
@@ -18,11 +20,10 @@ import org.apache.commons.lang3.StringUtils;
 public class CopyCrud {
 
     public Either insertCopy(Connection connection, long idCreateUser, long idMovie, int amountCopy) {
-        Statement query = null;
+
         try {
-            query = (Statement) connection.createStatement();
             //ident
-            String sql
+            String query
                     = "INSERT INTO COPY_MOVIE(\n"
                     + "amount_initial, "
                     + "amount_current, "
@@ -38,12 +39,53 @@ public class CopyCrud {
                     + "current_timestamp,"
                     + "null,"
                     + "null,"
-                    + idMovie + ");";
-            query.execute(sql);
-            if (query != null) {
-                query.close();
+                    + idMovie + ") returning copy_movie_id;";
+            PreparedStatement st = connection.prepareStatement(query);
+            ResultSet rs = st.executeQuery();
+            Either eitherIdCopyMovie = new Either();
+            if (rs.next()) {
+                Identifier idCopyMovie = new Identifier(rs.getLong("copy_movie_id"));
+                eitherIdCopyMovie.addModeloObjet(idCopyMovie);
             }
-            return new Either();
+            if (st != null) {
+                st.close();
+            }
+            eitherIdCopyMovie.setCode(CodeStatus.CREATED);
+            return eitherIdCopyMovie;
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+    }
+
+    public Either getReportCopyMovie(Connection connection, long idCopyMovie) {
+        try {
+            String query
+                    = "SELECT copy_movie_id, "
+                    + "       movie_name, "
+                    + "       amount_initial, "
+                    + "       amount_current\n"
+                    + "  FROM COPY_MOVIE,MOVIE\n"
+                    + " WHERE COPY_MOVIE.copy_movie_id = ?"
+                    + "   AND COPY_MOVIE.movie_id = MOVIE.movie_id";
+            PreparedStatement st = connection.prepareStatement(query);
+            st.setLong(1, idCopyMovie);
+            ResultSet rs = st.executeQuery();
+            Either eitherRes = new Either();
+            if (rs.next()) {
+                ReportCopyMovie reportCopyMovie = new ReportCopyMovie(
+                        rs.getLong("copy_movie_id"),
+                        rs.getString("movie_name"),
+                        rs.getInt("amount_initial"),
+                        rs.getInt("amount_current"));
+                eitherRes.addModeloObjet(reportCopyMovie);
+            }
+            if (st != null) {
+                st.close();
+            }
+            eitherRes.setCode(CodeStatus.OK);
+            return eitherRes;
         } catch (Exception exception) {
             ArrayList<String> listError = new ArrayList<String>();
             listError.add(exception.getMessage());
@@ -139,7 +181,7 @@ public class CopyCrud {
                         + "       modifier_user = " + idModifierUser + ","
                         + "       modifier_date=current_timestamp\n"
                         + " WHERE copy_movie_id = " + idCopyMovie;
-                 query.execute(sql);
+                query.execute(sql);
             }
             if (query != null) {
                 query.close();

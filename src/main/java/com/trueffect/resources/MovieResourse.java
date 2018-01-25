@@ -69,7 +69,7 @@ public class MovieResourse {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response reportMovieSale(@QueryParam("idSearchUser") long idSearchUser) {
+    public Response reportMovie(@QueryParam("idSearchUser") long idSearchUser) {
         Either either = movieReportLogic.getInformationOfMovies(idSearchUser);
         Response response = mapper.toResponse(either);
         return response;

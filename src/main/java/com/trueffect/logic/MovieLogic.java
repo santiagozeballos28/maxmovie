@@ -416,7 +416,8 @@ public class MovieLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            eitherRes = getMovie(connection, idMovie, active);
+            long idCopyMovie = ((Identifier) eitherRes.getFirstObject()).getId();
+            eitherRes = copyCrud.getReportCopyMovie(connection, idCopyMovie);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }

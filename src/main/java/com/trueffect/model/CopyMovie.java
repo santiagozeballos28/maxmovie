@@ -11,8 +11,8 @@ public class CopyMovie extends ModelObject {
     private long copyMovieId;
     private int amountInitial;
     private int amountCurrent;
-    private String createDate;
-    private long movieId;
+    protected String createDate;
+    protected long movieId;
 
     public CopyMovie() {
     }
@@ -28,6 +28,12 @@ public class CopyMovie extends ModelObject {
     public CopyMovie(long movieId, int amountCurrent) {
         this.amountCurrent = amountCurrent;
         this.movieId = movieId;
+    }
+
+    public CopyMovie(long copyMovieId, int amountInitial, int amountCurrent) {
+        this.copyMovieId = copyMovieId;
+        this.amountInitial = amountInitial;
+        this.amountCurrent = amountCurrent;
     }
 
     public long getCopyMovieId() {

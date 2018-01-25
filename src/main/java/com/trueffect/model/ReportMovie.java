@@ -1,4 +1,3 @@
-
 package com.trueffect.model;
 
 import com.trueffect.util.ModelObject;
@@ -7,7 +6,8 @@ import com.trueffect.util.ModelObject;
  *
  * @author santiago.mamani
  */
-public class ReportMovie extends ModelObject{
+public class ReportMovie extends ModelObject {
+
     private long idMovie;
     private String nameMovie;
     private int quantityCurrent;
@@ -34,7 +34,7 @@ public class ReportMovie extends ModelObject{
         this.nameMovie = nameMovie;
         this.quantityCurrent = quantityCurrent;
     }
-  
+
     public long getIdMovie() {
         return idMovie;
     }
