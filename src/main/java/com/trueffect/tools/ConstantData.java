@@ -32,14 +32,13 @@ public class ConstantData {
     public static String OBJECT = "{object}";
     public static String NAME_OBJECT = "{nameObject}";
     // valid data
-    public static String VALID_LASTNAME = "Letters = A-Za-z, apostrophes = '";
-    public static String VALID_FIRSTNAME = "Letters = A-Za-z, apostrophes = '";
+    public static String VALID_NAME_PERSON = "Letters = A-Za-z, apostrophes = '";
     public static String VALID_PHONE = "7XXXXXXX(eight numbers), 6XXXXXXX(seven numbers), XXXXXXX(seven numbers)";
     // Data renter user
     public static String TYPE_IDENTIFIER = "type identifier";
     public static String IDENTIFIER = "identifier";
     public static String LAST_NAME = "last name";
-    public static String FIRST_NAME = "lirst name";
+    public static String FIRST_NAME = "first name";
     public static String GENRE = "genre";
     public static String BIRTHDAY = "birthday";
     public static String NAME = "name";

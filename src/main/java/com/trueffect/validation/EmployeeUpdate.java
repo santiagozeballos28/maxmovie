@@ -115,7 +115,7 @@ public class EmployeeUpdate extends PersonUpdate {
     }
 
     private void validationJob(String job, ArrayList<String> listError) {
-        if (!EmployeeValidation.isValidJob(job)) {
+        if (!EmployeeValidation.isValidJob(job.toUpperCase())) {
             String validNameJob
                     = JobName.MGR.getDescriptionJobName() + ", "
                     + JobName.CSHR.getDescriptionJobName() + ", "

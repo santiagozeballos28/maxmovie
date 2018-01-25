@@ -123,7 +123,7 @@ public class EmployeeCreate extends PersonCreate {
             listError.add(errorMessages);
         }
         //Validation of job
-        if (!EmployeeValidation.isValidJob(employee.getJob())) {
+        if (!EmployeeValidation.isValidJob(employee.getJob().toUpperCase())) {
             String validNameJob
                     = JobName.MGR.getDescriptionJobName() + ", "
                     + JobName.CSHR.getDescriptionJobName() + ", "

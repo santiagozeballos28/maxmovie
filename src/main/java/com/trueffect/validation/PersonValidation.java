@@ -30,20 +30,15 @@ public class PersonValidation {
                 || Pattern.matches(RegularExpression.PASS, identifier)
                 || Pattern.matches(RegularExpression.NIT, identifier);
     }
-
-    public static boolean isValidFirstName(String firstName) {
-        return Pattern.matches(RegularExpression.FIRST_NAME, firstName);
-    }
-
-    public static boolean isValidSize(String name, int size) {
+   public static boolean isValidSize(String name, int size) {
         return name.length() <= size;
     }
 
-    public static boolean isValidLastName(String lastName) {
-        if (lastName.contains(" ")) {
-            return Pattern.matches(RegularExpression.LAST_NAME_TWO, lastName);
+    public static boolean isValidName(String name) {
+        if (name.contains(" ")) {
+            return Pattern.matches(RegularExpression.NAME_TWO_PERSON, name);
         } else {
-            return Pattern.matches(RegularExpression.LAST_NAME_ONE, lastName);
+            return Pattern.matches(RegularExpression.NAME_ONE_PERSON, name);
         }
     }
 

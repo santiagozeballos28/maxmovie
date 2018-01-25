@@ -119,17 +119,18 @@ public class PersonUpdate implements DataCondition {
     }
 
     private void validateLastName(String lastName, ArrayList<String> listError) {
+        String lasNameAux = OperationString.generateName(lastName);
         String errorMessage = "";
-        if (!PersonValidation.isValidLastName(lastName)) {
+        if (!PersonValidation.isValidName(lasNameAux)) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.LAST_NAME);
             listData.put(ConstantData.DATA, lastName);
-            listData.put(ConstantData.VALID, ConstantData.VALID_LASTNAME);
+            listData.put(ConstantData.VALID, ConstantData.VALID_NAME_PERSON);
             errorMessage = OperationString.generateMesage(Message.NOT_VALID_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessage);
         }
         //Validation of last name size
-        if (!PersonValidation.isValidSize(lastName, ConstantData.MAX_LENGTH_NAME)) {
+        if (!PersonValidation.isValidSize(lasNameAux, ConstantData.MAX_LENGTH_NAME)) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.LAST_NAME);
             listData.put(ConstantData.DATA, lastName);
@@ -140,17 +141,18 @@ public class PersonUpdate implements DataCondition {
     }
 
     private void validateFirstName(String firstName, ArrayList<String> listError) {
+        String firstNameAux = OperationString.generateName(firstName);
         String errorMessage = "";
-        if (!PersonValidation.isValidLastName(firstName)) {
+        if (!PersonValidation.isValidName(firstNameAux)) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.FIRST_NAME);
             listData.put(ConstantData.DATA, firstName);
-            listData.put(ConstantData.VALID, ConstantData.VALID_FIRSTNAME);
+            listData.put(ConstantData.VALID, ConstantData.VALID_NAME_PERSON);
             errorMessage = OperationString.generateMesage(Message.NOT_VALID_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessage);
         }
         //Validation of first name size
-        if (!PersonValidation.isValidSize(firstName, ConstantData.MAX_LENGTH_NAME)) {
+        if (!PersonValidation.isValidSize(firstNameAux, ConstantData.MAX_LENGTH_NAME)) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.FIRST_NAME);
             listData.put(ConstantData.DATA, firstName);

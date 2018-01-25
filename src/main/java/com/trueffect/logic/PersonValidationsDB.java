@@ -28,6 +28,7 @@ public class PersonValidationsDB {
     }
 
     public Either veriryDataInDataBase(Connection connection, Person personNew) {
+
         String errorMgs = "";
         ArrayList<String> listError = new ArrayList<String>();
         Either eitherPerson = personCrud.getPersonByIdentifier(connection, personNew.getTypeIdentifier().toUpperCase(), personNew.getIdentifier().toUpperCase());
@@ -39,12 +40,17 @@ public class PersonValidationsDB {
             errorMgs = OperationString.generateMesage(Message.DUPLICATE, listData);
             listError.add(errorMgs);
         }
-        eitherPerson = personCrud.getPersonByName(connection, personNew.getLastName(), personNew.getFirstName());
+
+        String lastNameAux = OperationString.generateName(personNew.getLastName());
+        lastNameAux = OperationString.addApostrophe(lastNameAux);
+        String firstNameAux = OperationString.generateName(personNew.getFirstName());
+        firstNameAux = OperationString.addApostrophe(firstNameAux);
+        eitherPerson = personCrud.getPersonByName(connection, lastNameAux, firstNameAux);
         if (eitherPerson.haveModelObject()) {
-            Person personDB = (Person) eitherPerson.getFirstObject();
+            //Person personDB = (Person) eitherPerson.getFirstObject();
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.NAME);
-            listData.put(ConstantData.DATA, personDB.getLastName() + " " + personDB.getFirstName());
+            listData.put(ConstantData.DATA, personNew.getLastName() + " " + personNew.getFirstName());
             errorMgs = OperationString.generateMesage(Message.DUPLICATE, listData);
             listError.add(errorMgs);
         }
@@ -56,6 +62,7 @@ public class PersonValidationsDB {
 
     public Either verifyDataUpdate(Connection connection, Person personNew) {
         long idPerson = personNew.getId();
+
         String errorMgs = "";
         ArrayList<String> listError = new ArrayList<String>();
         Either eitherPersonOld = personCrud.getPerson(connection, idPerson, null);
@@ -82,13 +89,22 @@ public class PersonValidationsDB {
                 listError.add(errorMgs);
             }
         }
+        OperationString.addApostrophe(personAux);
         Either eitherPersonByName = personCrud.getPersonByName(connection, personAux.getLastName(), personAux.getFirstName());
         if (eitherPersonByName.haveModelObject()) {
             Person personEither = (Person) eitherPersonByName.getFirstObject();
             if (idPerson != personEither.getId()) {
+                String lastName = personAux.getLastName();
+                String firstName = personAux.getFirstName();
+                if (StringUtils.isNotBlank(personNew.getLastName())) {
+                    lastName = personNew.getLastName();//to show the current last name
+                }
+                if (StringUtils.isNotBlank(personNew.getFirstName())) {
+                    firstName = personNew.getFirstName();//to show the current first name
+                }
                 listData.clear();
                 listData.put(ConstantData.TYPE_DATA, ConstantData.NAME);
-                listData.put(ConstantData.DATA, personEither.getLastName() + " " + personEither.getFirstName());
+                listData.put(ConstantData.DATA, lastName + " " + firstName);
                 errorMgs = OperationString.generateMesage(Message.DUPLICATE, listData);
                 listError.add(errorMgs);
             }

@@ -77,10 +77,6 @@ public class EmployeeLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            //the names are converted into a valid format (example, sanTiAgo = Santiago)
-            OperationString.formatOfTheName(employee);
-            //the name job is converted into a valid format (example, CshR = CSHR)
-            OperationString.formatOfNameJob(employee);
             eitherRes = employeeCreate.complyCondition(employee);
             if (eitherRes.existError()) {
                 throw eitherRes;
@@ -89,6 +85,10 @@ public class EmployeeLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
+            //the names are converted into a valid format (example, sanTiAgo = Santiago)
+            OperationString.formatOfTheName(employee);
+            //the name job is converted into a valid format (example, CshR = CSHR)
+            OperationString.formatOfNameJob(employee);
             String identifier = employee.getIdentifier().toUpperCase();
             String typeIdentifier = employee.getTypeIdentifier().toUpperCase();
             String genre = employee.getGenre().toUpperCase();
@@ -201,10 +201,7 @@ public class EmployeeLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            //the names are converted into a valid format (example, sanTiAgo = Santiago)
-            OperationString.formatOfTheName(employee);
-            //the name job is converted into a valid format (example, cusTOm caRe = customCare)
-            OperationString.formatOfNameJob(employee);
+            
             //update is a class to specifically validate the conditions to update a person
             EmployeeUpdate employeeUpdate
                     = new EmployeeUpdate(
@@ -222,6 +219,13 @@ public class EmployeeLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
+            //the names are converted into a valid format (example, sanTiAgo = Santiago)
+            OperationString.formatOfTheName(employee);
+            //the name job is converted into a valid format (example, cusTOm caRe = customCare)
+            OperationString.formatOfNameJob(employee);
+             //add apostrophe(') for the names that have this symbol, 
+            //this so that there are no problems when inserting in the database
+            OperationString.addApostrophe(employee);
             String typeIdentifier = employee.getTypeIdentifier();
             if (StringUtils.isNotBlank(typeIdentifier)) {
                 employee.setTypeIdentifier(typeIdentifier.toUpperCase());
@@ -444,10 +448,10 @@ public class EmployeeLogic {
                 throw eitherRes;
             }
             if (StringUtils.isNotBlank(lastName)) {
-                lastName = OperationString.generateLastName(lastName);
+                lastName = OperationString.generateName(lastName);
             }
             if (StringUtils.isNotBlank(firstName)) {
-                firstName = OperationString.generateFirstName(firstName);
+                firstName = OperationString.generateName(firstName);
             }
             String jobName = "";
             if (StringUtils.isNotBlank(job)) {

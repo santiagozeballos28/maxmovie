@@ -91,13 +91,14 @@ public class PersonCreate implements DataCondition {
     }
 
     protected Either verifyData(ModelObject resource) {
-        Person renterUser = (Person) resource;
+        Person person = (Person) resource;
+        System.out.println("NOMBRe: " + person.getLastName());
         ArrayList<String> listError = new ArrayList<String>();
         String errorMessages = "";
         boolean validTypeIdentifier = true;
         boolean validIdentifier = true;
         //Validation of identifier
-        if (!PersonValidation.isValidTypeIdentifier(renterUser.getTypeIdentifier())) {
+        if (!PersonValidation.isValidTypeIdentifier(person.getTypeIdentifier())) {
             validTypeIdentifier = false;
             String validTypesId
                     = TypeIdentifier.CI.getDescriptionIdentifier() + ", "
@@ -105,13 +106,13 @@ public class PersonCreate implements DataCondition {
                     + TypeIdentifier.PASS.getDescriptionIdentifier();
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.TYPE_IDENTIFIER);
-            listData.put(ConstantData.DATA, renterUser.getTypeIdentifier());
+            listData.put(ConstantData.DATA, person.getTypeIdentifier());
             listData.put(ConstantData.VALID, validTypesId);
             errorMessages = OperationString.generateMesage(Message.NOT_VALID_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessages);
         }
         //Validation of identifier
-        if (!PersonValidation.isValidIdentifier(renterUser.getIdentifier())) {
+        if (!PersonValidation.isValidIdentifier(person.getIdentifier())) {
             validIdentifier = false;
             String validIden
                     = TypeIdentifier.CI.getDescriptionIdentifier() + " = " + ValidIdentifier.CI.getValidIdentifier() + ", "
@@ -119,96 +120,98 @@ public class PersonCreate implements DataCondition {
                     + TypeIdentifier.NIT.getDescriptionIdentifier() + " = " + ValidIdentifier.NIT.getValidIdentifier();
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.IDENTIFIER);
-            listData.put(ConstantData.DATA, renterUser.getIdentifier());
+            listData.put(ConstantData.DATA, person.getIdentifier());
             listData.put(ConstantData.VALID, validIden);
             errorMessages = OperationString.generateMesage(Message.NOT_VALID_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessages);
         }
         //Validation if the identifier belongs to the same type identifier
         if (validTypeIdentifier && validIdentifier) {
-            if (!PersonValidation.isValidIdentifier(renterUser.getTypeIdentifier(), renterUser.getIdentifier())) {
-                TypeIdentifier typeId = TypeIdentifier.valueOf(renterUser.getTypeIdentifier().toUpperCase());
+            if (!PersonValidation.isValidIdentifier(person.getTypeIdentifier(), person.getIdentifier())) {
+                TypeIdentifier typeId = TypeIdentifier.valueOf(person.getTypeIdentifier().toUpperCase());
                 listData.clear();
                 listData.put(ConstantData.TYPE_DATA, ConstantData.IDENTIFIER);
                 listData.put(ConstantData.TYPE_DATA_TWO, ConstantData.TYPE_IDENTIFIER);
-                listData.put(ConstantData.DATA, renterUser.getIdentifier());
+                listData.put(ConstantData.DATA, person.getIdentifier());
                 listData.put(ConstantData.DATA_TWO, typeId.getDescriptionIdentifier());
                 errorMessages = OperationString.generateMesage(Message.NOT_SAME_TYPE, listData);
                 listError.add(errorMessages);
             }
         }
         //Validation of identifier size
-        if (!PersonValidation.isValidSize(renterUser.getIdentifier(), ConstantData.MAX_LENGTH_IDENTIFIER)) {
+        if (!PersonValidation.isValidSize(person.getIdentifier(), ConstantData.MAX_LENGTH_IDENTIFIER)) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.IDENTIFIER);
-            listData.put(ConstantData.DATA, renterUser.getIdentifier());
+            listData.put(ConstantData.DATA, person.getIdentifier());
             listData.put(ConstantData.SIZE, ConstantData.MAX_LENGTH_IDENTIFIER + "");
             errorMessages = OperationString.generateMesage(Message.SIZE_MAX, listData);
             listError.add(errorMessages);
         }
         //Validation of last name size
-        if (!PersonValidation.isValidSize(renterUser.getLastName(), ConstantData.MAX_LENGTH_NAME)) {
+        String lastNameAux = OperationString.generateName(person.getLastName());
+        if (!PersonValidation.isValidSize(lastNameAux, ConstantData.MAX_LENGTH_NAME)) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.LAST_NAME);
-            listData.put(ConstantData.DATA, renterUser.getLastName());
+            listData.put(ConstantData.DATA, person.getLastName());
             listData.put(ConstantData.SIZE, ConstantData.MAX_LENGTH_NAME + "");
             errorMessages = OperationString.generateMesage(Message.SIZE_MAX, listData);
             listError.add(errorMessages);
         }
         //Validation of last name
-        if (!PersonValidation.isValidLastName(renterUser.getLastName())) {
+        if (!PersonValidation.isValidName(lastNameAux)) {
             listData.clear();;
             listData.put(ConstantData.TYPE_DATA, ConstantData.LAST_NAME);
-            listData.put(ConstantData.DATA, renterUser.getLastName());
-            listData.put(ConstantData.VALID, ConstantData.VALID_LASTNAME);
+            listData.put(ConstantData.DATA, person.getLastName());
+            listData.put(ConstantData.VALID, ConstantData.VALID_NAME_PERSON);
             errorMessages = OperationString.generateMesage(Message.NOT_VALID_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessages);
         }
+        String firstNameAux = OperationString.generateName(person.getFirstName());
         //Validation of first name size
-        if (!PersonValidation.isValidSize(renterUser.getFirstName(), ConstantData.MAX_LENGTH_NAME)) {
+        if (!PersonValidation.isValidSize(firstNameAux, ConstantData.MAX_LENGTH_NAME)) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.FIRST_NAME);
-            listData.put(ConstantData.DATA, renterUser.getFirstName());
+            listData.put(ConstantData.DATA, person.getFirstName());
             listData.put(ConstantData.SIZE, ConstantData.MAX_LENGTH_NAME + "");
             errorMessages = OperationString.generateMesage(Message.SIZE_MAX, listData);
             listError.add(errorMessages);
         }
         //Validation of first name
-        if (!PersonValidation.isValidFirstName(renterUser.getFirstName())) {
+        if (!PersonValidation.isValidName(firstNameAux)) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.FIRST_NAME);
-            listData.put(ConstantData.DATA, renterUser.getFirstName());
-            listData.put(ConstantData.VALID, ConstantData.VALID_FIRSTNAME);
+            listData.put(ConstantData.DATA, person.getFirstName());
+            listData.put(ConstantData.VALID, ConstantData.VALID_NAME_PERSON);
             errorMessages = OperationString.generateMesage(Message.NOT_VALID_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessages);
         }
         //Validation of genre
-        if (!PersonValidation.isValidGenre(renterUser.getGenre())) {
+        if (!PersonValidation.isValidGenre(person.getGenre())) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.GENRE);
-            listData.put(ConstantData.DATA, renterUser.getGenre());
+            listData.put(ConstantData.DATA, person.getGenre());
             listData.put(ConstantData.VALID, GenrePerson.F.getNameGenre() + ", " + GenrePerson.M.getNameGenre());
             errorMessages = OperationString.generateMesage(Message.NOT_VALID_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessages);
         }
         //Validation of birthday
-        if (!DateOperation.isValidDateFormat(renterUser.getBirthday())) {
+        if (!DateOperation.isValidDateFormat(person.getBirthday())) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.BIRTHDAY);
-            listData.put(ConstantData.DATA, renterUser.getBirthday());
+            listData.put(ConstantData.DATA, person.getBirthday());
             listData.put(ConstantData.VALID, ConstantData.VALID_DATE);
             errorMessages = OperationString.generateMesage(Message.NOT_VALID_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessages);
         } else //Validation of age
         {
-            if (!DateOperation.dateIsInRangeValid(renterUser.getBirthday())) {
+            if (!DateOperation.dateIsInRangeValid(person.getBirthday())) {
                 listData.clear();
-                listData.put(ConstantData.DATA, renterUser.getBirthday());
+                listData.put(ConstantData.DATA, person.getBirthday());
                 listData.put(ConstantData.DATA_TWO, DateOperation.getDataCurrent());
                 errorMessages = OperationString.generateMesage(Message.DATE_FUTURE, listData);
                 listError.add(errorMessages);
             }
-            if (!DateOperation.yearIsGreaterThan(renterUser.getBirthday(), ageMinimum)) {
+            if (!DateOperation.yearIsGreaterThan(person.getBirthday(), ageMinimum)) {
                 listData.clear();
                 listData.put(ConstantData.DATA, ageMinimum + "");
                 errorMessages = OperationString.generateMesage(Message.NOT_MEET_THE_AGE, listData);

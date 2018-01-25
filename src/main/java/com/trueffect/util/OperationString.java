@@ -48,30 +48,24 @@ public class OperationString {
 
     public static void formatOfTheName(Person person) {
         if (StringUtils.isNotBlank(person.getLastName())) {
-            String lastName = generateLastName(person.getLastName());
+            String lastName = generateName(person.getLastName());
             person.setLastName(lastName);
         }
         if (StringUtils.isNotBlank(person.getFirstName())) {
-            String firstName = generateFirstName(person.getFirstName());
+            String firstName = generateName(person.getFirstName());
             person.setFirstName(firstName);
         }
     }
 
-    public static String generateLastName(String lastName) {
-        String resLastName = "";
-        String[] lastNameArrayAux = lastName.toLowerCase().split(" ");
-        ArrayList<String> lastNames = removeEmpty(lastNameArrayAux);
-        for (String lastN : lastNames) {
-            resLastName = resLastName + " " + StringUtils.capitalize(lastN);
+    public static String generateName(String name) {
+        String resName = "";
+        String[] nameArrayAux = name.toLowerCase().split(" ");
+        ArrayList<String> names = removeEmpty(nameArrayAux);
+        for (String nameString : names) {
+            resName = resName + " " + StringUtils.capitalize(nameString);
         }
-        resLastName = resLastName.trim();
-        return resLastName;
-    }
-
-    public static String generateFirstName(String firstName) {
-        String resFirstName = "";
-        resFirstName = StringUtils.capitalize(firstName.toLowerCase());
-        return resFirstName;
+        resName = resName.trim();
+        return resName;
     }
 
     public static void formatOfNameJob(Employee employee) {

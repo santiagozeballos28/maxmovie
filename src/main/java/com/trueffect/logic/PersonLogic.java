@@ -61,18 +61,18 @@ public class PersonLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            OperationString.formatOfTheName(person);
             eitherRes = conditiondata.complyCondition(person);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            //add apostrophe(') for the names that have this symbol, 
-            //this so that there are no problems when inserting in the database
-            OperationString.addApostrophe(person);
             eitherRes = personValidationsDB.veriryDataInDataBase(connection, person);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
+            OperationString.formatOfTheName(person);
+            //add apostrophe(') for the names that have this symbol, 
+            //this so that there are no problems when inserting in the database
+            OperationString.addApostrophe(person);
             String identifier = person.getIdentifier().toUpperCase();
             String typeIdentifier = person.getTypeIdentifier().toUpperCase();
             String genre = person.getGenre().toUpperCase();
@@ -180,18 +180,22 @@ public class PersonLogic {
             PersonUpdate rentUserUpdate = new PersonUpdate(
                     ((Job) eitherRes.getFirstObject()).getNameJob(),
                     ConstantData.MIN_AGE_RENTER);
-            OperationString.formatOfTheName(person);
+
             eitherRes = rentUserUpdate.complyCondition(person);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
             //add apostrophe(') for the names that have this symbol, 
             //this so that there are no problems when inserting in the database
-            OperationString.addApostrophe(person);
+
             eitherRes = personValidationsDB.verifyDataUpdate(connection, person);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
+            OperationString.formatOfTheName(person);
+            //add apostrophe(') for the names that have this symbol, 
+            //this so that there are no problems when inserting in the database
+            OperationString.addApostrophe(person);
             String typeIdentifier = person.getTypeIdentifier();
             if (StringUtils.isNotBlank(typeIdentifier)) {
                 person.setTypeIdentifier(typeIdentifier.toUpperCase());
@@ -264,11 +268,11 @@ public class PersonLogic {
                 throw eitherRes;
             }
             if (StringUtils.isNotBlank(lastName)) {
-                lastName = OperationString.generateLastName(lastName.trim());
+                lastName = OperationString.generateName(lastName.trim());
                 lastName = OperationString.addApostrophe(lastName);
             }
             if (StringUtils.isNotBlank(firstName)) {
-                firstName = OperationString.generateFirstName(firstName.trim());
+                firstName = OperationString.generateName(firstName.trim());
                 firstName = OperationString.addApostrophe(firstName);
             }
             eitherRes = personCrud.getPersonBy(connection, typeId, identifier, lastName, firstName, genre);

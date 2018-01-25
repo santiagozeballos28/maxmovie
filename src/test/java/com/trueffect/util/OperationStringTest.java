@@ -20,7 +20,7 @@ public class OperationStringTest {
         HashMap<String, String> listData = new HashMap<String, String>();
         listData.put(ConstantData.TYPE_DATA, ConstantData.LAST_NAME);
         listData.put(ConstantData.DATA, "Manti$ago");
-        listData.put(ConstantData.VALID, ConstantData.VALID_LASTNAME);
+        listData.put(ConstantData.VALID, ConstantData.VALID_NAME_PERSON);
         String res = OperationString.generateMesage(msgInput, listData);
         Assert.assertTrue(res.equals(msgOutputExpected));
     }
