@@ -89,6 +89,7 @@ public class EmployeeLogic {
             OperationString.formatOfTheName(employee);
             //the name job is converted into a valid format (example, CshR = CSHR)
             OperationString.formatOfNameJob(employee);
+            OperationString.addApostrophe(employee);
             String identifier = employee.getIdentifier().toUpperCase();
             String typeIdentifier = employee.getTypeIdentifier().toUpperCase();
             String genre = employee.getGenre().toUpperCase();
@@ -201,7 +202,7 @@ public class EmployeeLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            
+
             //update is a class to specifically validate the conditions to update a person
             EmployeeUpdate employeeUpdate
                     = new EmployeeUpdate(
@@ -212,9 +213,6 @@ public class EmployeeLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            //add apostrophe(') for the names that have this symbol, 
-            //this so that there are no problems when inserting in the database
-            OperationString.addApostrophe(employee);
             eitherRes = employeeValidationDB.verifyDataUpdate(connection, employee);
             if (eitherRes.existError()) {
                 throw eitherRes;
@@ -223,7 +221,7 @@ public class EmployeeLogic {
             OperationString.formatOfTheName(employee);
             //the name job is converted into a valid format (example, cusTOm caRe = customCare)
             OperationString.formatOfNameJob(employee);
-             //add apostrophe(') for the names that have this symbol, 
+            //add apostrophe(') for the names that have this symbol, 
             //this so that there are no problems when inserting in the database
             OperationString.addApostrophe(employee);
             String typeIdentifier = employee.getTypeIdentifier();
