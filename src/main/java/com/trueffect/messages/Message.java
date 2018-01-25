@@ -34,4 +34,6 @@ public class Message {
     public static String NOT_VALID_DATA_NUMBERS_ALLOWED = "The {typeData} ({data}) is not valid. Only positive number is allowed, between [{valid}]";
     public static String NOT_FOUND_WITH_ID = "The {object} with the {typeData} ({data}) was not found.";
     public static String AOMUNT_EMPTY_IDS = "There are {data} records that need the {typeData} of the {object}";
+    //Message: data=missing quantity, nameObject = name of the movie, operation: type de sale
+    public static String INSUFFICIENT_AMOUNT = "({data}) movies of {nameObject} are missing, to make the {operation}";
 }

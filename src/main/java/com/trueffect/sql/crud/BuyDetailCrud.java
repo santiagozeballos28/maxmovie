@@ -26,19 +26,22 @@ public class BuyDetailCrud {
                 int buyAmount = saleDetail.getAmount();
                 double buyPrice = saleDetail.getPrice();
                 long idCopyMovie = saleDetail.getCopyMovieId();
+                String idPrice = saleDetail.getIdPrice();
                 query = (Statement) connection.createStatement();
                 sql
                         = "INSERT INTO BUY_DETAIL("
                         + "buy_amount, "
                         + "buy_price, "
                         + "master_detail_id, "
-                        + "copy_movie_id)\n"
+                        + "copy_movie_id,"
+                        + "price_id)\n"
                         + "VALUES ("
                         + buyAmount + ","
                         + buyPrice + ","
                         + idMasterDetail + ","
-                        + idCopyMovie + ");";
-                ResultSet rs = query.executeQuery(sql);
+                        + idCopyMovie + ",'"
+                        + idPrice+"');";
+                query.execute(sql);
             }
             if (query != null) {
                 query.close();

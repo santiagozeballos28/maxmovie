@@ -18,6 +18,7 @@ public class Movie extends ModelObject {
     protected int oscarNomination;
     protected ArrayList<String> actor;
     protected String status;
+    protected String createDate;
 
     public Movie() {
     }
@@ -40,6 +41,17 @@ public class Movie extends ModelObject {
         this.year = year;
         this.oscarNomination = oscarNomination;
         this.status = status.trim();
+    }
+
+    public Movie(long id, String name, String genreId, String director, int year, int oscarNomination, String status, String createDate) {
+        this.id = id;
+        this.name = name.trim();
+        this.genreId = genreId.trim();
+        this.director = director.trim();
+        this.year = year;
+        this.oscarNomination = oscarNomination;
+        this.status = status.trim();
+        this.createDate = createDate;
     }
 
     public long getId() {
@@ -74,6 +86,11 @@ public class Movie extends ModelObject {
         return status;
     }
 
+    @JsonIgnore
+    public String getCreateDate() {
+        return createDate;
+    }
+
     public void setId(long id) {
         this.id = id;
     }
@@ -104,6 +121,10 @@ public class Movie extends ModelObject {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
     }
 
     @JsonIgnore

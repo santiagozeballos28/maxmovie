@@ -1,4 +1,3 @@
-
 package com.trueffect.model;
 
 import com.trueffect.util.ModelObject;
@@ -7,20 +6,19 @@ import com.trueffect.util.ModelObject;
  *
  * @author santiago.mamani
  */
-public class Price extends ModelObject{
+public class Price extends ModelObject {
+
     private String Id;
     private String name;
-    private double priceNormal;
-    private double pricePremier;
+    private double price;
 
     public Price() {
     }
 
-    public Price(String Id, String name, double priceNormal, double pricePremier) {
+    public Price(String Id, String name, double price) {
         this.Id = Id;
         this.name = name.trim();
-        this.priceNormal = priceNormal;
-        this.pricePremier = pricePremier;
+        this.price = price;
     }
 
     public String getId() {
@@ -31,12 +29,8 @@ public class Price extends ModelObject{
         return name;
     }
 
-    public double getPriceNormal() {
-        return priceNormal;
-    }
-
-    public double getPricePremier() {
-        return pricePremier;
+    public double getPrice() {
+        return price;
     }
 
     public void setId(String Id) {
@@ -47,12 +41,7 @@ public class Price extends ModelObject{
         this.name = name;
     }
 
-    public void setPriceNormal(double priceNormal) {
-        this.priceNormal = priceNormal;
+    public void setPrice(double price) {
+        this.price = price;
     }
-
-    public void setPricePremier(double pricePremier) {
-        this.pricePremier = pricePremier;
-    }
-    
 }

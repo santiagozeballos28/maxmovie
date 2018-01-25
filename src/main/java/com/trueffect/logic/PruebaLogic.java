@@ -102,10 +102,15 @@ public class PruebaLogic {
             }
             System.out.println("Se obtuvo el detail de rental");
             ArrayList<ModelObject> reportRental = eitherRes.getListObject();
-
+            eitherRes = reportSaleCrud.getReportBuy(connection, idMasterDetail);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            ArrayList<ModelObject> reportBuy = eitherRes.getListObject();
             eitherRes = new Either();
             eitherRes.addModeloObjet(masterDetailPerson);
             eitherRes.addListObject(reportRental);
+            eitherRes.addListObject(reportBuy);
             eitherRes.setCode(CodeStatus.OK);
             DataBasePostgres.connectionCommit(connection);
 

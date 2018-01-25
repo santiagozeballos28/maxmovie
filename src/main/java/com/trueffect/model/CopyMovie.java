@@ -6,28 +6,18 @@ import com.trueffect.util.ModelObject;
  *
  * @author santiago.mamani
  */
-public class CopyMovie extends ModelObject{
+public class CopyMovie extends ModelObject {
 
-    /*
-      copy_movie_id serial NOT NULL,
-  amount_initial integer,
-  amount_current integer,
-  create_user integer,
-  create_date timestamp without time zone,
-  modifier_user integer,
-  modifier_date timestamp without time zone,
-  movie_id integer,
-     */
     private long copyMovieId;
     private int amountInitial;
     private int amountCurrent;
     private String createDate;
     private long movieId;
-        
+
     public CopyMovie() {
     }
 
-    public CopyMovie(long copyMovieId, int amountInitial, int amountCurrent, String createDate,long movieId) {
+    public CopyMovie(long copyMovieId, int amountInitial, int amountCurrent, String createDate, long movieId) {
         this.copyMovieId = copyMovieId;
         this.amountInitial = amountInitial;
         this.amountCurrent = amountCurrent;
@@ -35,7 +25,7 @@ public class CopyMovie extends ModelObject{
         this.movieId = movieId;
     }
 
-    public CopyMovie(long movieId,int amountCurrent) {
+    public CopyMovie(long movieId, int amountCurrent) {
         this.amountCurrent = amountCurrent;
         this.movieId = movieId;
     }

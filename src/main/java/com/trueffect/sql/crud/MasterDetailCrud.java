@@ -23,7 +23,7 @@ public class MasterDetailCrud {
             Either eitherIdentifier = new Either();
             int amountTotal = masterDetail.getAmountTotal();
             double priceTotal = masterDetail.getPriceTotal();
-            long idCreateUser = masterDetail.getIdCreateUser();
+            long idDataJob = masterDetail.getIdDataJob();
             long idRenterUser = masterDetail.getIdRenterUser();
             Statement query = null;
             query = (Statement) connection.createStatement();
@@ -31,7 +31,7 @@ public class MasterDetailCrud {
                     = "INSERT INTO MASTER_DETAIL("
                     + "amount_total, "
                     + "price_total, "
-                    + "create_user, "
+                    + "data_job_id, "
                     + "create_date,"
                     + "modifier_date, "
                     + "modifier_user, "
@@ -39,7 +39,7 @@ public class MasterDetailCrud {
                     + "VALUES ("
                     + amountTotal + ","
                     + priceTotal + ","
-                    + idCreateUser + ","
+                    + idDataJob + ","
                     + "current_timestamp,"
                     + "null,"
                     + "null,"
@@ -49,7 +49,6 @@ public class MasterDetailCrud {
             if (rs.next()) {
                 eitherIdentifier.addModeloObjet(new Identifier(rs.getLong("master_detail_id")));
             }
-
             if (query != null) {
                 query.close();
             }
@@ -73,7 +72,6 @@ public class MasterDetailCrud {
                     + "  FROM MASTER_DETAIL, PERSON \n"
                     + " WHERE master_detail_id= ? "
                     + "   AND MASTER_DETAIL.renter_user = PERSON.person_id;";
-
             PreparedStatement st = connection.prepareStatement(query);
             st.setLong(1, idMasterDetail);
             ResultSet rs = st.executeQuery();
@@ -95,5 +93,4 @@ public class MasterDetailCrud {
             return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
         }
     }
-
 }

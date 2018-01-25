@@ -56,7 +56,6 @@ public class MovieCrud {
             if (rs.next()) {
                 eitherIdentifier.addModeloObjet(new Identifier(rs.getLong("movie_id")));
             }
-
             if (query != null) {
                 query.close();
             }
@@ -122,7 +121,8 @@ public class MovieCrud {
                     + "       movie_year, "
                     + "       oscar_nomination, "
                     + "       genre_movie_id,"
-                    + "       status\n"
+                    + "       status,"
+                    + "       create_date\n"
                     + "  FROM movie\n"
                     + " WHERE movie_id IN " + idsString;
             if (StringUtils.isNotBlank(status)) {
@@ -130,22 +130,24 @@ public class MovieCrud {
             }
             PreparedStatement st = connection.prepareStatement(query);
             ResultSet rs = st.executeQuery();
-            Movie movie = new Movie();
-            if (rs.next()) {
-                movie = new Movie(
+            Either eitherRes = new Either();
+            while (rs.next()) {
+                Movie movie = new Movie(
                         rs.getLong("movie_id"),
                         rs.getString("movie_name"),
                         rs.getString("genre_movie_id"),
                         rs.getString("director_name"),
                         rs.getInt("movie_year"),
                         rs.getInt("oscar_nomination"),
-                        rs.getString("status")
-                );
+                        rs.getString("status"),
+                        rs.getString("create_date"));
+                eitherRes.addModeloObjet(movie);
             }
             if (st != null) {
                 st.close();
             }
-            return new Either(CodeStatus.OK, movie);
+            eitherRes.setCode(CodeStatus.OK);
+            return eitherRes;
         } catch (Exception exception) {
             ArrayList<String> listError = new ArrayList<String>();
             listError.add(exception.getMessage());
@@ -256,7 +258,6 @@ public class MovieCrud {
             if (st != null) {
                 st.close();
             }
-
             return new Either(CodeStatus.OK, movie);
         } catch (Exception exception) {
             ArrayList<String> listError = new ArrayList<String>();

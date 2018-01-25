@@ -8,12 +8,15 @@ import com.trueffect.util.ModelObject;
  */
 public class Sale extends ModelObject{
     private long idMovie;
-    private int aomunt;
+    private int amount;
     private String operation;
 
-    public Sale(long idMovie, int aomunt, String operation) {
+    public Sale() {
+    }
+
+    public Sale(long idMovie, int amount, String operation) {
         this.idMovie = idMovie;
-        this.aomunt = aomunt;
+        this.amount = amount;
         this.operation = operation.trim();
     }
 
@@ -21,8 +24,8 @@ public class Sale extends ModelObject{
         return idMovie;
     }
 
-    public int getAomunt() {
-        return aomunt;
+    public int getAmount() {
+        return amount;
     }
 
     public String getOperation() {
@@ -33,12 +36,11 @@ public class Sale extends ModelObject{
         this.idMovie = idMovie;
     }
 
-    public void setAomunt(int aomunt) {
-        this.aomunt = aomunt;
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 
     public void setOperation(String operation) {
-        this.operation = operation;
+        this.operation = operation.trim();
     }
-    
 }

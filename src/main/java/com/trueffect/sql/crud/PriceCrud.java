@@ -22,8 +22,7 @@ public class PriceCrud {
             String query
                     = "SELECT price_id, "
                     + "       price_name, "
-                    + "       price_normal, "
-                    + "       price_premier\n"
+                    + "       price \n"
                     + "  FROM price;";
             PreparedStatement st = connection.prepareStatement(query);
             ResultSet rs = st.executeQuery();
@@ -33,8 +32,7 @@ public class PriceCrud {
                 price = new Price(
                         rs.getString("price_id"),
                         rs.getString("price_name"),
-                        rs.getDouble("price_normal"),
-                        rs.getDouble("price_premier"));
+                        rs.getDouble("price"));
                 eitherRes.addModeloObjet(price);
             }
             if (st != null) {

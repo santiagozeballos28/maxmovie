@@ -6,8 +6,7 @@ package com.trueffect.model;
  */
 public class BuyDetail extends SaleDetail {
 
-    public BuyDetail(long copyMovieId, int amount, double price) {
-        super(copyMovieId, amount, price);
+    public BuyDetail(long copyMovieId, int amount, double price, String idPrice) {
+        super(copyMovieId, amount, price, idPrice);
     }
-
 }

@@ -15,8 +15,8 @@ public class RentalDetail extends SaleDetail {
     public RentalDetail() {
     }
 
-    public RentalDetail(long copyMovieId, int rentalAmount, double rentalPrice) {
-        super(copyMovieId, rentalAmount, rentalPrice);
+    public RentalDetail(long copyMovieId, int rentalAmount, double rentalPrice, String idPrice) {
+        super(copyMovieId, rentalAmount, rentalPrice, idPrice);
     }
 
     public int getReturnAmount() {
@@ -58,5 +58,4 @@ public class RentalDetail extends SaleDetail {
     public void setNote(String note) {
         this.note = note;
     }
-
 }

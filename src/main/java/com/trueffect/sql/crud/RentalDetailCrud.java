@@ -24,6 +24,7 @@ public class RentalDetailCrud {
                 int rentalAmount = saleDetail.getAmount();
                 double rentalPrice = saleDetail.getPrice();
                 long idCopyMovie = saleDetail.getCopyMovieId();
+                String idPrice = saleDetail.getIdPrice();
                 query = (Statement) connection.createStatement();
                 sql
                         = "INSERT INTO RENTAL_DETAIL("
@@ -35,7 +36,8 @@ public class RentalDetailCrud {
                         + "employee_receive, "
                         + "master_detail_id, "
                         + "note, "
-                        + "copy_movie_id)\n"
+                        + "copy_movie_id,"
+                        + "price_id)\n"
                         + "VALUES ("
                         + rentalAmount + ","
                         + "null,"
@@ -45,8 +47,9 @@ public class RentalDetailCrud {
                         + "null,"
                         + idMasterDetail + ","
                         + "null,"
-                        + idCopyMovie + "); ";
-                ResultSet rs = query.executeQuery(sql);
+                        + idCopyMovie + ",'"
+                        + idPrice + "'); ";
+                query.execute(sql);
             }
             if (query != null) {
                 query.close();

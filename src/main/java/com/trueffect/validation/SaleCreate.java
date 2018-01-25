@@ -1,6 +1,7 @@
 package com.trueffect.validation;
 
 import com.trueffect.messages.Message;
+import com.trueffect.model.Movie;
 import com.trueffect.model.Sale;
 import com.trueffect.response.Either;
 import com.trueffect.tools.CodeStatus;
@@ -49,7 +50,7 @@ public class SaleCreate {
         for (Sale sale : sales) {
             String nameMovie = getNameMovie(sale.getIdMovie());
             //Validation empty amount movie
-            if (sale.getAomunt() == 0) {
+            if (sale.getAmount() == 0) {
                 listData.clear();
                 listData.put(ConstantData.TYPE_DATA, ConstantData.AMOUNT_MOVIES);
                 listData.put(ConstantData.NAME_OBJECT, nameMovie);
@@ -68,7 +69,6 @@ public class SaleCreate {
                 listError.add(errorMessages);
             }
         }
-
         //To check if there was an error
         if (!listError.isEmpty()) {
             return new Either(CodeStatus.BAD_REQUEST, listError);
@@ -82,11 +82,11 @@ public class SaleCreate {
         for (Sale sale : sales) {
             String nameMovie = getNameMovie(sale.getIdMovie());
             //Validation of amount the sale
-            if (sale.getAomunt() < 0) {
+            if (sale.getAmount() < 0) {
 
                 listData.clear();
                 listData.put(ConstantData.TYPE_DATA, ConstantData.AMOUNT_MOVIES);
-                listData.put(ConstantData.DATA, sale.getAomunt() + "");
+                listData.put(ConstantData.DATA, sale.getAmount() + "");
                 listData.put(ConstantData.NAME_OBJECT, nameMovie);
                 listData.put(ConstantData.OBJECT, ObjectMovie.Movie.name());
                 listData.put(ConstantData.VALID, ConstantData.POSITIVE_NUMBERS);
@@ -94,7 +94,7 @@ public class SaleCreate {
                 listError.add(errorMessages);
             }
             //Validation of amount 
-            if (isValidOperationSale(sale.getOperation())) {
+            if (!isValidOperationSale(sale.getOperation())) {
                 String validSales = OperationSale.R.getDescription() + ", " + OperationSale.B.getDescription();
                 listData.clear();
                 listData.put(ConstantData.TYPE_DATA, ConstantData.OPERATION_SALE);
@@ -106,18 +106,16 @@ public class SaleCreate {
                 listError.add(errorMessages);
             }
         }
-
         //To check if there was an error
         if (!listError.isEmpty()) {
             return new Either(CodeStatus.BAD_REQUEST, listError);
-
         }
         return new Either();
     }
 
     private boolean isValidOperationSale(String sale) {
         try {
-            OperationSale operationSale = ConstantData.OperationSale.valueOf(sale);
+            OperationSale operationSale = OperationSale.valueOf(sale);
         } catch (Exception e) {
             return false;
         }
@@ -125,6 +123,17 @@ public class SaleCreate {
     }
 
     private String getNameMovie(long idMovie) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String nameMovie = "";
+        int i = 0;
+        boolean findMovie = false;
+        while (i < movies.size() && !findMovie) {
+            Movie movie = (Movie) movies.get(i);
+            if (movie.getId() == idMovie) {
+                findMovie = true;
+                nameMovie = movie.getName();
+            }
+            i++;
+        }
+        return nameMovie;
     }
 }

@@ -155,8 +155,8 @@ public class Permission {
         PersonCrud personCrud = new PersonCrud();
         Person person = new Person();
         try {
-            Either eitherEmployee = personCrud.getRenterUser(connection, idRenterUser, status);
-            person = (Person) eitherEmployee.getFirstObject();
+            Either eitherPerson = personCrud.getRenterUser(connection, idRenterUser, status);
+            person = (Person) eitherPerson.getFirstObject();
             if (person.isEmpty()) {
                 String object = ConstantData.ObjectMovie.RennterUser.name();
                 listData.clear();

@@ -152,7 +152,7 @@ public class ConstantData {
     }
 
     public enum OperationSale {
-        R("Rental"), B("Buy");
+        R("Rental"), B("Buy"), BP("Buy Premier");
         private String description;
 
         private OperationSale(String description) {

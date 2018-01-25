@@ -8,39 +8,39 @@ import com.trueffect.util.ModelObject;
  */
 public class MasterDetail extends ModelObject{
 
-    private long id;
+    private long idMasterDetail;
     private int amountTotal;
     private double priceTotal;
-    protected long idCreateUser;
+    protected long idDataJob;
     protected long idRenterUser;
 
     public MasterDetail() {
     }
     
 
-    public MasterDetail(long id, int amountTotal, double priceTotal, long idCreateUser, long idRenterUser) {
-        this.id = id;
+    public MasterDetail(long id, int amountTotal, double priceTotal, long idDataJob, long idRenterUser) {
+        this.idMasterDetail = id;
         this.amountTotal = amountTotal;
         this.priceTotal = priceTotal;
-        this.idCreateUser = idCreateUser;
+        this.idDataJob = idDataJob;
         this.idRenterUser = idRenterUser;
     }
 
-    public MasterDetail(int amountTotal, double priceTotal, long idCreateUser, long idRenterUser) {
+    public MasterDetail(int amountTotal, double priceTotal, long idDataJob, long idRenterUser) {
         this.amountTotal = amountTotal;
         this.priceTotal = priceTotal;
-        this.idCreateUser = idCreateUser;
+        this.idDataJob = idDataJob;
         this.idRenterUser = idRenterUser;
     }
 
     public MasterDetail(long id, int amountTotal, double priceTotal) {
-        this.id = id;
+        this.idMasterDetail = id;
         this.amountTotal = amountTotal;
         this.priceTotal = priceTotal;
     }
 
-    public long getId() {
-        return id;
+    public long getIdMasterDetail() {
+        return idMasterDetail;
     }
 
     public int getAmountTotal() {
@@ -51,16 +51,16 @@ public class MasterDetail extends ModelObject{
         return priceTotal;
     }
 
-    public long getIdCreateUser() {
-        return idCreateUser;
+    public long getIdDataJob() {
+        return idDataJob;
     }
 
     public long getIdRenterUser() {
         return idRenterUser;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setIdMasterDetail(long idMasterDetail) {
+        this.idMasterDetail = idMasterDetail;
     }
 
     public void setAmountTotal(int amountTotal) {
@@ -71,12 +71,11 @@ public class MasterDetail extends ModelObject{
         this.priceTotal = priceTotal;
     }
 
-    public void setIdCreateUser(long idCreateUser) {
-        this.idCreateUser = idCreateUser;
+    public void setIdDataJob(long idDataJob) {
+        this.idDataJob = idDataJob;
     }
 
     public void setIdRenterUser(long idRenterUser) {
         this.idRenterUser = idRenterUser;
     }
-
 }

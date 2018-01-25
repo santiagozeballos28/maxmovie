@@ -68,9 +68,8 @@ public class CopyCrud {
             PreparedStatement st = connection.prepareStatement(query);
             ResultSet rs = st.executeQuery();
             Either eitherRes = new Either();
-            CopyMovie copyMovie = new CopyMovie();
             while (rs.next()) {
-                copyMovie = new CopyMovie(
+                CopyMovie copyMovie = new CopyMovie(
                         rs.getLong("copy_movie_id"),
                         rs.getInt("amount_initial"),
                         rs.getInt("amount_current"),
@@ -140,7 +139,7 @@ public class CopyCrud {
                         + "       modifier_user = " + idModifierUser + ","
                         + "       modifier_date=current_timestamp\n"
                         + " WHERE copy_movie_id = " + idCopyMovie;
-                ResultSet rs = query.executeQuery(sql);
+                 query.execute(sql);
             }
             if (query != null) {
                 query.close();

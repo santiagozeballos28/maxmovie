@@ -4,7 +4,7 @@ import com.trueffect.conection.db.DataBasePostgres;
 import com.trueffect.model.AmountSaleMovie;
 import com.trueffect.model.CopyMovie;
 import com.trueffect.model.Movie;
-import com.trueffect.model.ReportMovie;
+import com.trueffect.model.ReportMovieDetail;
 import com.trueffect.response.Either;
 import com.trueffect.sql.crud.BuyDetailCrud;
 import com.trueffect.sql.crud.CopyCrud;
@@ -105,7 +105,7 @@ public class MovieReportLogic {
         ArrayList<ModelObject> reportMovies = new ArrayList<ModelObject>();
         for (ModelObject movieObject : allMovies) {
             Movie movie = (Movie) movieObject;
-            reportMovies.add(new ReportMovie(movie.getId(), movie.getName(),movie.getStatus()));
+            reportMovies.add(new ReportMovieDetail(movie.getId(), movie.getName(),movie.getStatus()));
         }
         return reportMovies;
     }
@@ -114,7 +114,7 @@ public class MovieReportLogic {
         for (ModelObject modelObject : amountCurrentAvailable) {
             CopyMovie copyMovie = (CopyMovie) modelObject;
             int posMovie = findMovie(copyMovie.getMovieId(), reportMovies);
-            ReportMovie reportMovie = (ReportMovie) reportMovies.remove(posMovie);
+            ReportMovieDetail reportMovie = (ReportMovieDetail) reportMovies.remove(posMovie);
             reportMovie.setQuantityCurrent(copyMovie.getAmountCurrent());
             reportMovies.add(posMovie, reportMovie);
         }
@@ -124,7 +124,7 @@ public class MovieReportLogic {
         for (ModelObject modelObject : amountSaleRental) {
             AmountSaleMovie amountSaleMovie = (AmountSaleMovie) modelObject;
             int posMovie = findMovie(amountSaleMovie.getIdMovie(), reportMovies);
-            ReportMovie reportMovie = (ReportMovie) reportMovies.remove(posMovie);
+            ReportMovieDetail reportMovie = (ReportMovieDetail) reportMovies.remove(posMovie);
             reportMovie.setQuantityRental(amountSaleMovie.getAmount());
             reportMovies.add(posMovie, reportMovie);
         }
@@ -134,7 +134,7 @@ public class MovieReportLogic {
         for (ModelObject modelObject : amountSaleBuy) {
             AmountSaleMovie amountSaleMovie = (AmountSaleMovie) modelObject;
             int posMovie = findMovie(amountSaleMovie.getIdMovie(), reportMovies);
-            ReportMovie reportMovie = (ReportMovie) reportMovies.remove(posMovie);
+            ReportMovieDetail reportMovie = (ReportMovieDetail) reportMovies.remove(posMovie);
             reportMovie.setQuantityBuy(amountSaleMovie.getAmount());
             reportMovies.add(posMovie, reportMovie);
         }
@@ -145,7 +145,7 @@ public class MovieReportLogic {
         int i = 0;
         boolean findMovie = false;
         while (i < reportMovies.size() && !findMovie) {
-            ReportMovie reportMovie = (ReportMovie) reportMovies.get(i);
+            ReportMovieDetail reportMovie = (ReportMovieDetail) reportMovies.get(i);
             if (reportMovie.getIdMovie() == idMovie) {
                 findMovie = true;
                 posMovie = i;
