@@ -1,32 +1,42 @@
 package com.trueffect.model;
 
+import com.trueffect.util.ModelObject;
+
 /**
  *
  * @author santiago.mamani
  */
-public class MasterDetail {
+public class MasterDetail extends ModelObject{
 
-    /*
-     master_detail_id serial NOT NULL,
-     amount_total integer,
-     price_total double precision,
-     create_user integer,
-     create_date timestamp without time zone,
-     modifier_date timestamp without time zone,
-     modifier_user integer,
-     renter_user integer,
-     */
     private long id;
     private int amountTotal;
     private double priceTotal;
-    private long idCreateUser;
-    private long idRenterUser;
+    protected long idCreateUser;
+    protected long idRenterUser;
+
+    public MasterDetail() {
+    }
+    
+
+    public MasterDetail(long id, int amountTotal, double priceTotal, long idCreateUser, long idRenterUser) {
+        this.id = id;
+        this.amountTotal = amountTotal;
+        this.priceTotal = priceTotal;
+        this.idCreateUser = idCreateUser;
+        this.idRenterUser = idRenterUser;
+    }
 
     public MasterDetail(int amountTotal, double priceTotal, long idCreateUser, long idRenterUser) {
         this.amountTotal = amountTotal;
         this.priceTotal = priceTotal;
         this.idCreateUser = idCreateUser;
         this.idRenterUser = idRenterUser;
+    }
+
+    public MasterDetail(long id, int amountTotal, double priceTotal) {
+        this.id = id;
+        this.amountTotal = amountTotal;
+        this.priceTotal = priceTotal;
     }
 
     public long getId() {

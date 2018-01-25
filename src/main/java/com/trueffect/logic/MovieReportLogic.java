@@ -60,7 +60,7 @@ public class MovieReportLogic {
                 throw eitherRes;
             }
             //Get all movies Actived
-            eitherRes = movieCrud.getMovie(connection, active);
+            eitherRes = movieCrud.getMovie(connection,null);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -105,7 +105,7 @@ public class MovieReportLogic {
         ArrayList<ModelObject> reportMovies = new ArrayList<ModelObject>();
         for (ModelObject movieObject : allMovies) {
             Movie movie = (Movie) movieObject;
-            reportMovies.add(new ReportMovie(movie.getId(), movie.getName()));
+            reportMovies.add(new ReportMovie(movie.getId(), movie.getName(),movie.getStatus()));
         }
         return reportMovies;
     }
@@ -115,7 +115,7 @@ public class MovieReportLogic {
             CopyMovie copyMovie = (CopyMovie) modelObject;
             int posMovie = findMovie(copyMovie.getMovieId(), reportMovies);
             ReportMovie reportMovie = (ReportMovie) reportMovies.remove(posMovie);
-            reportMovie.setAmountCurrent(copyMovie.getAmountCurrent());
+            reportMovie.setQuantityCurrent(copyMovie.getAmountCurrent());
             reportMovies.add(posMovie, reportMovie);
         }
     }
@@ -125,7 +125,7 @@ public class MovieReportLogic {
             AmountSaleMovie amountSaleMovie = (AmountSaleMovie) modelObject;
             int posMovie = findMovie(amountSaleMovie.getIdMovie(), reportMovies);
             ReportMovie reportMovie = (ReportMovie) reportMovies.remove(posMovie);
-            reportMovie.setAmountRental(amountSaleMovie.getAmount());
+            reportMovie.setQuantityRental(amountSaleMovie.getAmount());
             reportMovies.add(posMovie, reportMovie);
         }
     }
@@ -135,7 +135,7 @@ public class MovieReportLogic {
             AmountSaleMovie amountSaleMovie = (AmountSaleMovie) modelObject;
             int posMovie = findMovie(amountSaleMovie.getIdMovie(), reportMovies);
             ReportMovie reportMovie = (ReportMovie) reportMovies.remove(posMovie);
-            reportMovie.setAmountBuy(amountSaleMovie.getAmount());
+            reportMovie.setQuantityBuy(amountSaleMovie.getAmount());
             reportMovies.add(posMovie, reportMovie);
         }
     }

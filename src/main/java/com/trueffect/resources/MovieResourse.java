@@ -66,6 +66,7 @@ public class MovieResourse {
         Response response = mapper.toResponse(either);
         return response;
     }
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response reportMovieSale(@QueryParam("idSearchUser") long idSearchUser) {

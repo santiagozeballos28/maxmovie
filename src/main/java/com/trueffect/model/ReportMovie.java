@@ -6,28 +6,30 @@ import com.trueffect.util.ModelObject;
  *
  * @author santiago.mamani
  */
-public class ReportMovie extends ModelObject{
+public class ReportMovie extends ModelObject {
 
     private long idMovie;
     private String nameMovie;
-    private int amountCurrent;
-    private int amountRental;
-    private int amountBuy;
+    private int quantityCurrent;
+    private int quantityRental;
+    private int quantityBuy;
+    private String statusMovie;
 
     public ReportMovie() {
     }
 
-    public ReportMovie(long idMovie, String nameMovie) {
+    public ReportMovie(long idMovie, String nameMovie, String statusMovie) {
         this.idMovie = idMovie;
         this.nameMovie = nameMovie;
+        this.statusMovie = statusMovie;
     }
 
-    public ReportMovie(long idMovie, String nameMovie, int amountCurrent, int amountRental, int amountBuy) {
+    public ReportMovie(long idMovie, String nameMovie, int quantityCurrent, int quantityRental, int quantityBuy) {
         this.idMovie = idMovie;
         this.nameMovie = nameMovie;
-        this.amountCurrent = amountCurrent;
-        this.amountRental = amountRental;
-        this.amountBuy = amountBuy;
+        this.quantityCurrent = quantityCurrent;
+        this.quantityRental = quantityRental;
+        this.quantityBuy = quantityBuy;
     }
 
     public long getIdMovie() {
@@ -38,16 +40,20 @@ public class ReportMovie extends ModelObject{
         return nameMovie;
     }
 
-    public int getAmountCurrent() {
-        return amountCurrent;
+    public int getQuantityCurrent() {
+        return quantityCurrent;
     }
 
-    public int getAmountRental() {
-        return amountRental;
+    public int getQuantityRental() {
+        return quantityRental;
     }
 
-    public int getAmountBuy() {
-        return amountBuy;
+    public int getQuantityBuy() {
+        return quantityBuy;
+    }
+
+    public String getStatusMovie() {
+        return statusMovie;
     }
 
     public void setIdMovie(long idMovie) {
@@ -58,15 +64,19 @@ public class ReportMovie extends ModelObject{
         this.nameMovie = nameMovie;
     }
 
-    public void setAmountCurrent(int amountCurrent) {
-        this.amountCurrent = amountCurrent;
+    public void setQuantityCurrent(int quantityCurrent) {
+        this.quantityCurrent = quantityCurrent;
     }
 
-    public void setAmountRental(int amountRental) {
-        this.amountRental = amountRental;
+    public void setQuantityRental(int quantityRental) {
+        this.quantityRental = quantityRental;
     }
 
-    public void setAmountBuy(int amountBuy) {
-        this.amountBuy = amountBuy;
+    public void setQuantityBuy(int quantityBuy) {
+        this.quantityBuy = quantityBuy;
+    }
+
+    public void setStatusMovie(String statusMovie) {
+        this.statusMovie = statusMovie;
     }
 }
