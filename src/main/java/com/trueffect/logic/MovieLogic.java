@@ -37,7 +37,7 @@ public class MovieLogic {
     private MovieValidationDB movieValidationDB;
 
     public MovieLogic() {
-        String object = ConstantData.ObjectMovie.Movie.name();
+        String object = ConstantData.ObjectMovie.Movie.getDescription();
         listData = new HashMap<String, String>();
         permission = new Permission();
         permission.setNameObject(object);
@@ -296,7 +296,7 @@ public class MovieLogic {
             Either eitherMovie = movieCrud.getMovie(connection, idMovie, status);
             movie = (Movie) eitherMovie.getFirstObject();
             if (movie.isEmpty()) {
-                String object = ConstantData.ObjectMovie.Movie.name();
+                String object = ConstantData.ObjectMovie.Movie.getDescription();
                 listData.clear();
                 listData.put(ConstantData.OBJECT, object);
                 String errorMgs = OperationString.generateMesage(Message.NOT_FOUND, listData);
@@ -335,12 +335,19 @@ public class MovieLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
+            Movie movie = (Movie)eitherRes.getFirstObject();
             //Validation Status(Active, Inactive)
             OperationModel operationModel = new OperationModel();
             eitherRes = operationModel.verifyStatus(connection, status);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
+            String nameObject = ConstantData.ObjectMovie.Movie.getDescription();
+            eitherRes = operationModel.verifyStatusModelObject(nameObject, movie.getStatus(), status);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            status = StringUtils.capitalize(status.trim().toLowerCase());
             eitherRes = movieCrud.updateStatusMovie(connection, idModifyUser, idMovie, status);
             if (eitherRes.existError()) {
                 throw eitherRes;

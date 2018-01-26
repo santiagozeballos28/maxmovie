@@ -33,7 +33,7 @@ public class PersonLogic {
     private JobCrud jobCrud;
 
     public PersonLogic() {
-        String renterUser = ObjectMovie.RennterUser.name();
+        String renterUser = ObjectMovie.RennterUser.getDescription();
         listData = new HashMap<String, String>();
         permission = new Permission();
         personValidationsDB = new PersonValidationsDB();
@@ -97,7 +97,7 @@ public class PersonLogic {
         return eitherRes;
     }
 
-    public Either updateStatus(long idPerson, long idUserModify, String status) {
+    public Either updateStatus(long idPerson, long idModifierUser, String status) {
         Either eitherRes = new Either();
         Connection connection = null;
         try {
@@ -106,12 +106,12 @@ public class PersonLogic {
             String delete = Crud.delete.name();
             String statusActive = Status.Active.name();
             //checks if the employee exists
-            eitherRes = permission.getPerson(connection, idUserModify, statusActive, delete);
+            eitherRes = permission.getPerson(connection, idModifierUser, statusActive, delete);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
             //Check if the user can modify
-            eitherRes = permission.checkUserPermission(connection, idUserModify, delete);
+            eitherRes = permission.checkUserPermission(connection, idModifierUser, delete);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -120,13 +120,20 @@ public class PersonLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
+            Person person = (Person) eitherRes.getFirstObject();
             //Validation Status(Active, Inactive)          
             OperationModel operationModel = new OperationModel();
             eitherRes = operationModel.verifyStatus(connection, status);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            eitherRes = personCrud.updateStatusPerson(connection, idPerson, idUserModify, status);
+            String renterUser = ObjectMovie.RennterUser.getDescription();
+            eitherRes = operationModel.verifyStatusModelObject(renterUser, person.getStatus(), status);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            status = StringUtils.capitalize(status.trim().toLowerCase());
+            eitherRes = personCrud.updateStatusPerson(connection, idPerson, idModifierUser, status);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -227,7 +234,7 @@ public class PersonLogic {
     }
 
     private Either getPerson(Connection connection, long idPerson, String status) {
-        String renterUser = ObjectMovie.RennterUser.name();
+        String renterUser = ObjectMovie.RennterUser.getDescription();
         Either eitherRes = new Either();
         Person person = new Person();
         ArrayList<String> listError = new ArrayList<String>();
@@ -248,7 +255,7 @@ public class PersonLogic {
         return eitherRes;
     }
 
-    public Either get(long idUserSearch, String typeId, String identifier, String lastName, String firstName, String genre) {
+    public Either get(long idUserSearch, String typeId, String identifier, String lastName, String firstName, String genre, String birthdayStart, String birthdayEnd) {
         Either eitherRes = new Either();
         Connection connection = null;
         try {
@@ -275,7 +282,7 @@ public class PersonLogic {
                 firstName = OperationString.generateName(firstName.trim());
                 firstName = OperationString.addApostrophe(firstName);
             }
-            eitherRes = personCrud.getPersonBy(connection, typeId, identifier, lastName, firstName, genre);
+            eitherRes = personCrud.getPersonBy(connection, typeId, identifier, lastName, firstName, genre, birthdayStart, birthdayEnd);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }

@@ -67,6 +67,8 @@ public class EmployeeResourse {
             @QueryParam("lastName") String lastName,
             @QueryParam("firstName") String firstName,
             @QueryParam("genre") String genre,
+            @QueryParam("birthdayStart") String birthdayStart,
+            @QueryParam("birthdayEnd") String birthdayEnd,
             @QueryParam("dateOfHire") String dateOfHire,
             @QueryParam("job") String job) {
         Either eitherRenter = employeeLogic.get(
@@ -76,6 +78,8 @@ public class EmployeeResourse {
                 lastName,
                 firstName,
                 genre,
+                birthdayStart,
+                birthdayEnd,
                 dateOfHire,
                 job);
         Response response = mapper.toResponse(eitherRenter);

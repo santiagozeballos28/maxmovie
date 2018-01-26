@@ -46,7 +46,7 @@ public class EmployeeLogic {
     private SalaryCrud salaryCrud;
 
     public EmployeeLogic() {
-        String object = ObjectMovie.Employee.name();
+        String object = ObjectMovie.Employee.getDescription();
         listData = new HashMap<String, String>();
         permission = new Permission();
         personLogic = new PersonLogic();
@@ -315,7 +315,7 @@ public class EmployeeLogic {
             Either eitherEmployee = employeeCrud.getEmployee(connection, idEmployee, status);
             employee = (Employee) eitherEmployee.getFirstObject();
             if (employee.isEmpty()) {
-                String object = ObjectMovie.Employee.name();
+                String object = ObjectMovie.Employee.getDescription();
                 listData.clear();
                 listData.put(ConstantData.OBJECT, object);
                 String errorMgs = OperationString.generateMesage(Message.NOT_FOUND, listData);
@@ -427,7 +427,17 @@ public class EmployeeLogic {
         return resPhones;
     }
 
-    public Either get(long idUserSearch, String typeId, String identifier, String lastName, String firstName, String genre, String dateOfHire, String job) {
+    public Either get(
+            long idUserSearch,
+            String typeId,
+            String identifier,
+            String lastName,
+            String firstName,
+            String genre,
+            String birthdayStart,
+            String birthdayEnd,
+            String dateOfHire,
+            String job) {
         Either eitherRes = new Either();
         Connection connection = null;
         try {
@@ -455,7 +465,7 @@ public class EmployeeLogic {
             if (StringUtils.isNotBlank(job)) {
                 jobName = job.toUpperCase();
             }
-            eitherRes = employeeCrud.getEmployeeBy(connection, typeId, identifier, lastName, firstName, genre, dateOfHire, jobName);
+            eitherRes = employeeCrud.getEmployeeBy(connection, typeId, identifier, lastName, firstName, genre, birthdayStart, birthdayEnd, dateOfHire, jobName);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -499,6 +509,7 @@ public class EmployeeLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
+            status = StringUtils.capitalize(status.trim().toLowerCase());
             eitherRes = personCrud.updateStatusPerson(connection, idEmployee, idUserModify, status);
             if (eitherRes.existError()) {
                 throw eitherRes;

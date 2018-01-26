@@ -118,7 +118,8 @@ public class EmployeeCrud {
                     + "       birthday, "
                     + "       date_of_hire, "
                     + "       address, "
-                    + "       job_name\n"
+                    + "       job_name,"
+                    + "       PERSON.status\n"
                     + "  FROM PERSON, DATA_JOB, JOB\n"
                     + " WHERE PERSON.type_identifier='" + typeIdentifier + "' "
                     + "   AND PERSON.identifier='" + identifier + "'"
@@ -138,7 +139,8 @@ public class EmployeeCrud {
                         rs.getString("birthday"),
                         rs.getString("date_of_hire"),
                         rs.getString("address"),
-                        rs.getString("job_name")
+                        rs.getString("job_name"),
+                        rs.getString("status")
                 );
             }
             if (query != null) {
@@ -220,7 +222,8 @@ public class EmployeeCrud {
                     + "       birthday, "
                     + "       date_of_hire,"
                     + "       address,"
-                    + "       job_name\n"
+                    + "       job_name,"
+                    + "       PERSON.status\n"
                     + "  FROM PERSON, DATA_JOB, JOB\n"
                     + " WHERE PERSON.person_id = ? "
                     + "   AND DATA_JOB.status = 'Active'"
@@ -245,7 +248,8 @@ public class EmployeeCrud {
                         rs.getString("birthday"),
                         rs.getString("date_of_hire"),
                         rs.getString("address"),
-                        rs.getString("job_name"));
+                        rs.getString("job_name"),
+                        rs.getString("status"));
             }
             if (st != null) {
                 st.close();
@@ -315,6 +319,8 @@ public class EmployeeCrud {
             String lastName,
             String firstName,
             String genre,
+            String birthdayStart,
+            String birthdayEnd,
             String dateOfHire,
             String nameJob) {
         Either eitherRes = new Either();
@@ -372,6 +378,18 @@ public class EmployeeCrud {
             if (StringUtils.isNotBlank(genre)) {
                 conditionQuery = conditionQuery + " genre= '" + genre.trim().toUpperCase() + "' OR";
             }
+            if (StringUtils.isNotBlank(birthdayStart) && StringUtils.isNotBlank(birthdayEnd)) {
+                conditionQuery = conditionQuery
+                        + " ( birthday >= '" + birthdayStart.trim() + "' AND "
+                        + "   birthday <= '" + birthdayEnd.trim() + "') OR";
+            } else {
+                if (StringUtils.isNotBlank(birthdayStart)) {
+                    conditionQuery = conditionQuery + " birthday >= '" + birthdayStart.trim() + "' OR";
+                }
+                if (StringUtils.isNotBlank(birthdayEnd)) {
+                    conditionQuery = conditionQuery + " birthday <= '" + birthdayEnd.trim() + "' OR";
+                }
+            }
 
             if (StringUtils.isNotBlank(nameJob)) {
                 conditionQuery = conditionQuery + " job_name= '" + nameJob.trim().toUpperCase() + "' OR";
@@ -385,7 +403,6 @@ public class EmployeeCrud {
             }
             query = query + ") EMPLOYEE, PERSON "
                     + " WHERE EMPLOYEE.create_user = PERSON.person_id";
-
             PreparedStatement st = connection.prepareStatement(query);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {

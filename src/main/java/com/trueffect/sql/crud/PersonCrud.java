@@ -77,7 +77,8 @@ public class PersonCrud {
                     + "       last_name, "
                     + "       first_name, "
                     + "       genre,"
-                    + "       birthday\n"
+                    + "       birthday,"
+                    + "       status\n"
                     + "  FROM PERSON "
                     + " WHERE type_identifier = '" + typeIdentifier + "' "
                     + "   AND identifier = '" + identifier + "'";
@@ -91,7 +92,8 @@ public class PersonCrud {
                         rs.getString("last_name"),
                         rs.getString("first_name"),
                         rs.getString("genre"),
-                        rs.getString("birthday"));
+                        rs.getString("birthday"),
+                        rs.getString("status"));
             }
             if (query != null) {
                 query.close();
@@ -113,7 +115,8 @@ public class PersonCrud {
                     + "       last_name, "
                     + "       first_name, "
                     + "       genre, "
-                    + "       birthday\n"
+                    + "       birthday,"
+                    + "       status\n"
                     + "  FROM PERSON "
                     + " WHERE last_name = '" + lastName + "' "
                     + "   AND first_name='" + firstName + "'";
@@ -129,7 +132,8 @@ public class PersonCrud {
                         rs.getString("last_name"),
                         rs.getString("first_name"),
                         rs.getString("genre"),
-                        rs.getString("birthday"));
+                        rs.getString("birthday"),
+                        rs.getString("status"));
             }
             if (st != null) {
                 st.close();
@@ -151,7 +155,8 @@ public class PersonCrud {
                     + "       last_name, "
                     + "       first_name, "
                     + "       genre, "
-                    + "       birthday"
+                    + "       birthday,"
+                    + "       PERSON.status"
                     + "  FROM PERSON"
                     + " WHERE person_id= ? ";
             if (StringUtils.isNotBlank(status)) {
@@ -175,7 +180,8 @@ public class PersonCrud {
                         rs.getString("last_name"),
                         rs.getString("first_name"),
                         rs.getString("genre"),
-                        rs.getString("birthday"));
+                        rs.getString("birthday"),
+                        rs.getString("status"));
             }
             if (st != null) {
                 st.close();
@@ -271,7 +277,9 @@ public class PersonCrud {
             String identifier,
             String lastName,
             String firstName,
-            String genre) {
+            String genre,
+            String birthdayStart,
+            String birthdayEnd) {
         Either eitherRes = new Either();
         try {
             String query
@@ -323,6 +331,19 @@ public class PersonCrud {
             if (StringUtils.isNotBlank(genre)) {
                 conditionQuery = conditionQuery + " RENTER_USER.genre= '" + genre.trim().toUpperCase() + "' OR";
             }
+            if (StringUtils.isNotBlank(birthdayStart) && StringUtils.isNotBlank(birthdayEnd)) {
+                conditionQuery = conditionQuery
+                        + " ( RENTER_USER.birthday >= '" + birthdayStart.trim() + "' AND "
+                        + " RENTER_USER.birthday <= '" + birthdayEnd.trim() + "') OR";
+            } else {
+                if (StringUtils.isNotBlank(birthdayStart)) {
+                    conditionQuery = conditionQuery + " RENTER_USER.birthday >= '" + birthdayStart.trim() + "' OR";
+                }
+                if (StringUtils.isNotBlank(birthdayEnd)) {
+                    conditionQuery = conditionQuery + " RENTER_USER.birthday <= '" + birthdayEnd.trim() + "' OR";
+                }
+            }
+
             if (conditionQuery.length() > 0) {
                 conditionQuery = conditionQuery.substring(0, conditionQuery.length() - 2);
                 query = query + " AND (" + conditionQuery + ")";
@@ -369,7 +390,8 @@ public class PersonCrud {
                     + "       last_name, "
                     + "       first_name, "
                     + "       genre, "
-                    + "       birthday"
+                    + "       birthday,"
+                    + "       status"
                     + "  FROM PERSON"
                     + " WHERE person_id= ? ";
             if (StringUtils.isNotBlank(status)) {
@@ -387,7 +409,8 @@ public class PersonCrud {
                         rs.getString("last_name"),
                         rs.getString("first_name"),
                         rs.getString("genre"),
-                        rs.getString("birthday"));
+                        rs.getString("birthday"),
+                        rs.getString("status"));
             }
             if (st != null) {
                 st.close();
