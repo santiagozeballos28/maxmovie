@@ -8,7 +8,7 @@ import com.trueffect.util.ModelObject;
  */
 public class Bond extends ModelObject {
 
-    private int id;
+    private long id;
     private double quantity;
     private int seniority;
     private String startDate;
@@ -17,15 +17,15 @@ public class Bond extends ModelObject {
     public Bond() {
     }
 
-    public Bond(int id, double quantity, int seniority, String startDate, String endDate) {
+    public Bond(long id, double quantity, int seniority, String startDate, String endDate) {
         this.id = id;
         this.quantity = quantity;
         this.seniority = seniority;
-        this.startDate = startDate.trim();
-        this.endDate = endDate.trim();
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -45,7 +45,7 @@ public class Bond extends ModelObject {
         return endDate;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -64,6 +64,4 @@ public class Bond extends ModelObject {
     public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
-
-    
 }

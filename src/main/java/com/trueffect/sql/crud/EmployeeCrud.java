@@ -522,22 +522,23 @@ public class EmployeeCrud {
     public Either getAllDataJob(Connection connection, String status) {
         try {
             String query
-                    = "SELECT id_person,"
+                    = "SELECT DATA_JOB.person_id,"
                     + "       date_of_hire, "
                     + "       address"
                     + "  FROM PERSON , DATA_JOB"
-                    + " WHERE PERSON.id = DATA_JOB.id_person";
+                    + " WHERE PERSON.person_id = DATA_JOB.person_id";
 
             if (StringUtils.isNotBlank(status)) {
-                query = query + " AND status = '" + status + "'";
+                query = query + " AND PERSON.status = '" + status + "' AND DATA_JOB.status = '" + status + "'";
             }
+
             PreparedStatement st = connection.prepareStatement(query);
             ResultSet rs = st.executeQuery();
             Either eitherRes = new Either();
             DataJob dataJob = new DataJob();
             while (rs.next()) {
                 dataJob = new DataJob(
-                        rs.getLong("id_person"),
+                        rs.getLong("person_id"),
                         rs.getString("date_of_hire"),
                         rs.getString("address"));
                 eitherRes.addModeloObjet(dataJob);
@@ -558,12 +559,14 @@ public class EmployeeCrud {
     public static Either getBond(Connection connection) {
         try {
             String query
-                    = "SELECT id,"
+                    = "SELECT bond_id,"
                     + "       quantity, "
                     + "       seniority,"
                     + "       start_date,"
                     + "       end_date"
-                    + "  FROM bond";
+                    + "  FROM BOND"
+                    + " ORDER BY seniority "
+                    + "   ASC ";
 
             PreparedStatement st = connection.prepareStatement(query);
             ResultSet rs = st.executeQuery();
@@ -571,7 +574,7 @@ public class EmployeeCrud {
             Bond bond = new Bond();
             while (rs.next()) {
                 bond = new Bond(
-                        rs.getInt("id"),
+                        rs.getLong("bond_id"),
                         rs.getDouble("quantity"),
                         rs.getInt("seniority"),
                         rs.getString("start_date"),
@@ -581,7 +584,6 @@ public class EmployeeCrud {
             if (st != null) {
                 st.close();
             }
-
             eitherRes.setCode(CodeStatus.CREATED);
             return eitherRes;
         } catch (Exception exception) {
@@ -594,12 +596,12 @@ public class EmployeeCrud {
     public Either getBondAssigned(Connection connection) {
         try {
             String query
-                    = "SELECT data_job_id, "
+                    = "SELECT person_id, "
                     + "       bond_id, "
                     + "       start_date, "
                     + "       end_date, "
                     + "       status\n"
-                    + "  FROM bond_assigned;";
+                    + "  FROM BOND_ASSIGNED;";
 
             PreparedStatement st = connection.prepareStatement(query);
             ResultSet rs = st.executeQuery();
@@ -607,7 +609,7 @@ public class EmployeeCrud {
             BondAssigned bondAssigned = new BondAssigned();
             while (rs.next()) {
                 bondAssigned = new BondAssigned(
-                        rs.getLong("data_job_d"),
+                        rs.getLong("person_id"),
                         rs.getLong("bond_id"),
                         rs.getString("start_date"),
                         rs.getString("end_date"),

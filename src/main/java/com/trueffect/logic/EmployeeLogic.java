@@ -580,7 +580,7 @@ public class EmployeeLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            Either dataJobs = eitherRes;
+            ArrayList<ModelObject> listDataJob = eitherRes.getListObject();
             eitherRes = employeeCrud.getBond(connection);
             if (eitherRes.existError()) {
                 throw eitherRes;
@@ -588,7 +588,7 @@ public class EmployeeLogic {
             //list de bond
             ArrayList<ModelObject> listBond = eitherRes.getListObject();
             //bonus is assigned to each employee
-            eitherRes = bondAsigned(dataJobs, eitherRes);
+            eitherRes = bondAsigned(listDataJob, listBond);
             if (!eitherRes.haveModelObject()) {
                 throw eitherRes;// an error is thrown if nothing exists to update
             }
@@ -617,7 +617,6 @@ public class EmployeeLogic {
             }
             //processed to insert assigned bonuses
             eitherRes = getInsertBondAsigned(assignNewBonds, assignCurrentBonds);
-
             ArrayList<ModelObject> insertAssignBonds = updateAssignBonds;
             insertAssignBonds.addAll(eitherRes.getListObject());
             if (!insertAssignBonds.isEmpty()) {
@@ -652,17 +651,16 @@ public class EmployeeLogic {
         return eitherRes;
     }
 
-    private Either bondAsigned(Either eitherDataJob, Either eitherBond) {
+    private Either bondAsigned(ArrayList<ModelObject> listDataJob, ArrayList<ModelObject> listBond) {
         Either eitherRes = new Either();
-        ArrayList<ModelObject> listDataJob = eitherDataJob.getListObject();
-        ArrayList<ModelObject> listBond = eitherBond.getListObject();
-        Short.bundle(listBond);
+        //Short.bundle(listBond);
         for (int i = 0; i < listDataJob.size(); i++) {
             DataJob dataJob = (DataJob) listDataJob.get(i);
             int yearsEmployeeSeniority = DateOperation.diferenceYear(dataJob.getDateOfHire());
-            int idBondOfEmployee = getIdBondOf(yearsEmployeeSeniority, listBond);
+            long idBondOfEmployee = getIdBondOf(yearsEmployeeSeniority, listBond);
             if (idBondOfEmployee != -1) {
                 //el ide cambiar
+                System.out.println("ID_EMPLOYEE: " + dataJob.getEmployeeId());
                 eitherRes.addModeloObjet(new BondAssigned(dataJob.getEmployeeId(), idBondOfEmployee));
             }
 
@@ -757,7 +755,7 @@ public class EmployeeLogic {
         return bond;
     }
 
-    private int getIdBondOf(int yearsEmployeeSeniority, ArrayList<ModelObject> listBond) {
+    private long getIdBondOf(int yearsEmployeeSeniority, ArrayList<ModelObject> listBond) {
         boolean findSeniority = false;
         int i = 0;
         while (i < listBond.size() && !findSeniority) {

@@ -26,8 +26,8 @@ public class BondAssignedCrud {
                 long idBond = bondAssigned.getIdBond();
                 sql = sql
                         + "INSERT INTO bond_assigned ("
-                        + "id_person, "
-                        + "id_bond, "
+                        + "person_id, "
+                        + "bond_id, "
                         + "start_date, "
                         + "end_date, "
                         + "status) "
@@ -37,7 +37,6 @@ public class BondAssignedCrud {
                         + "current_date,"
                         + "null,"
                         + "'Active'); ";
-
             }
             query.execute(sql);
             if (query != null) {
@@ -62,8 +61,8 @@ public class BondAssignedCrud {
                         = "UPDATE BOND_ASSIGNED\n"
                         + "   SET end_date = current_date , "
                         + "       status = '" + status + "'"
-                        + " WHERE id_person = " + bondAssigned.getIdPerson() + " "
-                        + "   AND id_bond = " + bondAssigned.getIdBond() + ";";
+                        + " WHERE person_id = " + bondAssigned.getIdPerson() + " "
+                        + "   AND bond_id = " + bondAssigned.getIdBond() + ";";
             }
             query.execute(sql);
             if (query != null) {
@@ -76,5 +75,5 @@ public class BondAssignedCrud {
             return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
         }
     }
-   
+
 }

@@ -46,19 +46,18 @@ public class SalaryCrud {
         try {
             Statement query = (Statement) connection.createStatement();
             String sql
-                    = "SELECT id_employee, "
+                    = "SELECT employee_id, "
                     + "       net_salary, "
                     + "       bond, "
                     + "       liquid_salary, "
                     + "       end_date, "
                     + "       status\n"
-                    + "  FROM salary;";
+                    + "  FROM SALARY;";
             ResultSet rs = query.executeQuery(sql);
             Either eitherRes = new Either();
             while (rs.next()) {
-
                 Salary salary = new Salary(
-                        rs.getInt("id_employee"),
+                        rs.getInt("employee_id"),
                         rs.getDouble("net_salary"),
                         rs.getDouble("bond"),
                         rs.getDouble("liquid_salary"),
@@ -88,7 +87,7 @@ public class SalaryCrud {
                 Salary salary = listSalary.get(i);
                 sql = sql
                         + "INSERT INTO salary("
-                        + "id_employee, "
+                        + "employee_id, "
                         + "net_salary, "
                         + "bond, "
                         + "liquid_salary, "
@@ -102,7 +101,6 @@ public class SalaryCrud {
                         + "null,"
                         + "'Active');";
             }
-
             //ident
             query.execute(sql);
             if (query != null) {
@@ -115,5 +113,4 @@ public class SalaryCrud {
             return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
         }
     }
-
 }

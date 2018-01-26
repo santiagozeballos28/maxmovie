@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.trueffect</groupId>
-    <artifactId>MovieProyectWebV13</artifactId>
+    <artifactId>MovieProyectWebV15</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
-    <name>MovieProyectWebV13</name>
+    <name>MovieProyectWebV15</name>
 
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
