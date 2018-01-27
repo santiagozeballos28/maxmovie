@@ -10,6 +10,8 @@ public class RentalDetail extends SaleDetail {
     private String returnDate;
     private double amountOficial;
     private long employeeReceive;
+    private double penalty;
+    private double priceOficial;
     private String note;
 
     public RentalDetail() {
@@ -35,6 +37,14 @@ public class RentalDetail extends SaleDetail {
         return employeeReceive;
     }
 
+    public double getPenalty() {
+        return penalty;
+    }
+
+    public double getPriceOficial() {
+        return priceOficial;
+    }
+
     public String getNote() {
         return note;
     }
@@ -53,6 +63,14 @@ public class RentalDetail extends SaleDetail {
 
     public void setEmployeeReceive(long employeeReceive) {
         this.employeeReceive = employeeReceive;
+    }
+
+    public void setPenalty(double penalty) {
+        this.penalty = penalty;
+    }
+
+    public void setPriceOficial(double priceOficial) {
+        this.priceOficial = priceOficial;
     }
 
     public void setNote(String note) {

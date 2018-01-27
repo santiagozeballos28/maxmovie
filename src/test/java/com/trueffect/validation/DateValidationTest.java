@@ -210,4 +210,45 @@ public class DateValidationTest {
         String dateLast = "2018-02-23";
         Assert.assertEquals(DateOperation.areSameMonthAndYear(dateFirst, dateLast), expected);
     }
+
+    //@Test
+    public void testTimestampDiferenceMinutos() {
+
+        int expected = 0;
+        String dateFirst = "2018-02-17 19:55:27.114";
+        String dateSecond = "2018-02-17 20:59:27.114";
+        System.out.println("DIF1: " + DateOperation.diferenceMinutes(dateFirst, dateSecond));
+        Assert.assertEquals(DateOperation.diferenceMinutes(dateFirst, dateSecond), expected);
+    }
+
+    //@Test
+    public void testTimestampDiferenceMinutos2() {
+
+        int expected = 1440;
+        String dateFirst = "2018-02-17 19:55:27.114";
+        String dateSecond = "2018-02-19 19:57:27.114";
+        System.out.println("DIF2: " + DateOperation.diferenceMinutes(dateFirst, dateSecond));
+        Assert.assertEquals(DateOperation.diferenceMinutes(dateFirst, dateSecond), expected);
+    }
+
+    @Test
+    public void testTimestampDiferenceDay1() {
+
+        int expected = 2;
+        String dateFirst = "2018-02-17 19:55:27.114";
+        String dateSecond = "2018-02-19 19:57:27.114";
+        System.out.println("DIF2: " + DateOperation.diferenceDays(dateFirst, dateSecond));
+        Assert.assertEquals(DateOperation.diferenceDays(dateFirst, dateSecond), expected);
+    }
+
+    @Test
+    public void testTimestampDiferenceDay2() {
+
+        int expected = 2;
+        String dateFirst = "2018-01-25 19:55:27.114";
+        String dateSecond = DateOperation.getTimertampCurrent();
+        System.err.println("DATE SECOND: "+ dateSecond);
+        System.out.println("DIF2: " + DateOperation.diferenceDays(dateFirst, dateSecond));
+        Assert.assertEquals(DateOperation.diferenceDays(dateFirst, dateSecond), expected);
+    }
 }

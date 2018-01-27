@@ -62,7 +62,7 @@ public class EmployeeUpdate extends PersonUpdate {
 
     private void validationDateOfHire(String dateOfHire, String birthday, ArrayList<String> listError) {
         String errorMessage = "";
-        boolean validDateOfHire = dateValidation.isValidDate(dateOfHire, listError);
+        boolean validDateOfHire = dateValidation.isValidDate(ConstantData.DATE_OF_HIRE, dateOfHire, listError);
         boolean validDateOfHireRange;
         if (validDateOfHire) {
             validDateOfHireRange = dateValidation.verifyDateRangeValid(dateOfHire, listError);

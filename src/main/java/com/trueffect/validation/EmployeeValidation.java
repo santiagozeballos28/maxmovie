@@ -24,9 +24,9 @@ public class EmployeeValidation {
         if (!DateOperation.isLess(birthday, dateOfHire)) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.DATE_OF_HIRE);
-            listData.put(ConstantData.DATA, dateOfHire);
+            listData.put(ConstantData.DATA, dateOfHire.trim());
             listData.put(ConstantData.TYPE_DATA_TWO, ConstantData.BIRTHDAY);
-            listData.put(ConstantData.DATA_TWO, birthday);
+            listData.put(ConstantData.DATA_TWO, birthday.trim());
             String errorMessages = OperationString.generateMesage(Message.DATE_INCOHERENT, listData);
             listError.add(errorMessages);
         }
@@ -34,14 +34,14 @@ public class EmployeeValidation {
     }
 
     public void verifyJob(String job, ArrayList<String> listError) {
-        if (!EmployeeValidationUtil.isValidJob(job.toUpperCase())) {
+        if (!EmployeeValidationUtil.isValidJob(job.trim().toUpperCase())) {
             String validNameJob
                     = ConstantData.JobName.MGR.getDescriptionJobName() + ", "
                     + ConstantData.JobName.CSHR.getDescriptionJobName() + ", "
                     + ConstantData.JobName.CC.getDescriptionJobName();
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.JOB);
-            listData.put(ConstantData.DATA, job);
+            listData.put(ConstantData.DATA, job.trim());
             listData.put(ConstantData.VALID, validNameJob);
             String errorMessages = OperationString.generateMesage(Message.NOT_VALID_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessages);

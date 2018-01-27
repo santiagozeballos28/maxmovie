@@ -117,7 +117,7 @@ public class PersonCreate implements DataCondition {
         //Validation of genre
         personValidation.verifyGenre(person.getGenre(), listError);
         //Validation of birthday (format date)
-        boolean validBirthdayFormat = dateValidation.isValidDate(person.getBirthday(), listError);
+        boolean validBirthdayFormat = dateValidation.isValidDate(ConstantData.BIRTHDAY,person.getBirthday(), listError);
         if (validBirthdayFormat) {
             //Validation of age
             dateValidation.verifyDateRangeValid(person.getBirthday(), listError);

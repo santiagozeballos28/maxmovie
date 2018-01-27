@@ -85,7 +85,7 @@ public class EmployeeCreate extends PersonCreate {
         Either eitherPerson = super.verifyData(resource);
         listError.addAll(eitherPerson.getListError());
         //Validation date of hire
-        boolean validDateOfHire = dateValidation.isValidDate(employee.getDateOfHire(), listError);
+        boolean validDateOfHire = dateValidation.isValidDate(ConstantData.DATE_OF_HIRE,employee.getDateOfHire(), listError);
         boolean validDateRange;
         if (validDateOfHire) {
             validDateRange = dateValidation.verifyDateRangeValid(employee.getDateOfHire(), listError);

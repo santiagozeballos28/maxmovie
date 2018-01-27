@@ -37,5 +37,5 @@ public class Message {
     //Message: data=missing quantity, nameObject = name of the movie, operation: type de sale
     public static String INSUFFICIENT_AMOUNT = "({data}) movies of {nameObject} are missing, to make the {operation}";
     // Message update status
-    public static String STATUS_MODEL_OBJECT="The {object} is already ({data})";
+    public static String STATUS_MODEL_OBJECT = "The {object} is already ({data})";
 }

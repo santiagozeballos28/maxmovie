@@ -14,6 +14,11 @@ public class Sale extends ModelObject{
     public Sale() {
     }
 
+    public Sale(long idMovie, int amount) {
+        this.idMovie = idMovie;
+        this.amount = amount;
+    }
+   
     public Sale(long idMovie, int amount, String operation) {
         this.idMovie = idMovie;
         this.amount = amount;

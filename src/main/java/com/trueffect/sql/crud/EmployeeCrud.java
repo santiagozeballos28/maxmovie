@@ -382,15 +382,7 @@ public class EmployeeCrud {
                 conditionQuery = conditionQuery
                         + " ( birthday >= '" + birthdayStart.trim() + "' AND "
                         + "   birthday <= '" + birthdayEnd.trim() + "') OR";
-            } else {
-                if (StringUtils.isNotBlank(birthdayStart)) {
-                    conditionQuery = conditionQuery + " birthday >= '" + birthdayStart.trim() + "' OR";
-                }
-                if (StringUtils.isNotBlank(birthdayEnd)) {
-                    conditionQuery = conditionQuery + " birthday <= '" + birthdayEnd.trim() + "' OR";
-                }
             }
-
             if (StringUtils.isNotBlank(nameJob)) {
                 conditionQuery = conditionQuery + " job_name= '" + nameJob.trim().toUpperCase() + "' OR";
             }
@@ -531,7 +523,6 @@ public class EmployeeCrud {
             if (StringUtils.isNotBlank(status)) {
                 query = query + " AND PERSON.status = '" + status + "' AND DATA_JOB.status = '" + status + "'";
             }
-
             PreparedStatement st = connection.prepareStatement(query);
             ResultSet rs = st.executeQuery();
             Either eitherRes = new Either();

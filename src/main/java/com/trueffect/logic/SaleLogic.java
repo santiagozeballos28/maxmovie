@@ -10,6 +10,7 @@ import com.trueffect.model.MasterDetail;
 import com.trueffect.model.MasterDetailSaile;
 import com.trueffect.model.Movie;
 import com.trueffect.model.Price;
+import com.trueffect.model.RentReturn;
 import com.trueffect.model.RentalDetail;
 import com.trueffect.model.Sale;
 import com.trueffect.model.SaleDetail;
@@ -27,6 +28,7 @@ import com.trueffect.tools.ConstantData;
 import com.trueffect.tools.ConstantData.OperationSale;
 import com.trueffect.util.ModelObject;
 import com.trueffect.util.OperationString;
+import com.trueffect.validation.RentReturnCreate;
 import com.trueffect.validation.SaleCreate;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -108,12 +110,10 @@ public class SaleLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-
-            eitherRes = saleValidationDB.verifyCopiesMovie(connection,sales);
+            eitherRes = saleValidationDB.verifyCopiesMovie(connection, sales);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-
             eitherRes = copyCrud.getCopyMovie(connection, idsMovieSale);
             if (eitherRes.existError()) {
                 throw eitherRes;
@@ -162,7 +162,6 @@ public class SaleLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            System.out.println("SE actualizo la copia");
             //Get data inserted
             eitherRes = masterDetailCrud.getDetailSaleOf(connection, idMasterDetail);
             if (eitherRes.existError()) {
@@ -185,7 +184,6 @@ public class SaleLogic {
             eitherRes.addListObject(reportRental);
             eitherRes.addListObject(reportBuy);
             eitherRes.setCode(CodeStatus.OK);
-
             DataBasePostgres.connectionCommit(connection);
         } catch (Either e) {
             eitherRes = e;
@@ -216,7 +214,6 @@ public class SaleLogic {
                     listData.put(ConstantData.DATA, idMovie + "");
                     String errorMgs = OperationString.generateMesage(Message.NOT_FOUND_WITH_ID, listData);
                     listError.add(errorMgs);
-
                 }
             }
         }
@@ -227,7 +224,6 @@ public class SaleLogic {
             listData.put(ConstantData.OBJECT, object);
             String errorMgs = OperationString.generateMesage(Message.AOMUNT_EMPTY_IDS, listData);
             listError.add(errorMgs);
-
         }
         if (!listError.isEmpty()) {
             return new Either(CodeStatus.BAD_REQUEST, listError);
@@ -324,7 +320,6 @@ public class SaleLogic {
 
     private double price(String priceId) {
         double priceRes = 0.0;
-
         boolean find = false;
         int i = 0;
         while (i < prices.size() && !find) {
@@ -367,5 +362,172 @@ public class SaleLogic {
             i++;
         }
         return createMovieDate;
+    }
+
+    public Either registerRentReturn(long idEmployee, long idRenterUser, long idMasterDetail, ArrayList<RentReturn> rentReturns) {
+        Either eitherRes = new Either();
+        Connection connection = null;
+        try {
+            //open conection 
+            connection = DataBasePostgres.getConection();
+            String create = ConstantData.Crud.create.name();
+            String update = ConstantData.Crud.update.name();
+            String active = ConstantData.Status.Active.name();
+
+            MovieValidationDB employeeValidationDB = new MovieValidationDB();
+            //checks if the employee exists
+            permission.setNameObject(ConstantData.ObjectMovie.Sale.name());
+            eitherRes = permission.getEmployee(connection, idEmployee, active);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            eitherRes = permission.getRenterUser(connection, idRenterUser, active);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            //Validation of permission           
+            eitherRes = permission.checkUserPermissionCustomerCare(connection, idEmployee, create);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            ArrayList<Sale> rentReturnSales = new ArrayList<Sale>();
+            rentReturnSales.addAll(rentReturns);
+            eitherRes = checkMovies(connection, rentReturnSales);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            ArrayList<Long> idsMovieSale = getIdsMovie(rentReturnSales);
+            //Get movies           
+            eitherRes = movieCrud.getMovie(connection, idsMovieSale, active);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            RentReturnCreate rentReturnCreate = new RentReturnCreate(movies, rentReturnSales);
+            eitherRes = rentReturnCreate.complyCondition();
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            //To verify that the return amount is coherent with the rented
+            eitherRes = saleValidationDB.verifyRentQuantity(connection, idMasterDetail, rentReturnSales);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+
+            
+            
+            eitherRes = saleValidationDB.verifyCopiesMovie(connection, sales);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            eitherRes = copyCrud.getCopyMovie(connection, idsMovieSale);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            ArrayList<ModelObject> copiesMovie = eitherRes.getListObject();
+            eitherRes = priceCrud.getPrice(connection);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            prices = eitherRes.getListObject();
+            //splits sales in rental detail and buy detail
+            ArrayList<SaleDetail> rentalDetails = new ArrayList<SaleDetail>();
+            ArrayList<SaleDetail> buyDetails = new ArrayList<SaleDetail>();
+            splitSales(sales, copiesMovie, rentalDetails, buyDetails);
+            int amountTotal = getSubTotalAmount(rentalDetails) + getSubTotalAmount(buyDetails);
+            double priceTotal = getSubTotalPrice(rentalDetails) + getSubTotalPrice(buyDetails);
+            EmployeeCrud employeeCrud = new EmployeeCrud();
+            eitherRes = employeeCrud.getDataJob(connection, idCreateUser, active);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            long idDataJob = ((DataJob) eitherRes.getFirstObject()).getJobId();
+            MasterDetail masterDetail = new MasterDetail(amountTotal, priceTotal, idDataJob, idRenterUser);
+            eitherRes = masterDetailCrud.insert(connection, masterDetail);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            //Insert sale in the table master_detail
+            eitherRes = masterDetailCrud.insert(connection, masterDetail);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            long idMasterDetail = ((Identifier) eitherRes.getFirstObject()).getId();
+            //Insert sale in the table rental_detail
+            eitherRes = rentalDetailCrud.insert(connection, idMasterDetail, rentalDetails);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            //Insert sale in the table buy_detail
+            eitherRes = buyDetailCrud.insert(connection, idMasterDetail, buyDetails);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            //Update copy current of all the movies rentals and buys.
+            eitherRes = copyCrud.updateAmountCurrent(connection, idCreateUser, copiesMovie);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            //Get data inserted
+            eitherRes = masterDetailCrud.getDetailSaleOf(connection, idMasterDetail);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            MasterDetailSaile masterDetailPerson = (MasterDetailSaile) eitherRes.getFirstObject();
+            //Get amount subtotal and price subtotal of retal
+            eitherRes = reportSaleCrud.getReportRental(connection, idMasterDetail);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            ArrayList<ModelObject> reportRental = eitherRes.getListObject();
+            eitherRes = reportSaleCrud.getReportBuy(connection, idMasterDetail);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            ArrayList<ModelObject> reportBuy = eitherRes.getListObject();
+            eitherRes = new Either();
+            eitherRes.addModeloObjet(masterDetailPerson);
+            eitherRes.addListObject(reportRental);
+            eitherRes.addListObject(reportBuy);
+            eitherRes.setCode(CodeStatus.OK);
+            DataBasePostgres.connectionCommit(connection);
+        } catch (Either e) {
+            eitherRes = e;
+            DataBasePostgres.connectionRollback(connection, eitherRes);
+        } finally {
+            DataBasePostgres.connectionClose(connection, eitherRes);
+        }
+        return eitherRes;
+    }
+
+    private Either verifyPenalty(Connection connection, ArrayList<RentalDetail> rentalDetails, String dateRental) {
+        String dateCurrent = DateOperation.getTimertampCurrent();
+        int diferenceDays = DateOperation.diferenceDays(dateRental, dateCurrent);
+        if (diferenceDays > ConstantData.MAX_DAYS) {
+            return addPenalty(connection, rentalDetails, diferenceDays);
+        }
+        return new Either();
+    }
+
+    private Either addPenalty(Connection connection, ArrayList<RentalDetail> rentalDetails, int daysPenalty) {
+        String idPricePenalty = OperationSale.PEN.name();
+        Either eitherPrice = new Either();
+        try {
+
+            eitherPrice = priceCrud.getPriceOf(connection, idPricePenalty);
+        } catch (Exception e) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(e.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+        Price price = (Price) eitherPrice.getFirstObject();
+        double pricePenalty = price.getPrice();
+        for (int i = 0; i < rentalDetails.size(); i++) {
+            RentalDetail rentalDetail = rentalDetails.remove(i);
+            double rentalPriceCurrent = rentalDetail.getPriceOficial();
+            double penaltySubTotal = rentalDetail.getAmountOficial() * pricePenalty;
+            rentalDetail.setPriceOficial(rentalPriceCurrent + pricePenalty);
+            rentalDetails.add(i, rentalDetail);
+        }
+        return new Either();
     }
 }

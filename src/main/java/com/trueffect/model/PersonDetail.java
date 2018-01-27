@@ -86,4 +86,8 @@ public class PersonDetail extends Person {
     public String getFirstName() {
         return firstName;
     }
+    @JsonIgnore
+    public String getStatus() {
+        return status;
+    }
 }

@@ -217,12 +217,10 @@ public class MovieLogic {
             if (StringUtils.isNotBlank(genreMovie)) {
                 movie.setGenreId(genreMovie.toUpperCase());
             }
-
             eitherRes = movieCrud.updateMovie(connection, idModifyUser, movie);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-
             eitherRes = participateCrud.getIdsActorOf(connection, idMovie, statusActive);
             if (eitherRes.existError()) {
                 throw eitherRes;
@@ -335,7 +333,7 @@ public class MovieLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            Movie movie = (Movie)eitherRes.getFirstObject();
+            Movie movie = (Movie) eitherRes.getFirstObject();
             //Validation Status(Active, Inactive)
             OperationModel operationModel = new OperationModel();
             eitherRes = operationModel.verifyStatus(connection, status);

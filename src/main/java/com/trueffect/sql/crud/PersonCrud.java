@@ -335,15 +335,7 @@ public class PersonCrud {
                 conditionQuery = conditionQuery
                         + " ( RENTER_USER.birthday >= '" + birthdayStart.trim() + "' AND "
                         + " RENTER_USER.birthday <= '" + birthdayEnd.trim() + "') OR";
-            } else {
-                if (StringUtils.isNotBlank(birthdayStart)) {
-                    conditionQuery = conditionQuery + " RENTER_USER.birthday >= '" + birthdayStart.trim() + "' OR";
-                }
-                if (StringUtils.isNotBlank(birthdayEnd)) {
-                    conditionQuery = conditionQuery + " RENTER_USER.birthday <= '" + birthdayEnd.trim() + "' OR";
-                }
             }
-
             if (conditionQuery.length() > 0) {
                 conditionQuery = conditionQuery.substring(0, conditionQuery.length() - 2);
                 query = query + " AND (" + conditionQuery + ")";

@@ -77,7 +77,6 @@ public class PruebaLogic {
             connection = DataBasePostgres.getConection();
             String get = ConstantData.Crud.get.name();
             String status = ConstantData.Status.Active.name();
-            System.out.println("ENTRO A REPORT");
             //checks if the employee exists
             eitherRes = permission.getPerson(connection, idUserSearch, status, get);
             if (eitherRes.existError()) {

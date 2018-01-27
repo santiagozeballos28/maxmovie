@@ -71,6 +71,12 @@ public class DateOperation {
         return dateFormat.format(date);
     }
 
+    public static String getTimertampCurrent() {
+        DateFormat dateFormat = new SimpleDateFormat(ConstantData.TIMESTAMP_DATE_FORMAT);
+        Date date = new Date();
+        return dateFormat.format(date);
+    }
+
     public static boolean isLess(String dateFirst, String dateSecond) {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat(ConstantData.SIMPLE_DATE_FORMAT);
@@ -110,5 +116,40 @@ public class DateOperation {
         } catch (ParseException ex) {
         }
         return false;
+    }
+
+    /*
+    *It is mandatory that dateSecond be equal to or greater than date dateFirst.
+     */
+    public static int diferenceMinutes(String dateFirst, String dateSecond) {
+        int diferenceMin = -1;
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat(ConstantData.TIMESTAMP_DATE_FORMAT);
+            Date dateFirstFormat = dateFormat.parse(dateFirst);
+            Date dateSecondFormat = dateFormat.parse(dateSecond);
+            LocalDate localDateFirst = LocalDate.fromDateFields(dateFirstFormat);
+            LocalDate localDateSecond = LocalDate.fromDateFields(dateSecondFormat);
+            Period diff = Period.fieldDifference(localDateFirst, localDateSecond);
+            diferenceMin = diff.getMinutes();
+        } catch (ParseException ex) {
+        }
+        return diferenceMin;
+    }
+      /*
+    *It is mandatory that dateSecond be equal to or greater than date dateFirst.
+     */
+    public static int diferenceDays(String dateFirst, String dateSecond) {
+        int diferenceDays = -1;
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat(ConstantData.TIMESTAMP_DATE_FORMAT);
+            Date dateFirstFormat = dateFormat.parse(dateFirst);
+            Date dateSecondFormat = dateFormat.parse(dateSecond);
+            LocalDate localDateFirst = LocalDate.fromDateFields(dateFirstFormat);
+            LocalDate localDateSecond = LocalDate.fromDateFields(dateSecondFormat);
+            Period diff = Period.fieldDifference(localDateFirst, localDateSecond);
+            diferenceDays = diff.getDays();
+        } catch (ParseException ex) {
+        }
+        return diferenceDays;
     }
 }

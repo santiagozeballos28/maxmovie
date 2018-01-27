@@ -68,10 +68,17 @@ public class ConstantData {
     public static String VALID_OSCAR_NOMINARION = "0-100";
     // Date format to validate
     public static String SIMPLE_DATE_FORMAT = "yyyy-MM-dd";
+    public static String TIMESTAMP_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     public static String POSITIVE_NUMBERS = "positive numbers";
     //sale
     public static String AMOUNT_MOVIES = "amount the movies";
     public static String OPERATION_SALE = "type of sale";
+    public static String START = "start";
+    public static String END = "end";
+    //represents maximum two minutes
+    public static int MAX_MINUTES = 2880;
+     //represents maximum two days
+    public static int MAX_DAYS = 2;
 
     public enum ValidIdentifier {
         CI("all number"), PASS("3 letters 6 numbers [0-1] letter"), NIT("all number");
@@ -151,7 +158,7 @@ public class ConstantData {
     }
 
     public enum OperationSale {
-        R("Rental"), B("Buy"), BP("Buy Premier");
+        R("Rental"), B("Buy"), BP("Buy Premier"), PEN("Penalty");
         private String description;
 
         private OperationSale(String description) {

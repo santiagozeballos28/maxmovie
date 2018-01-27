@@ -18,12 +18,12 @@ public class DateValidation {
         listData = new HashMap<String, String>();
     }
 
-    public boolean isValidDate(String date, ArrayList<String> listError) {
+    public boolean isValidDate(String typeData, String date, ArrayList<String> listError) {
         boolean validDate = true;
         if (!DateOperation.isValidDateFormat(date)) {
             validDate = false;
             listData.clear();
-            listData.put(ConstantData.TYPE_DATA, ConstantData.BIRTHDAY);
+            listData.put(ConstantData.TYPE_DATA, typeData);
             listData.put(ConstantData.DATA, date);
             listData.put(ConstantData.VALID, ConstantData.VALID_DATE);
             String errorMessages = OperationString.generateMesage(Message.NOT_VALID_THE_VALID_DATA_ARE, listData);
@@ -43,5 +43,12 @@ public class DateValidation {
             listError.add(errorMessages);
         }
         return rangeValid;
+    }
+
+    public void emptyDate(String typeDate, ArrayList<String> listError) {
+        listData.clear();
+        listData.put(ConstantData.TYPE_DATA, typeDate);
+        String errorMessages = OperationString.generateMesage(Message.EMPTY_DATA, listData);
+        listError.add(errorMessages);
     }
 }

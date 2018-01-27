@@ -14,6 +14,7 @@ import com.trueffect.tools.ConstantData.ObjectMovie;
 import com.trueffect.tools.ConstantData.Status;
 import com.trueffect.util.OperationString;
 import com.trueffect.validation.PersonCreate;
+import com.trueffect.validation.PersonGet;
 import com.trueffect.validation.PersonUpdate;
 
 import java.sql.Connection;
@@ -25,13 +26,13 @@ import org.apache.commons.lang3.StringUtils;
  * @author santiago.mamani
  */
 public class PersonLogic {
-
+    
     private HashMap<String, String> listData;
     private PersonValidationsDB personValidationsDB;
     private Permission permission;
     private PersonCrud personCrud;
     private JobCrud jobCrud;
-
+    
     public PersonLogic() {
         String renterUser = ObjectMovie.RennterUser.getDescription();
         listData = new HashMap<String, String>();
@@ -41,14 +42,14 @@ public class PersonLogic {
         personCrud = new PersonCrud();
         jobCrud = new JobCrud();
     }
-
+    
     public Either createPerson(long idUserCreate, Person person, PersonCreate conditiondata) {
         Either eitherRes = new Either();
         Connection connection = null;
         try {
             //open conection 
             connection = DataBasePostgres.getConection();
-
+            
             String create = Crud.create.name();
             String status = Status.Active.name();
             //checks if the employee exists
@@ -96,7 +97,7 @@ public class PersonLogic {
         }
         return eitherRes;
     }
-
+    
     public Either updateStatus(long idPerson, long idModifierUser, String status) {
         Either eitherRes = new Either();
         Connection connection = null;
@@ -150,7 +151,7 @@ public class PersonLogic {
         }
         return eitherRes;
     }
-
+    
     public Either update(Person person, long idRenter, long idUserModify) {
         Either eitherRes = new Either();
         Connection connection = null;
@@ -187,7 +188,7 @@ public class PersonLogic {
             PersonUpdate rentUserUpdate = new PersonUpdate(
                     ((Job) eitherRes.getFirstObject()).getNameJob(),
                     ConstantData.MIN_AGE_RENTER);
-
+            
             eitherRes = rentUserUpdate.complyCondition(person);
             if (eitherRes.existError()) {
                 throw eitherRes;
@@ -232,7 +233,7 @@ public class PersonLogic {
         }
         return eitherRes;
     }
-
+    
     private Either getPerson(Connection connection, long idPerson, String status) {
         String renterUser = ObjectMovie.RennterUser.getDescription();
         Either eitherRes = new Either();
@@ -254,15 +255,15 @@ public class PersonLogic {
         }
         return eitherRes;
     }
-
+    
     public Either get(
-            long idUserSearch, 
-            String typeId, 
-            String identifier, 
-            String lastName, 
-            String firstName, 
-            String genre, 
-            String birthdayStart, 
+            long idUserSearch,
+            String typeId,
+            String identifier,
+            String lastName,
+            String firstName,
+            String genre,
+            String birthdayStart,
             String birthdayEnd) {
         Either eitherRes = new Either();
         Connection connection = null;
@@ -279,15 +280,19 @@ public class PersonLogic {
             //Check if the user can modify
             eitherRes = permission.checkUserPermission(connection, idUserSearch, get);
             if (eitherRes.existError()) {
-                //return eitherRes;
+                throw eitherRes;
+            }
+            PersonGet personGet = new PersonGet();
+            eitherRes = personGet.complyCondition(typeId, identifier, lastName, firstName, genre, birthdayStart, birthdayEnd);
+            if (eitherRes.existError()) {
                 throw eitherRes;
             }
             if (StringUtils.isNotBlank(lastName)) {
-                lastName = OperationString.generateName(lastName.trim());
+                lastName = OperationString.generateName(lastName);
                 lastName = OperationString.addApostrophe(lastName);
             }
             if (StringUtils.isNotBlank(firstName)) {
-                firstName = OperationString.generateName(firstName.trim());
+                firstName = OperationString.generateName(firstName);
                 firstName = OperationString.addApostrophe(firstName);
             }
             eitherRes = personCrud.getPersonBy(connection, typeId, identifier, lastName, firstName, genre, birthdayStart, birthdayEnd);
@@ -295,7 +300,7 @@ public class PersonLogic {
                 throw eitherRes;
             }
             DataBasePostgres.connectionCommit(connection);
-
+            
         } catch (Either e) {
             eitherRes = e;
             DataBasePostgres.connectionRollback(connection, eitherRes);

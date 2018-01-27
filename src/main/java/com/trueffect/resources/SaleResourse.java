@@ -1,6 +1,7 @@
 package com.trueffect.resources;
 
 import com.trueffect.logic.SaleLogic;
+import com.trueffect.model.RentReturn;
 import com.trueffect.model.Sale;
 import com.trueffect.response.Either;
 import com.trueffect.response.MapperResponse;
@@ -35,9 +36,13 @@ public class SaleResourse {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response registerReturningMovie(@QueryParam("idEmployeeReceive") long idEmployeeReceive, @QueryParam("idRenterUser") int idRenterUser, ArrayList<Sale> sales) {
-//        Either either = movieLogic.registerSale(idEmployeeReceive, idRenterUser, sales);
-        Response response = mapper.toResponse(null);
+    public Response registerRentReturn(
+            @QueryParam("idEmployee") long idEmployee, 
+            @QueryParam("idRenterUser") int idRenterUser,
+            @QueryParam("idMasterDetail") long idMaterDetail,
+            ArrayList<RentReturn> rentReturns) {
+        Either either = movieLogic.registerRentReturn(idEmployee, idRenterUser,idMaterDetail, rentReturns);
+        Response response = mapper.toResponse(either);
         return response;
     }
 }

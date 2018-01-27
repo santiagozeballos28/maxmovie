@@ -30,7 +30,7 @@ public class PersonValidation {
                     + TypeIdentifier.PASS.getDescriptionIdentifier();
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.TYPE_IDENTIFIER);
-            listData.put(ConstantData.DATA, typeIdentifier);
+            listData.put(ConstantData.DATA, typeIdentifier.trim());
             listData.put(ConstantData.VALID, validTypesId);
             String errorMessages = OperationString.generateMesage(Message.NOT_VALID_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessages);
@@ -48,7 +48,7 @@ public class PersonValidation {
                     + TypeIdentifier.NIT.getDescriptionIdentifier() + " = " + ConstantData.ValidIdentifier.NIT.getValidIdentifier();
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.IDENTIFIER);
-            listData.put(ConstantData.DATA, identifier);
+            listData.put(ConstantData.DATA, identifier.trim());
             listData.put(ConstantData.VALID, validIden);
             String errorMessages = OperationString.generateMesage(Message.NOT_VALID_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessages);
@@ -63,7 +63,7 @@ public class PersonValidation {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.IDENTIFIER);
             listData.put(ConstantData.TYPE_DATA_TWO, ConstantData.TYPE_IDENTIFIER);
-            listData.put(ConstantData.DATA, identifier);
+            listData.put(ConstantData.DATA, identifier.trim());
             listData.put(ConstantData.DATA_TWO, typeId.getDescriptionIdentifier());
             String errorMessages = OperationString.generateMesage(Message.NOT_SAME_TYPE, listData);
             listError.add(errorMessages);
@@ -72,11 +72,11 @@ public class PersonValidation {
     }
 
     public void verifyName(String typeData, String name, ArrayList<String> listError) {
-        String firstNameAux = OperationString.generateName(name);
-        if (!PersonValidationUtil.isValidName(firstNameAux)) {
+        String nameAux = OperationString.generateName(name);
+        if (!PersonValidationUtil.isValidName(nameAux)) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, typeData);
-            listData.put(ConstantData.DATA, name);
+            listData.put(ConstantData.DATA, name.trim());
             listData.put(ConstantData.VALID, ConstantData.VALID_NAME_PERSON);
             String errorMessages = OperationString.generateMesage(Message.NOT_VALID_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessages);
@@ -87,7 +87,7 @@ public class PersonValidation {
         if (!PersonValidationUtil.isValidGenre(genre)) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.GENRE);
-            listData.put(ConstantData.DATA, genre);
+            listData.put(ConstantData.DATA, genre.trim());
             listData.put(ConstantData.VALID, GenrePerson.F.getNameGenre() + ", " + GenrePerson.M.getNameGenre());
             String errorMessages = OperationString.generateMesage(Message.NOT_VALID_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessages);
@@ -101,4 +101,5 @@ public class PersonValidation {
             listError.add(errorMessages);
         }
     }
+    
 }

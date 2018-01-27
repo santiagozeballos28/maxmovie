@@ -23,7 +23,7 @@ public class RentalDetailCrud {
             for (SaleDetail saleDetail : rentailDetails) {
                 int rentalAmount = saleDetail.getAmount();
                 double rentalPrice = saleDetail.getPrice();
-                long idCopyMovie = saleDetail.getCopyMovieId();
+                long idCopyMovie = saleDetail.getIdCopyMovie();
                 String idPrice = saleDetail.getIdPrice();
                 query = (Statement) connection.createStatement();
                 sql

@@ -70,7 +70,7 @@ public class PersonUpdate implements DataCondition {
         //Validation empty birthday
         if (StringUtils.isNotBlank(person.getBirthday())) {
             //Validation of birthday (format date)
-            boolean validBirthdayFormat = dateValidation.isValidDate(person.getBirthday(), listError);
+            boolean validBirthdayFormat = dateValidation.isValidDate(ConstantData.BIRTHDAY,person.getBirthday(), listError);
             if (validBirthdayFormat) {
                 //Validation of age
                 dateValidation.verifyDateRangeValid(person.getBirthday(), listError);

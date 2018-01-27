@@ -24,6 +24,7 @@ import com.trueffect.tools.ConstantData.Status;
 import com.trueffect.util.ModelObject;
 import com.trueffect.util.OperationString;
 import com.trueffect.validation.EmployeeCreate;
+import com.trueffect.validation.EmployeeGet;
 import com.trueffect.validation.EmployeeUpdate;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -455,11 +456,18 @@ public class EmployeeLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
+            EmployeeGet employeeGet = new EmployeeGet();
+            eitherRes = employeeGet.complyCondition(typeId, identifier, lastName, firstName, genre, birthdayStart, birthdayEnd, dateOfHire, job);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
             if (StringUtils.isNotBlank(lastName)) {
                 lastName = OperationString.generateName(lastName);
+                lastName =  OperationString.addApostrophe(lastName);
             }
             if (StringUtils.isNotBlank(firstName)) {
                 firstName = OperationString.generateName(firstName);
+                firstName =  OperationString.addApostrophe(firstName);
             }
             String jobName = "";
             if (StringUtils.isNotBlank(job)) {

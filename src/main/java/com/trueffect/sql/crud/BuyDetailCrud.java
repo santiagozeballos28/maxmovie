@@ -25,7 +25,7 @@ public class BuyDetailCrud {
             for (SaleDetail saleDetail : buyDetails) {
                 int buyAmount = saleDetail.getAmount();
                 double buyPrice = saleDetail.getPrice();
-                long idCopyMovie = saleDetail.getCopyMovieId();
+                long idCopyMovie = saleDetail.getIdCopyMovie();
                 String idPrice = saleDetail.getIdPrice();
                 query = (Statement) connection.createStatement();
                 sql

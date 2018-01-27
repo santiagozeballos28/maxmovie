@@ -1,12 +1,9 @@
 package com.trueffect.validation;
 
-import com.trueffect.model.Person;
 import com.trueffect.response.Either;
 import com.trueffect.tools.CodeStatus;
 import com.trueffect.tools.ConstantData;
-import com.trueffect.util.ModelObject;
 import java.util.ArrayList;
-import java.util.HashMap;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -15,13 +12,11 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class PersonGet {
 
-    protected HashMap<String, String> listData;
     private PersonValidation personValidation;
     private ObjectValidation objectValidation;
     private DateValidation dateValidation;
 
     public PersonGet() {
-        listData = new HashMap<String, String>();
         personValidation = new PersonValidation();
         dateValidation = new DateValidation();
     }
@@ -50,27 +45,19 @@ public class PersonGet {
         if (StringUtils.isNotBlank(genre)) {
             personValidation.verifyGenre(genre, listError);
         }
-        
-        if(StringUtils.isNotBlank(birthdayStart)){
-          if(StringUtils.isNotBlank(birthdayEnd)){
-           
-          }else{
-          //se necesita la fecha de fin
-          }
-        }else{
-          if(StringUtils.isNotBlank(birthdayEnd)){
-           //se necesita fecha de inicio        
-          }
-        }   
-        if (StringUtils.isNotBlank(birthdayStart) && StringUtils.isNotBlank(birthdayEnd)) {
-            //Validation of birthday (format date)
-            boolean validBirthdayFormat = dateValidation.isValidDate(person.getBirthday(), listError);
-            if (validBirthdayFormat) {
-                //Validation of age
-                dateValidation.verifyDateRangeValid(person.getBirthday(), listError);
-                // Validation minimun age
-                personValidation.verifyRequiredAge(person.getBirthday(), ageMinimum, listError);
+        String typeDataBirthdayEnd = ConstantData.BIRTHDAY + " " + ConstantData.END;
+        String typeDataBirthdayStart = ConstantData.BIRTHDAY + " " + ConstantData.START;
+        if (StringUtils.isNotBlank(birthdayStart)) {
+            if (StringUtils.isNotBlank(birthdayEnd)) {
+                dateValidation.isValidDate(typeDataBirthdayStart,birthdayStart, listError);
+                dateValidation.isValidDate(typeDataBirthdayEnd,birthdayEnd, listError);
+            } else {
+
+                dateValidation.emptyDate(typeDataBirthdayEnd, listError);
             }
+        } else if (StringUtils.isNotBlank(birthdayEnd)) {
+
+            dateValidation.emptyDate(typeDataBirthdayStart, listError);
         }
         //To check if there was an error
         if (!listError.isEmpty()) {
