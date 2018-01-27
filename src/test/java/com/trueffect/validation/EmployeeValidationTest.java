@@ -1,5 +1,6 @@
 package com.trueffect.validation;
 
+import com.trueffect.tools.ConstantData;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,14 +15,16 @@ public class EmployeeValidationTest {
     public void testAddress() {
         boolean expected = true;
         String dateOfHire = "Av. Ayacucho";
-        Assert.assertEquals(EmployeeValidation.isValidAddress(dateOfHire), expected);
+        int maxLength = ConstantData.MAX_LENGTH_ADDRESS;
+        Assert.assertEquals(ObjectValidationUtil.isValidSize(dateOfHire,maxLength), expected);
     }
 
     @Test
     public void testAddress2() {
         boolean expected = true;
         String dateOfHire = "#Av. Ayacucho";
-        Assert.assertEquals(EmployeeValidation.isValidAddress(dateOfHire), expected);
+        int maxLength = ConstantData.MAX_LENGTH_ADDRESS;
+        Assert.assertEquals(ObjectValidationUtil.isValidSize(dateOfHire,maxLength), expected);
     }
 
     //
@@ -29,14 +32,14 @@ public class EmployeeValidationTest {
     public void testJob() {
         boolean expected = true;
         String dateOfHire = "MGR";
-        Assert.assertEquals(EmployeeValidation.isValidJob(dateOfHire), expected);
+        Assert.assertEquals(EmployeeValidationUtil.isValidJob(dateOfHire), expected);
     }
 
     @Test
     public void testJob2() {
         boolean expected = false;
         String dateOfHire = "Maager";
-        Assert.assertEquals(EmployeeValidation.isValidJob(dateOfHire), expected);
+        Assert.assertEquals(EmployeeValidationUtil.isValidJob(dateOfHire), expected);
     }
     //test Phone
 
@@ -44,13 +47,13 @@ public class EmployeeValidationTest {
     public void testPhone() {
         boolean expected = true;
         int phone = 77973186;
-        Assert.assertEquals(EmployeeValidation.isValidPhone(phone), expected);
+        Assert.assertEquals(EmployeeValidationUtil.isValidPhone(phone), expected);
     }
 
     @Test
     public void testPhone2() {
         boolean expected = false;
         int phone = 779786;
-        Assert.assertEquals(EmployeeValidation.isValidPhone(phone), expected);
+        Assert.assertEquals(EmployeeValidationUtil.isValidPhone(phone), expected);
     }
 }

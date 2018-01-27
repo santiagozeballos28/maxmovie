@@ -8,6 +8,7 @@ import com.trueffect.util.DataCondition;
 import com.trueffect.util.ModelObject;
 import java.util.ArrayList;
 import java.util.HashMap;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -33,12 +34,12 @@ public class MovieUpdate implements DataCondition {
         Movie movie = (Movie) resource;
         ArrayList<String> listError = new ArrayList<String>();
         //Validation name movie
-        if (!movieValidation.isEmpty(movie.getName())) {
+        if (StringUtils.isNotBlank(movie.getName())) {
             movieValidation.verifySize(movie.getName(), ConstantData.NAME_MOVIE, ConstantData.MAX_NAME_MOVIE, listError);
             movieValidation.verifyName(movie.getName(), listError);
         }
         //Validation genre movie
-        if (!movieValidation.isEmpty(movie.getGenreId())) {
+        if (StringUtils.isNotBlank(movie.getGenreId())) {
             movieValidation.verifySize(movie.getGenreId(), ConstantData.NAME_GENRE_MOVIE, ConstantData.MAX_NAME_GENRE_MOVIE, listError);
             movieValidation.verifyGenre(movie.getGenreId(), listGenre, listError);
         }
@@ -49,7 +50,7 @@ public class MovieUpdate implements DataCondition {
             movieValidation.verifyNamesOfActors(actors, listError);
         }
         //Validation director
-        if (!movieValidation.isEmpty(movie.getDirector())) {
+        if (StringUtils.isNotBlank(movie.getDirector())) {
             movieValidation.verifySize(movie.getDirector(), ConstantData.NAME_DIRECTOR_MOVIE, ConstantData.MAX_NAME_DIRECTOR_MOVIE, listError);
             movieValidation.verifyDirector(movie.getDirector(), listError);
         }

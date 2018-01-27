@@ -102,6 +102,4 @@ public class OperationString {
         resString = resString.trim();
         return resString;
     }
-
-   
 }

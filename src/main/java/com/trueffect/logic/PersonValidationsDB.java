@@ -8,7 +8,7 @@ import com.trueffect.tools.CodeStatus;
 import com.trueffect.tools.ConstantData;
 import com.trueffect.tools.ConstantData.TypeIdentifier;
 import com.trueffect.util.OperationString;
-import com.trueffect.validation.PersonValidation;
+import com.trueffect.validation.PersonValidationUtil;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,7 +68,7 @@ public class PersonValidationsDB {
         Either eitherPersonOld = personCrud.getPerson(connection, idPerson, null);
         String typeIdOld = ((Person) eitherPersonOld.getFirstObject()).getTypeIdentifier();
         Person personAux = generatePersonAuxiliary((Person) eitherPersonOld.getFirstObject(), personNew);
-        if (!PersonValidation.isValidIdentifier(personAux.getTypeIdentifier().toUpperCase(), personAux.getIdentifier().toUpperCase())) {
+        if (!PersonValidationUtil.isValidIdentifier(personAux.getTypeIdentifier().toUpperCase(), personAux.getIdentifier().toUpperCase())) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.IDENTIFIER);
             listData.put(ConstantData.TYPE_DATA_TWO, ConstantData.TYPE_IDENTIFIER);

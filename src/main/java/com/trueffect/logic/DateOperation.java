@@ -22,7 +22,6 @@ public class DateOperation {
     }
 
     public static boolean dateIsInRangeValid(String date) {
-
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat(ConstantData.SIMPLE_DATE_FORMAT);
             Date dateOtherFormat = dateFormat.parse(date);
@@ -36,7 +35,6 @@ public class DateOperation {
                     return true;
                 }
             }
-
         } catch (ParseException ex) {
         }
         return false;
@@ -106,14 +104,9 @@ public class DateOperation {
             LocalDate localDateFirst = LocalDate.fromDateFields(dateFirstFormat);
             LocalDate localDateSecond = LocalDate.fromDateFields(dateSecondFormat);
             Period diff = Period.fieldDifference(localDateFirst, localDateSecond);
-            System.out.println("LocalFirst: " +localDateFirst.toString());
-            System.out.println("LocalSecond: " +localDateSecond.toString());
             if (diff.getYears() == 0 && diff.getMonths() == 0) {
-                    
                 return true;
-               
             }
-            
         } catch (ParseException ex) {
         }
         return false;

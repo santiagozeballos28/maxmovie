@@ -10,6 +10,7 @@ import com.trueffect.util.ModelObject;
 import com.trueffect.util.OperationString;
 import java.util.ArrayList;
 import java.util.HashMap;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -45,21 +46,21 @@ public class MovieCreate implements DataCondition {
         ArrayList<String> listError = new ArrayList<String>();
         String errorMessages = "";
         //Validation empty name movie
-        if (MovieValidation.isEmpty(movie.getName())) {
+        if (StringUtils.isBlank(movie.getName())) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.NAME_MOVIE);
             errorMessages = OperationString.generateMesage(Message.EMPTY_DATA, listData);
             listError.add(errorMessages);
         }
         //Validation empty genre movie
-        if (MovieValidation.isEmpty(movie.getGenreId())) {
+        if (StringUtils.isBlank(movie.getGenreId())) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.NAME_GENRE_MOVIE);
             errorMessages = OperationString.generateMesage(Message.EMPTY_DATA, listData);
             listError.add(errorMessages);
         }
         //Validation empty director
-        if (MovieValidation.isEmpty(movie.getDirector())) {
+        if (StringUtils.isBlank(movie.getDirector())) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.NAME_DIRECTOR_MOVIE);
             errorMessages = OperationString.generateMesage(Message.EMPTY_DATA, listData);
@@ -82,7 +83,6 @@ public class MovieCreate implements DataCondition {
     protected Either verifyData(ModelObject resource) {
         Movie movie = (Movie) resource;
         ArrayList<String> listError = new ArrayList<String>();
-        String errorMessages = "";
         //Validation of name movie size
         movieValidation.verifySize(movie.getName(), ConstantData.NAME_MOVIE, ConstantData.MAX_NAME_MOVIE, listError);
         //Validation of genre movie size

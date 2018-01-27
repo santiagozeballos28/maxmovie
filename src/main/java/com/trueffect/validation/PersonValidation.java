@@ -1,80 +1,104 @@
 package com.trueffect.validation;
 
+import com.trueffect.logic.DateOperation;
+import com.trueffect.messages.Message;
+import com.trueffect.tools.ConstantData;
 import com.trueffect.tools.ConstantData.GenrePerson;
 import com.trueffect.tools.ConstantData.TypeIdentifier;
-import com.trueffect.tools.RegularExpression;
-import java.util.regex.Pattern;
+import com.trueffect.util.OperationString;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /*
  * @author santiago.mamani
  */
 public class PersonValidation {
 
-    public static boolean isEmpty(String data) {
-        return data == null;
-    }
+    HashMap<String, String> listData;
 
-    public static boolean isValidTypeIdentifier(String typeId) {
-        boolean res = true;
-        try {
-            TypeIdentifier typeIdentifier = TypeIdentifier.valueOf(typeId.toUpperCase());
-        } catch (Exception e) {
-            res = false;
+    public PersonValidation() {
+        listData = new HashMap<String, String>();
+    }
+ 
+    public boolean isValidTypeIdentifier(String typeIdentifier, ArrayList<String> listError) {
+        boolean validTypeIdentifier = true;
+        if (!PersonValidationUtil.isValidTypeIdentifier(typeIdentifier)) {
+            validTypeIdentifier = false;
+            String validTypesId
+                    = TypeIdentifier.CI.getDescriptionIdentifier() + ", "
+                    + TypeIdentifier.NIT.getDescriptionIdentifier() + ", "
+                    + TypeIdentifier.PASS.getDescriptionIdentifier();
+            listData.clear();
+            listData.put(ConstantData.TYPE_DATA, ConstantData.TYPE_IDENTIFIER);
+            listData.put(ConstantData.DATA, typeIdentifier);
+            listData.put(ConstantData.VALID, validTypesId);
+            String errorMessages = OperationString.generateMesage(Message.NOT_VALID_THE_VALID_DATA_ARE, listData);
+            listError.add(errorMessages);
         }
-        return res;
+        return validTypeIdentifier;
     }
 
-    public static boolean isValidIdentifier(String identifier) {
-        identifier = identifier.toUpperCase();
-        return Pattern.matches(RegularExpression.CI, identifier)
-                || Pattern.matches(RegularExpression.PASS, identifier)
-                || Pattern.matches(RegularExpression.NIT, identifier);
-    }
-   public static boolean isValidSize(String name, int size) {
-        return name.length() <= size;
+    public boolean isValidIdentifier(String identifier, ArrayList<String> listError) {
+        boolean validIdentifier = true;
+        if (!PersonValidationUtil.isValidIdentifier(identifier)) {
+            validIdentifier = false;
+            String validIden
+                    = TypeIdentifier.CI.getDescriptionIdentifier() + " = " + ConstantData.ValidIdentifier.CI.getValidIdentifier() + ", "
+                    + TypeIdentifier.PASS.getDescriptionIdentifier() + " = " + ConstantData.ValidIdentifier.PASS.getValidIdentifier() + ", "
+                    + TypeIdentifier.NIT.getDescriptionIdentifier() + " = " + ConstantData.ValidIdentifier.NIT.getValidIdentifier();
+            listData.clear();
+            listData.put(ConstantData.TYPE_DATA, ConstantData.IDENTIFIER);
+            listData.put(ConstantData.DATA, identifier);
+            listData.put(ConstantData.VALID, validIden);
+            String errorMessages = OperationString.generateMesage(Message.NOT_VALID_THE_VALID_DATA_ARE, listData);
+            listError.add(errorMessages);
+        }
+        return validIdentifier;
     }
 
-    public static boolean isValidName(String name) {
-        if (name.contains(" ")) {
-            return Pattern.matches(RegularExpression.NAME_TWO_PERSON, name);
-        } else {
-            return Pattern.matches(RegularExpression.NAME_ONE_PERSON, name);
+    public boolean verifyIdentifiers(String typeIdendifier, String identifier, ArrayList<String> listError) {
+        boolean validIdentifier = true;
+        if (!PersonValidationUtil.isValidIdentifier(typeIdendifier, identifier)) {
+            TypeIdentifier typeId = TypeIdentifier.valueOf(typeIdendifier.toUpperCase());
+            listData.clear();
+            listData.put(ConstantData.TYPE_DATA, ConstantData.IDENTIFIER);
+            listData.put(ConstantData.TYPE_DATA_TWO, ConstantData.TYPE_IDENTIFIER);
+            listData.put(ConstantData.DATA, identifier);
+            listData.put(ConstantData.DATA_TWO, typeId.getDescriptionIdentifier());
+            String errorMessages = OperationString.generateMesage(Message.NOT_SAME_TYPE, listData);
+            listError.add(errorMessages);
+        }
+        return validIdentifier;
+    }
+
+    public void verifyName(String typeData, String name, ArrayList<String> listError) {
+        String firstNameAux = OperationString.generateName(name);
+        if (!PersonValidationUtil.isValidName(firstNameAux)) {
+            listData.clear();
+            listData.put(ConstantData.TYPE_DATA, typeData);
+            listData.put(ConstantData.DATA, name);
+            listData.put(ConstantData.VALID, ConstantData.VALID_NAME_PERSON);
+            String errorMessages = OperationString.generateMesage(Message.NOT_VALID_THE_VALID_DATA_ARE, listData);
+            listError.add(errorMessages);
         }
     }
 
-    public static boolean isValidGenre(String genre) {
-        GenrePerson genreEnum = null;
-        genre = genre.toUpperCase();
-        return genre.equals(genreEnum.M.name()) || genre.equals(genreEnum.F.name());
-    }
-
-    public static boolean isValidIdentifier(String typeIdentifier, String identifier) {
-        typeIdentifier = typeIdentifier.toUpperCase();
-        identifier = identifier.toUpperCase();
-        boolean res = false;
-        try {
-            TypeIdentifier typeIden = TypeIdentifier.valueOf(typeIdentifier);
-            switch (typeIden) {
-
-                case CI:
-                    if (Pattern.matches(RegularExpression.CI, identifier)) {
-                        res = true;
-                    }
-                    break;
-                case PASS:
-                    if (Pattern.matches(RegularExpression.PASS, identifier)) {
-                        res = true;
-                    }
-                    break;
-                case NIT:
-                    if (Pattern.matches(RegularExpression.NIT, identifier)) {
-                        res = true;
-                    }
-                    break;
-            }
-        } catch (Exception e) {
+    public void verifyGenre(String genre, ArrayList<String> listError) {
+        if (!PersonValidationUtil.isValidGenre(genre)) {
+            listData.clear();
+            listData.put(ConstantData.TYPE_DATA, ConstantData.GENRE);
+            listData.put(ConstantData.DATA, genre);
+            listData.put(ConstantData.VALID, GenrePerson.F.getNameGenre() + ", " + GenrePerson.M.getNameGenre());
+            String errorMessages = OperationString.generateMesage(Message.NOT_VALID_THE_VALID_DATA_ARE, listData);
+            listError.add(errorMessages);
         }
-        return res;
     }
-
+    public void verifyRequiredAge(String date, int ageMinimum, ArrayList<String> listError) {
+        if (!DateOperation.yearIsGreaterThan(date, ageMinimum)) {
+            listData.clear();
+            listData.put(ConstantData.DATA, ageMinimum + "");
+            String errorMessages = OperationString.generateMesage(Message.NOT_MEET_THE_AGE, listData);
+            listError.add(errorMessages);
+        }
+    }
 }

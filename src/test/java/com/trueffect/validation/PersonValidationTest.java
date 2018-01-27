@@ -15,49 +15,42 @@ public class PersonValidationTest {
     public void testTypeIdentifierPass() {
         boolean expected = true;
         String typeIdentifier = "PASS";
-        Assert.assertEquals(PersonValidation.isValidTypeIdentifier(typeIdentifier), expected);
+        Assert.assertEquals(PersonValidationUtil.isValidTypeIdentifier(typeIdentifier), expected);
     }
 
     @Test
     public void testTypeIdentifierNit() {
         boolean expected = true;
         String typeIdentifier = "NIT";
-        Assert.assertEquals(PersonValidation.isValidTypeIdentifier(typeIdentifier), expected);
+        Assert.assertEquals(PersonValidationUtil.isValidTypeIdentifier(typeIdentifier), expected);
     }
 
     @Test
     public void testTypeIdentifierCiLowerCase() {
         boolean expected = true;
         String typeIdentifier = "ci";
-        Assert.assertEquals(PersonValidation.isValidTypeIdentifier(typeIdentifier), expected);
+        Assert.assertEquals(PersonValidationUtil.isValidTypeIdentifier(typeIdentifier), expected);
     }
 
     @Test
     public void testTypeIdentifierPassLowerCase() {
         boolean expected = true;
         String typeIdentifier = "pass";
-        Assert.assertEquals(PersonValidation.isValidTypeIdentifier(typeIdentifier), expected);
+        Assert.assertEquals(PersonValidationUtil.isValidTypeIdentifier(typeIdentifier), expected);
     }
 
     @Test
     public void testTypeIdentifierNitLowerCase() {
         boolean expected = true;
         String typeIdentifier = "nit";
-        Assert.assertEquals(PersonValidation.isValidTypeIdentifier(typeIdentifier), expected);
+        Assert.assertEquals(PersonValidationUtil.isValidTypeIdentifier(typeIdentifier), expected);
     }
 
     @Test
     public void testTypeIdentifierError() {
         boolean expected = false;
         String typeIdentifier = "ni";
-        Assert.assertEquals(PersonValidation.isValidTypeIdentifier(typeIdentifier), expected);
-    }
-
-    @Test
-    public void testTypeIdentifierEmpty() {
-        boolean expected = false;
-        String typeIdentifier = "";
-        Assert.assertEquals(PersonValidation.isEmpty(typeIdentifier), expected);
+        Assert.assertEquals(PersonValidationUtil.isValidTypeIdentifier(typeIdentifier), expected);
     }
 
     /*
@@ -68,7 +61,7 @@ public class PersonValidationTest {
 
         boolean expected = true;
         String typeIdentifier = "1234567";
-        Assert.assertEquals(PersonValidation.isValidIdentifier(typeIdentifier), expected);
+        Assert.assertEquals(PersonValidationUtil.isValidIdentifier(typeIdentifier), expected);
     }
 
     @Test
@@ -76,7 +69,7 @@ public class PersonValidationTest {
 
         boolean expected = true;
         String typeIdentifier = "ABC123456A";
-        Assert.assertEquals(PersonValidation.isValidIdentifier(typeIdentifier), expected);
+        Assert.assertEquals(PersonValidationUtil.isValidIdentifier(typeIdentifier), expected);
     }
 
     @Test
@@ -84,7 +77,7 @@ public class PersonValidationTest {
 
         boolean expected = true;
         String typeIdentifier = "10223456";
-        Assert.assertEquals(PersonValidation.isValidIdentifier(typeIdentifier), expected);
+        Assert.assertEquals(PersonValidationUtil.isValidIdentifier(typeIdentifier), expected);
     }
 
     @Test
@@ -92,7 +85,7 @@ public class PersonValidationTest {
 
         boolean expected = true;
         String typeIdentifier = "10223456";
-        Assert.assertEquals(PersonValidation.isValidIdentifier(typeIdentifier), expected);
+        Assert.assertEquals(PersonValidationUtil.isValidIdentifier(typeIdentifier), expected);
     }
 
     /*
@@ -103,7 +96,7 @@ public class PersonValidationTest {
 
         boolean expected = true;
         String firstName = "Santiago";
-        Assert.assertEquals(PersonValidation.isValidName(firstName), expected);
+        Assert.assertEquals(PersonValidationUtil.isValidName(firstName), expected);
     }
 
     @Test
@@ -111,7 +104,7 @@ public class PersonValidationTest {
 
         boolean expected = true;
         String firstName = "santiago elias";
-        Assert.assertEquals(PersonValidation.isValidName(firstName), expected);
+        Assert.assertEquals(PersonValidationUtil.isValidName(firstName), expected);
     }
 
     @Test
@@ -119,83 +112,83 @@ public class PersonValidationTest {
 
         boolean expected = false;
         String firstName = "Sant#iago$";
-        Assert.assertEquals(PersonValidation.isValidName(firstName), expected);
+        Assert.assertEquals(PersonValidationUtil.isValidName(firstName), expected);
     }
 
     @Test
     public void testFirstNameUpperCase() {
         boolean expected = true;
         String lastName = "elIa's";
-        Assert.assertEquals(PersonValidation.isValidName(lastName), expected);
+        Assert.assertEquals(PersonValidationUtil.isValidName(lastName), expected);
     }
 
     @Test
     public void testFirstNameLowerCase() {
         boolean expected = true;
         String lastName = "e'lias";
-        Assert.assertEquals(PersonValidation.isValidName(lastName), expected);
+        Assert.assertEquals(PersonValidationUtil.isValidName(lastName), expected);
     }
 
     @Test
     public void testOneLastName() {
         boolean expected = true;
         String lastName = "Zeballo's";
-        Assert.assertEquals(PersonValidation.isValidName(lastName), expected);
+        Assert.assertEquals(PersonValidationUtil.isValidName(lastName), expected);
     }
 
     @Test
     public void testLastNameTwoSimbolValid() {
         boolean expected = true;
         String lastName = "mamaN'i zeballo's";
-        Assert.assertEquals(PersonValidation.isValidName(lastName), expected);
+        Assert.assertEquals(PersonValidationUtil.isValidName(lastName), expected);
     }
 
     @Test
     public void testLastNameSymbol() {
         boolean expected = false;
         String lastName = "Mamani# Zeballos";
-        Assert.assertEquals(PersonValidation.isValidName(lastName), expected);
+        Assert.assertEquals(PersonValidationUtil.isValidName(lastName), expected);
     }
 
     @Test
     public void testLastNameOne() {
         boolean expected = true;
         String lastName = "mamani";
-        Assert.assertEquals(PersonValidation.isValidName(lastName), expected);
+        Assert.assertEquals(PersonValidationUtil.isValidName(lastName), expected);
     }
 
     @Test
     public void testLastNameUpperCase() {
         boolean expected = true;
         String lastName = "zebAllos";
-        Assert.assertEquals(PersonValidation.isValidName(lastName), expected);
+        Assert.assertEquals(PersonValidationUtil.isValidName(lastName), expected);
     }
 
     @Test
     public void testLastNameUpperCaseAndLowerCase() {
         boolean expected = true;
         String lastName = "zebAllos mamANi";
-        Assert.assertEquals(PersonValidation.isValidName(lastName), expected);
+        Assert.assertEquals(PersonValidationUtil.isValidName(lastName), expected);
     }
 
     @Test
     public void testLastNameTwoLowerCase() {
         boolean expected = true;
         String lastName = "Mamani zeballos";
-        Assert.assertEquals(PersonValidation.isValidName(lastName), expected);
+        Assert.assertEquals(PersonValidationUtil.isValidName(lastName), expected);
     }
 
     @Test
     public void testLastNameTwoSpace() {
         boolean expected = true;
         String lastName = "Mamani     Zeballos";
-        Assert.assertEquals(PersonValidation.isValidName(lastName), expected);
+        Assert.assertEquals(PersonValidationUtil.isValidName(lastName), expected);
     }
 
     @Test
     public void testLastNameTwoVALID() {
         boolean expected = true;
         String lastName = "Mamani Nina";
-        Assert.assertEquals(PersonValidation.isValidName(lastName), expected);
+        Assert.assertEquals(PersonValidationUtil.isValidName(lastName), expected);
     }
 }

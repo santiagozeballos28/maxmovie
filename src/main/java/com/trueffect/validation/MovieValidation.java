@@ -4,14 +4,10 @@ import com.trueffect.logic.DateOperation;
 import com.trueffect.messages.Message;
 import com.trueffect.model.GenreMovie;
 import com.trueffect.tools.ConstantData;
-import com.trueffect.tools.RegularExpression;
 import com.trueffect.util.ModelObject;
 import com.trueffect.util.OperationString;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.regex.Pattern;
 
 /**
  *
@@ -24,36 +20,10 @@ public class MovieValidation {
     public MovieValidation() {
         listData = new HashMap<String, String>();
     }
-
-    public static boolean isEmpty(String data) {
-        return data == null;
-    }
-
-    public static boolean isValidSize(String name, int size) {
-        return name.length() <= size;
-    }
-
-    public static boolean isValidName(String name) {
-        return Pattern.matches(RegularExpression.NAME_MOVIE, name);
-    }
-
-    public static boolean isValidGenre(String name) {
-        return Pattern.matches(RegularExpression.GENRE, name);
-    }
-
-    public static boolean isUsAscii(String name) {
-        CharsetEncoder asciiEncoder = Charset.forName(ConstantData.US_ASCII).newEncoder();
-        return asciiEncoder.canEncode(name);
-    }
-
-    public static boolean theNumberIsInRange(int number, int start, int limit) {
-        return number >= start && number <= limit;
-    }
-
     public void verifyNamesOfActors(ArrayList<String> listActor, ArrayList<String> listError) {
         for (int i = 0; i < listActor.size(); i++) {
             String nameActor = listActor.get(i);
-            if (!isUsAscii(nameActor)) {
+            if (!MovieValidationUtil.isUsAscii(nameActor)) {
                 listData.clear();
                 listData.put(ConstantData.TYPE_DATA, ConstantData.NAME_ACTOR_MOVIE);
                 listData.put(ConstantData.DATA, nameActor);
@@ -67,7 +37,7 @@ public class MovieValidation {
     public void verifySizeNameActors(ArrayList<String> listActor, ArrayList<String> listError) {
         for (int i = 0; i < listActor.size(); i++) {
             String nameActor = listActor.get(i);
-            if (!isValidSize(nameActor, ConstantData.MAX_NAME_ACTOR_MOVIE)) {
+            if (!ObjectValidationUtil.isValidSize(nameActor, ConstantData.MAX_NAME_ACTOR_MOVIE)) {
                 listData.clear();
                 listData.put(ConstantData.TYPE_DATA, ConstantData.NAME_ACTOR_MOVIE);
                 listData.put(ConstantData.DATA, nameActor);
@@ -79,9 +49,8 @@ public class MovieValidation {
     }
 
     public void verifySize(String name, String typeData, int sizeMax, ArrayList<String> listError) {
-        //Validation of name movie size
         String nameAux = OperationString.removeSpace(name);
-        if (!MovieValidation.isValidSize(nameAux, sizeMax)) {
+        if (!ObjectValidationUtil.isValidSize(nameAux, sizeMax)) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, typeData);
             listData.put(ConstantData.DATA, name);
@@ -92,8 +61,7 @@ public class MovieValidation {
     }
 
     public void verifyName(String name, ArrayList<String> listError) {
-        //Validation of name movie
-        if (!MovieValidation.isValidName(name)) {
+        if (!MovieValidationUtil.isValidName(name)) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.NAME_MOVIE);
             listData.put(ConstantData.DATA, name);
@@ -104,8 +72,7 @@ public class MovieValidation {
     }
 
     public void verifyGenre(String genre, ArrayList<String> listError) {
-        //Validation of name movie
-        if (!MovieValidation.isValidGenre(genre)) {
+        if (!MovieValidationUtil.isValidGenre(genre)) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.NAME_GENRE_MOVIE);
             listData.put(ConstantData.DATA, genre);
@@ -116,8 +83,7 @@ public class MovieValidation {
     }
 
     public void verifyDirector(String director, ArrayList<String> listError) {
-        //Validation of director movie
-        if (!MovieValidation.isUsAscii(director)) {
+        if (!MovieValidationUtil.isUsAscii(director)) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.NAME_DIRECTOR_MOVIE);
             listData.put(ConstantData.DATA, director);
@@ -128,8 +94,7 @@ public class MovieValidation {
     }
 
     public void verifyYear(int year, ArrayList<String> listError) {
-        //Validation of year movie
-        if (!MovieValidation.theNumberIsInRange(year, ConstantData.MIN_YEAR, DateOperation.getYearCurrent())) {
+        if (!MovieValidationUtil.theNumberIsInRange(year, ConstantData.MIN_YEAR, DateOperation.getYearCurrent())) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.YEAR);
             listData.put(ConstantData.DATA, year + "");
@@ -140,10 +105,9 @@ public class MovieValidation {
     }
 
     public void verifyOscarNomination(int oscarNomination, ArrayList<String> listError) {
-        //Validation of oscar nomination
         int minOscarNomination = ConstantData.MIN_OSCAR_NOMINATION;
         int maxOscarNomination = ConstantData.MAX_OSCAR_NOMINATION_MOVIE;
-        if (!MovieValidation.theNumberIsInRange(oscarNomination, minOscarNomination, maxOscarNomination)) {
+        if (!MovieValidationUtil.theNumberIsInRange(oscarNomination, minOscarNomination, maxOscarNomination)) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.OSCAR_NOMINATION_MOVIE);
             listData.put(ConstantData.DATA, oscarNomination + "");

@@ -255,7 +255,15 @@ public class PersonLogic {
         return eitherRes;
     }
 
-    public Either get(long idUserSearch, String typeId, String identifier, String lastName, String firstName, String genre, String birthdayStart, String birthdayEnd) {
+    public Either get(
+            long idUserSearch, 
+            String typeId, 
+            String identifier, 
+            String lastName, 
+            String firstName, 
+            String genre, 
+            String birthdayStart, 
+            String birthdayEnd) {
         Either eitherRes = new Either();
         Connection connection = null;
         try {

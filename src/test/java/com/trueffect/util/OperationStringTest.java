@@ -2,7 +2,7 @@ package com.trueffect.util;
 
 import com.trueffect.messages.Message;
 import com.trueffect.tools.ConstantData;
-import com.trueffect.validation.EmployeeValidation;
+import com.trueffect.validation.EmployeeValidationUtil;
 import java.util.HashMap;
 import org.junit.Assert;
 import org.junit.Test;
@@ -30,7 +30,7 @@ public class OperationStringTest {
         String input = "CSHR";
         boolean expected = true;
 
-        Assert.assertEquals(EmployeeValidation.isValidJob(input), expected);
+        Assert.assertEquals(EmployeeValidationUtil.isValidJob(input), expected);
     }
 
     @Test
@@ -38,7 +38,7 @@ public class OperationStringTest {
         String input = "MGR";
         boolean expected = true;
 
-        Assert.assertEquals(EmployeeValidation.isValidJob(input), expected);
+        Assert.assertEquals(EmployeeValidationUtil.isValidJob(input), expected);
     }
 
     @Test
@@ -46,7 +46,7 @@ public class OperationStringTest {
         String input = "CC";
         boolean expected = true;
 
-        Assert.assertEquals(EmployeeValidation.isValidJob(input), expected);
+        Assert.assertEquals(EmployeeValidationUtil.isValidJob(input), expected);
     }
 
     @Test
@@ -54,6 +54,6 @@ public class OperationStringTest {
         String input = "   CDCD  ";
         boolean expected = false;
 
-        Assert.assertEquals(EmployeeValidation.isValidJob(input), expected);
+        Assert.assertEquals(EmployeeValidationUtil.isValidJob(input), expected);
     }
 }
