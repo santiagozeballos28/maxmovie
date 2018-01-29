@@ -70,7 +70,6 @@ public class ActorCrud {
             if (StringUtils.isNotBlank(status)) {
                 sql = sql + " WHERE status= '" + status + "';";
             }
-
             ResultSet rs = query.executeQuery(sql);
             Either eitherActors = new Either();
             while (rs.next()) {

@@ -38,7 +38,7 @@ public class DateValidation {
             rangeValid = false;
             listData.clear();
             listData.put(ConstantData.DATA, date);
-            listData.put(ConstantData.DATA_TWO, DateOperation.getDataCurrent());
+            listData.put(ConstantData.DATA_TWO, DateOperation.getDateCurrent());
             String errorMessages = OperationString.generateMesage(Message.DATE_FUTURE, listData);
             listError.add(errorMessages);
         }

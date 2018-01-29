@@ -241,7 +241,6 @@ public class EmployeeLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-
             if (employee.haveDataJob()) {
                 String statusInactive = Status.Inactive.name();
                 eitherRes = employeeCrud.getDataJob(connection, idEmployee, statusActive);
@@ -258,7 +257,6 @@ public class EmployeeLogic {
                     eitherRes = jobCrud.getJobOfName(connection, employee.getJob().toUpperCase());
                     idJobNew = ((Job) eitherRes.getFirstObject()).getId();
                 }
-
                 DataJob dataJobNew = new DataJob(idEmployee, idJobNew, employee.getDateOfHire(), employee.getAddress());
                 DataJob dataJobInsert = getDataJobInsert(dataJobCurrent, dataJobNew);
                 //Insert data job
@@ -284,7 +282,6 @@ public class EmployeeLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-
             ArrayList<ModelObject> listPhoneInsert = eitherRes.getListObject();
             if (!listPhoneInsert.isEmpty()) {
                 ArrayList<Integer> listPhonesI = getListNumberPhones(listPhoneInsert);
@@ -463,11 +460,11 @@ public class EmployeeLogic {
             }
             if (StringUtils.isNotBlank(lastName)) {
                 lastName = OperationString.generateName(lastName);
-                lastName =  OperationString.addApostrophe(lastName);
+                lastName = OperationString.addApostrophe(lastName);
             }
             if (StringUtils.isNotBlank(firstName)) {
                 firstName = OperationString.generateName(firstName);
-                firstName =  OperationString.addApostrophe(firstName);
+                firstName = OperationString.addApostrophe(firstName);
             }
             String jobName = "";
             if (StringUtils.isNotBlank(job)) {
@@ -527,7 +524,6 @@ public class EmployeeLogic {
                 throw eitherRes;
             }
             DataBasePostgres.connectionCommit(connection);
-
         } catch (Either e) {
             eitherRes = e;
             DataBasePostgres.connectionRollback(connection, eitherRes);
@@ -648,7 +644,6 @@ public class EmployeeLogic {
             }
             eitherRes = new Either();
             eitherRes.setCode(CodeStatus.CREATED);
-
             DataBasePostgres.connectionCommit(connection);
         } catch (Either exception) {
             eitherRes = exception;
@@ -661,17 +656,13 @@ public class EmployeeLogic {
 
     private Either bondAsigned(ArrayList<ModelObject> listDataJob, ArrayList<ModelObject> listBond) {
         Either eitherRes = new Either();
-        //Short.bundle(listBond);
         for (int i = 0; i < listDataJob.size(); i++) {
             DataJob dataJob = (DataJob) listDataJob.get(i);
             int yearsEmployeeSeniority = DateOperation.diferenceYear(dataJob.getDateOfHire());
             long idBondOfEmployee = getIdBondOf(yearsEmployeeSeniority, listBond);
             if (idBondOfEmployee != -1) {
-                //el ide cambiar
-                System.out.println("ID_EMPLOYEE: " + dataJob.getEmployeeId());
                 eitherRes.addModeloObjet(new BondAssigned(dataJob.getEmployeeId(), idBondOfEmployee));
             }
-
         }
         eitherRes.setCode(CodeStatus.OK);
         return eitherRes;
@@ -713,13 +704,11 @@ public class EmployeeLogic {
             if (!findEmployee) {
                 insertBondAssigned.addModeloObjet(bondAssignedNew);
             }
-
         }
         return insertBondAssigned;
     }
 
     private ArrayList<Salary> getSalaryToUpdate(ArrayList<ModelObject> listSalary, ArrayList<ModelObject> listAssignBonds, ArrayList<ModelObject> listBond) {
-
         ArrayList<Salary> listResSalary = new ArrayList<Salary>();
         for (int i = 0; i < listAssignBonds.size(); i++) {
             BondAssigned bondAssigned = (BondAssigned) listAssignBonds.get(i);
@@ -730,7 +719,6 @@ public class EmployeeLogic {
             salaryUpdate.setBond(bond);
             salaryUpdate.setLiquidSalary(netSalary + bond);
             listResSalary.add(salaryUpdate);
-
         }
         return listResSalary;
     }

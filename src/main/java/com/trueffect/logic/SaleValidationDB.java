@@ -125,7 +125,7 @@ public class SaleValidationDB {
         return posReportMovie;
     }
 
-    Either verifyRentQuantity(Connection connection, long idMasterDetail, ArrayList<Sale> rentReturnSales) {
+    public Either verifyRentQuantity(Connection connection, long idMasterDetail, ArrayList<Sale> rentReturnSales) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

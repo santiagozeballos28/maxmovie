@@ -65,7 +65,7 @@ public class DateOperation {
         return false;
     }
 
-    public static String getDataCurrent() {
+    public static String getDateCurrent() {
         DateFormat dateFormat = new SimpleDateFormat(ConstantData.SIMPLE_DATE_FORMAT);
         Date date = new Date();
         return dateFormat.format(date);

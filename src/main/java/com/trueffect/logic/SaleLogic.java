@@ -300,12 +300,11 @@ public class SaleLogic {
         double priceRental = price(operationRental);
         double priceBuy = price(operationBuy);
         double priceBuyPremier = price(operationBuyPremier);
-
         if (operation.equals(operationRental)) {
             double priceRentalSubTotal = amount * priceRental;
             saleDetails.add(new RentalDetail(copyMovie.getCopyMovieId(), amount, priceRentalSubTotal, operationRental));
         } else {
-            String dateCurrent = DateOperation.getDataCurrent();
+            String dateCurrent = DateOperation.getDateCurrent();
             double priceBuySubTotal = 0.0;
             String createMovieDate = getCreateMovieDate(copyMovie.getMovieId());
             if (DateOperation.areSameMonthAndYear(dateCurrent, createMovieDate)) {
@@ -412,83 +411,6 @@ public class SaleLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-
-            
-            
-            eitherRes = saleValidationDB.verifyCopiesMovie(connection, sales);
-            if (eitherRes.existError()) {
-                throw eitherRes;
-            }
-            eitherRes = copyCrud.getCopyMovie(connection, idsMovieSale);
-            if (eitherRes.existError()) {
-                throw eitherRes;
-            }
-            ArrayList<ModelObject> copiesMovie = eitherRes.getListObject();
-            eitherRes = priceCrud.getPrice(connection);
-            if (eitherRes.existError()) {
-                throw eitherRes;
-            }
-            prices = eitherRes.getListObject();
-            //splits sales in rental detail and buy detail
-            ArrayList<SaleDetail> rentalDetails = new ArrayList<SaleDetail>();
-            ArrayList<SaleDetail> buyDetails = new ArrayList<SaleDetail>();
-            splitSales(sales, copiesMovie, rentalDetails, buyDetails);
-            int amountTotal = getSubTotalAmount(rentalDetails) + getSubTotalAmount(buyDetails);
-            double priceTotal = getSubTotalPrice(rentalDetails) + getSubTotalPrice(buyDetails);
-            EmployeeCrud employeeCrud = new EmployeeCrud();
-            eitherRes = employeeCrud.getDataJob(connection, idCreateUser, active);
-            if (eitherRes.existError()) {
-                throw eitherRes;
-            }
-            long idDataJob = ((DataJob) eitherRes.getFirstObject()).getJobId();
-            MasterDetail masterDetail = new MasterDetail(amountTotal, priceTotal, idDataJob, idRenterUser);
-            eitherRes = masterDetailCrud.insert(connection, masterDetail);
-            if (eitherRes.existError()) {
-                throw eitherRes;
-            }
-            //Insert sale in the table master_detail
-            eitherRes = masterDetailCrud.insert(connection, masterDetail);
-            if (eitherRes.existError()) {
-                throw eitherRes;
-            }
-            long idMasterDetail = ((Identifier) eitherRes.getFirstObject()).getId();
-            //Insert sale in the table rental_detail
-            eitherRes = rentalDetailCrud.insert(connection, idMasterDetail, rentalDetails);
-            if (eitherRes.existError()) {
-                throw eitherRes;
-            }
-            //Insert sale in the table buy_detail
-            eitherRes = buyDetailCrud.insert(connection, idMasterDetail, buyDetails);
-            if (eitherRes.existError()) {
-                throw eitherRes;
-            }
-            //Update copy current of all the movies rentals and buys.
-            eitherRes = copyCrud.updateAmountCurrent(connection, idCreateUser, copiesMovie);
-            if (eitherRes.existError()) {
-                throw eitherRes;
-            }
-            //Get data inserted
-            eitherRes = masterDetailCrud.getDetailSaleOf(connection, idMasterDetail);
-            if (eitherRes.existError()) {
-                throw eitherRes;
-            }
-            MasterDetailSaile masterDetailPerson = (MasterDetailSaile) eitherRes.getFirstObject();
-            //Get amount subtotal and price subtotal of retal
-            eitherRes = reportSaleCrud.getReportRental(connection, idMasterDetail);
-            if (eitherRes.existError()) {
-                throw eitherRes;
-            }
-            ArrayList<ModelObject> reportRental = eitherRes.getListObject();
-            eitherRes = reportSaleCrud.getReportBuy(connection, idMasterDetail);
-            if (eitherRes.existError()) {
-                throw eitherRes;
-            }
-            ArrayList<ModelObject> reportBuy = eitherRes.getListObject();
-            eitherRes = new Either();
-            eitherRes.addModeloObjet(masterDetailPerson);
-            eitherRes.addListObject(reportRental);
-            eitherRes.addListObject(reportBuy);
-            eitherRes.setCode(CodeStatus.OK);
             DataBasePostgres.connectionCommit(connection);
         } catch (Either e) {
             eitherRes = e;
@@ -512,7 +434,6 @@ public class SaleLogic {
         String idPricePenalty = OperationSale.PEN.name();
         Either eitherPrice = new Either();
         try {
-
             eitherPrice = priceCrud.getPriceOf(connection, idPricePenalty);
         } catch (Exception e) {
             ArrayList<String> listError = new ArrayList<String>();
