@@ -1,14 +1,13 @@
 package com.trueffect.validation;
 
-import com.trueffect.messages.Message;
+import com.trueffect.logic.DateOperation;
 import com.trueffect.model.Employee;
 import com.trueffect.response.Either;
 import com.trueffect.tools.CodeStatus;
 import com.trueffect.tools.ConstantData;
-import com.trueffect.tools.ConstantData.JobName;
 import com.trueffect.util.ModelObject;
-import com.trueffect.util.OperationString;
 import java.util.ArrayList;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -16,97 +15,67 @@ import java.util.ArrayList;
  */
 public class EmployeeUpdate extends PersonUpdate {
 
+    private EmployeeValidation employeeValidation;
+    private DateValidation dateValidation;
+    private ObjectValidation objectValidation;
+    private String birthdayCurrent;
+
     public EmployeeUpdate(String job, int ageMinimum) {
         super(job, ageMinimum);
+        employeeValidation = new EmployeeValidation();
+        dateValidation = new DateValidation();
+        objectValidation = new ObjectValidation();
+        birthdayCurrent = "";
+    }
+
+    public void setBirthdayCurrent(String birthdayCurrent) {
+        this.birthdayCurrent = birthdayCurrent;
     }
 
     @Override
     public Either complyCondition(ModelObject resource) {
-
         Employee employee = (Employee) resource;
         ArrayList<String> listError = new ArrayList<String>();
-
         Either eitherPerson = super.complyCondition(resource);
         listError.addAll(eitherPerson.getListError());
-
         //Validation date of hire
-        if (!PersonValidation.isEmpty(employee.getDateOfHire())) {
-            validationDateOfHire(employee.getDateOfHire(), listError);
+        if (StringUtils.isNotBlank(employee.getDateOfHire())) {
+            //the birthday is sent, because it is necessary that the date of hire be consistent with the birthday
+            validationDateOfHire(employee.getDateOfHire(), employee.getBirthday(), listError);
         }
         //Validation date of hire
-        if (!PersonValidation.isEmpty(employee.getAddress())) {
-            validationAddress(employee.getAddress(), listError);
+        if (StringUtils.isNotBlank(employee.getAddress())) {
+            objectValidation.verifySize(ConstantData.ADDRESS, employee.getAddress(), ConstantData.MAX_LENGTH_ADDRESS, listError);
         }
         //Validation date of hire
-        if (!PersonValidation.isEmpty(employee.getJob())) {
-            validationJob(employee.getJob(), listError);
+        if (StringUtils.isNotBlank(employee.getJob())) {
+            employeeValidation.verifyJob(employee.getJob(), listError);
         }
-
         //Validation  phones
-        validationPhone(employee.getPhones(), listError);
+        employeeValidation.verifyPhones(employee.getPhones(), listError);
         //To check if there was an error
         if (!listError.isEmpty()) {
-
             return new Either(CodeStatus.BAD_REQUEST, listError);
         }
         return new Either();
     }
 
-    private void validationDateOfHire(String dateOfHire, ArrayList<String> listError) {
-        if (!EmployeeValidation.isValidDateOfHire(dateOfHire)) {
-            String errorMessage = "";
-            listData.clear();
-            listData.put(ConstantData.TYPE_DATA, ConstantData.DATE_OF_HIRE);
-            listData.put(ConstantData.DATA, dateOfHire);
-            listData.put(ConstantData.VALID, ConstantData.VALID_BIRTHDAY);
-            errorMessage = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
-            listError.add(errorMessage);
-        }
-    }
-
-    private void validationAddress(String address, ArrayList<String> listError) {
-        if (!EmployeeValidation.isValidAddress(address)) {
-            String errorMessage = "";
-            listData.clear();
-            listData.put(ConstantData.TYPE_DATA, ConstantData.ADDRESS);
-            listData.put(ConstantData.DATA, address);
-            listData.put(ConstantData.SIZE, ConstantData.MAX_LENGTH_ADDRESS + "");
-            errorMessage = OperationString.generateMesage(Message.SIZE_MAX, listData);
-            listError.add(errorMessage);
-        }
-    }
-
-    private void validationJob(String job, ArrayList<String> listError) {
-        if (!EmployeeValidation.isValidJob(job)) {
-            String validNameJob
-                    = JobName.MGR.getDescriptionJobName() + ", "
-                    + JobName.CSHR.getDescriptionJobName() + ", "
-                    + JobName.CC.getDescriptionJobName();
-            String errorMessage = "";
-            listData.clear();
-            listData.put(ConstantData.TYPE_DATA, ConstantData.JOB);
-            listData.put(ConstantData.DATA, job);
-            listData.put(ConstantData.VALID, validNameJob);
-            errorMessage = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
-            listError.add(errorMessage);
-        }
-    }
-
-    private void validationPhone(ArrayList<Integer> phones, ArrayList<String> listError) {
-        if (phones.size() < ConstantData.MIN_AMOUNT_PHONE) {
-            listData.clear();
-            listData.put(ConstantData.DATA, ConstantData.MIN_AMOUNT_PHONE + "");
-            String errorMessages = OperationString.generateMesage(Message.REFERENCE_PHONE, listData);
-            listError.add(errorMessages);
-        }
-        for (int i = 0; i < phones.size(); i++) {
-            if (!EmployeeValidation.isValidPhone(phones.get(i))) {
-                listData.clear();
-                listData.put(ConstantData.TYPE_DATA, ConstantData.PHONE);
-                listData.put(ConstantData.DATA, phones.get(i) + "");
-                listData.put(ConstantData.VALID, ConstantData.VALID_PHONE);
-                String errorMessages = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
-                listError.add(errorMessages);
+    private void validationDateOfHire(String dateOfHire, String birthday, ArrayList<String> listError) {
+        String errorMessage = "";
+        boolean validDateOfHire = dateValidation.isValidDate(ConstantData.DATE_OF_HIRE, dateOfHire, listError);
+        boolean validDateOfHireRange;
+        if (validDateOfHire) {
+            validDateOfHireRange = dateValidation.verifyDateRangeValid(dateOfHire, listError);
+            boolean validDateFormatBirthday = true;
+            boolean validDateRangeBirthday = true;
+            String birthdayAux = birthdayCurrent;
+            if (StringUtils.isNotBlank(birthday)) {
+                birthdayAux = birthday;
+                validDateFormatBirthday = DateOperation.isValidDateFormat(birthday);
+                validDateRangeBirthday = DateOperation.dateIsInRangeValid(birthday);
+            }
+            if (validDateOfHireRange && validDateFormatBirthday && validDateRangeBirthday) {
+                employeeValidation.birthdayLessDateOfHire(birthdayAux, dateOfHire, listError);
             }
         }
     }

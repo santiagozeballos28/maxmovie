@@ -1,4 +1,4 @@
-package com.trueffect.logica;
+package com.trueffect.logic;
 
 import com.trueffect.messages.Message;
 import com.trueffect.response.Either;
@@ -9,6 +9,7 @@ import com.trueffect.util.OperationString;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -24,15 +25,17 @@ public class OperationModel {
 
     public Either verifyStatus(Connection connection, String status) {
         ArrayList<String> listError = new ArrayList<String>();
+
         try {
-            ConstantData.Status statusPerson = ConstantData.Status.valueOf(status);
+            String statusNew = StringUtils.capitalize(status.trim().toLowerCase());
+            Status statusPerson = Status.valueOf(statusNew);
             return new Either();
         } catch (Exception e) {
             listData.clear();
-            listData.put(ConstantData.TYPE_DATA, "Status22");
+            listData.put(ConstantData.TYPE_DATA, ConstantData.STATUS);
             listData.put(ConstantData.DATA, status);
             listData.put(ConstantData.VALID, Status.Active + ", " + Status.Inactive);
-            String errorMgs = OperationString.generateMesage(Message.NOT_VALID_DATA_THE_VALID_DATA_ARE, listData);
+            String errorMgs = OperationString.generateMesage(Message.NOT_VALID_THE_VALID_DATA_ARE, listData);
             listError.add(errorMgs);
             return new Either(CodeStatus.BAD_REQUEST, listError);
         }
@@ -42,8 +45,8 @@ public class OperationModel {
         ArrayList<String> listError = new ArrayList<String>();
         listData.clear();
         if (idPayload == 0) {
-            listData.put(ConstantData.OBJECT, nameObject);
-            String errorMessage = OperationString.generateMesage(Message.MANDATORY_ID, listData);
+            listData.put(ConstantData.TYPE_DATA, ConstantData.ID);
+            String errorMessage = OperationString.generateMesage(Message.EMPTY_DATA, listData);
             listError.add(errorMessage);
             return new Either(CodeStatus.CONFLICT, listError);
         } else if (idUrl != idPayload) {
@@ -51,6 +54,21 @@ public class OperationModel {
             String errorMessage = OperationString.generateMesage(Message.CONFLCT_ID, listData);
             listError.add(errorMessage);
             return new Either(CodeStatus.CONFLICT, listError);
+        }
+        return new Either();
+    }
+
+    public Either verifyStatusModelObject(String nameObject, String statusObject, String statusNew) {
+        ArrayList<String> listError = new ArrayList<String>();
+        String statusObj = statusObject.trim().toLowerCase();
+        String statusN = statusNew.trim().toLowerCase();
+        if (statusObj.equals(statusN)) {
+            listData.clear();
+            listData.put(ConstantData.OBJECT, nameObject);
+            listData.put(ConstantData.DATA, statusObject.trim());
+            String errorMgs = OperationString.generateMesage(Message.STATUS_MODEL_OBJECT, listData);
+            listError.add(errorMgs);
+            return new Either(CodeStatus.BAD_REQUEST, listError);
         }
         return new Either();
     }

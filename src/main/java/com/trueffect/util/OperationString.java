@@ -1,6 +1,7 @@
 package com.trueffect.util;
 
 import com.trueffect.model.Employee;
+import com.trueffect.model.Movie;
 import com.trueffect.model.Person;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,29 +48,24 @@ public class OperationString {
 
     public static void formatOfTheName(Person person) {
         if (StringUtils.isNotBlank(person.getLastName())) {
-            String lastName = generateLastName(person.getLastName());
+            String lastName = generateName(person.getLastName());
             person.setLastName(lastName);
         }
         if (StringUtils.isNotBlank(person.getFirstName())) {
-            String firstName = generateFirstName(person.getFirstName());
+            String firstName = generateName(person.getFirstName());
             person.setFirstName(firstName);
         }
     }
 
-    public static String generateLastName(String lastName) {
-        String resLastName = "";
-        String[] lastNameAux = lastName.toLowerCase().split(" ");
-        for (String lastN : lastNameAux) {
-            resLastName = resLastName + " " + StringUtils.capitalize(lastN);
+    public static String generateName(String name) {
+        String resName = "";
+        String[] nameArrayAux = name.toLowerCase().split(" ");
+        ArrayList<String> names = removeEmpty(nameArrayAux);
+        for (String nameString : names) {
+            resName = resName + " " + StringUtils.capitalize(nameString);
         }
-        resLastName = resLastName.trim();
-        return resLastName;
-    }
-
-    public static String generateFirstName(String firstName) {
-        String resFirstName = "";
-        resFirstName = StringUtils.capitalize(firstName.toLowerCase());
-        return resFirstName;
+        resName = resName.trim();
+        return resName;
     }
 
     public static void formatOfNameJob(Employee employee) {
@@ -84,5 +80,26 @@ public class OperationString {
             return name.toUpperCase();
         }
         return name;
+    }
+
+    public static ArrayList<String> removeEmpty(String[] array) {
+        ArrayList<String> res = new ArrayList<String>();
+        for (String string : array) {
+            if (!string.isEmpty()) {
+                res.add(string);
+            }
+        }
+        return res;
+    }
+
+    public static String removeSpace(String string) {
+        String resString = "";
+        String[] stringArrayAux = string.split(" ");
+        ArrayList<String> listString = removeEmpty(stringArrayAux);
+        for (String strg : listString) {
+            resString = resString + " " + strg;
+        }
+        resString = resString.trim();
+        return resString;
     }
 }

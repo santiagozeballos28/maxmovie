@@ -64,6 +64,10 @@ public class Either extends Exception {
         listObject.add(modelObject);
     }
 
+    public void addListObject(ArrayList<ModelObject> objects) {
+        listObject.addAll(objects);
+    }
+
     public boolean existError() {
         return !listError.isEmpty();
     }

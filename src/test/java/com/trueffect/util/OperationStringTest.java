@@ -2,7 +2,7 @@ package com.trueffect.util;
 
 import com.trueffect.messages.Message;
 import com.trueffect.tools.ConstantData;
-import com.trueffect.validation.EmployeeValidation;
+import com.trueffect.validation.EmployeeValidationUtil;
 import java.util.HashMap;
 import org.junit.Assert;
 import org.junit.Test;
@@ -15,12 +15,12 @@ public class OperationStringTest {
 
     //@Test
     public void testTypeIdentifierPass() {
-        String msgInput = Message.NOT_VALID_DATA_THE_VALID_DATA_ARE;
+        String msgInput = Message.NOT_VALID_THE_VALID_DATA_ARE;
         String msgOutputExpected = "The Last name [Manti$ago] is not valid. The valid format is as follows: (Letters = A-Za-z, apostrophes = ')";
         HashMap<String, String> listData = new HashMap<String, String>();
         listData.put(ConstantData.TYPE_DATA, ConstantData.LAST_NAME);
         listData.put(ConstantData.DATA, "Manti$ago");
-        listData.put(ConstantData.VALID, ConstantData.VALID_LASTNAME);
+        listData.put(ConstantData.VALID, ConstantData.VALID_NAME_PERSON);
         String res = OperationString.generateMesage(msgInput, listData);
         Assert.assertTrue(res.equals(msgOutputExpected));
     }
@@ -30,7 +30,7 @@ public class OperationStringTest {
         String input = "CSHR";
         boolean expected = true;
 
-        Assert.assertEquals(EmployeeValidation.isValidJob(input), expected);
+        Assert.assertEquals(EmployeeValidationUtil.isValidJob(input), expected);
     }
 
     @Test
@@ -38,7 +38,7 @@ public class OperationStringTest {
         String input = "MGR";
         boolean expected = true;
 
-        Assert.assertEquals(EmployeeValidation.isValidJob(input), expected);
+        Assert.assertEquals(EmployeeValidationUtil.isValidJob(input), expected);
     }
 
     @Test
@@ -46,7 +46,7 @@ public class OperationStringTest {
         String input = "CC";
         boolean expected = true;
 
-        Assert.assertEquals(EmployeeValidation.isValidJob(input), expected);
+        Assert.assertEquals(EmployeeValidationUtil.isValidJob(input), expected);
     }
 
     @Test
@@ -54,6 +54,6 @@ public class OperationStringTest {
         String input = "   CDCD  ";
         boolean expected = false;
 
-        Assert.assertEquals(EmployeeValidation.isValidJob(input), expected);
+        Assert.assertEquals(EmployeeValidationUtil.isValidJob(input), expected);
     }
 }

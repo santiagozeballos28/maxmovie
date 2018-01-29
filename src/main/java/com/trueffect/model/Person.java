@@ -15,11 +15,12 @@ public class Person extends ModelObject {
     protected String firstName;
     protected String genre;
     protected String birthday;
+    protected String status;
 
     public Person() {
     }
 
-    public Person(long id, String typeIdentifier, String identifier, String lastName, String firstName, String genre, String birthday) {
+    public Person(long id, String typeIdentifier, String identifier, String lastName, String firstName, String genre, String birthday, String status) {
         this.id = id;
         this.typeIdentifier = typeIdentifier.trim();
         this.identifier = identifier.trim();
@@ -27,6 +28,7 @@ public class Person extends ModelObject {
         this.firstName = firstName.trim();
         this.genre = genre.trim();
         this.birthday = birthday.trim();
+        this.status = status;
     }
 
     public Person(long id, String typeIdentifier, String identifier, String genre, String birthday) {
@@ -65,6 +67,10 @@ public class Person extends ModelObject {
         return birthday;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
     public void setId(long id) {
         this.id = id;
     }
@@ -91,6 +97,10 @@ public class Person extends ModelObject {
 
     public void setBirthday(String birthday) {
         this.birthday = birthday.trim();
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public int compareTo(Person o) {

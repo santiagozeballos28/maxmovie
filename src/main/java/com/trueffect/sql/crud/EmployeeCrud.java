@@ -1,5 +1,7 @@
 package com.trueffect.sql.crud;
 
+import com.trueffect.model.Bond;
+import com.trueffect.model.BondAssigned;
 import com.trueffect.model.DataJob;
 import com.trueffect.model.Employee;
 import com.trueffect.model.EmployeeDetail;
@@ -23,7 +25,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class EmployeeCrud {
 
-    public static Either insertDataJob(Connection connection, long idCreateUser, DataJob dataJob, boolean enabledRenterUser) {
+    public Either insertDataJob(Connection connection, long idCreateUser, DataJob dataJob, boolean enabledRenterUser) {
         Statement query = null;
         try {
             long idEmployee = dataJob.getEmployeeId();
@@ -67,7 +69,7 @@ public class EmployeeCrud {
         }
     }
 
-    public static Either insertPhone(Connection connection, long idCreateUser, long idEmployee, ArrayList<Integer> listPhones) {
+    public Either insertPhone(Connection connection, long idCreateUser, long idEmployee, ArrayList<Integer> listPhones) {
         Statement query = null;
         try {
             query = (Statement) connection.createStatement();
@@ -103,7 +105,7 @@ public class EmployeeCrud {
         }
     }
 
-    public static Either getEmployeeByIdentifier(Connection connection, String typeIdentifier, String identifier) {
+    public Either getEmployeeByIdentifier(Connection connection, String typeIdentifier, String identifier) {
         try {
             Statement query = (Statement) connection.createStatement();
             String sql
@@ -116,7 +118,8 @@ public class EmployeeCrud {
                     + "       birthday, "
                     + "       date_of_hire, "
                     + "       address, "
-                    + "       job_name\n"
+                    + "       job_name,"
+                    + "       PERSON.status\n"
                     + "  FROM PERSON, DATA_JOB, JOB\n"
                     + " WHERE PERSON.type_identifier='" + typeIdentifier + "' "
                     + "   AND PERSON.identifier='" + identifier + "'"
@@ -136,7 +139,8 @@ public class EmployeeCrud {
                         rs.getString("birthday"),
                         rs.getString("date_of_hire"),
                         rs.getString("address"),
-                        rs.getString("job_name")
+                        rs.getString("job_name"),
+                        rs.getString("status")
                 );
             }
             if (query != null) {
@@ -150,7 +154,7 @@ public class EmployeeCrud {
         }
     }
 
-    public static Either getPhones(Connection connection, long idPerson) {
+    public Either getPhones(Connection connection, long idPerson) {
         try {
             String query
                     = "SELECT number_phone"
@@ -176,7 +180,7 @@ public class EmployeeCrud {
         }
     }
 
-    public static Either getDetailOfPhones(Connection connection, long idEmployee) {
+    public Either getDetailOfPhones(Connection connection, long idEmployee) {
         try {
             String query
                     = "SELECT person_id, "
@@ -206,7 +210,7 @@ public class EmployeeCrud {
         }
     }
 
-    public static Either getEmployee(Connection connection, long idEmployee, String status) {
+    public Either getEmployee(Connection connection, long idEmployee, String status) {
         try {
             String query
                     = "SELECT PERSON.person_id, "
@@ -218,7 +222,8 @@ public class EmployeeCrud {
                     + "       birthday, "
                     + "       date_of_hire,"
                     + "       address,"
-                    + "       job_name\n"
+                    + "       job_name,"
+                    + "       PERSON.status\n"
                     + "  FROM PERSON, DATA_JOB, JOB\n"
                     + " WHERE PERSON.person_id = ? "
                     + "   AND DATA_JOB.status = 'Active'"
@@ -243,7 +248,8 @@ public class EmployeeCrud {
                         rs.getString("birthday"),
                         rs.getString("date_of_hire"),
                         rs.getString("address"),
-                        rs.getString("job_name"));
+                        rs.getString("job_name"),
+                        rs.getString("status"));
             }
             if (st != null) {
                 st.close();
@@ -256,7 +262,7 @@ public class EmployeeCrud {
         }
     }
 
-    public static Either updateDataJob(Connection connection, long idModifierUser, long idEmployee, long idJob, String status) {
+    public Either updateStatusDataJob(Connection connection, long idModifierUser, long idEmployee, long idJob, String status) {
         try {
             String sql
                     = "UPDATE DATA_JOB\n"
@@ -280,7 +286,7 @@ public class EmployeeCrud {
         }
     }
 
-    public static Either updatePhone(Connection connection, long idModifierUser, long idEmployee, ArrayList<ModelObject> listPhone) {
+    public Either updatePhone(Connection connection, long idModifierUser, long idEmployee, ArrayList<ModelObject> listPhone) {
         try {
             Statement query = (Statement) connection.createStatement();
             String sql = "";
@@ -306,13 +312,15 @@ public class EmployeeCrud {
         }
     }
 
-    public static Either getEmployeeBy(
+    public Either getEmployeeBy(
             Connection connection,
             String typeId,
             String identifier,
             String lastName,
             String firstName,
             String genre,
+            String birthdayStart,
+            String birthdayEnd,
             String dateOfHire,
             String nameJob) {
         Either eitherRes = new Either();
@@ -370,7 +378,11 @@ public class EmployeeCrud {
             if (StringUtils.isNotBlank(genre)) {
                 conditionQuery = conditionQuery + " genre= '" + genre.trim().toUpperCase() + "' OR";
             }
-
+            if (StringUtils.isNotBlank(birthdayStart) && StringUtils.isNotBlank(birthdayEnd)) {
+                conditionQuery = conditionQuery
+                        + " ( birthday >= '" + birthdayStart.trim() + "' AND "
+                        + "   birthday <= '" + birthdayEnd.trim() + "') OR";
+            }
             if (StringUtils.isNotBlank(nameJob)) {
                 conditionQuery = conditionQuery + " job_name= '" + nameJob.trim().toUpperCase() + "' OR";
             }
@@ -383,7 +395,6 @@ public class EmployeeCrud {
             }
             query = query + ") EMPLOYEE, PERSON "
                     + " WHERE EMPLOYEE.create_user = PERSON.person_id";
-
             PreparedStatement st = connection.prepareStatement(query);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
@@ -421,7 +432,7 @@ public class EmployeeCrud {
         }
     }
 
-    public static Either getPhonesByNumeber(Connection connection, ArrayList<Integer> phones, String status) {
+    public Either getPhonesByNumeber(Connection connection, ArrayList<Integer> phones, String status) {
         try {
             String query
                     = "SELECT person_id,"
@@ -460,7 +471,7 @@ public class EmployeeCrud {
         }
     }
 
-    public static Either getDataJob(Connection connection, long idEmployee, String status) {
+    public Either getDataJob(Connection connection, long idEmployee, String status) {
         try {
             String query
                     = "SELECT person_id,"
@@ -486,6 +497,115 @@ public class EmployeeCrud {
                         rs.getString("address"),
                         rs.getString("status"));
                 eitherRes.addModeloObjet(dataJob);
+            }
+            if (st != null) {
+                st.close();
+            }
+
+            eitherRes.setCode(CodeStatus.CREATED);
+            return eitherRes;
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+    }
+
+    public Either getAllDataJob(Connection connection, String status) {
+        try {
+            String query
+                    = "SELECT DATA_JOB.person_id,"
+                    + "       date_of_hire, "
+                    + "       address"
+                    + "  FROM PERSON , DATA_JOB"
+                    + " WHERE PERSON.person_id = DATA_JOB.person_id";
+
+            if (StringUtils.isNotBlank(status)) {
+                query = query + " AND PERSON.status = '" + status + "' AND DATA_JOB.status = '" + status + "'";
+            }
+            PreparedStatement st = connection.prepareStatement(query);
+            ResultSet rs = st.executeQuery();
+            Either eitherRes = new Either();
+            DataJob dataJob = new DataJob();
+            while (rs.next()) {
+                dataJob = new DataJob(
+                        rs.getLong("person_id"),
+                        rs.getString("date_of_hire"),
+                        rs.getString("address"));
+                eitherRes.addModeloObjet(dataJob);
+            }
+            if (st != null) {
+                st.close();
+            }
+
+            eitherRes.setCode(CodeStatus.CREATED);
+            return eitherRes;
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+    }
+
+    public static Either getBond(Connection connection) {
+        try {
+            String query
+                    = "SELECT bond_id,"
+                    + "       quantity, "
+                    + "       seniority,"
+                    + "       start_date,"
+                    + "       end_date"
+                    + "  FROM BOND"
+                    + " ORDER BY seniority "
+                    + "   ASC ";
+
+            PreparedStatement st = connection.prepareStatement(query);
+            ResultSet rs = st.executeQuery();
+            Either eitherRes = new Either();
+            Bond bond = new Bond();
+            while (rs.next()) {
+                bond = new Bond(
+                        rs.getLong("bond_id"),
+                        rs.getDouble("quantity"),
+                        rs.getInt("seniority"),
+                        rs.getString("start_date"),
+                        rs.getString("end_date"));
+                eitherRes.addModeloObjet(bond);
+            }
+            if (st != null) {
+                st.close();
+            }
+            eitherRes.setCode(CodeStatus.CREATED);
+            return eitherRes;
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+    }
+
+    public Either getBondAssigned(Connection connection) {
+        try {
+            String query
+                    = "SELECT person_id, "
+                    + "       bond_id, "
+                    + "       start_date, "
+                    + "       end_date, "
+                    + "       status\n"
+                    + "  FROM BOND_ASSIGNED;";
+
+            PreparedStatement st = connection.prepareStatement(query);
+            ResultSet rs = st.executeQuery();
+            Either eitherRes = new Either();
+            BondAssigned bondAssigned = new BondAssigned();
+            while (rs.next()) {
+                bondAssigned = new BondAssigned(
+                        rs.getLong("person_id"),
+                        rs.getLong("bond_id"),
+                        rs.getString("start_date"),
+                        rs.getString("end_date"),
+                        rs.getString("status"));
+                eitherRes.addModeloObjet(bondAssigned);
             }
             if (st != null) {
                 st.close();

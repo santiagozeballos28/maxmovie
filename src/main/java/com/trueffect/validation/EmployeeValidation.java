@@ -1,12 +1,11 @@
 package com.trueffect.validation;
 
+import com.trueffect.logic.DateOperation;
+import com.trueffect.messages.Message;
 import com.trueffect.tools.ConstantData;
-import com.trueffect.tools.ConstantData.JobName;
-import com.trueffect.tools.RegularExpression;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.regex.Pattern;
+import com.trueffect.util.OperationString;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  *
@@ -14,53 +13,57 @@ import java.util.regex.Pattern;
  */
 public class EmployeeValidation {
 
-    public static boolean isValidDateOfHire(String dateOfHire) {
-        if (!Pattern.matches(RegularExpression.DATE, dateOfHire)) {
-            return false;
-        }
-        String[] dates = dateOfHire.split("-");
-        int year = Integer.parseInt(dates[0]);
-        int month = Integer.parseInt(dates[1]);
-        int dayOfMonth = Integer.parseInt(dates[2]);
-        int yearNow = Calendar.getInstance().get(Calendar.YEAR);
-        if (year < 1900 || year > yearNow) {
-            return false;
-        }
-        try {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setLenient(false);
-            calendar.set(Calendar.YEAR, year);
+    HashMap<String, String> listData;
 
-            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            calendar.set(Calendar.MONTH, month - 1); // [0,...,11]
-            Date date = calendar.getTime();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            return true;
-        } catch (Exception e) {
-            return false;
+    public EmployeeValidation() {
+        listData = new HashMap<String, String>();
+    }
+
+    public boolean birthdayLessDateOfHire(String birthday, String dateOfHire, ArrayList<String> listError) {
+        boolean rangeValid = true;
+        if (!DateOperation.isLess(birthday, dateOfHire)) {
+            listData.clear();
+            listData.put(ConstantData.TYPE_DATA, ConstantData.DATE_OF_HIRE);
+            listData.put(ConstantData.DATA, dateOfHire.trim());
+            listData.put(ConstantData.TYPE_DATA_TWO, ConstantData.BIRTHDAY);
+            listData.put(ConstantData.DATA_TWO, birthday.trim());
+            String errorMessages = OperationString.generateMesage(Message.DATE_INCOHERENT, listData);
+            listError.add(errorMessages);
+        }
+        return rangeValid;
+    }
+
+    public void verifyJob(String job, ArrayList<String> listError) {
+        if (!EmployeeValidationUtil.isValidJob(job.trim().toUpperCase())) {
+            String validNameJob
+                    = ConstantData.JobName.MGR.getDescriptionJobName() + ", "
+                    + ConstantData.JobName.CSHR.getDescriptionJobName() + ", "
+                    + ConstantData.JobName.CC.getDescriptionJobName();
+            listData.clear();
+            listData.put(ConstantData.TYPE_DATA, ConstantData.JOB);
+            listData.put(ConstantData.DATA, job.trim());
+            listData.put(ConstantData.VALID, validNameJob);
+            String errorMessages = OperationString.generateMesage(Message.NOT_VALID_THE_VALID_DATA_ARE, listData);
+            listError.add(errorMessages);
         }
     }
 
-    public static boolean isValidAddress(String address) {
-        return address.length() < ConstantData.MAX_LENGTH_ADDRESS;
-    }
-
-    public static boolean isValidJob(String job) {
-        try {
-            JobName jobEnum = JobName.valueOf(job);
-            switch (jobEnum) {
-                case ADMIN:
-                    return false;
-                default:
-                    return true;
+    public void verifyPhones(ArrayList<Integer> phones, ArrayList<String> listError) {
+        if (phones.size() < ConstantData.MIN_AMOUNT_PHONE) {
+            listData.clear();
+            listData.put(ConstantData.DATA, ConstantData.MIN_AMOUNT_PHONE + "");
+            String errorMessages = OperationString.generateMesage(Message.REFERENCE_PHONE, listData);
+            listError.add(errorMessages);
+        }
+        for (int i = 0; i < phones.size(); i++) {
+            if (!EmployeeValidationUtil.isValidPhone(phones.get(i))) {
+                listData.clear();
+                listData.put(ConstantData.TYPE_DATA, ConstantData.PHONE);
+                listData.put(ConstantData.DATA, phones.get(i) + "");
+                listData.put(ConstantData.VALID, ConstantData.VALID_PHONE);
+                String errorMessages = OperationString.generateMesage(Message.NOT_VALID_THE_VALID_DATA_ARE, listData);
+                listError.add(errorMessages);
             }
-        } catch (Exception e) {
-            return false;
         }
-    }
-
-    public static boolean isValidPhone(int phone) {
-        return Pattern.matches(RegularExpression.PHONE, phone + "")
-                || Pattern.matches(RegularExpression.PHONE_FIJO, phone + "");
     }
 }
