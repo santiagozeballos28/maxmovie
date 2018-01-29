@@ -580,41 +580,42 @@ public class EmployeeLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            eitherRes = employeeCrud.getAllDataJob(connection, active);
+                        eitherRes = employeeCrud.getAllDataJob(connection, active);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            ArrayList<ModelObject> listDataJob = eitherRes.getListObject();
+                        ArrayList<ModelObject> listDataJob = eitherRes.getListObject();
             eitherRes = employeeCrud.getBond(connection);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            //list de bond
+                        //list de bond
             ArrayList<ModelObject> listBond = eitherRes.getListObject();
             //bonus is assigned to each employee
             eitherRes = bondAsigned(listDataJob, listBond);
             if (!eitherRes.haveModelObject()) {
                 throw eitherRes;// an error is thrown if nothing exists to update
             }
-            // List of bonus is assigned to each employee
+                        // List of bonus is assigned to each employee
             ArrayList<ModelObject> assignNewBonds = eitherRes.getListObject();
-            //Get the assigned bonuses
+                        //Get the assigned bonuses
             eitherRes = employeeCrud.getBondAssigned(connection);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            ArrayList<ModelObject> assignCurrentBonds = eitherRes.getListObject();
-            //processed to update asignedbonuses
-            eitherRes = getUpdateBondAsigned(assignNewBonds, assignCurrentBonds);
+                        ArrayList<ModelObject> assignCurrentBonds = eitherRes.getListObject();
 
+            //processed to update asignedbonuses
+            ArrayList<ModelObject> assignCurrentBondUpate = new ArrayList<ModelObject>();
+            eitherRes = getUpdateBondAsigned(assignNewBonds, assignCurrentBonds,assignCurrentBondUpate);
             ArrayList<ModelObject> updateAssignBonds = eitherRes.getListObject();
             if (!updateAssignBonds.isEmpty()) {
-                //update    
-                eitherRes = bondAssignedCrud.updateStatus(connection, updateAssignBonds, Inactive);
+                            //update    
+                eitherRes = bondAssignedCrud.updateStatus(connection, assignCurrentBondUpate, Inactive);
                 if (eitherRes.existError()) {
                     throw eitherRes;
                 }
-                eitherRes = salaryCrud.updateStatus(connection, updateAssignBonds, Inactive);
+                eitherRes = salaryCrud.updateStatus(connection,assignCurrentBondUpate, Inactive);
                 if (eitherRes.existError()) {
                     throw eitherRes;
                 }
@@ -624,7 +625,7 @@ public class EmployeeLogic {
             ArrayList<ModelObject> insertAssignBonds = updateAssignBonds;
             insertAssignBonds.addAll(eitherRes.getListObject());
             if (!insertAssignBonds.isEmpty()) {
-                //Isert assigned bond
+                            //Isert assigned bond
                 eitherRes = bondAssignedCrud.insert(connection, insertAssignBonds);
                 if (eitherRes.existError()) {
                     throw eitherRes;
@@ -668,7 +669,10 @@ public class EmployeeLogic {
         return eitherRes;
     }
 
-    private Either getUpdateBondAsigned(ArrayList<ModelObject> assignNewBonds, ArrayList<ModelObject> assignCurrentBonds) {
+    private Either getUpdateBondAsigned(
+            ArrayList<ModelObject> assignNewBonds, 
+            ArrayList<ModelObject> assignCurrentBonds, 
+            ArrayList<ModelObject> assignCurrentBondUpate) {
         Either updateBondAssigned = new Either();
         for (int i = 0; i < assignNewBonds.size(); i++) {
             BondAssigned bondAssignedNew = (BondAssigned) assignNewBonds.get(i);
@@ -680,6 +684,7 @@ public class EmployeeLogic {
                     findEmployee = true;
                     if (bondAssignedNew.getIdBond() != bondAssignedCurrent.getIdBond()) {
                         updateBondAssigned.addModeloObjet(bondAssignedNew);
+                        assignCurrentBondUpate.add(bondAssignedCurrent);
                     }
                 }
                 j++;

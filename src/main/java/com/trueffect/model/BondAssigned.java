@@ -24,9 +24,9 @@ public class BondAssigned extends ModelObject{
     public BondAssigned(long idPerson, long idBond, String dateStart, String dateEnd, String status) {
         this.idPerson = idPerson;
         this.idBond = idBond;
-        this.dateStart = dateStart.trim();
-        this.dateEnd = dateEnd.trim();
-        this.status = status.trim();
+        this.dateStart = dateStart;
+        this.dateEnd = dateEnd;
+        this.status = status;
     }
 
     public long getIdPerson() {

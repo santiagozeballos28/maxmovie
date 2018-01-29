@@ -587,7 +587,8 @@ public class EmployeeCrud {
                     + "       start_date, "
                     + "       end_date, "
                     + "       status\n"
-                    + "  FROM BOND_ASSIGNED;";
+                    + "  FROM BOND_ASSIGNED"
+                    + " WHERE status= 'Active';";
             PreparedStatement st = connection.prepareStatement(query);
             ResultSet rs = st.executeQuery();
             Either eitherRes = new Either();

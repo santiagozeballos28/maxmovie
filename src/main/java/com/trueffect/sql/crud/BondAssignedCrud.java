@@ -57,7 +57,7 @@ public class BondAssignedCrud {
             for (int i = 0; i < updateAssignBonds.size(); i++) {
                 BondAssigned bondAssigned = (BondAssigned) updateAssignBonds.get(i);
                 sql = sql
-                        = "UPDATE BOND_ASSIGNED\n"
+                        + "UPDATE BOND_ASSIGNED\n"
                         + "   SET end_date = current_date , "
                         + "       status = '" + status + "'"
                         + " WHERE person_id = " + bondAssigned.getIdPerson() + " "
