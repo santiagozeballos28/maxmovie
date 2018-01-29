@@ -17,7 +17,6 @@ public class BondAssignedCrud {
     public Either insert(Connection connection, ArrayList<ModelObject> insertAssignBonds) {
         Statement query = null;
         try {
-
             query = (Statement) connection.createStatement();
             String sql = "";
             for (int i = 0; i < insertAssignBonds.size(); i++) {
@@ -75,5 +74,4 @@ public class BondAssignedCrud {
             return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
         }
     }
-
 }

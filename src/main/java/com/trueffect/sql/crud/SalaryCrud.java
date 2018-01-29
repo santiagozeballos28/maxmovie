@@ -42,7 +42,6 @@ public class SalaryCrud {
     }
 
     public Either getAll(Connection connection) {
-
         try {
             Statement query = (Statement) connection.createStatement();
             String sql
@@ -80,7 +79,6 @@ public class SalaryCrud {
     public Either insert(Connection connection, ArrayList<Salary> listSalary) {
         Statement query = null;
         try {
-
             query = (Statement) connection.createStatement();
             String sql = "";
             for (int i = 0; i < listSalary.size(); i++) {

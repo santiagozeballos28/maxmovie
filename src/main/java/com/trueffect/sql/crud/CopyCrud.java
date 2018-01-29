@@ -20,7 +20,6 @@ import org.apache.commons.lang3.StringUtils;
 public class CopyCrud {
 
     public Either insertCopy(Connection connection, long idCreateUser, long idMovie, int amountCopy) {
-
         try {
             //ident
             String query
@@ -166,7 +165,6 @@ public class CopyCrud {
     }
 
     public Either updateAmountCurrent(Connection connection, long idModifierUser, ArrayList<ModelObject> copiesMovie) {
-
         try {
             String sql = "";
             Statement query = null;

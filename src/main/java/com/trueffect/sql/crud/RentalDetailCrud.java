@@ -16,7 +16,6 @@ import java.util.ArrayList;
 public class RentalDetailCrud {
 
     public Either insert(Connection connection, long idMasterDetail, ArrayList<SaleDetail> rentailDetails) {
-
         try {
             String sql = "";
             Statement query = null;

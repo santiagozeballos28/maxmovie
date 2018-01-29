@@ -13,5 +13,4 @@ public class RentReturn extends Sale {
     public RentReturn(long idMovie, int amount) {
         super(idMovie, amount);
     }
-
 }

@@ -270,7 +270,6 @@ public class EmployeeCrud {
                     + "       modifier_date = current_timestamp" + ","
                     + "       status = '" + status + "'"
                     + " WHERE person_id = ? AND job_id = ?";
-
             PreparedStatement st = connection.prepareStatement(sql);
             st.setLong(1, idEmployee);
             st.setLong(2, idJob);
@@ -445,7 +444,6 @@ public class EmployeeCrud {
             }
             query = query.substring(0, query.length() - 4);
             query = query + ") ";
-
             if (StringUtils.isNotBlank(status)) {
                 query = query + "AND status = '" + status + "'";
             }
@@ -501,7 +499,6 @@ public class EmployeeCrud {
             if (st != null) {
                 st.close();
             }
-
             eitherRes.setCode(CodeStatus.CREATED);
             return eitherRes;
         } catch (Exception exception) {
@@ -537,7 +534,6 @@ public class EmployeeCrud {
             if (st != null) {
                 st.close();
             }
-
             eitherRes.setCode(CodeStatus.CREATED);
             return eitherRes;
         } catch (Exception exception) {
@@ -558,7 +554,6 @@ public class EmployeeCrud {
                     + "  FROM BOND"
                     + " ORDER BY seniority "
                     + "   ASC ";
-
             PreparedStatement st = connection.prepareStatement(query);
             ResultSet rs = st.executeQuery();
             Either eitherRes = new Either();
@@ -593,7 +588,6 @@ public class EmployeeCrud {
                     + "       end_date, "
                     + "       status\n"
                     + "  FROM BOND_ASSIGNED;";
-
             PreparedStatement st = connection.prepareStatement(query);
             ResultSet rs = st.executeQuery();
             Either eitherRes = new Either();
@@ -610,7 +604,6 @@ public class EmployeeCrud {
             if (st != null) {
                 st.close();
             }
-
             eitherRes.setCode(CodeStatus.CREATED);
             return eitherRes;
         } catch (Exception exception) {

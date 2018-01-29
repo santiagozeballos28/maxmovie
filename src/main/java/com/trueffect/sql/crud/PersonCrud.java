@@ -120,7 +120,6 @@ public class PersonCrud {
                     + "  FROM PERSON "
                     + " WHERE last_name = '" + lastName + "' "
                     + "   AND first_name='" + firstName + "'";
-
             PreparedStatement st = connection.prepareStatement(sqlGet);
             ResultSet rs = st.executeQuery();
             Person person = new Person();
@@ -195,7 +194,6 @@ public class PersonCrud {
     }
 
     public Either updateStatusPerson(Connection connection, long idPerson, long idUserModifier, String status) {
-
         try {
             String sql
                     = "UPDATE PERSON\n"
@@ -203,7 +201,6 @@ public class PersonCrud {
                     + "       modifier_date =  current_timestamp ,"
                     + "       modifier_user= ?"
                     + " WHERE person_id = ?";
-
             PreparedStatement st = connection.prepareStatement(sql);
             st.setString(1, status);
             st.setLong(2, idUserModifier);
@@ -259,7 +256,6 @@ public class PersonCrud {
             st.setLong(1, idUserModifier);
             st.setLong(2, idPerson);
             st.execute();
-
             if (st != null) {
                 st.close();
             }

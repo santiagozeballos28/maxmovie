@@ -54,7 +54,4 @@ public class BondAssigned extends ModelObject{
         return idPerson == 0&& idBond == 0;
                
     }
-
-
-    
 }

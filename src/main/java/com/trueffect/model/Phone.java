@@ -47,7 +47,6 @@ public class Phone extends ModelObject {
     }
 
     public boolean isActive() {
-        //Active
         return status.equals(Status.Active.name());
     }
 }

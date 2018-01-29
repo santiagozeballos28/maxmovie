@@ -1,6 +1,5 @@
 package com.trueffect.validation;
 
-import com.trueffect.tools.ConstantData;
 import com.trueffect.tools.ConstantData.JobName;
 import com.trueffect.tools.RegularExpression;
 import java.util.regex.Pattern;
@@ -11,7 +10,7 @@ import java.util.regex.Pattern;
  */
 public class EmployeeValidationUtil {
 
-     public static boolean isValidJob(String job) {
+    public static boolean isValidJob(String job) {
         try {
             JobName jobEnum = JobName.valueOf(job);
             switch (jobEnum) {

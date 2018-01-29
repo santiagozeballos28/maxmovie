@@ -22,7 +22,6 @@ public class GenreMovieCrud {
                     + "  FROM genre_movie\n"
                     + " WHERE genre_movie_id = ?;";
             PreparedStatement st = connection.prepareStatement(sql);
-            //st.setInt(1, idUser);
             st.setString(1, idGenreMovie);
             ResultSet rs = st.executeQuery();
             GenreMovie genreMovie = new GenreMovie();
@@ -57,7 +56,6 @@ public class GenreMovieCrud {
                         rs.getString("genre_movie_id"),
                         rs.getString("genre_name"));
                 either.addModeloObjet(genreMovie);
-
             }
             if (st != null) {
                 st.close();

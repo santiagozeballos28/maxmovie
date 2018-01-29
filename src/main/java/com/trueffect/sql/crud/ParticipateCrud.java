@@ -59,11 +59,9 @@ public class ParticipateCrud {
     }
 
     public Either getIdsActorOf(Connection connection, long idMovie, String status) {
-
         try {
             Either eitherIdentifier = new Either();
             String sql = "";
-
             sql = sql
                     + "SELECT actor_id\n"
                     + "  FROM PARTICIPATE\n"
@@ -77,7 +75,6 @@ public class ParticipateCrud {
             while (rs.next()) {
                 eitherIdentifier.addModeloObjet(new Identifier(rs.getLong("actor_id")));
             }
-
             if (st != null) {
                 st.close();
             }
@@ -102,7 +99,6 @@ public class ParticipateCrud {
                         + "       status = '" + status + "'"
                         + " WHERE movie_id = " + idMovie
                         + "   AND actor_id = " + identifier.getId() + ";";
-
             }
             PreparedStatement st = connection.prepareStatement(sql);
             st.execute();

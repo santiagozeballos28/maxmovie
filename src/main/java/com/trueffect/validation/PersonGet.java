@@ -49,8 +49,8 @@ public class PersonGet {
         String typeDataBirthdayStart = ConstantData.BIRTHDAY + " " + ConstantData.START;
         if (StringUtils.isNotBlank(birthdayStart)) {
             if (StringUtils.isNotBlank(birthdayEnd)) {
-                dateValidation.isValidDate(typeDataBirthdayStart,birthdayStart, listError);
-                dateValidation.isValidDate(typeDataBirthdayEnd,birthdayEnd, listError);
+                dateValidation.isValidDate(typeDataBirthdayStart, birthdayStart, listError);
+                dateValidation.isValidDate(typeDataBirthdayEnd, birthdayEnd, listError);
             } else {
 
                 dateValidation.emptyDate(typeDataBirthdayEnd, listError);

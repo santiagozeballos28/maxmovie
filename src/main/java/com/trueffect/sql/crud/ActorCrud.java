@@ -59,7 +59,6 @@ public class ActorCrud {
     public Either getAllActors(Connection connection, String status) {
         Statement query = null;
         try {
-
             String sql = "";
             query = (Statement) connection.createStatement();
             sql = sql
@@ -94,7 +93,6 @@ public class ActorCrud {
     public Either getActorByIds(Connection connection, ArrayList<ModelObject> identifiersActors, String status) {
         Either eitherActor = new Either();
         try {
-
             Statement query = (Statement) connection.createStatement();
             for (ModelObject identifierActor : identifiersActors) {
                 long idActor = ((Identifier) identifierActor).getId();

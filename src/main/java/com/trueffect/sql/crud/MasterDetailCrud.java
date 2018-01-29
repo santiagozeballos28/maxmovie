@@ -18,7 +18,6 @@ import java.util.ArrayList;
 public class MasterDetailCrud {
 
     public Either insert(Connection connection, MasterDetail masterDetail) {
-
         try {
             Either eitherIdentifier = new Either();
             int amountTotal = masterDetail.getAmountTotal();
@@ -62,7 +61,6 @@ public class MasterDetailCrud {
     }
 
     public Either getDetailSaleOf(Connection connection, long idMasterDetail) {
-
         try {
             String query
                     = "SELECT master_detail_id, "

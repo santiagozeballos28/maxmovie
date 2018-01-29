@@ -18,7 +18,6 @@ import java.util.ArrayList;
 public class BuyDetailCrud {
 
     public Either insert(Connection connection, long idMasterDetail, ArrayList<SaleDetail> buyDetails) {
-
         try {
             String sql = "";
             Statement query = null;
@@ -40,7 +39,7 @@ public class BuyDetailCrud {
                         + buyPrice + ","
                         + idMasterDetail + ","
                         + idCopyMovie + ",'"
-                        + idPrice+"');";
+                        + idPrice + "');";
                 query.execute(sql);
             }
             if (query != null) {
@@ -87,7 +86,6 @@ public class BuyDetailCrud {
     }
 
     public Either getReportBuyAmount(Connection connection) {
-
         try {
             String sql = "";
             Statement query = null;
