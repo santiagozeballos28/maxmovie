@@ -69,7 +69,7 @@ public class EmployeeCrud {
         }
     }
 
-    public Either insertPhone(Connection connection, long idCreateUser, long idEmployee, ArrayList<Integer> listPhones) {
+    public Either insertPhone(Connection connection, long idCreateUser, long idEmployee, ArrayList<Long> listPhones) {
         Statement query = null;
         try {
             query = (Statement) connection.createStatement();
@@ -163,9 +163,9 @@ public class EmployeeCrud {
             PreparedStatement st = connection.prepareStatement(query);
             st.setLong(1, idPerson);
             ResultSet rs = st.executeQuery();
-            ArrayList<Integer> phones = new ArrayList<Integer>();
+            ArrayList<Long> phones = new ArrayList<Long>();
             while (rs.next()) {
-                phones.add(rs.getInt("number_phone"));
+                phones.add(rs.getLong("number_phone"));
             }
             Employee employee = new Employee();
             employee.setPhones(phones);
@@ -430,7 +430,7 @@ public class EmployeeCrud {
         }
     }
 
-    public Either getPhonesByNumeber(Connection connection, ArrayList<Integer> phones, String status) {
+    public Either getPhonesByNumeber(Connection connection, ArrayList<Long> phones, String status) {
         try {
             String query
                     = "SELECT person_id,"
@@ -438,7 +438,7 @@ public class EmployeeCrud {
                     + "       status\n"
                     + "  FROM phone\n"
                     + " where (";
-            for (Integer phone : phones) {
+            for (Long phone : phones) {
                 query = query + "number_phone = " + phone + " OR ";
             }
             query = query.substring(0, query.length() - 4);

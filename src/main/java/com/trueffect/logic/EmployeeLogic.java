@@ -94,9 +94,12 @@ public class EmployeeLogic {
             String identifier = employee.getIdentifier().toUpperCase();
             String typeIdentifier = employee.getTypeIdentifier().toUpperCase();
             String genre = employee.getGenre().toUpperCase();
+            String address = employee.getAddress();
+            address = OperationString.addApostrophe(address);
             employee.setIdentifier(identifier);
             employee.setTypeIdentifier(typeIdentifier);
             employee.setGenre(genre);
+            employee.setAddress(address);
             //Insert Person
             eitherRes = personCrud.insertPerson(connection, idUserCreate, employee);
             if (eitherRes.existError()) {
@@ -119,7 +122,7 @@ public class EmployeeLogic {
                 throw eitherRes;
             }
             //Insert phones
-            ArrayList<Integer> listPhones = employee.getPhones();
+            ArrayList<Long> listPhones = employee.getPhones();
             eitherRes = employeeCrud.insertPhone(connection, idUserCreate, idEmployee, listPhones);
             if (eitherRes.existError()) {
                 throw eitherRes;
@@ -135,7 +138,7 @@ public class EmployeeLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            ArrayList<Integer> phones = ((Employee) eitherRes.getFirstObject()).getPhones();
+            ArrayList<Long> phones = ((Employee) eitherRes.getFirstObject()).getPhones();
             employeeInserted.setPhones(phones);
             eitherRes = new Either(CodeStatus.CREATED, employeeInserted);
             //Commit
@@ -265,7 +268,7 @@ public class EmployeeLogic {
                     throw eitherRes;
                 }
             }
-            ArrayList<Integer> phonesInput = employee.getPhones();
+            ArrayList<Long> phonesInput = employee.getPhones();
             eitherRes = getPhonesUpdate(connection, idEmployee, phonesInput);
             if (eitherRes.existError()) {
                 throw eitherRes;
@@ -284,7 +287,7 @@ public class EmployeeLogic {
             }
             ArrayList<ModelObject> listPhoneInsert = eitherRes.getListObject();
             if (!listPhoneInsert.isEmpty()) {
-                ArrayList<Integer> listPhonesI = getListNumberPhones(listPhoneInsert);
+                ArrayList<Long> listPhonesI = getListNumberPhones(listPhoneInsert);
                 eitherRes = employeeCrud.insertPhone(connection, idModifyUser, idEmployee, listPhonesI);
                 if (eitherRes.existError()) {
                     throw eitherRes;
@@ -320,7 +323,7 @@ public class EmployeeLogic {
                 return new Either(CodeStatus.NOT_FOUND, listError);
             }
             Either eitherPhone = employeeCrud.getPhones(connection, idEmployee);
-            ArrayList<Integer> phones = ((Employee) eitherPhone.getFirstObject()).getPhones();
+            ArrayList<Long> phones = ((Employee) eitherPhone.getFirstObject()).getPhones();
             employee.setPhones(phones);
             eitherRes = new Either(CodeStatus.OK, employee);
         } catch (Exception exception) {
@@ -342,7 +345,7 @@ public class EmployeeLogic {
         }
     }
 
-    private Either getPhonesUpdate(Connection connection, long idEmployee, ArrayList<Integer> phonesInput) {
+    private Either getPhonesUpdate(Connection connection, long idEmployee, ArrayList<Long> phonesInput) {
         //list of phones that are in the database
         ArrayList<ModelObject> phonesDataBase = new ArrayList<ModelObject>();
         Either eitherPhone = new Either();
@@ -358,11 +361,11 @@ public class EmployeeLogic {
         ArrayList<ModelObject> phoneOfUdate = new ArrayList<ModelObject>();
         for (ModelObject modelObject : phonesDataBase) {
             Phone phoneDB = (Phone) modelObject;
-            int numberPhoneDB = phoneDB.getNumberPhone();
+            long numberPhoneDB = phoneDB.getNumberPhone();
             boolean findPhone = false;
             int j = 0;
             while (j < phonesInput.size() && !findPhone) {
-                int numberPhoneI = phonesInput.get(j);
+                long numberPhoneI = phonesInput.get(j);
                 if (numberPhoneDB == numberPhoneI) {
                     findPhone = true;
                 }
@@ -380,7 +383,7 @@ public class EmployeeLogic {
         return eitherRes;
     }
 
-    private Either getPhonesInsert(Connection connection, long idEmployee, ArrayList<Integer> phonesInput) {
+    private Either getPhonesInsert(Connection connection, long idEmployee, ArrayList<Long> phonesInput) {
         //list of phones that are in the database
         ArrayList<ModelObject> phonesDataBase = new ArrayList<ModelObject>();
         Either eitherPhone = new Either();
@@ -392,13 +395,13 @@ public class EmployeeLogic {
         }
         //Lis to insert phones
         ArrayList<ModelObject> phonesToInsert = new ArrayList<ModelObject>();
-        for (Integer numberPhoneI : phonesInput) {
+        for (Long numberPhoneI : phonesInput) {
 
             int j = 0;
             boolean findPhone = false;
             while (j < phonesDataBase.size() && !findPhone) {
                 Phone phoneDB = (Phone) phonesDataBase.get(j);
-                int numberPhoneDB = phoneDB.getNumberPhone();
+                long numberPhoneDB = phoneDB.getNumberPhone();
                 if (numberPhoneI == numberPhoneDB) {
                     if (phoneDB.isActive()) {
                         findPhone = true;
@@ -415,10 +418,10 @@ public class EmployeeLogic {
         return eitherRes;
     }
 
-    public ArrayList<Integer> getListNumberPhones(ArrayList<ModelObject> listPhone) {
-        ArrayList<Integer> resPhones = new ArrayList<Integer>();
+    public ArrayList<Long> getListNumberPhones(ArrayList<ModelObject> listPhone) {
+        ArrayList<Long> resPhones = new ArrayList<Long>();
         for (int i = 0; i < listPhone.size(); i++) {
-            int numberPhone = ((Phone) listPhone.get(i)).getNumberPhone();
+            long numberPhone = ((Phone) listPhone.get(i)).getNumberPhone();
             resPhones.add(numberPhone);
         }
         return resPhones;
@@ -531,7 +534,7 @@ public class EmployeeLogic {
     }
 
     public Either verifyPhonesDuplicates(long id, ArrayList<ModelObject> listPhone) {
-        ArrayList<Integer> phonesDuplicates = new ArrayList<Integer>();
+        ArrayList<Long> phonesDuplicates = new ArrayList<Long>();
         ArrayList<String> listError = new ArrayList<String>();
         for (ModelObject modelObject : listPhone) {
             Phone phone = (Phone) modelObject;

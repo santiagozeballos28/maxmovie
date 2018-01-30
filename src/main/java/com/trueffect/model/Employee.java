@@ -11,10 +11,10 @@ public class Employee extends Person {
     protected String dateOfHire;
     protected String address;
     protected String job;
-    protected ArrayList<Integer> phones;
+    protected ArrayList<Long> phones;
 
     public Employee() {
-        phones = new ArrayList<Integer>();
+        phones = new ArrayList<Long>();
     }
 
     public Employee(
@@ -34,7 +34,7 @@ public class Employee extends Person {
         this.dateOfHire = dateOfHire.trim();
         this.address = address.trim();
         this.job = job.trim();
-        this.phones = new ArrayList<Integer>();
+        this.phones = new ArrayList<Long>();
     }
 
     public Employee(
@@ -48,7 +48,7 @@ public class Employee extends Person {
             String dateOfHire,
             String address,
             String job,
-            ArrayList<Integer> phones,
+            ArrayList<Long> phones,
             String status
     ) {
         super(id, typeIdentifier, identifier, lastName, firstName, genre, birthday, status);
@@ -70,7 +70,7 @@ public class Employee extends Person {
         return job;
     }
 
-    public ArrayList<Integer> getPhones() {
+    public ArrayList<Long> getPhones() {
         return phones;
     }
 
@@ -86,7 +86,7 @@ public class Employee extends Person {
         this.job = job.trim();
     }
 
-    public void setPhones(ArrayList<Integer> phones) {
+    public void setPhones(ArrayList<Long> phones) {
         this.phones = phones;
     }
 

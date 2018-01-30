@@ -139,7 +139,7 @@ public class Permission {
                 return new Either(CodeStatus.NOT_FOUND, listError);
             }
             Either eitherPhone = employeeCrud.getPhones(connection, idEmployee);
-            ArrayList<Integer> phones = ((Employee) eitherPhone.getFirstObject()).getPhones();
+            ArrayList<Long> phones = ((Employee) eitherPhone.getFirstObject()).getPhones();
             employee.setPhones(phones);
             eitherRes = new Either(CodeStatus.OK, employee);
         } catch (Exception exception) {

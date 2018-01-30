@@ -51,7 +51,7 @@ public class EmployeeValidationDB extends PersonValidationsDB {
         switch (crud) {
             case create:
                 listData.clear();
-                ArrayList<Integer> listNumbersPhones = employeeLogic.getListNumberPhones(listPhone);
+                ArrayList<Long> listNumbersPhones = employeeLogic.getListNumberPhones(listPhone);
                 listData.put(ConstantData.TYPE_DATA, ConstantData.PHONE);
                 listData.put(ConstantData.DATA, listNumbersPhones.toString());
                 errorMgs = OperationString.generateMesage(Message.DUPLICATE, listData);
