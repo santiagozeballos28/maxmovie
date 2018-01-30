@@ -168,12 +168,12 @@ public class MovieCrud {
             if (StringUtils.isNotBlank(director)) {
                 sql = sql + "director_name = '" + director + "', ";
             }
-            int year = movie.getYear();
-            if (year != 0) {
+            Integer year = movie.getYear();
+            if (year != null) {
                 sql = sql + "movie_year = " + year + ", ";
             }
-            long oscarNomination = movie.getOscarNomination();
-            if (oscarNomination != 0) {
+            Integer oscarNomination = movie.getOscarNomination();
+            if (oscarNomination != null) {
                 sql = sql + "oscar_nomination = " + oscarNomination + ", ";
             }
             String genreId = movie.getGenreId();

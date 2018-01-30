@@ -43,6 +43,10 @@ public class MovieUpdate implements DataCondition {
             movieValidation.verifySize(movie.getGenreId(), ConstantData.NAME_GENRE_MOVIE, ConstantData.MAX_NAME_GENRE_MOVIE, listError);
             movieValidation.verifyGenre(movie.getGenreId(), listGenre, listError);
         }
+        //Validation genre movie
+        if (movie.getOscarNomination()!=null) {
+            movieValidation.verifyOscarNomination(movie.getOscarNomination(), listError);
+        }
         //Validation actors
         ArrayList<String> actors = movie.getActor();
         if (!movie.getActor().isEmpty()) {
@@ -55,7 +59,7 @@ public class MovieUpdate implements DataCondition {
             movieValidation.verifyDirector(movie.getDirector(), listError);
         }
         //Validation year
-        if (movie.getYear() != 0) {
+        if (movie.getYear() != null) {
             movieValidation.verifyYear(movie.getYear(), listError);
         }
         //Validation oscar nomination

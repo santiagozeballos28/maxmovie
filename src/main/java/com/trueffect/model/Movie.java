@@ -14,7 +14,7 @@ public class Movie extends ModelObject {
     protected String name;
     protected String genreId;
     protected String director;
-    protected int year;
+    protected Integer year;
     protected Integer oscarNomination;
     protected ArrayList<String> actor;
     protected String status;
@@ -23,7 +23,7 @@ public class Movie extends ModelObject {
     public Movie() {
     }
 
-    public Movie(long id, String name, String genreId, String director, int year, Integer oscarNomination, ArrayList<String> actor) {
+    public Movie(long id, String name, String genreId, String director, Integer year, Integer oscarNomination, ArrayList<String> actor) {
         this.id = id;
         this.name = name.trim();
         this.genreId = genreId.trim();
@@ -33,7 +33,7 @@ public class Movie extends ModelObject {
         this.actor = actor;
     }
 
-    public Movie(long id, String name, String genreId, String director, int year, Integer oscarNomination, String status) {
+    public Movie(long id, String name, String genreId, String director, Integer year, Integer oscarNomination, String status) {
         this.id = id;
         this.name = name.trim();
         this.genreId = genreId.trim();
@@ -43,7 +43,7 @@ public class Movie extends ModelObject {
         this.status = status.trim();
     }
 
-    public Movie(long id, String name, String genreId, String director, int year, Integer oscarNomination, String status, String createDate) {
+    public Movie(long id, String name, String genreId, String director, Integer year, Integer oscarNomination, String status, String createDate) {
         this.id = id;
         this.name = name.trim();
         this.genreId = genreId.trim();
@@ -70,7 +70,7 @@ public class Movie extends ModelObject {
         return director;
     }
 
-    public int getYear() {
+    public Integer getYear() {
         return year;
     }
 
@@ -107,7 +107,7 @@ public class Movie extends ModelObject {
         this.director = director.trim();
     }
 
-    public void setYear(int year) {
+    public void setYear(Integer year) {
         this.year = year;
     }
 
