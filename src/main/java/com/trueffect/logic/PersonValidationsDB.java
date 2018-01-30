@@ -64,15 +64,15 @@ public class PersonValidationsDB {
         Either eitherPersonOld = personCrud.getPerson(connection, idPerson, null);
         String typeIdOld = ((Person) eitherPersonOld.getFirstObject()).getTypeIdentifier();
         Person personAux = generatePersonAuxiliary((Person) eitherPersonOld.getFirstObject(), personNew);
+        String descriptionTypeId = TypeIdentifier.valueOf(personAux.getTypeIdentifier().toUpperCase()).getDescriptionIdentifier();
         if (!PersonValidationUtil.isValidIdentifier(personAux.getTypeIdentifier().toUpperCase(), personAux.getIdentifier().toUpperCase())) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.IDENTIFIER);
             listData.put(ConstantData.TYPE_DATA_TWO, ConstantData.TYPE_IDENTIFIER);
             listData.put(ConstantData.DATA, personAux.getIdentifier());
-            listData.put(ConstantData.DATA_TWO, personAux.getTypeIdentifier());
+            listData.put(ConstantData.DATA_TWO, descriptionTypeId);
             errorMgs = OperationString.generateMesage(Message.NOT_SAME_TYPE, listData);
             listError.add(errorMgs);
-            return new Either(CodeStatus.BAD_REQUEST, listError);
         }
         Either eitherPersonById = personCrud.getPersonByIdentifier(connection, personAux.getTypeIdentifier().toUpperCase(), personAux.getIdentifier().toUpperCase());
         if (eitherPersonById.haveModelObject()) {
@@ -80,13 +80,16 @@ public class PersonValidationsDB {
             if (idPerson != personEither.getId()) {
                 listData.clear();
                 listData.put(ConstantData.TYPE_DATA, ConstantData.IDENTIFIER);
-                listData.put(ConstantData.DATA, personAux.getTypeIdentifier() + " = " + personAux.getIdentifier());
+                listData.put(ConstantData.DATA, descriptionTypeId + " = " + personAux.getIdentifier());
                 errorMgs = OperationString.generateMesage(Message.DUPLICATE, listData);
                 listError.add(errorMgs);
             }
         }
-        OperationString.addApostrophe(personAux);
-        Either eitherPersonByName = personCrud.getPersonByName(connection, personAux.getLastName(), personAux.getFirstName());
+        String lastNameAux = OperationString.generateName(personAux.getLastName());
+        lastNameAux = OperationString.addApostrophe(lastNameAux);
+        String firstNameAux = OperationString.generateName(personAux.getFirstName());
+        firstNameAux = OperationString.addApostrophe(firstNameAux);
+        Either eitherPersonByName = personCrud.getPersonByName(connection, lastNameAux, firstNameAux);
         if (eitherPersonByName.haveModelObject()) {
             Person personEither = (Person) eitherPersonByName.getFirstObject();
             if (idPerson != personEither.getId()) {
@@ -114,16 +117,16 @@ public class PersonValidationsDB {
     private Person generatePersonAuxiliary(Person personOld, Person personNew) {
         Person personAuxiliary = personOld;
         if (StringUtils.isNotBlank(personNew.getTypeIdentifier())) {
-            personAuxiliary.setTypeIdentifier(personNew.getTypeIdentifier());
+            personAuxiliary.setTypeIdentifier(personNew.getTypeIdentifier().trim());
         }
         if (StringUtils.isNotBlank(personNew.getIdentifier())) {
-            personAuxiliary.setIdentifier(personNew.getIdentifier());
+            personAuxiliary.setIdentifier(personNew.getIdentifier().trim());
         }
         if (StringUtils.isNotBlank(personNew.getLastName())) {
-            personAuxiliary.setLastName(personNew.getLastName());
+            personAuxiliary.setLastName(personNew.getLastName().trim());
         }
         if (StringUtils.isNotBlank(personNew.getFirstName())) {
-            personAuxiliary.setFirstName(personNew.getFirstName());
+            personAuxiliary.setFirstName(personNew.getFirstName().trim());
         }
         return personAuxiliary;
     }
