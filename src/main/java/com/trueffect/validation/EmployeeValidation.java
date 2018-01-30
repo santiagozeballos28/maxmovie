@@ -34,7 +34,7 @@ public class EmployeeValidation {
         }
     }
 
-    public void verifyPhones(ArrayList<Integer> phones, ArrayList<String> listError) {
+    public void verifyPhones(ArrayList<Long> phones, ArrayList<String> listError) {
         if (phones.size() < ConstantData.MIN_AMOUNT_PHONE) {
             listData.clear();
             listData.put(ConstantData.DATA, ConstantData.MIN_AMOUNT_PHONE + "");

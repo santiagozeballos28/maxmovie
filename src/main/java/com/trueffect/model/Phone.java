@@ -9,10 +9,10 @@ import com.trueffect.util.ModelObject;
 public class Phone extends ModelObject {
 
     private long idPerson;
-    private int numberPhone;
+    private long numberPhone;
     private String status;
 
-    public Phone(int numberPhone) {
+    public Phone(long numberPhone) {
         this.numberPhone = numberPhone;
     }
 
@@ -26,7 +26,7 @@ public class Phone extends ModelObject {
         return idPerson;
     }
 
-    public int getNumberPhone() {
+    public long getNumberPhone() {
         return numberPhone;
     }
 
@@ -38,7 +38,7 @@ public class Phone extends ModelObject {
         this.idPerson = idPerson;
     }
 
-    public void setNumberPhone(int numberPhone) {
+    public void setNumberPhone(long numberPhone) {
         this.numberPhone = numberPhone;
     }
 

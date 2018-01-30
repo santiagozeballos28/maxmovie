@@ -24,7 +24,7 @@ public class EmployeeValidationUtil {
         }
     }
 
-    public static boolean isValidPhone(int phone) {
+    public static boolean isValidPhone(long phone) {
         return Pattern.matches(RegularExpression.PHONE_CELL, phone + "")
                 || Pattern.matches(RegularExpression.PHONE_FIXED, phone + "");
     }

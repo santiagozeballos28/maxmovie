@@ -33,7 +33,7 @@ public class ConstantData {
     public static String NAME_OBJECT = "{nameObject}";
     // valid data
     public static String VALID_NAME_PERSON = "Letters = A-Za-z, apostrophes = '";
-    public static String VALID_PHONE = "7XXXXXXX(eight numbers), 6XXXXXXX(seven numbers), XXXXXXX(seven numbers)";
+    public static String VALID_PHONE = "7XXXXXXX(eight numbers), 6XXXXXXX(eight numbers), XXXXXXX(seven numbers)";
     // Data renter user
     public static String TYPE_IDENTIFIER = "type identifier";
     public static String IDENTIFIER = "identifier";
