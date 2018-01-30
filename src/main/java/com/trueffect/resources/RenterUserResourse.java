@@ -1,6 +1,6 @@
 package com.trueffect.resources;
 
-import com.trueffect.logica.PersonLogic;
+import com.trueffect.logic.PersonLogic;
 import com.trueffect.response.MapperResponse;
 import com.trueffect.validation.PersonCreate;
 import com.trueffect.model.Person;
@@ -62,14 +62,18 @@ public class RenterUserResourse {
             @QueryParam("identifier") String identifier,
             @QueryParam("lastName") String lastName,
             @QueryParam("firstName") String firstName,
-            @QueryParam("genre") String genre) {
+            @QueryParam("genre") String genre,
+            @QueryParam("birthdayStart") String birthdayStart,
+            @QueryParam("birthdayEnd") String birthdayEnd) {
         Either eitherRenter = personLogic.get(
                 idUserSearch,
                 typeIdentifier,
                 identifier,
                 lastName,
                 firstName,
-                genre);
+                genre,
+                birthdayStart,
+                birthdayEnd);
         Response response = mapper.toResponse(eitherRenter);
         return response;
     }

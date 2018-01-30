@@ -1,4 +1,4 @@
-package com.trueffect.logica;
+package com.trueffect.logic;
 
 import com.trueffect.conection.db.DataBasePostgres;
 import com.trueffect.messages.Message;
@@ -14,6 +14,7 @@ import com.trueffect.tools.ConstantData.ObjectMovie;
 import com.trueffect.tools.ConstantData.Status;
 import com.trueffect.util.OperationString;
 import com.trueffect.validation.PersonCreate;
+import com.trueffect.validation.PersonGet;
 import com.trueffect.validation.PersonUpdate;
 
 import java.sql.Connection;
@@ -29,13 +30,17 @@ public class PersonLogic {
     private HashMap<String, String> listData;
     private PersonValidationsDB personValidationsDB;
     private Permission permission;
+    private PersonCrud personCrud;
+    private JobCrud jobCrud;
 
     public PersonLogic() {
-        String renterUser = ObjectMovie.RennterUser.name();
+        String renterUser = ObjectMovie.RennterUser.getDescription();
         listData = new HashMap<String, String>();
         permission = new Permission();
         personValidationsDB = new PersonValidationsDB();
         permission.setNameObject(renterUser);
+        personCrud = new PersonCrud();
+        jobCrud = new JobCrud();
     }
 
     public Either createPerson(long idUserCreate, Person person, PersonCreate conditiondata) {
@@ -57,27 +62,29 @@ public class PersonLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            OperationString.formatOfTheName(person);
             eitherRes = conditiondata.complyCondition(person);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            OperationString.addApostrophe(person);
             eitherRes = personValidationsDB.veriryDataInDataBase(connection, person);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
+            OperationString.formatOfTheName(person);
+            //add apostrophe(') for the names that have this symbol, 
+            //this so that there are no problems when inserting in the database
+            OperationString.addApostrophe(person);
             String identifier = person.getIdentifier().toUpperCase();
             String typeIdentifier = person.getTypeIdentifier().toUpperCase();
             String genre = person.getGenre().toUpperCase();
             person.setIdentifier(identifier);
             person.setTypeIdentifier(typeIdentifier);
             person.setGenre(genre);
-            eitherRes = PersonCrud.insertPerson(connection, idUserCreate, person);
+            eitherRes = personCrud.insertPerson(connection, idUserCreate, person);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            eitherRes = PersonCrud.getPersonByIdentifier(connection, person.getTypeIdentifier(), person.getIdentifier());
+            eitherRes = personCrud.getPersonByIdentifier(connection, person.getTypeIdentifier(), person.getIdentifier());
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -91,7 +98,7 @@ public class PersonLogic {
         return eitherRes;
     }
 
-    public Either updateStatus(long idPerson, long idUserModify, String status) {
+    public Either updateStatus(long idPerson, long idModifierUser, String status) {
         Either eitherRes = new Either();
         Connection connection = null;
         try {
@@ -100,12 +107,12 @@ public class PersonLogic {
             String delete = Crud.delete.name();
             String statusActive = Status.Active.name();
             //checks if the employee exists
-            eitherRes = permission.getPerson(connection, idUserModify, statusActive, delete);
+            eitherRes = permission.getPerson(connection, idModifierUser, statusActive, delete);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
             //Check if the user can modify
-            eitherRes = permission.checkUserPermission(connection, idUserModify, delete);
+            eitherRes = permission.checkUserPermission(connection, idModifierUser, delete);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -114,17 +121,24 @@ public class PersonLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
+            Person person = (Person) eitherRes.getFirstObject();
             //Validation Status(Active, Inactive)          
             OperationModel operationModel = new OperationModel();
             eitherRes = operationModel.verifyStatus(connection, status);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            eitherRes = PersonCrud.updateStatusPerson(connection, idPerson, idUserModify, status);
+            String renterUser = ObjectMovie.RennterUser.getDescription();
+            eitherRes = operationModel.verifyStatusModelObject(renterUser, person.getStatus(), status);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            eitherRes = PersonCrud.getRenterUser(connection, idPerson, null);
+            status = StringUtils.capitalize(status.trim().toLowerCase());
+            eitherRes = personCrud.updateStatusPerson(connection, idPerson, idModifierUser, status);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+            eitherRes = personCrud.getRenterUser(connection, idPerson, null);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -166,7 +180,7 @@ public class PersonLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            eitherRes = JobCrud.getJobOf(connection, idUserModify);
+            eitherRes = jobCrud.getJobOf(connection, idUserModify);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -174,17 +188,20 @@ public class PersonLogic {
             PersonUpdate rentUserUpdate = new PersonUpdate(
                     ((Job) eitherRes.getFirstObject()).getNameJob(),
                     ConstantData.MIN_AGE_RENTER);
-            OperationString.formatOfTheName(person);
             eitherRes = rentUserUpdate.complyCondition(person);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            //add aphostrophe "'".
-            OperationString.addApostrophe(person);
+            //add apostrophe(') for the names that have this symbol, 
+            //this so that there are no problems when inserting in the database
             eitherRes = personValidationsDB.verifyDataUpdate(connection, person);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
+            OperationString.formatOfTheName(person);
+            //add apostrophe(') for the names that have this symbol, 
+            //this so that there are no problems when inserting in the database
+            OperationString.addApostrophe(person);
             String typeIdentifier = person.getTypeIdentifier();
             if (StringUtils.isNotBlank(typeIdentifier)) {
                 person.setTypeIdentifier(typeIdentifier.toUpperCase());
@@ -197,11 +214,11 @@ public class PersonLogic {
             if (StringUtils.isNotBlank(genre)) {
                 person.setGenre(genre.toUpperCase());
             }
-            eitherRes = PersonCrud.updatePerson(connection, idUserModify, person);
+            eitherRes = personCrud.updatePerson(connection, idUserModify, person);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            eitherRes = PersonCrud.getRenterUser(connection, idRenter, statusActive);
+            eitherRes = personCrud.getRenterUser(connection, idRenter, statusActive);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -216,12 +233,12 @@ public class PersonLogic {
     }
 
     private Either getPerson(Connection connection, long idPerson, String status) {
-        String renterUser = ObjectMovie.RennterUser.name();
+        String renterUser = ObjectMovie.RennterUser.getDescription();
         Either eitherRes = new Either();
         Person person = new Person();
         ArrayList<String> listError = new ArrayList<String>();
         try {
-            eitherRes = PersonCrud.getRenterUser(connection, idPerson, status);
+            eitherRes = personCrud.getRenterUser(connection, idPerson, status);
             person = (Person) eitherRes.getFirstObject();
         } catch (Exception exception) {
             listError.add(exception.getMessage());
@@ -237,7 +254,15 @@ public class PersonLogic {
         return eitherRes;
     }
 
-    public Either get(long idUserSearch, String typeId, String identifier, String lastName, String firstName, String genre) {
+    public Either get(
+            long idUserSearch,
+            String typeId,
+            String identifier,
+            String lastName,
+            String firstName,
+            String genre,
+            String birthdayStart,
+            String birthdayEnd) {
         Either eitherRes = new Either();
         Connection connection = null;
         try {
@@ -253,23 +278,26 @@ public class PersonLogic {
             //Check if the user can modify
             eitherRes = permission.checkUserPermission(connection, idUserSearch, get);
             if (eitherRes.existError()) {
-                //return eitherRes;
+                throw eitherRes;
+            }
+            PersonGet personGet = new PersonGet();
+            eitherRes = personGet.complyCondition(typeId, identifier, lastName, firstName, genre, birthdayStart, birthdayEnd);
+            if (eitherRes.existError()) {
                 throw eitherRes;
             }
             if (StringUtils.isNotBlank(lastName)) {
-                lastName = OperationString.generateLastName(lastName.trim());
+                lastName = OperationString.generateName(lastName);
                 lastName = OperationString.addApostrophe(lastName);
             }
             if (StringUtils.isNotBlank(firstName)) {
-                firstName = OperationString.generateFirstName(firstName.trim());
+                firstName = OperationString.generateName(firstName);
                 firstName = OperationString.addApostrophe(firstName);
             }
-            eitherRes = PersonCrud.getPersonBy(connection, typeId, identifier, lastName, firstName, genre);
+            eitherRes = personCrud.getPersonBy(connection, typeId, identifier, lastName, firstName, genre, birthdayStart, birthdayEnd);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
             DataBasePostgres.connectionCommit(connection);
-
         } catch (Either e) {
             eitherRes = e;
             DataBasePostgres.connectionRollback(connection, eitherRes);

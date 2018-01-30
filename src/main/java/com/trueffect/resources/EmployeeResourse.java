@@ -1,6 +1,6 @@
 package com.trueffect.resources;
 
-import com.trueffect.logica.EmployeeLogic;
+import com.trueffect.logic.EmployeeLogic;
 import com.trueffect.model.Employee;
 import com.trueffect.response.Either;
 import com.trueffect.response.MapperResponse;
@@ -67,6 +67,8 @@ public class EmployeeResourse {
             @QueryParam("lastName") String lastName,
             @QueryParam("firstName") String firstName,
             @QueryParam("genre") String genre,
+            @QueryParam("birthdayStart") String birthdayStart,
+            @QueryParam("birthdayEnd") String birthdayEnd,
             @QueryParam("dateOfHire") String dateOfHire,
             @QueryParam("job") String job) {
         Either eitherRenter = employeeLogic.get(
@@ -76,9 +78,19 @@ public class EmployeeResourse {
                 lastName,
                 firstName,
                 genre,
+                birthdayStart,
+                birthdayEnd,
                 dateOfHire,
                 job);
         Response response = mapper.toResponse(eitherRenter);
+        return response;
+    }
+
+    @PUT
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateBond(@QueryParam("idUserModify") int idUserModify) {
+        Either either = employeeLogic.updateBond(idUserModify);
+        Response response = mapper.toResponse(either);
         return response;
     }
 }

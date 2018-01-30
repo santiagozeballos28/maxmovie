@@ -27,9 +27,10 @@ public class Employee extends Person {
             String birthday,
             String dateOfHire,
             String address,
-            String job
+            String job,
+            String status
     ) {
-        super(id, typeIdentifier, identifier, lastName, firstName, genre, birthday);
+        super(id, typeIdentifier, identifier, lastName, firstName, genre, birthday,status);
         this.dateOfHire = dateOfHire.trim();
         this.address = address.trim();
         this.job = job.trim();
@@ -47,9 +48,10 @@ public class Employee extends Person {
             String dateOfHire,
             String address,
             String job,
-            ArrayList<Integer> phones
+            ArrayList<Integer> phones,
+            String status
     ) {
-        super(id, typeIdentifier, identifier, lastName, firstName, genre, birthday);
+        super(id, typeIdentifier, identifier, lastName, firstName, genre, birthday, status);
         this.dateOfHire = dateOfHire.trim();
         this.address = address.trim();
         this.job = job.trim();

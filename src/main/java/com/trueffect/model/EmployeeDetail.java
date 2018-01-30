@@ -1,5 +1,6 @@
 package com.trueffect.model;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 
 /**
@@ -69,6 +70,11 @@ public class EmployeeDetail extends PersonDetail {
 
     public String getJob() {
         return job;
+    }
+
+    @JsonIgnore
+    public String getStatus() {
+        return status;
     }
 
     public void setDateOfHire(String dateOfHire) {

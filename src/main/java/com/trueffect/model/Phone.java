@@ -1,6 +1,5 @@
 package com.trueffect.model;
 
-import com.trueffect.tools.ConstantData;
 import com.trueffect.tools.ConstantData.Status;
 import com.trueffect.util.ModelObject;
 
@@ -48,7 +47,6 @@ public class Phone extends ModelObject {
     }
 
     public boolean isActive() {
-        //Active
         return status.equals(Status.Active.name());
     }
 }
