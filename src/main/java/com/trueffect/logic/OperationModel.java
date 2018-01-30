@@ -67,7 +67,7 @@ public class OperationModel {
             listData.put(ConstantData.DATA, statusObject.trim());
             String errorMgs = OperationString.generateMesage(Message.STATUS_MODEL_OBJECT, listData);
             listError.add(errorMgs);
-            return new Either(CodeStatus.BAD_REQUEST, listError);
+            return new Either(CodeStatus.OK, listError);
         }
         return new Either();
     }

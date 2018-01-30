@@ -192,8 +192,6 @@ public class PersonLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            //add apostrophe(') for the names that have this symbol, 
-            //this so that there are no problems when inserting in the database
             eitherRes = personValidationsDB.verifyDataUpdate(connection, person);
             if (eitherRes.existError()) {
                 throw eitherRes;
