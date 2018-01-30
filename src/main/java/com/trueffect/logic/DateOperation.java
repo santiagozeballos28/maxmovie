@@ -200,7 +200,7 @@ public class DateOperation {
                 year = diff.getYears() - 1;
             }
         } catch (ParseException ex) {
-            //Implement if the input date parameter is an invalid format
+            //Implement if the input date parameter is an invalid format.
         }
         return year;
     }
