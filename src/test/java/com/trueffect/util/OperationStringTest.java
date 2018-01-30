@@ -45,7 +45,6 @@ public class OperationStringTest {
     public void testGenerateNameJob() {
         String input = "CC";
         boolean expected = true;
-
         Assert.assertEquals(EmployeeValidationUtil.isValidJob(input), expected);
     }
 
