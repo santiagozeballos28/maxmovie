@@ -1,6 +1,7 @@
 package com.trueffect.validation;
 
 import com.trueffect.tools.ConstantData;
+import com.trueffect.tools.ConstantData.TypeIdentifier;
 import com.trueffect.tools.RegularExpression;
 import java.util.regex.Pattern;
 
@@ -13,7 +14,7 @@ public class PersonValidationUtil {
     public static boolean isValidTypeIdentifier(String typeId) {
         boolean res = true;
         try {
-            ConstantData.TypeIdentifier typeIdentifier = ConstantData.TypeIdentifier.valueOf(typeId.toUpperCase());
+            TypeIdentifier typeIdentifier = TypeIdentifier.valueOf(typeId.trim().toUpperCase());
         } catch (Exception e) {
             res = false;
         }
@@ -37,7 +38,7 @@ public class PersonValidationUtil {
 
     public static boolean isValidGenre(String genre) {
         ConstantData.GenrePerson genreEnum = null;
-        genre = genre.toUpperCase();
+        genre = genre.trim().toUpperCase();
         return genre.equals(genreEnum.M.name()) || genre.equals(genreEnum.F.name());
     }
 
