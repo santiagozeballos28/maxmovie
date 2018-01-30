@@ -32,7 +32,7 @@ public class DataJob extends ModelObject {
         this.status = status.trim();
     }
 
-    public DataJob(long employeeId , String dateOfHire, String address) {
+    public DataJob(long employeeId, String dateOfHire, String address) {
         this.employeeId = employeeId;
         this.dateOfHire = dateOfHire.trim();
         this.address = address.trim();

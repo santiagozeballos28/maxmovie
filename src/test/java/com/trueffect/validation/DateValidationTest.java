@@ -52,7 +52,7 @@ public class DateValidationTest {
 
         boolean expected = true;
         String date = "2015-12-30";
-        Assert.assertEquals(DateOperation.dateIsInRangeValid(date), expected);
+        Assert.assertEquals(DateOperation.isValidDate(date), expected);
     }
 
     @Test
@@ -60,7 +60,7 @@ public class DateValidationTest {
 
         boolean expected = true;
         String date = "2018-01-12";
-        Assert.assertEquals(DateOperation.dateIsInRangeValid(date), expected);
+        Assert.assertEquals(DateOperation.isValidDate(date), expected);
     }
 
     //coment
@@ -69,7 +69,7 @@ public class DateValidationTest {
 
         boolean expected = false;
         String date = "2018-01-13";
-        Assert.assertEquals(DateOperation.dateIsInRangeValid(date), expected);
+        Assert.assertEquals(DateOperation.isValidDate(date), expected);
     }
 
     //@Test
@@ -241,13 +241,13 @@ public class DateValidationTest {
         Assert.assertEquals(DateOperation.diferenceDays(dateFirst, dateSecond), expected);
     }
 
-   // @Test
+    // @Test
     public void testTimestampDiferenceDay2() {
 
         int expected = 2;
         String dateFirst = "2018-01-25 19:55:27.114";
         String dateSecond = DateOperation.getTimertampCurrent();
-        System.err.println("DATE SECOND: "+ dateSecond);
+        System.err.println("DATE SECOND: " + dateSecond);
         System.out.println("DIF2: " + DateOperation.diferenceDays(dateFirst, dateSecond));
         Assert.assertEquals(DateOperation.diferenceDays(dateFirst, dateSecond), expected);
     }

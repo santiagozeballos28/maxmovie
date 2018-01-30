@@ -43,8 +43,4 @@ public class MovieValidationDB {
         }
         return new Either();
     }
-
-    public Either veriryCopyDuplicate(Connection connection, long idMovie) {
-        return new Either();
-    }
 }

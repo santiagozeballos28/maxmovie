@@ -6,7 +6,7 @@ import com.trueffect.util.ModelObject;
  *
  * @author santiago.mamani
  */
-public class AmountSaleMovie extends ModelObject{
+public class AmountSaleMovie extends ModelObject {
 
     private long idMovie;
     private int amount;

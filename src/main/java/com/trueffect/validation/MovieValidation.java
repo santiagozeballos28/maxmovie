@@ -20,6 +20,7 @@ public class MovieValidation {
     public MovieValidation() {
         listData = new HashMap<String, String>();
     }
+
     public void verifyNamesOfActors(ArrayList<String> listActor, ArrayList<String> listError) {
         for (int i = 0; i < listActor.size(); i++) {
             String nameActor = listActor.get(i);

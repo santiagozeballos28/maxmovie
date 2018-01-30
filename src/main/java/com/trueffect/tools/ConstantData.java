@@ -77,7 +77,7 @@ public class ConstantData {
     public static String END = "end";
     //represents maximum two minutes
     public static int MAX_MINUTES = 2880;
-     //represents maximum two days
+    //represents maximum two days
     public static int MAX_DAYS = 2;
 
     public enum ValidIdentifier {

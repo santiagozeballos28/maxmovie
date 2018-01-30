@@ -6,7 +6,7 @@ import com.trueffect.util.ModelObject;
  *
  * @author santiago.mamani
  */
-public class MasterDetail extends ModelObject{
+public class MasterDetail extends ModelObject {
 
     private long idMasterDetail;
     private int amountTotal;
@@ -16,7 +16,6 @@ public class MasterDetail extends ModelObject{
 
     public MasterDetail() {
     }
-    
 
     public MasterDetail(long id, int amountTotal, double priceTotal, long idDataJob, long idRenterUser) {
         this.idMasterDetail = id;

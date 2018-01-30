@@ -6,6 +6,7 @@ import com.trueffect.validation.PersonCreate;
 import com.trueffect.model.Person;
 import com.trueffect.response.Either;
 import com.trueffect.tools.ConstantData;
+import com.trueffect.tools.ConstantData.ObjectMovie;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -31,7 +32,9 @@ public class RenterUserResourse {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response insertRenterUser(@QueryParam("idModifyUser") long idModifyUser, Person renterUser) {
-        Either either = personLogic.createPerson(idModifyUser, renterUser, new PersonCreate(ConstantData.MIN_AGE_RENTER));
+       int minAge = ConstantData.MIN_AGE_RENTER;
+       String name = ObjectMovie.RennterUser.getDescription();
+        Either either = personLogic.createPerson(idModifyUser, renterUser, new PersonCreate(minAge, name));
         Response response = mapper.toResponse(either);
         return response;
     }

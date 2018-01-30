@@ -6,7 +6,7 @@ import com.trueffect.util.ModelObject;
  *
  * @author santiago.mamani
  */
-public class GenreMovie extends ModelObject{
+public class GenreMovie extends ModelObject {
 
     private String idGenre;
     private String nameGenre;

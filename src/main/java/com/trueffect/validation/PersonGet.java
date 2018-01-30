@@ -13,7 +13,6 @@ import org.apache.commons.lang3.StringUtils;
 public class PersonGet {
 
     private PersonValidation personValidation;
-    private ObjectValidation objectValidation;
     private DateValidation dateValidation;
 
     public PersonGet() {
@@ -45,18 +44,19 @@ public class PersonGet {
         if (StringUtils.isNotBlank(genre)) {
             personValidation.verifyGenre(genre, listError);
         }
-        String typeDataBirthdayEnd = ConstantData.BIRTHDAY + " " + ConstantData.END;
         String typeDataBirthdayStart = ConstantData.BIRTHDAY + " " + ConstantData.START;
+        String typeDataBirthdayEnd = ConstantData.BIRTHDAY + " " + ConstantData.END;
         if (StringUtils.isNotBlank(birthdayStart)) {
             if (StringUtils.isNotBlank(birthdayEnd)) {
-                dateValidation.isValidDate(typeDataBirthdayStart, birthdayStart, listError);
-                dateValidation.isValidDate(typeDataBirthdayEnd, birthdayEnd, listError);
+                boolean validBirthdayStart = dateValidation.isValidDate(typeDataBirthdayStart, birthdayStart, listError);
+                boolean validBirthdayEnd = dateValidation.isValidDate(typeDataBirthdayEnd, birthdayEnd, listError);
+                if (validBirthdayStart && validBirthdayEnd) {
+                    dateValidation.verifyIsLess(typeDataBirthdayStart, typeDataBirthdayEnd, birthdayStart, birthdayEnd, listError);
+                }
             } else {
-
                 dateValidation.emptyDate(typeDataBirthdayEnd, listError);
             }
         } else if (StringUtils.isNotBlank(birthdayEnd)) {
-
             dateValidation.emptyDate(typeDataBirthdayStart, listError);
         }
         //To check if there was an error

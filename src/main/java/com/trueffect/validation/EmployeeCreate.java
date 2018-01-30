@@ -20,8 +20,8 @@ public class EmployeeCreate extends PersonCreate {
     private DateValidation dateValidation;
     private ObjectValidation objectValidation;
 
-    public EmployeeCreate(int ageMinimum) {
-        super(ageMinimum);
+    public EmployeeCreate(int ageMinimum, String nameObject) {
+        super(ageMinimum, nameObject);
         dateValidation = new DateValidation();
         employeeValidation = new EmployeeValidation();
         objectValidation = new ObjectValidation();
@@ -55,7 +55,6 @@ public class EmployeeCreate extends PersonCreate {
             listData.put(ConstantData.TYPE_DATA, ConstantData.ADDRESS);
             errorMessages = OperationString.generateMesage(Message.EMPTY_DATA, listData);
             listError.add(errorMessages);
-
         }
         //Validation empty job
         if (StringUtils.isBlank(employee.getJob())) {
@@ -89,7 +88,10 @@ public class EmployeeCreate extends PersonCreate {
         if (validDateOfHire) {
             validDateRange = dateValidation.verifyDateRangeValid(employee.getDateOfHire(), listError);
             if (validDateOfHire && validDateRange) {
-                employeeValidation.birthdayLessDateOfHire(employee.getBirthday(), employee.getDateOfHire(), listError);
+                boolean isLessBirthday = dateValidation.verifyIsLess(ConstantData.BIRTHDAY, ConstantData.DATE_OF_HIRE, employee.getBirthday(), employee.getDateOfHire(), listError);
+                if (isLessBirthday) {
+                    dateValidation.verifyDiferenceYear(ConstantData.BIRTHDAY, ConstantData.DATE_OF_HIRE, employee.getBirthday(), employee.getDateOfHire(), ageMinimum,nameObject, listError);
+                }
             }
         }
         //Validation of addres size

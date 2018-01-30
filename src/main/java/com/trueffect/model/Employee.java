@@ -30,7 +30,7 @@ public class Employee extends Person {
             String job,
             String status
     ) {
-        super(id, typeIdentifier, identifier, lastName, firstName, genre, birthday,status);
+        super(id, typeIdentifier, identifier, lastName, firstName, genre, birthday, status);
         this.dateOfHire = dateOfHire.trim();
         this.address = address.trim();
         this.job = job.trim();

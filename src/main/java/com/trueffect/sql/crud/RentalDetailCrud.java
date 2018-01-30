@@ -62,7 +62,6 @@ public class RentalDetailCrud {
     }
 
     public Either getReportReantalAmount(Connection connection) {
-
         try {
             String sql = "";
             Statement query = null;

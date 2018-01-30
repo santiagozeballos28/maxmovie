@@ -7,12 +7,14 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  *
  * @author santiago.mamani
  */
-public class BondAssigned extends ModelObject{
+public class BondAssigned extends ModelObject {
+
     private long idPerson;
     private long idBond;
     private String dateStart;
     private String dateEnd;
     private String status;
+
     public BondAssigned() {
     }
 
@@ -20,7 +22,7 @@ public class BondAssigned extends ModelObject{
         this.idPerson = idPerson;
         this.idBond = idBond;
     }
-    
+
     public BondAssigned(long idPerson, long idBond, String dateStart, String dateEnd, String status) {
         this.idPerson = idPerson;
         this.idBond = idBond;
@@ -49,9 +51,9 @@ public class BondAssigned extends ModelObject{
         return status;
     }
 
-       @JsonIgnore
+    @JsonIgnore
     public boolean isEmpty() {
-        return idPerson == 0&& idBond == 0;
-               
+        return idPerson == 0 && idBond == 0;
+
     }
 }

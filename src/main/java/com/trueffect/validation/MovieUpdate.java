@@ -44,7 +44,7 @@ public class MovieUpdate implements DataCondition {
             movieValidation.verifyGenre(movie.getGenreId(), listGenre, listError);
         }
         //Validation genre movie
-        if (movie.getOscarNomination()!=null) {
+        if (movie.getOscarNomination() != null) {
             movieValidation.verifyOscarNomination(movie.getOscarNomination(), listError);
         }
         //Validation actors
@@ -66,7 +66,6 @@ public class MovieUpdate implements DataCondition {
         movieValidation.verifyOscarNomination(movie.getOscarNomination(), listError);
         //To check if there was an error
         if (!listError.isEmpty()) {
-
             return new Either(CodeStatus.BAD_REQUEST, listError);
         }
         return new Either();

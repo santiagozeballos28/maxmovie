@@ -34,7 +34,7 @@ public class DateValidation {
 
     public boolean verifyDateRangeValid(String date, ArrayList<String> listError) {
         boolean rangeValid = true;
-        if (!DateOperation.dateIsInRangeValid(date)) {
+        if (!DateOperation.isValidDate(date)) {
             rangeValid = false;
             listData.clear();
             listData.put(ConstantData.DATA, date);
@@ -50,5 +50,30 @@ public class DateValidation {
         listData.put(ConstantData.TYPE_DATA, typeDate);
         String errorMessages = OperationString.generateMesage(Message.EMPTY_DATA, listData);
         listError.add(errorMessages);
+    }
+
+    public boolean verifyIsLess(String typeDateFirst, String typeDateSecond, String dateFirst, String dateSecond, ArrayList<String> listError) {
+        boolean isLess = true;
+        if (!DateOperation.isLess(dateFirst, dateSecond)) {
+            isLess = false;
+            listData.clear();
+            listData.put(ConstantData.TYPE_DATA, typeDateFirst);
+            listData.put(ConstantData.DATA, dateFirst.trim());
+            listData.put(ConstantData.TYPE_DATA_TWO, typeDateSecond);
+            listData.put(ConstantData.DATA_TWO, dateSecond.trim());
+            String errorMessages = OperationString.generateMesage(Message.DATE_INCOHERENT, listData);
+            listError.add(errorMessages);
+        }
+        return isLess;
+    }
+
+    public void verifyDiferenceYear(String typeDateFirst, String typeDateSecond, String dateFirst, String dateSecond, int minYear,String nameObject, ArrayList<String> listError) {
+        if (DateOperation.diferenceYear(dateFirst, dateSecond) < minYear) {
+            listData.clear();
+             listData.put(ConstantData.OBJECT, nameObject);
+            listData.put(ConstantData.DATA, minYear + "");
+            String errorMessages = OperationString.generateMesage(Message.NOT_MEET_THE_AGE, listData);
+            listError.add(errorMessages);
+        }
     }
 }

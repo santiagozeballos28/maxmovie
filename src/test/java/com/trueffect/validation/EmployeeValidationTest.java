@@ -16,7 +16,7 @@ public class EmployeeValidationTest {
         boolean expected = true;
         String dateOfHire = "Av. Ayacucho";
         int maxLength = ConstantData.MAX_LENGTH_ADDRESS;
-        Assert.assertEquals(ObjectValidationUtil.isValidSize(dateOfHire,maxLength), expected);
+        Assert.assertEquals(ObjectValidationUtil.isValidSize(dateOfHire, maxLength), expected);
     }
 
     @Test
@@ -24,7 +24,7 @@ public class EmployeeValidationTest {
         boolean expected = true;
         String dateOfHire = "#Av. Ayacucho";
         int maxLength = ConstantData.MAX_LENGTH_ADDRESS;
-        Assert.assertEquals(ObjectValidationUtil.isValidSize(dateOfHire,maxLength), expected);
+        Assert.assertEquals(ObjectValidationUtil.isValidSize(dateOfHire, maxLength), expected);
     }
 
     //

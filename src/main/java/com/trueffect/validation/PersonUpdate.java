@@ -24,15 +24,17 @@ public class PersonUpdate implements DataCondition {
     private PersonValidation personValidation;
     private ObjectValidation objectValidation;
     private DateValidation dateValidation;
-    private int ageMinimum;
+    protected int ageMinimum;
+    protected String nameObject;
 
-    public PersonUpdate(String job, int ageMinimum) {
+    public PersonUpdate(String job, int ageMinimum,String nameObject) {
         listData = new HashMap<String, String>();
         this.job = job;
         personValidation = new PersonValidation();
         objectValidation = new ObjectValidation();
         dateValidation = new DateValidation();
         this.ageMinimum = ageMinimum;
+        this.nameObject = nameObject;
     }
 
     @Override
@@ -70,12 +72,12 @@ public class PersonUpdate implements DataCondition {
         //Validation empty birthday
         if (StringUtils.isNotBlank(person.getBirthday())) {
             //Validation of birthday (format date)
-            boolean validBirthdayFormat = dateValidation.isValidDate(ConstantData.BIRTHDAY,person.getBirthday(), listError);
+            boolean validBirthdayFormat = dateValidation.isValidDate(ConstantData.BIRTHDAY, person.getBirthday(), listError);
             if (validBirthdayFormat) {
                 //Validation of age
                 dateValidation.verifyDateRangeValid(person.getBirthday(), listError);
                 // Validation minimun age
-                personValidation.verifyRequiredAge(person.getBirthday(), ageMinimum, listError);
+                personValidation.verifyRequiredAge(person.getBirthday(), ageMinimum, nameObject,listError);
             }
         }
         //To check if there was an error

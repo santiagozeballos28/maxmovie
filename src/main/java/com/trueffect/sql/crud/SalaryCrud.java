@@ -99,7 +99,6 @@ public class SalaryCrud {
                         + "null,"
                         + "'Active');";
             }
-            //ident
             query.execute(sql);
             if (query != null) {
                 query.close();

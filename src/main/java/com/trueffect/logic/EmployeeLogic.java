@@ -177,7 +177,7 @@ public class EmployeeLogic {
             OperationModel operationModel = new OperationModel();
             String statusActive = Status.Active.name();
             String update = Crud.update.name();
-            String nameEmployee = ObjectMovie.Employee.name();
+            String nameEmployee = ObjectMovie.Employee.getDescription();
             EmployeeValidationDB employeeValidationDB = new EmployeeValidationDB(update);
             //checks if the employee exists
             eitherRes = permission.getPerson(connection, idModifyUser, statusActive, update);
@@ -203,12 +203,12 @@ public class EmployeeLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-
             //update is a class to specifically validate the conditions to update a person
             EmployeeUpdate employeeUpdate
                     = new EmployeeUpdate(
                             ((Job) eitherRes.getFirstObject()).getNameJob(),
-                            ConstantData.MIN_AGE_EMPLOYEE);
+                            ConstantData.MIN_AGE_EMPLOYEE,
+                            nameEmployee);
             employeeUpdate.setBirthdayCurrent(birthdayCurrent);
             eitherRes = employeeUpdate.complyCondition(employee);
             if (eitherRes.existError()) {
@@ -290,7 +290,6 @@ public class EmployeeLogic {
                     throw eitherRes;
                 }
             }
-            //estoy aqui
             eitherRes = getEmployee(connection, idEmployee, statusActive);
             if (eitherRes.existError()) {
                 throw eitherRes;
@@ -476,7 +475,6 @@ public class EmployeeLogic {
             }
             OperationModel operationModel = new OperationModel();
             DataBasePostgres.connectionCommit(connection);
-
         } catch (Either e) {
             eitherRes = e;
         } finally {
@@ -501,7 +499,6 @@ public class EmployeeLogic {
             //Check if the user can modify
             eitherRes = permission.checkUserPermission(connection, idUserModify, delete);
             if (eitherRes.existError()) {
-                //return eitherRes;
                 throw eitherRes;
             }
             eitherRes = getEmployee(connection, idEmployee, null);
@@ -606,7 +603,6 @@ public class EmployeeLogic {
             ArrayList<ModelObject> assignCurrentBonds = eitherRes.getListObject();
             //processed to update asignedbonuses
             eitherRes = getUpdateBondAsigned(assignNewBonds, assignCurrentBonds);
-
             ArrayList<ModelObject> updateAssignBonds = eitherRes.getListObject();
             if (!updateAssignBonds.isEmpty()) {
                 //update    
@@ -640,7 +636,6 @@ public class EmployeeLogic {
                 if (eitherRes.existError()) {
                     throw eitherRes;
                 }
-                //si entra aqui es porque existe actualizacion o insercion
             }
             eitherRes = new Either();
             eitherRes.setCode(CodeStatus.CREATED);

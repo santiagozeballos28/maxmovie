@@ -6,7 +6,7 @@ import com.trueffect.util.ModelObject;
  *
  * @author santiago.mamani
  */
-public class Actor extends ModelObject{
+public class Actor extends ModelObject {
 
     private long id;
     private String name;

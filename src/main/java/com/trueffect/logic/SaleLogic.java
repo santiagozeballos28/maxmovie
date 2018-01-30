@@ -94,7 +94,6 @@ public class SaleLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-
             eitherRes = checkMovies(connection, sales);
             if (eitherRes.existError()) {
                 throw eitherRes;
@@ -372,7 +371,6 @@ public class SaleLogic {
             String create = ConstantData.Crud.create.name();
             String update = ConstantData.Crud.update.name();
             String active = ConstantData.Status.Active.name();
-
             MovieValidationDB employeeValidationDB = new MovieValidationDB();
             //checks if the employee exists
             permission.setNameObject(ConstantData.ObjectMovie.Sale.name());

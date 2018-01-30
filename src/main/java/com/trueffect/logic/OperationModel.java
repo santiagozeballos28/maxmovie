@@ -25,7 +25,6 @@ public class OperationModel {
 
     public Either verifyStatus(Connection connection, String status) {
         ArrayList<String> listError = new ArrayList<String>();
-
         try {
             String statusNew = StringUtils.capitalize(status.trim().toLowerCase());
             Status statusPerson = Status.valueOf(statusNew);

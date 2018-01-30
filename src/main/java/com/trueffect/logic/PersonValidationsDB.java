@@ -28,7 +28,6 @@ public class PersonValidationsDB {
     }
 
     public Either veriryDataInDataBase(Connection connection, Person personNew) {
-
         String errorMgs = "";
         ArrayList<String> listError = new ArrayList<String>();
         Either eitherPerson = personCrud.getPersonByIdentifier(connection, personNew.getTypeIdentifier().toUpperCase(), personNew.getIdentifier().toUpperCase());
@@ -40,14 +39,12 @@ public class PersonValidationsDB {
             errorMgs = OperationString.generateMesage(Message.DUPLICATE, listData);
             listError.add(errorMgs);
         }
-
         String lastNameAux = OperationString.generateName(personNew.getLastName());
         lastNameAux = OperationString.addApostrophe(lastNameAux);
         String firstNameAux = OperationString.generateName(personNew.getFirstName());
         firstNameAux = OperationString.addApostrophe(firstNameAux);
         eitherPerson = personCrud.getPersonByName(connection, lastNameAux, firstNameAux);
         if (eitherPerson.haveModelObject()) {
-            //Person personDB = (Person) eitherPerson.getFirstObject();
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.NAME);
             listData.put(ConstantData.DATA, personNew.getLastName() + " " + personNew.getFirstName());
@@ -62,7 +59,6 @@ public class PersonValidationsDB {
 
     public Either verifyDataUpdate(Connection connection, Person personNew) {
         long idPerson = personNew.getId();
-
         String errorMgs = "";
         ArrayList<String> listError = new ArrayList<String>();
         Either eitherPersonOld = personCrud.getPerson(connection, idPerson, null);

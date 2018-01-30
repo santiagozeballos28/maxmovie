@@ -21,7 +21,11 @@ public class DateOperation {
         return Pattern.matches(RegularExpression.DATE, date);
     }
 
-    public static boolean dateIsInRangeValid(String date) {
+    /*
+    * This method must necessarily receive a valid formatted date.
+    * Otherwise the "catch" must be implemented.
+     */
+    public static boolean isValidDate(String date) {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat(ConstantData.SIMPLE_DATE_FORMAT);
             Date dateOtherFormat = dateFormat.parse(date);
@@ -36,10 +40,15 @@ public class DateOperation {
                 }
             }
         } catch (ParseException ex) {
+            //Implement if the input date parameter is an invalid format
         }
         return false;
     }
 
+    /*
+    * This method must necessarily receive a valid formatted date.
+    * Otherwise the "catch" must be implemented.
+     */
     public static int diferenceYear(String date) {
         int year = -1;
         try {
@@ -54,6 +63,7 @@ public class DateOperation {
                 year = diff.getYears() - 1;
             }
         } catch (ParseException ex) {
+            //Implement if the input date parameter is an invalid format
         }
         return year;
     }
@@ -77,6 +87,10 @@ public class DateOperation {
         return dateFormat.format(date);
     }
 
+    /*
+    * This method must necessarily receive a valid formatted date.
+    * Otherwise the "catch" must be implemented.
+     */
     public static boolean isLess(String dateFirst, String dateSecond) {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat(ConstantData.SIMPLE_DATE_FORMAT);
@@ -93,6 +107,7 @@ public class DateOperation {
                 }
             }
         } catch (ParseException ex) {
+            //Implement if the input date parameter is an invalid format
         }
         return false;
     }
@@ -102,6 +117,10 @@ public class DateOperation {
         return cal.get(Calendar.YEAR);
     }
 
+    /*
+    * This method must necessarily receive a valid formatted date.
+    * Otherwise the "catch" must be implemented.
+     */
     public static boolean areSameMonthAndYear(String dateFirst, String dateSecond) {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat(ConstantData.SIMPLE_DATE_FORMAT);
@@ -114,11 +133,14 @@ public class DateOperation {
                 return true;
             }
         } catch (ParseException ex) {
+            //Implement if the input date parameter is an invalid format
         }
         return false;
     }
 
     /*
+    *This method must necessarily receive a valid formatted date.
+    *Otherwise the "catch" must be implemented.
     *It is mandatory that dateSecond be equal to or greater than date dateFirst.
      */
     public static int diferenceMinutes(String dateFirst, String dateSecond) {
@@ -132,10 +154,14 @@ public class DateOperation {
             Period diff = Period.fieldDifference(localDateFirst, localDateSecond);
             diferenceMin = diff.getMinutes();
         } catch (ParseException ex) {
+            //Implement if the input date parameter is an invalid format
         }
         return diferenceMin;
     }
-      /*
+
+    /*
+    *This method must necessarily receive a valid formatted date.
+    *Otherwise the "catch" must be implemented.
     *It is mandatory that dateSecond be equal to or greater than date dateFirst.
      */
     public static int diferenceDays(String dateFirst, String dateSecond) {
@@ -149,7 +175,33 @@ public class DateOperation {
             Period diff = Period.fieldDifference(localDateFirst, localDateSecond);
             diferenceDays = diff.getDays();
         } catch (ParseException ex) {
+            //Implement if the input date parameter is an invalid format
         }
         return diferenceDays;
+    }
+
+    /*
+    *This method must necessarily receive a valid formatted date.
+    *Otherwise the "catch" must be implemented.
+    *It is mandatory that dateSecond be equal to or greater than date dateFirst.
+     */
+    public static int diferenceYear(String dateFirst, String dateSecond) {
+        int year = -1;
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat(ConstantData.SIMPLE_DATE_FORMAT);
+            Date dateFormatFirst = dateFormat.parse(dateFirst);
+            Date dateFormatSecond = dateFormat.parse(dateSecond);
+            LocalDate localDateFirst = LocalDate.fromDateFields(dateFormatFirst);
+            LocalDate localDateSecond = LocalDate.fromDateFields(dateFormatSecond);
+            Period diff = Period.fieldDifference(localDateFirst, localDateSecond);
+            if (diff.getMonths() >= 0 & diff.getDays() >= 0) {
+                year = diff.getYears();
+            } else {
+                year = diff.getYears() - 1;
+            }
+        } catch (ParseException ex) {
+            //Implement if the input date parameter is an invalid format
+        }
+        return year;
     }
 }

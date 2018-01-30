@@ -35,7 +35,6 @@ public class SaleValidationDB {
     }
 
     public Either verifyCopiesMovie(Connection connection, ArrayList<Sale> sales) {
-
         ArrayList<String> listError = new ArrayList<String>();
         ArrayList<Long> idsMovieSale = getIdsMovie(sales);
         Either either = new Either();

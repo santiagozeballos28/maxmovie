@@ -19,7 +19,7 @@ public class Message {
     public static String SIZE_MAX = "The {typeData} ({data}) is very long, must be less than [{size} characters]";
     public static String REFERENCE_PHONE = "At least [{data} phone numbers] are required.";
     //Message Age
-    public static String NOT_MEET_THE_AGE = "The person, must be  at least [{data} years] old";
+    public static String NOT_MEET_THE_AGE = "The {object}, must be  at least [{data} years] old";
     //Message duplicate
     public static String DUPLICATE = "Someone already has that {typeData} ({data})";
     // Message of permission

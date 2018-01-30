@@ -19,20 +19,6 @@ public class EmployeeValidation {
         listData = new HashMap<String, String>();
     }
 
-    public boolean birthdayLessDateOfHire(String birthday, String dateOfHire, ArrayList<String> listError) {
-        boolean rangeValid = true;
-        if (!DateOperation.isLess(birthday, dateOfHire)) {
-            listData.clear();
-            listData.put(ConstantData.TYPE_DATA, ConstantData.DATE_OF_HIRE);
-            listData.put(ConstantData.DATA, dateOfHire.trim());
-            listData.put(ConstantData.TYPE_DATA_TWO, ConstantData.BIRTHDAY);
-            listData.put(ConstantData.DATA_TWO, birthday.trim());
-            String errorMessages = OperationString.generateMesage(Message.DATE_INCOHERENT, listData);
-            listError.add(errorMessages);
-        }
-        return rangeValid;
-    }
-
     public void verifyJob(String job, ArrayList<String> listError) {
         if (!EmployeeValidationUtil.isValidJob(job.trim().toUpperCase())) {
             String validNameJob

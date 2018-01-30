@@ -60,7 +60,7 @@ public class MovieReportLogic {
                 throw eitherRes;
             }
             //Get all movies Actived
-            eitherRes = movieCrud.getMovie(connection,null);
+            eitherRes = movieCrud.getMovie(connection, null);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -105,7 +105,7 @@ public class MovieReportLogic {
         ArrayList<ModelObject> reportMovies = new ArrayList<ModelObject>();
         for (ModelObject movieObject : allMovies) {
             Movie movie = (Movie) movieObject;
-            reportMovies.add(new ReportMovieDetail(movie.getId(), movie.getName(),movie.getStatus()));
+            reportMovies.add(new ReportMovieDetail(movie.getId(), movie.getName(), movie.getStatus()));
         }
         return reportMovies;
     }

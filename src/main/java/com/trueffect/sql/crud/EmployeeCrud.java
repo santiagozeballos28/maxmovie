@@ -229,7 +229,6 @@ public class EmployeeCrud {
                     + "   AND DATA_JOB.status = 'Active'"
                     + "   AND PERSON.person_id = DATA_JOB.person_id "
                     + "   AND DATA_JOB.job_id = JOB.job_id";
-
             if (StringUtils.isNotBlank(status)) {
                 query = query + " AND PERSON.status = '" + status + "'";
             }
@@ -479,7 +478,6 @@ public class EmployeeCrud {
                     + "       status"
                     + "  FROM DATA_JOB"
                     + " WHERE DATA_JOB.person_id = " + idEmployee;
-
             if (StringUtils.isNotBlank(status)) {
                 query = query + " AND status = '" + status + "'";
             }
@@ -516,7 +514,6 @@ public class EmployeeCrud {
                     + "       address"
                     + "  FROM PERSON , DATA_JOB"
                     + " WHERE PERSON.person_id = DATA_JOB.person_id";
-
             if (StringUtils.isNotBlank(status)) {
                 query = query + " AND PERSON.status = '" + status + "' AND DATA_JOB.status = '" + status + "'";
             }

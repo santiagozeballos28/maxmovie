@@ -49,7 +49,6 @@ public class PersonLogic {
         try {
             //open conection 
             connection = DataBasePostgres.getConection();
-
             String create = Crud.create.name();
             String status = Status.Active.name();
             //checks if the employee exists
@@ -160,7 +159,7 @@ public class PersonLogic {
             connection = DataBasePostgres.getConection();
             String update = Crud.update.name();
             String statusActive = Status.Active.name();
-            String renterUser = ObjectMovie.RennterUser.name();
+            String renterUser = ObjectMovie.RennterUser.getDescription();
             //checks if the employee exists
             eitherRes = permission.getPerson(connection, idUserModify, statusActive, update);
             if (eitherRes.existError()) {
@@ -187,7 +186,8 @@ public class PersonLogic {
             //update is a class to specifically validate the conditions to update a person
             PersonUpdate rentUserUpdate = new PersonUpdate(
                     ((Job) eitherRes.getFirstObject()).getNameJob(),
-                    ConstantData.MIN_AGE_RENTER);
+                    ConstantData.MIN_AGE_RENTER,
+                    renterUser);
             eitherRes = rentUserUpdate.complyCondition(person);
             if (eitherRes.existError()) {
                 throw eitherRes;

@@ -19,12 +19,14 @@ public class PersonCreate implements DataCondition {
 
     protected HashMap<String, String> listData;
     protected int ageMinimum;
+    protected String nameObject;
     private PersonValidation personValidation;
     private ObjectValidation objectValidation;
     private DateValidation dateValidation;
 
-    public PersonCreate(int ageMinimum) {
+    public PersonCreate(int ageMinimum, String nameObject) {
         this.ageMinimum = ageMinimum;
+        this.nameObject = nameObject;
         listData = new HashMap<String, String>();
         personValidation = new PersonValidation();
         objectValidation = new ObjectValidation();
@@ -117,12 +119,12 @@ public class PersonCreate implements DataCondition {
         //Validation of genre
         personValidation.verifyGenre(person.getGenre(), listError);
         //Validation of birthday (format date)
-        boolean validBirthdayFormat = dateValidation.isValidDate(ConstantData.BIRTHDAY,person.getBirthday(), listError);
+        boolean validBirthdayFormat = dateValidation.isValidDate(ConstantData.BIRTHDAY, person.getBirthday(), listError);
         if (validBirthdayFormat) {
             //Validation of age
             dateValidation.verifyDateRangeValid(person.getBirthday(), listError);
             // Validation minimun age
-            personValidation.verifyRequiredAge(person.getBirthday(), ageMinimum, listError);
+            personValidation.verifyRequiredAge(person.getBirthday(), ageMinimum,nameObject, listError);
         }
         //To check if there was an error
         if (!listError.isEmpty()) {

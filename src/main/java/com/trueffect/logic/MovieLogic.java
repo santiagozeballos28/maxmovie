@@ -23,7 +23,6 @@ import java.util.HashMap;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- *
  * @author santiago.mamani
  */
 public class MovieLogic {
@@ -326,7 +325,6 @@ public class MovieLogic {
             //Check if the user can modify
             eitherRes = permission.checkUserPermission(connection, idModifyUser, delete);
             if (eitherRes.existError()) {
-                //return eitherRes;
                 throw eitherRes;
             }
             eitherRes = getMovie(connection, idMovie, null);
@@ -408,10 +406,6 @@ public class MovieLogic {
                 throw eitherRes;
             }
             eitherRes = getMovie(connection, idMovie, active);
-            if (eitherRes.existError()) {
-                throw eitherRes;
-            }
-            eitherRes = employeeValidationDB.veriryCopyDuplicate(connection, idMovie);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }

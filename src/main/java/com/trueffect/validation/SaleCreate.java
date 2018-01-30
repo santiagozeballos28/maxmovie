@@ -83,7 +83,6 @@ public class SaleCreate {
             String nameMovie = getNameMovie(sale.getIdMovie());
             //Validation of amount the sale
             if (sale.getAmount() < 0) {
-
                 listData.clear();
                 listData.put(ConstantData.TYPE_DATA, ConstantData.AMOUNT_MOVIES);
                 listData.put(ConstantData.DATA, sale.getAmount() + "");

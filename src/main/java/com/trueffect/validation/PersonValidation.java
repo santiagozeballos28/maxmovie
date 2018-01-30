@@ -19,7 +19,7 @@ public class PersonValidation {
     public PersonValidation() {
         listData = new HashMap<String, String>();
     }
- 
+
     public boolean isValidTypeIdentifier(String typeIdentifier, ArrayList<String> listError) {
         boolean validTypeIdentifier = true;
         if (!PersonValidationUtil.isValidTypeIdentifier(typeIdentifier)) {
@@ -93,10 +93,12 @@ public class PersonValidation {
             listError.add(errorMessages);
         }
     }
-    public void verifyRequiredAge(String date, int ageMinimum, ArrayList<String> listError) {
+
+    public void verifyRequiredAge(String date, int ageMinimum, String nameObject, ArrayList<String> listError) {
         if (!DateOperation.yearIsGreaterThan(date, ageMinimum)) {
             listData.clear();
             listData.put(ConstantData.DATA, ageMinimum + "");
+            listData.put(ConstantData.OBJECT, nameObject);
             String errorMessages = OperationString.generateMesage(Message.NOT_MEET_THE_AGE, listData);
             listError.add(errorMessages);
         }

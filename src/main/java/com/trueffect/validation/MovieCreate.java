@@ -66,7 +66,7 @@ public class MovieCreate implements DataCondition {
             errorMessages = OperationString.generateMesage(Message.EMPTY_DATA, listData);
             listError.add(errorMessages);
         }
-          //Validation empty year
+        //Validation empty year
         if (movie.getYear() == null) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.YEAR);

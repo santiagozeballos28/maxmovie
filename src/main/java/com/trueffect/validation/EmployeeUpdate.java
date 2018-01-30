@@ -20,8 +20,8 @@ public class EmployeeUpdate extends PersonUpdate {
     private ObjectValidation objectValidation;
     private String birthdayCurrent;
 
-    public EmployeeUpdate(String job, int ageMinimum) {
-        super(job, ageMinimum);
+    public EmployeeUpdate(String job, int ageMinimum, String nameObject) {
+        super(job, ageMinimum, nameObject);
         employeeValidation = new EmployeeValidation();
         dateValidation = new DateValidation();
         objectValidation = new ObjectValidation();
@@ -61,7 +61,6 @@ public class EmployeeUpdate extends PersonUpdate {
     }
 
     private void validationDateOfHire(String dateOfHire, String birthday, ArrayList<String> listError) {
-        String errorMessage = "";
         boolean validDateOfHire = dateValidation.isValidDate(ConstantData.DATE_OF_HIRE, dateOfHire, listError);
         boolean validDateOfHireRange;
         if (validDateOfHire) {
@@ -72,10 +71,13 @@ public class EmployeeUpdate extends PersonUpdate {
             if (StringUtils.isNotBlank(birthday)) {
                 birthdayAux = birthday;
                 validDateFormatBirthday = DateOperation.isValidDateFormat(birthday);
-                validDateRangeBirthday = DateOperation.dateIsInRangeValid(birthday);
+                validDateRangeBirthday = DateOperation.isValidDate(birthday);
             }
             if (validDateOfHireRange && validDateFormatBirthday && validDateRangeBirthday) {
-                employeeValidation.birthdayLessDateOfHire(birthdayAux, dateOfHire, listError);
+                boolean isLessBirthday = dateValidation.verifyIsLess(ConstantData.BIRTHDAY, ConstantData.DATE_OF_HIRE, birthdayAux, dateOfHire, listError);
+                if (isLessBirthday) {
+                    dateValidation.verifyDiferenceYear(ConstantData.BIRTHDAY, ConstantData.DATE_OF_HIRE, birthdayAux, dateOfHire, ageMinimum, nameObject, listError);
+                }
             }
         }
     }

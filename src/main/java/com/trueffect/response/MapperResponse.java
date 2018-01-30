@@ -22,7 +22,6 @@ public class MapperResponse {
     }
 
     public Response toResponseError(Either either) {
-
         return Response.status(new MyStatusType(either.getCode()))
                 .entity(either.getListError())
                 .build();

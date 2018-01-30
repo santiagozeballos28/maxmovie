@@ -24,6 +24,7 @@ public class SaleResourse {
 
     private SaleLogic movieLogic = new SaleLogic();
     private MapperResponse mapper = new MapperResponse();
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -37,11 +38,11 @@ public class SaleResourse {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response registerRentReturn(
-            @QueryParam("idEmployee") long idEmployee, 
+            @QueryParam("idEmployee") long idEmployee,
             @QueryParam("idRenterUser") int idRenterUser,
             @QueryParam("idMasterDetail") long idMaterDetail,
             ArrayList<RentReturn> rentReturns) {
-        Either either = movieLogic.registerRentReturn(idEmployee, idRenterUser,idMaterDetail, rentReturns);
+        Either either = movieLogic.registerRentReturn(idEmployee, idRenterUser, idMaterDetail, rentReturns);
         Response response = mapper.toResponse(either);
         return response;
     }
