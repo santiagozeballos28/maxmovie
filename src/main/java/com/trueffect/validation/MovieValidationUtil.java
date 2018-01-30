@@ -25,7 +25,7 @@ public class MovieValidationUtil {
         return asciiEncoder.canEncode(name);
     }
 
-    public static boolean theNumberIsInRange(int number, int start, int limit) {
+    public static boolean theNumberIsInRange(long number, long start, long limit) {
         return number >= start && number <= limit;
     }
 }

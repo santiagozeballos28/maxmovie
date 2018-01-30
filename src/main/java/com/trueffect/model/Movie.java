@@ -15,7 +15,7 @@ public class Movie extends ModelObject {
     protected String genreId;
     protected String director;
     protected int year;
-    protected int oscarNomination;
+    protected Integer oscarNomination;
     protected ArrayList<String> actor;
     protected String status;
     protected String createDate;
@@ -23,7 +23,7 @@ public class Movie extends ModelObject {
     public Movie() {
     }
 
-    public Movie(long id, String name, String genreId, String director, int year, int oscarNomination, ArrayList<String> actor) {
+    public Movie(long id, String name, String genreId, String director, int year, Integer oscarNomination, ArrayList<String> actor) {
         this.id = id;
         this.name = name.trim();
         this.genreId = genreId.trim();
@@ -33,7 +33,7 @@ public class Movie extends ModelObject {
         this.actor = actor;
     }
 
-    public Movie(long id, String name, String genreId, String director, int year, int oscarNomination, String status) {
+    public Movie(long id, String name, String genreId, String director, int year, Integer oscarNomination, String status) {
         this.id = id;
         this.name = name.trim();
         this.genreId = genreId.trim();
@@ -43,7 +43,7 @@ public class Movie extends ModelObject {
         this.status = status.trim();
     }
 
-    public Movie(long id, String name, String genreId, String director, int year, int oscarNomination, String status, String createDate) {
+    public Movie(long id, String name, String genreId, String director, int year, Integer oscarNomination, String status, String createDate) {
         this.id = id;
         this.name = name.trim();
         this.genreId = genreId.trim();
@@ -74,7 +74,7 @@ public class Movie extends ModelObject {
         return year;
     }
 
-    public int getOscarNomination() {
+    public Integer getOscarNomination() {
         return oscarNomination;
     }
 
@@ -111,7 +111,7 @@ public class Movie extends ModelObject {
         this.year = year;
     }
 
-    public void setOscarNomination(int oscarNomination) {
+    public void setOscarNomination(Integer oscarNomination) {
         this.oscarNomination = oscarNomination;
     }
 

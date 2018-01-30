@@ -23,7 +23,7 @@ public class MovieCrud {
             String name = movie.getName();
             String director = movie.getDirector();
             int year = movie.getYear();
-            int oscarNomination = movie.getOscarNomination();
+            long oscarNomination = movie.getOscarNomination();
             String genreMovieId = movie.getGenreId();
             Either eitherIdentifier = new Either();
             query = (Statement) connection.createStatement();
@@ -172,7 +172,7 @@ public class MovieCrud {
             if (year != 0) {
                 sql = sql + "movie_year = " + year + ", ";
             }
-            int oscarNomination = movie.getOscarNomination();
+            long oscarNomination = movie.getOscarNomination();
             if (oscarNomination != 0) {
                 sql = sql + "oscar_nomination = " + oscarNomination + ", ";
             }

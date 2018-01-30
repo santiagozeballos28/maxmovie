@@ -66,6 +66,13 @@ public class MovieCreate implements DataCondition {
             errorMessages = OperationString.generateMesage(Message.EMPTY_DATA, listData);
             listError.add(errorMessages);
         }
+        //Validation empty oscar nomination
+        if (movie.getOscarNomination() == null) {
+            listData.clear();
+            listData.put(ConstantData.TYPE_DATA, ConstantData.OSCAR_NOMINATION_MOVIE);
+            errorMessages = OperationString.generateMesage(Message.EMPTY_DATA, listData);
+            listError.add(errorMessages);
+        }
         //Validation empty actors
         if (movie.getActor().isEmpty()) {
             listData.clear();

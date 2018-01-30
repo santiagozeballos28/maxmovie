@@ -104,7 +104,7 @@ public class MovieValidation {
         }
     }
 
-    public void verifyOscarNomination(int oscarNomination, ArrayList<String> listError) {
+    public void verifyOscarNomination(long oscarNomination, ArrayList<String> listError) {
         int minOscarNomination = ConstantData.MIN_OSCAR_NOMINATION;
         int maxOscarNomination = ConstantData.MAX_OSCAR_NOMINATION_MOVIE;
         if (!MovieValidationUtil.theNumberIsInRange(oscarNomination, minOscarNomination, maxOscarNomination)) {
