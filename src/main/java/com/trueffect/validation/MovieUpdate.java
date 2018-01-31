@@ -63,7 +63,9 @@ public class MovieUpdate implements DataCondition {
             movieValidation.verifyYear(movie.getYear(), listError);
         }
         //Validation oscar nomination
-        movieValidation.verifyOscarNomination(movie.getOscarNomination(), listError);
+        if (movie.getOscarNomination() != null) {
+            movieValidation.verifyOscarNomination(movie.getOscarNomination(), listError);
+        }
         //To check if there was an error
         if (!listError.isEmpty()) {
             return new Either(CodeStatus.BAD_REQUEST, listError);
