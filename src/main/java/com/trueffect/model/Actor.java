@@ -1,6 +1,7 @@
 package com.trueffect.model;
 
 import com.trueffect.util.ModelObject;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -43,5 +44,9 @@ public class Actor extends ModelObject {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+       @JsonIgnore
+    public boolean isEmpty() {
+        return   name == null;
     }
 }

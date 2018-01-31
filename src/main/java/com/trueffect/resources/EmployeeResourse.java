@@ -90,7 +90,7 @@ public class EmployeeResourse {
 
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateBond(@QueryParam("idUserModify") int idUserModify) {
+    public Response updateBond(@QueryParam("idUserModify") long idUserModify) {
         Either either = employeeLogic.updateBond(idUserModify);
         Response response = mapper.toResponse(either);
         return response;

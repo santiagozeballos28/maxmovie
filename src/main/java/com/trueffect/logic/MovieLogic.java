@@ -47,7 +47,7 @@ public class MovieLogic {
         movieValidationDB = new MovieValidationDB();
     }
 
-    public Either createMovie(int idCreateUser, Movie movie, MovieCreate movieCreate) {
+    public Either createMovie(long idCreateUser, Movie movie, MovieCreate movieCreate) {
         Either eitherRes = new Either();
         Connection connection = null;
         try {
@@ -82,8 +82,8 @@ public class MovieLogic {
             }
             //The name is converted correctly
             covertedCorrectlyName(movie);
-            covertedCorrectlyActor(movie);
             covertedCorrectlyDirector(movie);
+            removeSpacesActor(movie);
             String genreMovie = movie.getGenreId().toUpperCase();
             movie.setGenreId(genreMovie);
             //Insert Movie           
@@ -101,6 +101,7 @@ public class MovieLogic {
             ArrayList<String> actorMovie = movie.getActor();
             ArrayList<Identifier> identifiersActorsDB = getIdentifierActors(actorMovie, actorsDB);
             //Insert Movie. actorMovie have removed actors what is in data base
+            ArrayList<String> actorToInsert = addAposropheActor(actorMovie);
             eitherRes = actorCrud.insertActors(connection, idCreateUser, actorMovie);
             if (eitherRes.existError()) {
                 throw eitherRes;
@@ -147,7 +148,8 @@ public class MovieLogic {
             boolean find = false;
             int i = 0;
             while (i < actor.size() && !find) {
-                if (actorDB.getName().equals(actor.get(i))) {
+                String actorNew = OperationString.lessAnApostrophe(actor.get(i));
+                if (actorDB.getName().equals(actorNew)) {
                     find = true;
                     Identifier identifierActor = new Identifier(actorDB.getId());
                     identifierActors.add(identifierActor);
@@ -210,7 +212,7 @@ public class MovieLogic {
                 covertedCorrectlyDirector(movie);
             }
             if (!movie.getActor().isEmpty()) {
-                covertedCorrectlyActor(movie);
+                removeSpacesActor(movie);
             }
             String genreMovie = movie.getGenreId();
             if (StringUtils.isNotBlank(genreMovie)) {
@@ -436,15 +438,33 @@ public class MovieLogic {
         movie.setName(nameMovie);
     }
 
-    private void covertedCorrectlyActor(Movie movie) {
+    private void removeSpacesActor(Movie movie) {
         ArrayList<String> nameActors = movie.getActor();
         ArrayList<String> nameActorsCorrectly = new ArrayList<String>();
         for (String nameActor : nameActors) {
             String actor = OperationString.removeSpace(nameActor);
-            actor = OperationString.addApostrophe(actor);
             nameActorsCorrectly.add(actor);
         }
         movie.setActor(nameActorsCorrectly);
+    }
+
+    private void addAposropheActor(Movie movie) {
+        ArrayList<String> nameActors = movie.getActor();
+        ArrayList<String> nameActorsCorrectly = new ArrayList<String>();
+        for (String nameActor : nameActors) {
+            String actor = OperationString.removeSpace(nameActor);
+            nameActorsCorrectly.add(actor);
+        }
+        movie.setActor(nameActorsCorrectly);
+    }
+
+    private ArrayList<String> addAposropheActor(ArrayList<String> nameActors) {
+        ArrayList<String> nameActorsCorrectly = new ArrayList<String>();
+        for (String nameActor : nameActors) {
+            String actor = OperationString.removeSpace(nameActor);
+            nameActorsCorrectly.add(actor);
+        }
+        return nameActorsCorrectly;
     }
 
     private void covertedCorrectlyDirector(Movie movie) {
@@ -460,6 +480,7 @@ public class MovieLogic {
             boolean findActorNew = false;
             int i = 0;
             while (i < actors.size() && !findActorNew) {
+                String actor = OperationString.generateName(actors.get(i));
                 if (actorDB.getName().equals(actors.get(i))) {
                     findActorNew = true;
                 }
@@ -485,7 +506,7 @@ public class MovieLogic {
                 i++;
             }
             if (!findActorDB) {
-                actorsInsert.add(actorName);
+                actorsInsert.add(OperationString.addApostrophe(actorName));
             }
         }
         return actorsInsert;

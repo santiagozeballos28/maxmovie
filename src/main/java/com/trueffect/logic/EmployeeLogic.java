@@ -582,7 +582,7 @@ public class EmployeeLogic {
         return dataJobRes;
     }
     
-    public Either updateBond(int idModifyUser) {
+    public Either updateBond(long idModifyUser) {
         Either eitherRes = new Either();
         Connection connection = null;
         try {

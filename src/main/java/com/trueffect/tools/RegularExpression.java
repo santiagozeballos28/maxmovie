@@ -15,4 +15,5 @@ public class RegularExpression {
     public static String PHONE_FIXED = "^(2|3|4){1}\\d{6}$";
     public static String NAME_MOVIE = "^[A-Za-z0-9 ]{1,}$";
     public static String GENRE = "^[A-Za-z]{1,}$";
+    public static String ID_GENRE_MOVIE = "^[A-Z]{1,}$";
 }

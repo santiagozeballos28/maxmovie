@@ -16,6 +16,10 @@ public class MovieValidationUtil {
         return Pattern.matches(RegularExpression.NAME_MOVIE, name);
     }
 
+    public static boolean isValidIdGenreMovie(String idGenreMovie) {
+        return Pattern.matches(RegularExpression.ID_GENRE_MOVIE, idGenreMovie.toUpperCase());
+    }
+
     public static boolean isValidGenre(String name) {
         return Pattern.matches(RegularExpression.GENRE, name);
     }

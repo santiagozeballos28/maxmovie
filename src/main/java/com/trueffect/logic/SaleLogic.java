@@ -70,7 +70,7 @@ public class SaleLogic {
         reportSaleCrud = new ReportSaleCrud();
     }
 
-    public Either registerSale(long idCreateUser, int idRenterUser, ArrayList<Sale> sales) {
+    public Either registerSale(long idCreateUser, long idRenterUser, ArrayList<Sale> sales) {
         Either eitherRes = new Either();
         Connection connection = null;
         try {
