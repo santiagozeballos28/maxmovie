@@ -140,7 +140,7 @@ public class EmployeeCrud {
                         rs.getString("date_of_hire"),
                         rs.getString("address"),
                         rs.getString("job_name"),
-                        rs.getString("status")
+                        rs.getString("status").trim()
                 );
             }
             if (query != null) {
@@ -248,7 +248,7 @@ public class EmployeeCrud {
                         rs.getString("date_of_hire"),
                         rs.getString("address"),
                         rs.getString("job_name"),
-                        rs.getString("status"));
+                        rs.getString("status").trim());
             }
             if (st != null) {
                 st.close();
@@ -603,6 +603,28 @@ public class EmployeeCrud {
             }
             eitherRes.setCode(CodeStatus.CREATED);
             return eitherRes;
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+    }
+
+    public Either updateEnableRent(Connection connection, long idModifierUser, long idEmployee, boolean enableRent) {
+        try {
+            Statement query = (Statement) connection.createStatement();
+            String sql
+                    = "UPDATE DATA_JOB\n"
+                    + "   SET enable_rent= " + enableRent +","
+                    + "       modifier_user = " +idModifierUser + ","
+                    + "       modifier_date=current_timestamp\n"
+                    + " WHERE person_id = " +idEmployee
+                    + "   AND status = 'Active';";
+            query.execute(sql);
+            if (query != null) {
+                query.close();
+            }
+            return new Either();
         } catch (Exception exception) {
             ArrayList<String> listError = new ArrayList<String>();
             listError.add(exception.getMessage());

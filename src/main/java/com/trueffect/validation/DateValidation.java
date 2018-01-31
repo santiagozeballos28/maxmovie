@@ -20,11 +20,11 @@ public class DateValidation {
 
     public boolean isValidDate(String typeData, String date, ArrayList<String> listError) {
         boolean validDate = true;
-        if (!DateOperation.isValidDateFormat(date)) {
+        if (!DateOperation.isValidDateFormat(date.trim())) {
             validDate = false;
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, typeData);
-            listData.put(ConstantData.DATA, date);
+            listData.put(ConstantData.DATA, date.trim());
             listData.put(ConstantData.VALID, ConstantData.VALID_DATE);
             String errorMessages = OperationString.generateMesage(Message.NOT_VALID_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessages);
@@ -34,10 +34,10 @@ public class DateValidation {
 
     public boolean verifyDateRangeValid(String date, ArrayList<String> listError) {
         boolean rangeValid = true;
-        if (!DateOperation.isValidDate(date)) {
+        if (!DateOperation.isValidDate(date.trim())) {
             rangeValid = false;
             listData.clear();
-            listData.put(ConstantData.DATA, date);
+            listData.put(ConstantData.DATA, date.trim());
             listData.put(ConstantData.DATA_TWO, DateOperation.getDateCurrent());
             String errorMessages = OperationString.generateMesage(Message.DATE_FUTURE, listData);
             listError.add(errorMessages);
@@ -54,7 +54,7 @@ public class DateValidation {
 
     public boolean verifyIsLess(String typeDateFirst, String typeDateSecond, String dateFirst, String dateSecond, ArrayList<String> listError) {
         boolean isLess = true;
-        if (!DateOperation.isLess(dateFirst, dateSecond)) {
+        if (!DateOperation.isLess(dateFirst.trim(), dateSecond.trim())) {
             isLess = false;
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, typeDateFirst);
@@ -68,7 +68,7 @@ public class DateValidation {
     }
 
     public void verifyDiferenceYear(String typeDateFirst, String typeDateSecond, String dateFirst, String dateSecond, int minYear,String nameObject, ArrayList<String> listError) {
-        if (DateOperation.diferenceYear(dateFirst, dateSecond) < minYear) {
+        if (DateOperation.diferenceYear(dateFirst.trim(), dateSecond.trim()) < minYear) {
             listData.clear();
              listData.put(ConstantData.OBJECT, nameObject);
             listData.put(ConstantData.DATA, minYear + "");
