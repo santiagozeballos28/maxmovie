@@ -202,7 +202,7 @@ public class MovieLogic {
                 throw eitherRes;
             }
             if (StringUtils.isNotBlank(movie.getName())) {
-                eitherRes = movieValidationDB.veriryDataInDataBase(connection, movie);
+                eitherRes = movieValidationDB.veriryUpdateInDataBase(connection, movie);
                 if (eitherRes.existError()) {
                     throw eitherRes;
                 }
