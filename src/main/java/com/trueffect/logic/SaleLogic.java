@@ -4,7 +4,7 @@ import com.trueffect.conection.db.DataBasePostgres;
 import com.trueffect.messages.Message;
 import com.trueffect.model.BuyDetail;
 import com.trueffect.model.CopyMovie;
-import com.trueffect.model.DataJob;
+import com.trueffect.model.EmployeeData;
 import com.trueffect.model.Identifier;
 import com.trueffect.model.MasterDetail;
 import com.trueffect.model.MasterDetailSaile;
@@ -130,12 +130,12 @@ public class SaleLogic {
             int amountTotal = getSubTotalAmount(rentalDetails) + getSubTotalAmount(buyDetails);
             double priceTotal = getSubTotalPrice(rentalDetails) + getSubTotalPrice(buyDetails);
             EmployeeCrud employeeCrud = new EmployeeCrud();
-            eitherRes = employeeCrud.getDataJob(connection, idCreateUser, active);
+            eitherRes = employeeCrud.getEmployeeData(connection, idCreateUser);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            long idDataJob = ((DataJob) eitherRes.getFirstObject()).getJobId();
-            MasterDetail masterDetail = new MasterDetail(amountTotal, priceTotal, idDataJob, idRenterUser);
+            long idEmployeeData = ((EmployeeData) eitherRes.getFirstObject()).getIdEmployeeData();
+            MasterDetail masterDetail = new MasterDetail(amountTotal, priceTotal, idEmployeeData, idRenterUser);
             eitherRes = masterDetailCrud.insert(connection, masterDetail);
             if (eitherRes.existError()) {
                 throw eitherRes;

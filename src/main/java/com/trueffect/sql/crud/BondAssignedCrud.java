@@ -24,8 +24,8 @@ public class BondAssignedCrud {
                 long idPerson = bondAssigned.getIdPerson();
                 long idBond = bondAssigned.getIdBond();
                 sql = sql
-                        + "INSERT INTO bond_assigned ("
-                        + "person_id, "
+                        + "INSERT INTO BOND_ASSIGNED ("
+                        + "employee_data_id, "
                         + "bond_id, "
                         + "start_date, "
                         + "end_date, "
@@ -60,7 +60,7 @@ public class BondAssignedCrud {
                         = "UPDATE BOND_ASSIGNED\n"
                         + "   SET end_date = current_date , "
                         + "       status = '" + status + "'"
-                        + " WHERE person_id = " + bondAssigned.getIdPerson() + " "
+                        + " WHERE employee_data_id = " + bondAssigned.getIdPerson() + " "
                         + "   AND bond_id = " + bondAssigned.getIdBond() + ";";
             }
             query.execute(sql);

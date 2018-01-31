@@ -78,7 +78,7 @@ public class MovieCrud {
                     + "       oscar_nomination, "
                     + "       genre_movie_id,"
                     + "       status\n"
-                    + "  FROM movie\n"
+                    + "  FROM MOVIE\n"
                     + " WHERE movie_id=? ";
             if (StringUtils.isNotBlank(status)) {
                 query = query + " AND status = '" + status + "'";
@@ -123,7 +123,7 @@ public class MovieCrud {
                     + "       genre_movie_id,"
                     + "       status,"
                     + "       create_date\n"
-                    + "  FROM movie\n"
+                    + "  FROM MOVIE\n"
                     + " WHERE movie_id IN " + idsString;
             if (StringUtils.isNotBlank(status)) {
                 query = query + " AND status = '" + status + "'";

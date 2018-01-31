@@ -22,7 +22,7 @@ public class MasterDetailCrud {
             Either eitherIdentifier = new Either();
             int amountTotal = masterDetail.getAmountTotal();
             double priceTotal = masterDetail.getPriceTotal();
-            long idDataJob = masterDetail.getIdDataJob();
+            long idEmployeeData = masterDetail.getIdEmployeeData();
             long idRenterUser = masterDetail.getIdRenterUser();
             Statement query = null;
             query = (Statement) connection.createStatement();
@@ -30,19 +30,19 @@ public class MasterDetailCrud {
                     = "INSERT INTO MASTER_DETAIL("
                     + "amount_total, "
                     + "price_total, "
-                    + "data_job_id, "
                     + "create_date,"
                     + "modifier_date, "
                     + "modifier_user, "
-                    + "renter_user)\n"
+                    + "renter_user,"
+                    + "create_user)\n"
                     + "VALUES ("
                     + amountTotal + ","
                     + priceTotal + ","
-                    + idDataJob + ","
                     + "current_timestamp,"
                     + "null,"
                     + "null,"
-                    + idRenterUser + ")"
+                    + idRenterUser + ","
+                    + idEmployeeData + ")"
                     + "returning master_detail_id; ";
             ResultSet rs = query.executeQuery(sql);
             if (rs.next()) {
@@ -69,7 +69,7 @@ public class MasterDetailCrud {
                     + "       price_total \n"
                     + "  FROM MASTER_DETAIL, PERSON \n"
                     + " WHERE master_detail_id= ? "
-                    + "   AND MASTER_DETAIL.renter_user = PERSON.person_id;";
+                    + "   AND MASTER_DETAIL.renter_user = PERSON.person_id";
             PreparedStatement st = connection.prepareStatement(query);
             st.setLong(1, idMasterDetail);
             ResultSet rs = st.executeQuery();

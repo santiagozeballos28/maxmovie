@@ -2,7 +2,7 @@ package com.trueffect.sql.crud;
 
 import com.trueffect.model.Bond;
 import com.trueffect.model.BondAssigned;
-import com.trueffect.model.DataJob;
+import com.trueffect.model.EmployeeData;
 import com.trueffect.model.Employee;
 import com.trueffect.model.EmployeeDetail;
 import com.trueffect.model.Phone;
@@ -25,38 +25,36 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class EmployeeCrud {
 
-    public Either insertDataJob(Connection connection, long idCreateUser, DataJob dataJob, boolean enabledRenterUser) {
+    public Either insertEmployeeData(Connection connection, long idCreateUser, EmployeeData dataJob, boolean enabledRenterUser) {
         Statement query = null;
         try {
-            long idEmployee = dataJob.getEmployeeId();
-            long idJob = dataJob.getJobId();
+            long idEmployeeData = dataJob.getIdEmployeeData();
+            long idJob = dataJob.getIdJob();
             String dateOfHire = dataJob.getDateOfHire();
             String address = dataJob.getAddress();
             query = (Statement) connection.createStatement();
             String sql = "";
             sql = sql
-                    + "INSERT INTO DATA_JOB("
-                    + "person_id,"
-                    + "date_of_hire,"
-                    + "address,"
-                    + "job_id,"
+                    + "INSERT INTO EMPLOYEE_DATA("
+                    + "employee_data_id, "
+                    + "date_of_hire, "
+                    + "address, "
+                    + "job_id, "
                     + "enable_rent,"
-                    + "create_user,"
-                    + "create_date,"
-                    + "modifier_user,"
-                    + "modifier_date,"
-                    + "status) "
-                    + "VALUES("
-                    + idEmployee + ", '"
-                    + dateOfHire + "', '"
+                    + "create_user, "
+                    + "create_date, "
+                    + "modifier_user, "
+                    + "modifier_date)\n"
+                    + "VALUES ("
+                    + idEmployeeData + ",'"
+                    + dateOfHire + "','"
                     + address + "', "
-                    + idJob + ", "
+                    + idJob + ","
                     + enabledRenterUser + ","
                     + idCreateUser + ","
                     + "current_timestamp,"
-                    + "null,"
-                    + "null,"
-                    + "'Active');";
+                    + " null,"
+                    + "null);";
             query.execute(sql);
             if (query != null) {
                 query.close();
@@ -69,29 +67,29 @@ public class EmployeeCrud {
         }
     }
 
-    public Either insertPhone(Connection connection, long idCreateUser, long idEmployee, ArrayList<Long> listPhones) {
+    public Either insertPhone(Connection connection, long idCreateUser, long idEmployeeData, ArrayList<Long> listPhones) {
         Statement query = null;
         try {
             query = (Statement) connection.createStatement();
             String sql = "";
             for (int i = 0; i < listPhones.size(); i++) {
                 sql = sql
-                        + "INSERT INTO PHONE("
-                        + "number_phone,"
-                        + "person_id,"
-                        + "status,"
-                        + "create_user,"
+                        + "INSERT INTO PHONE( "
+                        + "employee_data_id, "
+                        + "number_phone, "
+                        + "create_user, "
+                        + "create_date, "
                         + "modifier_user,"
-                        + "create_date,"
-                        + "modifier_date) "
-                        + "VALUES("
+                        + "modifier_date, "
+                        + "status)\n"
+                        + "VALUES ("
+                        + idEmployeeData + ","
                         + listPhones.get(i) + ","
-                        + idEmployee + ","
-                        + "'Active',"
-                        + idCreateUser + ","
-                        + "null,"
+                        + idCreateUser + ", "
                         + "current_timestamp,"
-                        + "null); ";
+                        + "null,"
+                        + "null,"
+                        + "'Active'); ";
             }
             query.execute(sql);
             if (query != null) {
@@ -120,12 +118,12 @@ public class EmployeeCrud {
                     + "       address, "
                     + "       job_name,"
                     + "       PERSON.status\n"
-                    + "  FROM PERSON, DATA_JOB, JOB\n"
+                    + "  FROM PERSON, EMPLOYEE_DATA, JOB\n"
                     + " WHERE PERSON.type_identifier='" + typeIdentifier + "' "
                     + "   AND PERSON.identifier='" + identifier + "'"
-                    + "   AND PERSON.person_id = DATA_JOB.person_id"
-                    + "   AND DATA_JOB.job_id = JOB.job_id"
-                    + "   AND DATA_JOB.status ='Active'";
+                    + "   AND PERSON.status = 'Active'"
+                    + "   AND PERSON.person_id = EMPLOYEE_DATA.employee_data_id"
+                    + "   AND EMPLOYEE_DATA.job_id = JOB.job_id";
             ResultSet rs = query.executeQuery(sql);
             Employee employee = new Employee();
             if (rs.next()) {
@@ -159,7 +157,7 @@ public class EmployeeCrud {
             String query
                     = "SELECT number_phone"
                     + "  FROM PHONE"
-                    + " WHERE person_id = ? AND status = 'Active'";
+                    + " WHERE employee_data_id = ? AND status = 'Active'";
             PreparedStatement st = connection.prepareStatement(query);
             st.setLong(1, idPerson);
             ResultSet rs = st.executeQuery();
@@ -183,18 +181,18 @@ public class EmployeeCrud {
     public Either getDetailOfPhones(Connection connection, long idEmployee) {
         try {
             String query
-                    = "SELECT person_id, "
+                    = "SELECT employee_data_id, "
                     + "       number_phone, "
                     + "       status"
-                    + "  FROM phone"
-                    + " WHERE person_id = ?";
+                    + "  FROM PHONE"
+                    + " WHERE employee_data_id = ?";
             PreparedStatement st = connection.prepareStatement(query);
             st.setLong(1, idEmployee);
             ResultSet rs = st.executeQuery();
             Either eitherRes = new Either();
             while (rs.next()) {
                 eitherRes.addModeloObjet(new Phone(
-                        rs.getLong("person_id"),
+                        rs.getLong("employee_data_id"),
                         rs.getInt("number_phone"),
                         rs.getString("status")));
             }
@@ -224,11 +222,10 @@ public class EmployeeCrud {
                     + "       address,"
                     + "       job_name,"
                     + "       PERSON.status\n"
-                    + "  FROM PERSON, DATA_JOB, JOB\n"
+                    + "  FROM PERSON, EMPLOYEE_DATA, JOB\n"
                     + " WHERE PERSON.person_id = ? "
-                    + "   AND DATA_JOB.status = 'Active'"
-                    + "   AND PERSON.person_id = DATA_JOB.person_id "
-                    + "   AND DATA_JOB.job_id = JOB.job_id";
+                    + "   AND PERSON.person_id = EMPLOYEE_DATA.employee_data_id "
+                    + "   AND EMPLOYEE_DATA.job_id = JOB.job_id";
             if (StringUtils.isNotBlank(status)) {
                 query = query + " AND PERSON.status = '" + status + "'";
             }
@@ -261,14 +258,14 @@ public class EmployeeCrud {
         }
     }
 
-    public Either updateStatusDataJob(Connection connection, long idModifierUser, long idEmployee, long idJob, String status) {
+    public Either updateStatusEmployeeDataHistory(Connection connection, long idModifierUser, long idEmployee, long idJob, String status) {
         try {
             String sql
-                    = "UPDATE DATA_JOB\n"
+                    = "UPDATE EMPLOYEE_DATA_HISTORY\n"
                     + "   SET modifier_user = " + idModifierUser + ","
                     + "       modifier_date = current_timestamp" + ","
                     + "       status = '" + status + "'"
-                    + " WHERE person_id = ? AND job_id = ?";
+                    + " WHERE employee_data_id = ? AND job_id = ?";
             PreparedStatement st = connection.prepareStatement(sql);
             st.setLong(1, idEmployee);
             st.setLong(2, idJob);
@@ -284,7 +281,7 @@ public class EmployeeCrud {
         }
     }
 
-    public Either updatePhone(Connection connection, long idModifierUser, long idEmployee, ArrayList<ModelObject> listPhone) {
+    public Either updatePhone(Connection connection, long idModifierUser, long idEmployeeData, ArrayList<ModelObject> listPhone) {
         try {
             Statement query = (Statement) connection.createStatement();
             String sql = "";
@@ -295,7 +292,7 @@ public class EmployeeCrud {
                         + "   SET status= '" + phone.getStatus() + "',"
                         + "       modifier_user = " + idModifierUser + ","
                         + "       modifier_date = current_timestamp"
-                        + " WHERE person_id = " + idEmployee
+                        + " WHERE employee_data_id = " + idEmployeeData
                         + "   AND number_phone= " + phone.getNumberPhone() + ";";
             }
             query.execute(sql);
@@ -346,16 +343,14 @@ public class EmployeeCrud {
                     + "        PERSON.genre, "
                     + "        PERSON.birthday, "
                     + "        PERSON.create_date, "
-                    + "        DATA_JOB.date_of_hire,"
-                    + "        DATA_JOB.address , "
+                    + "        EMPLOYEE_DATA.date_of_hire,"
+                    + "        EMPLOYEE_DATA.address , "
                     + "        JOB.job_name, "
                     + "        PERSON.create_user "
-                    + "   FROM PERSON, DATA_JOB, JOB "
+                    + "   FROM PERSON, EMPLOYEE_DATA, JOB "
                     + "  WHERE PERSON.status = 'Active' "
-                    + "    AND DATA_JOB.status= 'Active'"
-                    + "    AND PERSON.person_id=DATA_JOB.person_id "
-                    + "    AND DATA_JOB.job_id = JOB.job_id "
-                    + "    AND DATA_JOB.job_id = JOB.job_id ";
+                    + "    AND PERSON.person_id=EMPLOYEE_DATA.employee_data_id "
+                    + "    AND EMPLOYEE_DATA.job_id = JOB.job_id ";
             String conditionQuery = "";
             if (StringUtils.isNotBlank(typeId)) {
                 conditionQuery = conditionQuery + " type_identifier = '" + typeId.trim().toUpperCase() + "' OR";
@@ -433,10 +428,10 @@ public class EmployeeCrud {
     public Either getPhonesByNumeber(Connection connection, ArrayList<Long> phones, String status) {
         try {
             String query
-                    = "SELECT person_id,"
+                    = "SELECT employee_data_id,"
                     + "       number_phone, "
                     + "       status\n"
-                    + "  FROM phone\n"
+                    + "  FROM PHONE\n"
                     + " where (";
             for (Long phone : phones) {
                 query = query + "number_phone = " + phone + " OR ";
@@ -451,7 +446,7 @@ public class EmployeeCrud {
             Either eitherRes = new Either();
             while (rs.next()) {
                 Phone phoneRes = new Phone(
-                        rs.getLong("person_id"),
+                        rs.getLong("employee_data_id"),
                         rs.getInt("number_phone"),
                         rs.getString("status"));
                 eitherRes.addModeloObjet(phoneRes);
@@ -468,30 +463,27 @@ public class EmployeeCrud {
         }
     }
 
-    public Either getDataJob(Connection connection, long idEmployee, String status) {
+    public Either getEmployeeData(Connection connection, long idEmployee) {
         try {
             String query
-                    = "SELECT person_id,"
+                    = "SELECT employee_data_id,"
                     + "       job_id, "
                     + "       date_of_hire, "
                     + "       address,"
                     + "       status"
-                    + "  FROM DATA_JOB"
-                    + " WHERE DATA_JOB.person_id = " + idEmployee;
-            if (StringUtils.isNotBlank(status)) {
-                query = query + " AND status = '" + status + "'";
-            }
+                    + "  FROM EMPLOYEE_DATA"
+                    + " WHERE EMPLOYEE_DATA.employee_data_id = " + idEmployee;
             PreparedStatement st = connection.prepareStatement(query);
             ResultSet rs = st.executeQuery();
             Either eitherRes = new Either();
-            DataJob dataJob = new DataJob();
+            EmployeeData dataJob = new EmployeeData();
             while (rs.next()) {
-                dataJob = new DataJob(
-                        rs.getLong("person_id"),
+                dataJob = new EmployeeData(
+                        rs.getLong("employee_data_id"),
                         rs.getLong("job_id"),
                         rs.getString("date_of_hire"),
-                        rs.getString("address"),
-                        rs.getString("status"));
+                        rs.getString("address")
+                );
                 eitherRes.addModeloObjet(dataJob);
             }
             if (st != null) {
@@ -506,24 +498,24 @@ public class EmployeeCrud {
         }
     }
 
-    public Either getAllDataJob(Connection connection, String status) {
+    public Either getAllEmployeeData(Connection connection, String status) {
         try {
             String query
-                    = "SELECT DATA_JOB.person_id,"
+                    = "SELECT EMPLOYEE_DATA.employee_data_id,"
                     + "       date_of_hire, "
                     + "       address"
-                    + "  FROM PERSON , DATA_JOB"
-                    + " WHERE PERSON.person_id = DATA_JOB.person_id";
+                    + "  FROM PERSON , EMPLOYEE_DATA"
+                    + " WHERE PERSON.person_id = EMPLOYEE_DATA.employee_data_id";
             if (StringUtils.isNotBlank(status)) {
-                query = query + " AND PERSON.status = '" + status + "' AND DATA_JOB.status = '" + status + "'";
+                query = query + " AND PERSON.status = '" + status + "'";
             }
             PreparedStatement st = connection.prepareStatement(query);
             ResultSet rs = st.executeQuery();
             Either eitherRes = new Either();
-            DataJob dataJob = new DataJob();
+            EmployeeData dataJob = new EmployeeData();
             while (rs.next()) {
-                dataJob = new DataJob(
-                        rs.getLong("person_id"),
+                dataJob = new EmployeeData(
+                        rs.getLong("employee_data_id"),
                         rs.getString("date_of_hire"),
                         rs.getString("address"));
                 eitherRes.addModeloObjet(dataJob);
@@ -579,7 +571,7 @@ public class EmployeeCrud {
     public Either getBondAssigned(Connection connection) {
         try {
             String query
-                    = "SELECT person_id, "
+                    = "SELECT employee_data_id, "
                     + "       bond_id, "
                     + "       start_date, "
                     + "       end_date, "
@@ -591,7 +583,7 @@ public class EmployeeCrud {
             BondAssigned bondAssigned = new BondAssigned();
             while (rs.next()) {
                 bondAssigned = new BondAssigned(
-                        rs.getLong("person_id"),
+                        rs.getLong("employee_data_id"),
                         rs.getLong("bond_id"),
                         rs.getString("start_date"),
                         rs.getString("end_date"),
@@ -614,12 +606,55 @@ public class EmployeeCrud {
         try {
             Statement query = (Statement) connection.createStatement();
             String sql
-                    = "UPDATE DATA_JOB\n"
-                    + "   SET enable_rent= " + enableRent +","
-                    + "       modifier_user = " +idModifierUser + ","
+                    = "UPDATE EMPLOYEE_DATA\n"
+                    + "   SET enable_rent= " + enableRent + ","
+                    + "       modifier_user = " + idModifierUser + ","
                     + "       modifier_date=current_timestamp\n"
-                    + " WHERE person_id = " +idEmployee
-                    + "   AND status = 'Active';";
+                    + " WHERE employee_data_id = " + idEmployee;
+            query.execute(sql);
+            if (query != null) {
+                query.close();
+            }
+            return new Either();
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+    }
+
+    public Either insertEmployeeDataHistory(Connection connection, long idUserCreate, EmployeeData dataJob, boolean enabledRenterUser) {
+        Statement query = null;
+        try {
+            long idEmployeeData = dataJob.getIdEmployeeData();
+            long idJob = dataJob.getIdJob();
+            String dateOfHire = dataJob.getDateOfHire();
+            String address = dataJob.getAddress();
+            query = (Statement) connection.createStatement();
+            String sql = "";
+            sql = sql
+                    + "INSERT INTO EMPLOYEE_DATA_HISTORY( "
+                    + "employee_data_id, "
+                    + "date_of_hire, "
+                    + "address, "
+                    + "job_id, "
+                    + "enable_rent,"
+                    + "create_user, "
+                    + "create_date, "
+                    + "modifier_user, "
+                    + "modifier_date, "
+                    + "status)\n"
+                    + "VALUES ("
+                    + idEmployeeData+",'"
+                    + dateOfHire+"','"
+                    + address+"', "
+                    + idJob+", "
+                    + enabledRenterUser+", "
+                    + idUserCreate+", "
+                    + "current_timestamp, "
+                    + "null, "
+                    + "null, "
+                    + "'Active');";
             query.execute(sql);
             if (query != null) {
                 query.close();

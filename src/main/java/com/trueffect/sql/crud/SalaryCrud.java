@@ -27,7 +27,7 @@ public class SalaryCrud {
                         = "UPDATE SALARY\n"
                         + "   SET end_date = current_date , "
                         + "       status = '" + status + "'"
-                        + " WHERE id_person = " + bondAssigned.getIdPerson() + ";";
+                        + " WHERE employee_data_id = " + bondAssigned.getIdPerson() + ";";
             }
             query.execute(sql);
             if (query != null) {
@@ -45,7 +45,7 @@ public class SalaryCrud {
         try {
             Statement query = (Statement) connection.createStatement();
             String sql
-                    = "SELECT employee_id, "
+                    = "SELECT employee_data_id, "
                     + "       net_salary, "
                     + "       bond, "
                     + "       liquid_salary, "
@@ -56,7 +56,7 @@ public class SalaryCrud {
             Either eitherRes = new Either();
             while (rs.next()) {
                 Salary salary = new Salary(
-                        rs.getInt("employee_id"),
+                        rs.getInt("employee_data_id"),
                         rs.getDouble("net_salary"),
                         rs.getDouble("bond"),
                         rs.getDouble("liquid_salary"),
@@ -85,7 +85,7 @@ public class SalaryCrud {
                 Salary salary = listSalary.get(i);
                 sql = sql
                         + "INSERT INTO salary("
-                        + "employee_id, "
+                        + "employee_data_id, "
                         + "net_salary, "
                         + "bond, "
                         + "liquid_salary, "

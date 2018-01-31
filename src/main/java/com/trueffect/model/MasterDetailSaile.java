@@ -28,8 +28,8 @@ public class MasterDetailSaile extends MasterDetail {
 
     @JsonIgnore
     @Override
-    public long getIdDataJob() {
-        return idDataJob;
+    public long getIdEmployeeData() {
+        return idEmployeeData;
     }
 
     @JsonIgnore
