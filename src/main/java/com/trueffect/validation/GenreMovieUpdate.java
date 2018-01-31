@@ -1,6 +1,5 @@
 package com.trueffect.validation;
 
-
 import com.trueffect.model.GenreMovie;
 import com.trueffect.response.Either;
 import com.trueffect.tools.CodeStatus;
