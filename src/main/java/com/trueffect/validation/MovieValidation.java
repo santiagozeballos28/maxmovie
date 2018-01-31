@@ -8,6 +8,7 @@ import com.trueffect.util.ModelObject;
 import com.trueffect.util.OperationString;
 import java.util.ArrayList;
 import java.util.HashMap;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -24,10 +25,10 @@ public class MovieValidation {
     public void verifyNamesOfActors(ArrayList<String> listActor, ArrayList<String> listError) {
         for (int i = 0; i < listActor.size(); i++) {
             String nameActor = listActor.get(i);
-            if (!MovieValidationUtil.isUsAscii(nameActor)) {
+            if (!MovieValidationUtil.isUsAscii(nameActor.trim())) {
                 listData.clear();
                 listData.put(ConstantData.TYPE_DATA, ConstantData.NAME_ACTOR_MOVIE);
-                listData.put(ConstantData.DATA, nameActor);
+                listData.put(ConstantData.DATA, nameActor.trim());
                 listData.put(ConstantData.VALID, ConstantData.VALID_US_ASCII);
                 String errorMessages = OperationString.generateMesage(Message.NOT_VALID_THE_VALID_DATA_ARE, listData);
                 listError.add(errorMessages);
@@ -37,12 +38,12 @@ public class MovieValidation {
 
     public void verifySizeNameActors(ArrayList<String> listActor, ArrayList<String> listError) {
         for (int i = 0; i < listActor.size(); i++) {
-            String nameActor = listActor.get(i);
+            String nameActor = listActor.get(i).trim();
             if (!ObjectValidationUtil.isValidSize(nameActor, ConstantData.MAX_NAME_ACTOR_MOVIE)) {
                 listData.clear();
                 listData.put(ConstantData.TYPE_DATA, ConstantData.NAME_ACTOR_MOVIE);
                 listData.put(ConstantData.DATA, nameActor);
-                listData.put(ConstantData.VALID, ConstantData.MAX_NAME_ACTOR_MOVIE + "");
+                listData.put(ConstantData.SIZE, ConstantData.MAX_NAME_ACTOR_MOVIE + "");
                 String errorMessages = OperationString.generateMesage(Message.SIZE_MAX, listData);
                 listError.add(errorMessages);
             }
@@ -54,7 +55,7 @@ public class MovieValidation {
         if (!ObjectValidationUtil.isValidSize(nameAux, sizeMax)) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, typeData);
-            listData.put(ConstantData.DATA, name);
+            listData.put(ConstantData.DATA, name.trim());
             listData.put(ConstantData.SIZE, sizeMax + "");
             String errorMessages = OperationString.generateMesage(Message.SIZE_MAX, listData);
             listError.add(errorMessages);
@@ -62,21 +63,32 @@ public class MovieValidation {
     }
 
     public void verifyName(String name, ArrayList<String> listError) {
-        if (!MovieValidationUtil.isValidName(name)) {
+        if (!MovieValidationUtil.isValidName(name.trim())) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.NAME_MOVIE);
-            listData.put(ConstantData.DATA, name);
+            listData.put(ConstantData.DATA, name.trim());
             listData.put(ConstantData.VALID, ConstantData.VALID_NAME_MOVIE);
             String errorMessages = OperationString.generateMesage(Message.NOT_VALID_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessages);
         }
     }
 
+    public void verifyIdGenreMovie(String idGenreMovie, ArrayList<String> listError) {
+        if (!MovieValidationUtil.isValidGenre(idGenreMovie.trim())) {
+            listData.clear();
+            listData.put(ConstantData.TYPE_DATA, ConstantData.IDENTIFIER);
+            listData.put(ConstantData.DATA, idGenreMovie.trim());
+            listData.put(ConstantData.VALID, ConstantData.VALID_ID_GENRE_MOVIE);
+            String errorMessages = OperationString.generateMesage(Message.NOT_VALID_THE_VALID_DATA_ARE, listData);
+            listError.add(errorMessages);
+        }
+    }
+
     public void verifyGenre(String genre, ArrayList<String> listError) {
-        if (!MovieValidationUtil.isValidGenre(genre)) {
+        if (!MovieValidationUtil.isValidGenre(genre.trim())) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.NAME_GENRE_MOVIE);
-            listData.put(ConstantData.DATA, genre);
+            listData.put(ConstantData.DATA, genre.trim());
             listData.put(ConstantData.VALID, ConstantData.VALID_NAME_GENRE_MOVIE);
             String errorMessages = OperationString.generateMesage(Message.NOT_VALID_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessages);
@@ -84,10 +96,10 @@ public class MovieValidation {
     }
 
     public void verifyDirector(String director, ArrayList<String> listError) {
-        if (!MovieValidationUtil.isUsAscii(director)) {
+        if (!MovieValidationUtil.isUsAscii(director.trim())) {
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.NAME_DIRECTOR_MOVIE);
-            listData.put(ConstantData.DATA, director);
+            listData.put(ConstantData.DATA, director.trim());
             listData.put(ConstantData.VALID, ConstantData.VALID_US_ASCII);
             String errorMessages = OperationString.generateMesage(Message.NOT_VALID_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessages);
@@ -123,19 +135,32 @@ public class MovieValidation {
         int i = 0;
         while (i < listGenre.size() && !findId) {
             GenreMovie genreMovie = (GenreMovie) listGenre.get(i);
-            String genreIdAux = genreId.toUpperCase();
-            if (genreIdAux.equals(genreMovie.getIdGenre())) {
+            String genreIdAux = genreId.trim().toUpperCase();
+            if (genreIdAux.equals(genreMovie.getIdGenre().trim())) {
                 findId = true;
             }
             i++;
         }
         if (!findId) {
+            ArrayList<String> listNamesGenres = generateNamesGenre(listGenre);
+            String namesGenre = listNamesGenres.toString();
+            namesGenre = StringUtils.remove(namesGenre, "[");
+            namesGenre = StringUtils.remove(namesGenre, "]");
             listData.clear();
             listData.put(ConstantData.TYPE_DATA, ConstantData.NAME_GENRE_MOVIE);
-            listData.put(ConstantData.DATA, genreId);
-            listData.put(ConstantData.VALID, ConstantData.VALID_NAME_GENRE_MOVIE);
+            listData.put(ConstantData.DATA, genreId.trim());
+            listData.put(ConstantData.VALID, namesGenre);
             String errorMessages = OperationString.generateMesage(Message.NOT_VALID_THE_VALID_DATA_ARE, listData);
             listError.add(errorMessages);
         }
+    }
+
+    private ArrayList<String> generateNamesGenre(ArrayList<ModelObject> listGenre) {
+        ArrayList<String> namesGenre = new ArrayList<String>();
+        for (ModelObject modelObject : listGenre) {
+            GenreMovie genreMovie = (GenreMovie) modelObject;
+            namesGenre.add(genreMovie.getNameGenre());
+        }
+        return namesGenre;
     }
 }

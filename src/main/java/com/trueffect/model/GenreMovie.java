@@ -1,6 +1,7 @@
 package com.trueffect.model;
 
 import com.trueffect.util.ModelObject;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -33,5 +34,9 @@ public class GenreMovie extends ModelObject {
 
     public void setNameGenre(String nameGenre) {
         this.nameGenre = nameGenre;
+    }
+       @JsonIgnore
+    public boolean isEmpty() {
+        return  idGenre == null && nameGenre == null;
     }
 }

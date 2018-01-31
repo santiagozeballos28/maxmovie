@@ -43,4 +43,27 @@ public class MovieValidationDB {
         }
         return new Either();
     }
+
+    public Either veriryUpdateInDataBase(Connection connection, Movie movie) {
+        ArrayList<String> listError = new ArrayList<String>();
+        String nameMovie = OperationString.generateName(movie.getName());
+        nameMovie = OperationString.addApostrophe(nameMovie);
+        Either eitherGenreMovie = movieCrud.getMovieByName(connection, nameMovie, null);
+        if (eitherGenreMovie.haveModelObject()) {
+            Movie movieDB = (Movie) eitherGenreMovie.getFirstObject();
+            long idMovieNew = movie.getId();
+            long idMovieDB = movieDB.getId();
+            if (idMovieNew != idMovieDB) {
+                listData.clear();
+                listData.put(ConstantData.TYPE_DATA, ConstantData.NAME);
+                listData.put(ConstantData.DATA, nameMovie);
+                String errorMgs = OperationString.generateMesage(Message.DUPLICATE, listData);
+                listError.add(errorMgs);
+            }
+        }
+        if (!listError.isEmpty()) {
+            return new Either(CodeStatus.BAD_REQUEST, listError);
+        }
+        return new Either();
+    }
 }

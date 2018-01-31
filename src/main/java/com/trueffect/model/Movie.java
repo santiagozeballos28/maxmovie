@@ -129,9 +129,6 @@ public class Movie extends ModelObject {
 
     @JsonIgnore
     public boolean isEmpty() {
-        return id == 0
-                && name == null
-                && genreId == null
-                && director == null;
+        return name == null;
     }
 }

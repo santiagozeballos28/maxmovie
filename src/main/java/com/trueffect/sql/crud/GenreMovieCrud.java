@@ -6,6 +6,8 @@ import com.trueffect.tools.CodeStatus;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -13,7 +15,7 @@ import java.sql.ResultSet;
  */
 public class GenreMovieCrud {
 
-    public Either getGenre(Connection connection, String idGenreMovie) {
+    public Either getGenreById(Connection connection, String idGenreMovie) {
         Either either = new Either();
         try {
             String sql
@@ -66,5 +68,82 @@ public class GenreMovieCrud {
             either.addError(exception.getMessage());
         }
         return either;
+    }
+
+    public Either insert(Connection connection, GenreMovie genreMovie) {
+        Either either = new Either();
+        try {
+            String idGenreMovie = genreMovie.getIdGenre();
+            String nameGenreMovie = genreMovie.getNameGenre();
+            String sql
+                    = "INSERT INTO GENRE_MOVIE("
+                    + "genre_movie_id, "
+                    + "genre_name)\n"
+                    + "VALUES ('"
+                    + idGenreMovie + "','"
+                    + nameGenreMovie + "');";
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.execute();
+            if (st != null) {
+                st.close();
+            }
+            return new Either();
+        } catch (Exception exception) {
+            either.setCode(CodeStatus.INTERNAL_SERVER_ERROR);
+            either.addError(exception.getMessage());
+        }
+        return either;
+    }
+
+    public Either getGenreMovieByName(Connection connection, String nameGenreMovie) {
+        Either either = new Either();
+        try {
+            String sql
+                    = "SELECT genre_movie_id, "
+                    + "       genre_name\n"
+                    + "  FROM genre_movie\n"
+                    + " WHERE genre_name = ?;";
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, nameGenreMovie);
+            ResultSet rs = st.executeQuery();
+            GenreMovie genreMovie = new GenreMovie();
+            if (rs.next()) {
+                genreMovie = new GenreMovie(
+                        rs.getString("genre_movie_id"),
+                        rs.getString("genre_name"));
+            }
+            if (st != null) {
+                st.close();
+            }
+            either.setCode(CodeStatus.OK);
+            either.addModeloObjet(genreMovie);
+        } catch (Exception exception) {
+            either.setCode(CodeStatus.INTERNAL_SERVER_ERROR);
+            either.addError(exception.getMessage());
+        }
+        return either;
+    }
+
+    public Either update(Connection connection, GenreMovie genreMovie) {
+        try {
+            String idGenreMovie = genreMovie.getIdGenre();
+            String nameGenreMovie = genreMovie.getNameGenre();
+            if (StringUtils.isNotBlank(nameGenreMovie)) {
+                String sql
+                        = "UPDATE GENRE_MOVIE\n"
+                        + "   SET genre_name='" + nameGenreMovie + "'"
+                        + " WHERE genre_movie_id = '" + idGenreMovie + "'";
+                PreparedStatement st = connection.prepareStatement(sql);
+                st.execute();
+                if (st != null) {
+                    st.close();
+                }
+            }
+            return new Either();
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
     }
 }

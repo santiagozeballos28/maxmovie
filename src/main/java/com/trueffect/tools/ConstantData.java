@@ -15,7 +15,7 @@ public class ConstantData {
     public static int MAX_NAME_GENRE_MOVIE = 120;
     public static int MAX_YEAR_MOVIE = 9999;
     public static int MAX_OSCAR_NOMINATION_MOVIE = 100;
-    //DATA MINIMUM 
+     //DATA MINIMUM 
     public static int MIN_AGE_RENTER = 15;
     public static int MIN_AGE_EMPLOYEE = 18;
     public static int MIN_AMOUNT_PHONE = 2;
@@ -50,18 +50,19 @@ public class ConstantData {
     //Data Generic
     public static String ID = "id";
     public static String STATUS = "status";
-    public static String YEAR = "Year";
+    public static String YEAR = "year";
     public static String US_ASCII = "US-ASCII";
     // Valid data generic
     public static String VALID_DATE = "YYYY-MM-DD";
     //Data movie
-    public static String NAME_MOVIE = "Name movie";
-    public static String NAME_ACTOR_MOVIE = "Name actor";
-    public static String NAME_GENRE_MOVIE = "Name genre";
-    public static String NAME_DIRECTOR_MOVIE = "Name director";
-    public static String OSCAR_NOMINATION_MOVIE = "Oscar nomination";
+    public static String NAME_MOVIE = "name movie";
+    public static String NAME_ACTOR_MOVIE = "name actor";
+    public static String NAME_GENRE_MOVIE = "name genre";
+    public static String NAME_DIRECTOR_MOVIE = "name director";
+    public static String OSCAR_NOMINATION_MOVIE = "oscar nomination";
     //Valid data movie
     public static String VALID_NAME_MOVIE = "Letters = A-Za-z, Numbers = 0-9";
+    public static String VALID_ID_GENRE_MOVIE = "Letters = A-Z";
     public static String VALID_NAME_GENRE_MOVIE = "Letters = A-Za-z";
     public static String VALID_US_ASCII = "US-ASCII";
     public static String VALID_YEAR = "YYYY, Example: year = 1999";
@@ -141,7 +142,13 @@ public class ConstantData {
     }
 
     public enum ObjectMovie {
-        RennterUser("renter user"), Employee("employee"), Movie("movie"), Copy("copy"), Sale("sale"), MovieReport("movie report");
+        RennterUser("renter user"), 
+        Employee("employee"), 
+        Movie("movie"), 
+        GenreMovie("genre movie"), 
+        Copy("copy"), 
+        Sale("sale"), 
+        MovieReport("movie report");
         private String description;
 
         private ObjectMovie(String description) {

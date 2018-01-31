@@ -57,6 +57,27 @@ public class OperationModel {
         return new Either();
     }
 
+    public Either verifyIdString(String idUrl, String idPayload, String nameObject) {
+        ArrayList<String> listError = new ArrayList<String>();
+        listData.clear();
+        if (StringUtils.isBlank(idPayload)) {
+            listData.put(ConstantData.TYPE_DATA, ConstantData.ID);
+            String errorMessage = OperationString.generateMesage(Message.EMPTY_DATA, listData);
+            listError.add(errorMessage);
+            return new Either(CodeStatus.CONFLICT, listError);
+        } else {
+            String idUrlAux = idUrl.trim().toUpperCase();
+            String idPayLoadAux = idPayload.trim().toUpperCase();
+            if (!idUrlAux.equals(idPayLoadAux)) {
+                listData.put(ConstantData.OBJECT, nameObject);
+                String errorMessage = OperationString.generateMesage(Message.CONFLCT_ID, listData);
+                listError.add(errorMessage);
+                return new Either(CodeStatus.CONFLICT, listError);
+            }
+        }
+        return new Either();
+    }
+
     public Either verifyStatusModelObject(String nameObject, String statusObject, String statusNew) {
         ArrayList<String> listError = new ArrayList<String>();
         String statusObj = statusObject.trim().toLowerCase();

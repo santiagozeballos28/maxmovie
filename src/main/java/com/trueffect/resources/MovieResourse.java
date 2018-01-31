@@ -1,7 +1,9 @@
 package com.trueffect.resources;
 
+import com.trueffect.logic.GenreMovieLogic;
 import com.trueffect.logic.MovieLogic;
 import com.trueffect.logic.MovieReportLogic;
+import com.trueffect.model.GenreMovie;
 import com.trueffect.model.Movie;
 import com.trueffect.response.Either;
 import com.trueffect.response.MapperResponse;
@@ -25,13 +27,32 @@ import javax.ws.rs.core.Response;
 public class MovieResourse {
 
     private MovieLogic movieLogic = new MovieLogic();
+    private GenreMovieLogic genreMovieLogic = new GenreMovieLogic();
     private MovieReportLogic movieReportLogic = new MovieReportLogic();
     private MapperResponse mapper = new MapperResponse();
+    @POST
+    @Path("/genreMovie")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response insertGenreMovie(@QueryParam("idCreateUser") long idCreateUser, GenreMovie genreMovie) {
+        Either either = genreMovieLogic.createGenreMovie(idCreateUser,genreMovie, new MovieCreate());
+        Response response = mapper.toResponse(either);
+        return response;
+    }
+    @PUT
+    @Path("/genreMovie/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateGenreMovie( @PathParam("id") String idGenreMovie,@QueryParam("idModifyUser") long idModifyUser, GenreMovie genreMovie) {
+        Either either = genreMovieLogic.updateGenreMovie(idGenreMovie,idModifyUser,genreMovie);
+        Response response = mapper.toResponse(either);
+        return response;
+    }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response insertRenterUser(@QueryParam("idCreateUser") int idCreateUser, Movie movie) {
+    public Response insertMovie(@QueryParam("idCreateUser") long idCreateUser, Movie movie) {
         Either either = movieLogic.createMovie(idCreateUser, movie, new MovieCreate());
         Response response = mapper.toResponse(either);
         return response;

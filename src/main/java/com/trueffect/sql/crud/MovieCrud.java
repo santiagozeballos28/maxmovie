@@ -233,7 +233,7 @@ public class MovieCrud {
                     + "       director_name, "
                     + "       movie_year, "
                     + "       oscar_nomination, "
-                    + "       genre_movie_id\n"
+                    + "       genre_movie_id,"
                     + "       status\n"
                     + "  FROM MOVIE\n"
                     + " WHERE movie_name = ?";
