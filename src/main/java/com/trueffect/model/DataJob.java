@@ -20,8 +20,8 @@ public class DataJob extends ModelObject {
     public DataJob(long employeeId, long jobId, String dateOfHire, String address) {
         this.employeeId = employeeId;
         this.jobId = jobId;
-        this.dateOfHire = dateOfHire.trim();
-        this.address = address.trim();
+        this.dateOfHire = dateOfHire;
+        this.address = address;
     }
 
     public DataJob(long employeeId, long jobId, String dateOfHire, String address, String status) {

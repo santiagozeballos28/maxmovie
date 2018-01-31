@@ -22,7 +22,7 @@ public class PersonValidationUtil {
     }
 
     public static boolean isValidIdentifier(String identifier) {
-        identifier = identifier.toUpperCase();
+        identifier = identifier.trim().toUpperCase();
         return Pattern.matches(RegularExpression.CI, identifier)
                 || Pattern.matches(RegularExpression.PASS, identifier)
                 || Pattern.matches(RegularExpression.NIT, identifier);
@@ -43,8 +43,8 @@ public class PersonValidationUtil {
     }
 
     public static boolean isValidIdentifier(String typeIdentifier, String identifier) {
-        typeIdentifier = typeIdentifier.toUpperCase();
-        identifier = identifier.toUpperCase();
+        typeIdentifier = typeIdentifier.trim().toUpperCase();
+        identifier = identifier.trim().toUpperCase();
         boolean res = false;
         try {
             ConstantData.TypeIdentifier typeIden = ConstantData.TypeIdentifier.valueOf(typeIdentifier);
