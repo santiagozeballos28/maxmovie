@@ -115,10 +115,10 @@ public class EmployeeLogic {
             }
             long idJob = ((Job) eitherRes.getFirstObject()).getId();
             //Create object EmployeeData
-            if(enabledRenterUser==null){
-             enabledRenterUser = false;    
+            if (enabledRenterUser == null) {
+                enabledRenterUser = false;
             }
-            EmployeeData dataJob = new EmployeeData(idEmployee, idJob, employee.getDateOfHire(), employee.getAddress(),enabledRenterUser);
+            EmployeeData dataJob = new EmployeeData(idEmployee, idJob, employee.getDateOfHire(), employee.getAddress(), enabledRenterUser);
             //Insert employee data
             eitherRes = employeeCrud.insertEmployeeData(connection, idUserCreate, dataJob, enabledRenterUser);
             if (eitherRes.existError()) {
@@ -275,7 +275,7 @@ public class EmployeeLogic {
                 }
                 EmployeeData dataJobNew = new EmployeeData(idEmployee, idJobNew, employee.getDateOfHire(), employee.getAddress(), enabledRentNew);
                 //Insert data job
-                eitherRes = employeeCrud.updateEmployeeData(connection,idModifierUser, dataJobNew);
+                eitherRes = employeeCrud.updateEmployeeData(connection, idModifierUser, dataJobNew);
                 if (eitherRes.existError()) {
                     throw eitherRes;
                 }
@@ -283,8 +283,8 @@ public class EmployeeLogic {
                 if (eitherRes.existError()) {
                     throw eitherRes;
                 }
-                EmployeeData employeeDataUpdated =  (EmployeeData)eitherRes.getFirstObject();
-                eitherRes = employeeCrud.insertEmployeeDataHistory(connection, idEmployee, dataJobNew);
+                EmployeeData employeeDataUpdated = (EmployeeData) eitherRes.getFirstObject();
+                eitherRes = employeeCrud.insertEmployeeDataHistory(connection, idModifierUser, employeeDataUpdated);
                 if (eitherRes.existError()) {
                     throw eitherRes;
                 }

@@ -470,8 +470,7 @@ public class EmployeeCrud {
                     + "       job_id, "
                     + "       date_of_hire, "
                     + "       address,"
-                    + "       enable_rent,"
-                    + "       status"
+                    + "       enable_rent"
                     + "  FROM EMPLOYEE_DATA"
                     + " WHERE EMPLOYEE_DATA.employee_data_id = " + idEmployee;
             PreparedStatement st = connection.prepareStatement(query);
@@ -677,7 +676,7 @@ public class EmployeeCrud {
                     + "   SET ";
             String dateOfHire = employeeData.getDateOfHire();
             if (StringUtils.isNotBlank(dateOfHire)) {
-                sql = sql + "data_of_hire= '" + dateOfHire + "',";
+                sql = sql + "date_of_hire= '" + dateOfHire + "',";
             }
             String address = employeeData.getAddress();
             if (StringUtils.isNotBlank(address)) {
@@ -689,12 +688,14 @@ public class EmployeeCrud {
             }
             Boolean enabledRent = employeeData.isEnableRent();
             if (enabledRent != null) {
+                
                 sql = sql + "enable_rent= " + enabledRent + ",";
             }
             sql = sql
                     + "       modifier_date =  current_timestamp,"
                     + "       modifier_user = ?"
-                    + " WHERE person_id = ?";
+                    + " WHERE employee_data_id = ?";
+            System.out.println("SQL_UPDATE_DATA: " +sql);
             long idEmployeeData = employeeData.getIdEmployeeData();
             PreparedStatement st = connection.prepareStatement(sql);
             st.setLong(1, idModifierUser);
