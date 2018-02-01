@@ -144,7 +144,7 @@ public class DateOperation {
                 return true;
             }
         } catch (ParseException ex) {
-            //Implement if the input date parameter is an invalid format
+            //Implement if the input date parameter is an invalid format.
         }
         return false;
     }
