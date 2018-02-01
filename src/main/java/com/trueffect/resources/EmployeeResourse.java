@@ -44,9 +44,9 @@ public class EmployeeResourse {
     public Response updateEmployee(
             @PathParam("id") long idUser,
             @QueryParam("idModifyUser") long idModifyUser,
-            @QueryParam("enabledRenterUser") boolean enabledRenterUser,
+            @QueryParam("enabledRenterUser") Boolean enabledRent,
             Employee employee) {
-        Either eitherEmployee = employeeLogic.update(employee, enabledRenterUser, idUser, idModifyUser);
+        Either eitherEmployee = employeeLogic.update(employee, enabledRent, idUser, idModifyUser);
         Response response = mapper.toResponse(eitherEmployee);
         return response;
     }

@@ -470,6 +470,7 @@ public class EmployeeCrud {
                     + "       job_id, "
                     + "       date_of_hire, "
                     + "       address,"
+                    + "       enable_rent,"
                     + "       status"
                     + "  FROM EMPLOYEE_DATA"
                     + " WHERE EMPLOYEE_DATA.employee_data_id = " + idEmployee;
@@ -482,7 +483,8 @@ public class EmployeeCrud {
                         rs.getLong("employee_data_id"),
                         rs.getLong("job_id"),
                         rs.getString("date_of_hire"),
-                        rs.getString("address")
+                        rs.getString("address"),
+                        rs.getBoolean("enable_rent")
                 );
                 eitherRes.addModeloObjet(dataJob);
             }
@@ -623,13 +625,14 @@ public class EmployeeCrud {
         }
     }
 
-    public Either insertEmployeeDataHistory(Connection connection, long idUserCreate, EmployeeData dataJob, boolean enabledRenterUser) {
+    public Either insertEmployeeDataHistory(Connection connection, long idUserCreate, EmployeeData dataJob) {
         Statement query = null;
         try {
             long idEmployeeData = dataJob.getIdEmployeeData();
             long idJob = dataJob.getIdJob();
             String dateOfHire = dataJob.getDateOfHire();
             String address = dataJob.getAddress();
+            boolean enabledRent = dataJob.isEnableRent();
             query = (Statement) connection.createStatement();
             String sql = "";
             sql = sql
@@ -645,12 +648,12 @@ public class EmployeeCrud {
                     + "modifier_date, "
                     + "status)\n"
                     + "VALUES ("
-                    + idEmployeeData+",'"
-                    + dateOfHire+"','"
-                    + address+"', "
-                    + idJob+", "
-                    + enabledRenterUser+", "
-                    + idUserCreate+", "
+                    + idEmployeeData + ",'"
+                    + dateOfHire + "','"
+                    + address + "', "
+                    + idJob + ", "
+                    + enabledRent + ", "
+                    + idUserCreate + ", "
                     + "current_timestamp, "
                     + "null, "
                     + "null, "
@@ -658,6 +661,47 @@ public class EmployeeCrud {
             query.execute(sql);
             if (query != null) {
                 query.close();
+            }
+            return new Either();
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+    }
+
+    public Either updateEmployeeData(Connection connection, long idModifierUser, EmployeeData employeeData) {
+        try {
+            String sql
+                    = "UPDATE EMPLOYEE_DATA\n"
+                    + "   SET ";
+            String dateOfHire = employeeData.getDateOfHire();
+            if (StringUtils.isNotBlank(dateOfHire)) {
+                sql = sql + "data_of_hire= '" + dateOfHire + "',";
+            }
+            String address = employeeData.getAddress();
+            if (StringUtils.isNotBlank(address)) {
+                sql = sql + "address= '" + address + "',";
+            }
+            long idJob = employeeData.getIdJob();
+            if (idJob != 0) {
+                sql = sql + "job_id= " + idJob + ",";
+            }
+            Boolean enabledRent = employeeData.isEnableRent();
+            if (enabledRent != null) {
+                sql = sql + "enable_rent= " + enabledRent + ",";
+            }
+            sql = sql
+                    + "       modifier_date =  current_timestamp,"
+                    + "       modifier_user = ?"
+                    + " WHERE person_id = ?";
+            long idEmployeeData = employeeData.getIdEmployeeData();
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setLong(1, idModifierUser);
+            st.setLong(2, idEmployeeData);
+            st.execute();
+            if (st != null) {
+                st.close();
             }
             return new Either();
         } catch (Exception exception) {

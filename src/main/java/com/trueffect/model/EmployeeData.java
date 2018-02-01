@@ -12,14 +12,16 @@ public class EmployeeData extends ModelObject {
     private long idJob;
     private String dateOfHire;
     private String address;
+    private Boolean enableRent;
     public EmployeeData() {
     }
 
-    public EmployeeData(long idEmployeeData, long jobId, String dateOfHire, String address) {
+    public EmployeeData(long idEmployeeData, long jobId, String dateOfHire, String address,Boolean enableRent) {
         this.idEmployeeData = idEmployeeData;
         this.idJob = jobId;
         this.dateOfHire = dateOfHire;
         this.address = address;
+        this.enableRent = enableRent;
     }
    
     public EmployeeData(long idEmployeeData, String dateOfHire, String address) {
@@ -44,6 +46,10 @@ public class EmployeeData extends ModelObject {
         return address;
     }
 
+    public Boolean isEnableRent() {
+        return enableRent;
+    }
+
     public void setIdEmployeeData(long idEmployeeData) {
         this.idEmployeeData = idEmployeeData;
     }
@@ -59,4 +65,9 @@ public class EmployeeData extends ModelObject {
     public void setAddress(String address) {
         this.address = address.trim();
     }
+
+    public void setEnableRent(Boolean enableRent) {
+        this.enableRent = enableRent;
+    }
+    
 }
