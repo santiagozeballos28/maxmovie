@@ -577,7 +577,8 @@ public class EmployeeCrud {
                     + "       start_date, "
                     + "       end_date, "
                     + "       status\n"
-                    + "  FROM BOND_ASSIGNED;";
+                    + "  FROM BOND_ASSIGNED"
+                    + " WHERE status= 'Active';";
             PreparedStatement st = connection.prepareStatement(query);
             ResultSet rs = st.executeQuery();
             Either eitherRes = new Either();
@@ -688,14 +689,14 @@ public class EmployeeCrud {
             }
             Boolean enabledRent = employeeData.isEnableRent();
             if (enabledRent != null) {
-                
+
                 sql = sql + "enable_rent= " + enabledRent + ",";
             }
             sql = sql
                     + "       modifier_date =  current_timestamp,"
                     + "       modifier_user = ?"
                     + " WHERE employee_data_id = ?";
-            System.out.println("SQL_UPDATE_DATA: " +sql);
+            System.out.println("SQL_UPDATE_DATA: " + sql);
             long idEmployeeData = employeeData.getIdEmployeeData();
             PreparedStatement st = connection.prepareStatement(sql);
             st.setLong(1, idModifierUser);

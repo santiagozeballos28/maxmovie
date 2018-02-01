@@ -579,19 +579,6 @@ public class EmployeeLogic {
         return new Either();
     }
 
-//    private EmployeeData getDataJobInsert(EmployeeData dataJobCurrent, EmployeeData dataJobNew) {
-//        EmployeeData dataJobRes = dataJobCurrent;
-//        if (dataJobNew.getIdJob() != 0) {
-//            dataJobRes.setIdJob(dataJobNew.getIdJob());
-//        }
-//        if (StringUtils.isNotBlank(dataJobNew.getDateOfHire())) {
-//            dataJobRes.setDateOfHire(dataJobNew.getDateOfHire());
-//        }
-//        if (StringUtils.isNotBlank(dataJobNew.getAddress())) {
-//            dataJobRes.setAddress(dataJobNew.getAddress());
-//        }
-//        return dataJobRes;
-//    }
     public Either updateBond(long idModifyUser) {
         Either eitherRes = new Either();
         Connection connection = null;
@@ -631,15 +618,16 @@ public class EmployeeLogic {
             }
             ArrayList<ModelObject> assignCurrentBonds = eitherRes.getListObject();
             //processed to update asignedbonuses
-            eitherRes = getUpdateBondAsigned(assignNewBonds, assignCurrentBonds);
+            ArrayList<ModelObject> assignCurrentBondUpate = new ArrayList<ModelObject>();
+            eitherRes = getUpdateBondAsigned(assignNewBonds, assignCurrentBonds, assignCurrentBondUpate);
             ArrayList<ModelObject> updateAssignBonds = eitherRes.getListObject();
             if (!updateAssignBonds.isEmpty()) {
                 //update    
-                eitherRes = bondAssignedCrud.updateStatus(connection, updateAssignBonds, Inactive);
+                eitherRes = bondAssignedCrud.updateStatus(connection, assignCurrentBondUpate, Inactive);
                 if (eitherRes.existError()) {
                     throw eitherRes;
                 }
-                eitherRes = salaryCrud.updateStatus(connection, updateAssignBonds, Inactive);
+                eitherRes = salaryCrud.updateStatus(connection, assignCurrentBondUpate, Inactive);
                 if (eitherRes.existError()) {
                     throw eitherRes;
                 }
@@ -692,7 +680,10 @@ public class EmployeeLogic {
         return eitherRes;
     }
 
-    private Either getUpdateBondAsigned(ArrayList<ModelObject> assignNewBonds, ArrayList<ModelObject> assignCurrentBonds) {
+    private Either getUpdateBondAsigned(
+            ArrayList<ModelObject> assignNewBonds,
+            ArrayList<ModelObject> assignCurrentBonds,
+            ArrayList<ModelObject> assignCurrentBondUpate) {
         Either updateBondAssigned = new Either();
         for (int i = 0; i < assignNewBonds.size(); i++) {
             BondAssigned bondAssignedNew = (BondAssigned) assignNewBonds.get(i);
@@ -700,10 +691,11 @@ public class EmployeeLogic {
             int j = 0;
             while (j < assignCurrentBonds.size() && !findEmployee) {
                 BondAssigned bondAssignedCurrent = (BondAssigned) assignCurrentBonds.get(j);
-                if (bondAssignedNew.getIdPerson() == bondAssignedCurrent.getIdPerson()) {
+                if (bondAssignedNew.getIdEmployeeData() == bondAssignedCurrent.getIdEmployeeData()) {
                     findEmployee = true;
                     if (bondAssignedNew.getIdBond() != bondAssignedCurrent.getIdBond()) {
                         updateBondAssigned.addModeloObjet(bondAssignedNew);
+                        assignCurrentBondUpate.add(bondAssignedCurrent);
                     }
                 }
                 j++;
@@ -711,7 +703,6 @@ public class EmployeeLogic {
         }
         return updateBondAssigned;
     }
-
     private Either getInsertBondAsigned(ArrayList<ModelObject> assignNewBonds, ArrayList<ModelObject> assignCurrentBonds) {
         Either insertBondAssigned = new Either();
         for (int i = 0; i < assignNewBonds.size(); i++) {
@@ -720,7 +711,7 @@ public class EmployeeLogic {
             int j = 0;
             while (j < assignCurrentBonds.size() && !findEmployee) {
                 BondAssigned bondAssignedCurrent = (BondAssigned) assignCurrentBonds.get(j);
-                if (bondAssignedNew.getIdPerson() == bondAssignedCurrent.getIdPerson()) {
+                if (bondAssignedNew.getIdEmployeeData() == bondAssignedCurrent.getIdEmployeeData()) {
                     findEmployee = true;
                 }
                 j++;
@@ -731,6 +722,7 @@ public class EmployeeLogic {
         }
         return insertBondAssigned;
     }
+
 
     private ArrayList<Salary> getSalaryToUpdate(ArrayList<ModelObject> listSalary, ArrayList<ModelObject> listAssignBonds, ArrayList<ModelObject> listBond) {
         ArrayList<Salary> listResSalary = new ArrayList<Salary>();
@@ -747,13 +739,14 @@ public class EmployeeLogic {
         return listResSalary;
     }
 
+
     private Salary getSalaryOfAssignBond(ArrayList<ModelObject> listSalary, BondAssigned bondAssigned) {
         boolean findSalaryEmployee = false;
         int i = 0;
         Salary salary = new Salary();
         while (i < listSalary.size() && !findSalaryEmployee) {
             salary = (Salary) listSalary.get(i);
-            if (bondAssigned.getIdPerson() == salary.getIdEmployee()) {
+            if (bondAssigned.getIdEmployeeData() == salary.getIdEmployee()) {
                 findSalaryEmployee = true;
             }
             i++;
@@ -761,7 +754,7 @@ public class EmployeeLogic {
         return salary;
     }
 
-    private Bond getBondEmployee(ArrayList<ModelObject> listBond, BondAssigned bondAssigned) {
+   private Bond getBondEmployee(ArrayList<ModelObject> listBond, BondAssigned bondAssigned) {
         boolean findBondEmployee = false;
         int i = 0;
         Bond bond = new Bond();
@@ -775,7 +768,8 @@ public class EmployeeLogic {
         return bond;
     }
 
-    private long getIdBondOf(int yearsEmployeeSeniority, ArrayList<ModelObject> listBond) {
+
+   private long getIdBondOf(int yearsEmployeeSeniority, ArrayList<ModelObject> listBond) {
         boolean findSeniority = false;
         int i = 0;
         while (i < listBond.size() && !findSeniority) {

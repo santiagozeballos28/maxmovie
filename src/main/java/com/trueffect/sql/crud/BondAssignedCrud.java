@@ -21,7 +21,7 @@ public class BondAssignedCrud {
             String sql = "";
             for (int i = 0; i < insertAssignBonds.size(); i++) {
                 BondAssigned bondAssigned = (BondAssigned) insertAssignBonds.get(i);
-                long idPerson = bondAssigned.getIdPerson();
+                long idEmployeeData = bondAssigned.getIdEmployeeData();
                 long idBond = bondAssigned.getIdBond();
                 sql = sql
                         + "INSERT INTO BOND_ASSIGNED ("
@@ -31,7 +31,7 @@ public class BondAssignedCrud {
                         + "end_date, "
                         + "status) "
                         + "VALUES ("
-                        + idPerson + ","
+                        + idEmployeeData + ","
                         + idBond + ","
                         + "current_date,"
                         + "null,"
@@ -57,10 +57,10 @@ public class BondAssignedCrud {
             for (int i = 0; i < updateAssignBonds.size(); i++) {
                 BondAssigned bondAssigned = (BondAssigned) updateAssignBonds.get(i);
                 sql = sql
-                        = "UPDATE BOND_ASSIGNED\n"
+                        + "UPDATE BOND_ASSIGNED\n"
                         + "   SET end_date = current_date , "
                         + "       status = '" + status + "'"
-                        + " WHERE employee_data_id = " + bondAssigned.getIdPerson() + " "
+                        + " WHERE employee_data_id = " + bondAssigned.getIdEmployeeData() + " "
                         + "   AND bond_id = " + bondAssigned.getIdBond() + ";";
             }
             query.execute(sql);

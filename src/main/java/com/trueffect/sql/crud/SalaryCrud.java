@@ -24,10 +24,10 @@ public class SalaryCrud {
             for (int i = 0; i < updateAssignBonds.size(); i++) {
                 BondAssigned bondAssigned = (BondAssigned) updateAssignBonds.get(i);
                 sql = sql
-                        = "UPDATE SALARY\n"
+                        + "UPDATE SALARY\n"
                         + "   SET end_date = current_date , "
                         + "       status = '" + status + "'"
-                        + " WHERE employee_data_id = " + bondAssigned.getIdPerson() + ";";
+                        + " WHERE employee_data_id = " + bondAssigned.getIdEmployeeData() + ";";
             }
             query.execute(sql);
             if (query != null) {
