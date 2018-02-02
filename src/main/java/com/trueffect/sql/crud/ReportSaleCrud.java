@@ -198,6 +198,7 @@ public class ReportSaleCrud {
                     + "   AND MOVIE.movie_id = COPY_MOVIE.movie_id\n"
                     + "   AND RENTAL_DETAIL.price_id = PRICE.price_id";
             PreparedStatement st = connection.prepareStatement(query);
+            System.out.println("SQL BUY: " +query );
             ResultSet rs = st.executeQuery();
             Either eitherRes = new Either();
             ReportSale reportSale = new ReportSale();
@@ -246,6 +247,7 @@ public class ReportSaleCrud {
                     + " WHERE DETAIL_SUB_TOTAL.movie_id = MOVIE.movie_id\n"
                     + "   AND MOVIE.movie_id = COPY_MOVIE.movie_id\n"
                     + "   AND BUY_DETAIL.price_id = PRICE.price_id";
+            System.out.println("SQL BUY " +query);
             PreparedStatement st = connection.prepareStatement(query);
             ResultSet rs = st.executeQuery();
             Either eitherRes = new Either();

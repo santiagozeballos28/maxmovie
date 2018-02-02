@@ -8,7 +8,7 @@ public class DataConection {
     /*
     * The server
      */
-    public static final String SERVER = "jdbc:postgresql://localhost:5432/maxmovie6";
+    public static final String SERVER = "jdbc:postgresql://localhost:5432/maxmovie7";
     /*
     * Name of user the data base
      */

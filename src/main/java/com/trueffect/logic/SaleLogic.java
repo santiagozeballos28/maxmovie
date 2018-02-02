@@ -85,12 +85,12 @@ public class SaleLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            eitherRes = permission.getRenterUser(connection, idRenterUser, active);
+            //Validation of permission           
+            eitherRes = permission.checkUserPermissionCustomerCare(connection, idCreateUser, create);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            //Validation of permission           
-            eitherRes = permission.checkUserPermissionCustomerCare(connection, idCreateUser, create);
+            eitherRes = permission.getRenterUser(connection, idRenterUser, active);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -104,6 +104,7 @@ public class SaleLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
+            movies =eitherRes.getListObject();
             SaleCreate saleCreate = new SaleCreate(movies, sales);
             eitherRes = saleCreate.complyCondition();
             if (eitherRes.existError()) {
@@ -246,24 +247,37 @@ public class SaleLogic {
         String operationRental = OperationSale.R.name();
         for (Sale sale : sales) {
             boolean terminate = false;
+             String operation = sale.getOperation().trim().toUpperCase();
+             System.out.println("OPRERATION SALE: "+ operation );
             while (!terminate) {
                 int posCopy = getPosCopyMovieOf(sale.getIdMovie(), copiesMovie);
                 CopyMovie copyMovie = (CopyMovie) copiesMovie.remove(posCopy);
                 int copyCurrent = copyMovie.getAmountCurrent() - sale.getAmount();
+               
                 if (copyCurrent >= 0) {
                     terminate = true;
-                    if (sale.getOperation().equals(operationRental)) {
-                        addSaleDetail(rentalDetails, copyMovie, sale.getOperation(), sale.getAmount());
+                    if (operation.equals(operationRental)) {
+                        System.out.println("NameMOVR: " +sale.getIdMovie());
+                        System.out.println("NA MOVIER: " +sale.getIdMovie() + " CANT:" +sale.getAmount() );
+                        addSaleDetail(rentalDetails, copyMovie, operation, sale.getAmount());
                     } else {
-                        addSaleDetail(buyDetails, copyMovie, sale.getOperation(), sale.getAmount());
+                        System.out.println("NameMOVB: " +sale.getIdMovie());
+                        System.out.println("NA MOVIEB: " +sale.getIdMovie() + " CANT:" +sale.getAmount() );
+                        addSaleDetail(buyDetails, copyMovie,  operation, sale.getAmount());
                     }
                     copyMovie.setAmountCurrent(copyCurrent);
                     copiesMovie.add(posCopy, copyMovie);//update copy
                 } else {
-                    if (sale.getOperation().equals(operationRental)) {
-                        addSaleDetail(rentalDetails, copyMovie, sale.getOperation(), sale.getAmount());
+                    if (operation.equals(operationRental)) {
+                         System.out.println("ELSE RNameMOV: " +sale.getIdMovie());
+                        System.out.println("ELSE RNA MOVIE: " +sale.getIdMovie() + " CANT:" +sale.getAmount() );
+                        System.out.println("GET AOUNT RENT: " +copyMovie.getAmountCurrent() );
+                        addSaleDetail(rentalDetails, copyMovie,  operation,copyMovie.getAmountCurrent());
                     } else {
-                        addSaleDetail(buyDetails, copyMovie, sale.getOperation(), sale.getAmount());
+                         System.out.println("ELSE BNameMOV: " +sale.getIdMovie());
+                        System.out.println("ElSE BNA MOVIE: " +sale.getIdMovie() + " CANT:" +sale.getAmount() );
+                        System.out.println("GET AOUNT BUY: " +copyMovie.getAmountCurrent() );
+                        addSaleDetail(buyDetails, copyMovie,  operation, copyMovie.getAmountCurrent());
                     }
                     int amountRemaining = sale.getAmount() - copyMovie.getAmountCurrent();
                     sale.setAmount(amountRemaining);
@@ -299,6 +313,8 @@ public class SaleLogic {
         double priceRental = price(operationRental);
         double priceBuy = price(operationBuy);
         double priceBuyPremier = price(operationBuyPremier);
+        System.out.println("ADD OP:"+operation);
+        System.out.println("ADD AMOUNT:"+amount);
         if (operation.equals(operationRental)) {
             double priceRentalSubTotal = amount * priceRental;
             saleDetails.add(new RentalDetail(copyMovie.getCopyMovieId(), amount, priceRentalSubTotal, operationRental));
@@ -306,7 +322,10 @@ public class SaleLogic {
             String dateCurrent = DateOperation.getDateCurrent();
             double priceBuySubTotal = 0.0;
             String createMovieDate = getCreateMovieDate(copyMovie.getMovieId());
-            if (DateOperation.areSameMonthAndYear(dateCurrent, createMovieDate)) {
+            System.out.println("DATE_CURR:" +dateCurrent);
+            System.out.println("DATE_MOVIE:" +createMovieDate);
+            if (DateOperation.areSameMonthAndYear(dateCurrent.trim(), createMovieDate.trim())) {
+                System.err.println("BUY PREMIER");
                 priceBuySubTotal = amount * priceBuyPremier;
                 saleDetails.add(new BuyDetail(copyMovie.getCopyMovieId(), amount, priceBuySubTotal, operationBuyPremier));
             } else {
@@ -322,7 +341,7 @@ public class SaleLogic {
         int i = 0;
         while (i < prices.size() && !find) {
             Price price = (Price) prices.get(i);
-            if (price.getId().equals(priceId)) {
+            if (price.getId().trim().equals(priceId)) {
                 find = true;
                 priceRes = price.getPrice();
             }
@@ -450,3 +469,4 @@ public class SaleLogic {
         return new Either();
     }
 }
+
