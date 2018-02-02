@@ -104,7 +104,7 @@ public class SaleLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            movies =eitherRes.getListObject();
+            movies = eitherRes.getListObject();
             SaleCreate saleCreate = new SaleCreate(movies, sales);
             eitherRes = saleCreate.complyCondition();
             if (eitherRes.existError()) {
@@ -247,37 +247,26 @@ public class SaleLogic {
         String operationRental = OperationSale.R.name();
         for (Sale sale : sales) {
             boolean terminate = false;
-             String operation = sale.getOperation().trim().toUpperCase();
-             System.out.println("OPRERATION SALE: "+ operation );
+            String operation = sale.getOperation().trim().toUpperCase();
             while (!terminate) {
                 int posCopy = getPosCopyMovieOf(sale.getIdMovie(), copiesMovie);
                 CopyMovie copyMovie = (CopyMovie) copiesMovie.remove(posCopy);
                 int copyCurrent = copyMovie.getAmountCurrent() - sale.getAmount();
-               
+
                 if (copyCurrent >= 0) {
                     terminate = true;
                     if (operation.equals(operationRental)) {
-                        System.out.println("NameMOVR: " +sale.getIdMovie());
-                        System.out.println("NA MOVIER: " +sale.getIdMovie() + " CANT:" +sale.getAmount() );
                         addSaleDetail(rentalDetails, copyMovie, operation, sale.getAmount());
                     } else {
-                        System.out.println("NameMOVB: " +sale.getIdMovie());
-                        System.out.println("NA MOVIEB: " +sale.getIdMovie() + " CANT:" +sale.getAmount() );
-                        addSaleDetail(buyDetails, copyMovie,  operation, sale.getAmount());
+                        addSaleDetail(buyDetails, copyMovie, operation, sale.getAmount());
                     }
                     copyMovie.setAmountCurrent(copyCurrent);
                     copiesMovie.add(posCopy, copyMovie);//update copy
                 } else {
                     if (operation.equals(operationRental)) {
-                         System.out.println("ELSE RNameMOV: " +sale.getIdMovie());
-                        System.out.println("ELSE RNA MOVIE: " +sale.getIdMovie() + " CANT:" +sale.getAmount() );
-                        System.out.println("GET AOUNT RENT: " +copyMovie.getAmountCurrent() );
-                        addSaleDetail(rentalDetails, copyMovie,  operation,copyMovie.getAmountCurrent());
+                        addSaleDetail(rentalDetails, copyMovie, operation, copyMovie.getAmountCurrent());
                     } else {
-                         System.out.println("ELSE BNameMOV: " +sale.getIdMovie());
-                        System.out.println("ElSE BNA MOVIE: " +sale.getIdMovie() + " CANT:" +sale.getAmount() );
-                        System.out.println("GET AOUNT BUY: " +copyMovie.getAmountCurrent() );
-                        addSaleDetail(buyDetails, copyMovie,  operation, copyMovie.getAmountCurrent());
+                        addSaleDetail(buyDetails, copyMovie, operation, copyMovie.getAmountCurrent());
                     }
                     int amountRemaining = sale.getAmount() - copyMovie.getAmountCurrent();
                     sale.setAmount(amountRemaining);
@@ -313,8 +302,6 @@ public class SaleLogic {
         double priceRental = price(operationRental);
         double priceBuy = price(operationBuy);
         double priceBuyPremier = price(operationBuyPremier);
-        System.out.println("ADD OP:"+operation);
-        System.out.println("ADD AMOUNT:"+amount);
         if (operation.equals(operationRental)) {
             double priceRentalSubTotal = amount * priceRental;
             saleDetails.add(new RentalDetail(copyMovie.getCopyMovieId(), amount, priceRentalSubTotal, operationRental));
@@ -322,10 +309,7 @@ public class SaleLogic {
             String dateCurrent = DateOperation.getDateCurrent();
             double priceBuySubTotal = 0.0;
             String createMovieDate = getCreateMovieDate(copyMovie.getMovieId());
-            System.out.println("DATE_CURR:" +dateCurrent);
-            System.out.println("DATE_MOVIE:" +createMovieDate);
             if (DateOperation.areSameMonthAndYear(dateCurrent.trim(), createMovieDate.trim())) {
-                System.err.println("BUY PREMIER");
                 priceBuySubTotal = amount * priceBuyPremier;
                 saleDetails.add(new BuyDetail(copyMovie.getCopyMovieId(), amount, priceBuySubTotal, operationBuyPremier));
             } else {
@@ -469,4 +453,3 @@ public class SaleLogic {
         return new Either();
     }
 }
-
