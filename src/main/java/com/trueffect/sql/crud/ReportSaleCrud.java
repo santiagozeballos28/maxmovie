@@ -177,28 +177,34 @@ public class ReportSaleCrud {
     public Either getReportRental(Connection connection, long idMasterDetail) {
         try {
             String query
-                    = "SELECT DISTINCT MOVIE.movie_id,MOVIE.movie_name, price, amount_sub_total,price_sub_total,price_name\n"
-                    + "  FROM (SELECT RENTAL_AMOUNT.movie_id,\n"
+                    = "SELECT MOVIE.movie_id, MOVIE.movie_name,PRICE.price, amount_sub_total,price_sub_total,price_name\n"
+                    + "  FROM (SELECT  RENTAL_AMOUNT.movie_id,\n"
                     + "               amount_sub_total ,\n"
                     + "               price_sub_total\n"
-                    + "          FROM (SELECT COPY_MOVIE.movie_id, \n"
-                    + "                   SUM (rental_amount) amount_sub_total \n"
+                    + "          FROM (SELECT COPY_MOVIE.movie_id,\n"
+                    + "                   SUM (rental_amount) amount_sub_total\n"
                     + "                  FROM RENTAL_DETAIL,COPY_MOVIE\n"
-                    + "                 WHERE master_detail_id = " + idMasterDetail
+                    + "                 WHERE master_detail_id = ?                   \n"
                     + "                   AND RENTAL_DETAIL.copy_movie_id = COPY_MOVIE.copy_movie_id\n"
-                    + "                 GROUP BY COPY_MOVIE.movie_id)RENTAL_AMOUNT, \n"
+                    + "                 GROUP BY COPY_MOVIE.movie_id)RENTAL_AMOUNT,\n"
                     + "               (SELECT COPY_MOVIE.movie_id,\n"
                     + "                   SUM (rental_price) price_sub_total\n"
                     + "                  FROM  RENTAL_DETAIL,COPY_MOVIE\n"
-                    + "                 WHERE master_detail_id = " + idMasterDetail
+                    + "                 WHERE master_detail_id = ?                   \n"
                     + "                   AND RENTAL_DETAIL.copy_movie_id = COPY_MOVIE.copy_movie_id\n"
                     + "                 GROUP BY COPY_MOVIE.movie_id ) RENTAL_PRICE\n"
-                    + "         WHERE RENTAL_AMOUNT.movie_id = RENTAL_PRICE.movie_id) DETAIL_SUB_TOTAL, MOVIE, PRICE, COPY_MOVIE , RENTAL_DETAIL\n"
-                    + " WHERE DETAIL_SUB_TOTAL.movie_id = MOVIE.movie_id\n"
-                    + "   AND MOVIE.movie_id = COPY_MOVIE.movie_id\n"
-                    + "   AND RENTAL_DETAIL.price_id = PRICE.price_id";
+                    + "         WHERE RENTAL_AMOUNT.movie_id = RENTAL_PRICE.movie_id)DETAIL_SUB_TOTAL,\n"
+                    + "       (SELECT COPY_MOVIE.copy_movie_id, price_id, movie_id\n"
+                    + "          FROM RENTAL_DETAIL,COPY_MOVIE\n"
+                    + "         WHERE master_detail_id=? \n"
+                    + "           AND RENTAL_DETAIL.copy_movie_id = COPY_MOVIE.copy_movie_id)RENTAL_DETAIL_SALE, MOVIE,PRICE\n"
+                    + " WHERE DETAIL_SUB_TOTAL.movie_id = RENTAL_DETAIL_SALE.movie_id \n"
+                    + "   AND RENTAL_DETAIL_SALE.movie_id = MOVIE.movie_id \n"
+                    + "   AND RENTAL_DETAIL_SALE.price_id = PRICE.price_id  ";
             PreparedStatement st = connection.prepareStatement(query);
-            System.out.println("SQL BUY: " +query );
+            st.setLong(1, idMasterDetail);
+            st.setLong(2, idMasterDetail);
+            st.setLong(3, idMasterDetail);
             ResultSet rs = st.executeQuery();
             Either eitherRes = new Either();
             ReportSale reportSale = new ReportSale();
@@ -227,28 +233,34 @@ public class ReportSaleCrud {
     public Either getReportBuy(Connection connection, long idMasterDetail) {
         try {
             String query
-                    = "SELECT DISTINCT MOVIE.movie_id,MOVIE.movie_name, price, amount_sub_total,price_sub_total,price_name\n"
-                    + "  FROM (SELECT BUY_AMOUNT.movie_id,\n"
+                    = "SELECT MOVIE.movie_id, MOVIE.movie_name,PRICE.price, amount_sub_total,price_sub_total,price_name\n"
+                    + "  FROM (SELECT  BUY_AMOUNT.movie_id,\n"
                     + "               amount_sub_total ,\n"
                     + "               price_sub_total\n"
-                    + "          FROM (SELECT COPY_MOVIE.movie_id, \n"
-                    + "                   SUM (buy_amount) amount_sub_total \n"
+                    + "          FROM (SELECT COPY_MOVIE.movie_id,\n"
+                    + "                   SUM (buy_amount) amount_sub_total\n"
                     + "                  FROM BUY_DETAIL,COPY_MOVIE\n"
-                    + "                 WHERE master_detail_id = " + idMasterDetail
+                    + "                 WHERE master_detail_id = ?                   \n"
                     + "                   AND BUY_DETAIL.copy_movie_id = COPY_MOVIE.copy_movie_id\n"
-                    + "                 GROUP BY COPY_MOVIE.movie_id)BUY_AMOUNT, \n"
+                    + "                 GROUP BY COPY_MOVIE.movie_id)BUY_AMOUNT,\n"
                     + "               (SELECT COPY_MOVIE.movie_id,\n"
                     + "                   SUM (buy_price) price_sub_total\n"
                     + "                  FROM  BUY_DETAIL,COPY_MOVIE\n"
-                    + "                 WHERE master_detail_id = " + idMasterDetail
+                    + "                 WHERE master_detail_id = ?                   \n"
                     + "                   AND BUY_DETAIL.copy_movie_id = COPY_MOVIE.copy_movie_id\n"
                     + "                 GROUP BY COPY_MOVIE.movie_id ) BUY_PRICE\n"
-                    + "         WHERE BUY_AMOUNT.movie_id = BUY_PRICE.movie_id) DETAIL_SUB_TOTAL, MOVIE, PRICE, COPY_MOVIE , BUY_DETAIL\n"
-                    + " WHERE DETAIL_SUB_TOTAL.movie_id = MOVIE.movie_id\n"
-                    + "   AND MOVIE.movie_id = COPY_MOVIE.movie_id\n"
-                    + "   AND BUY_DETAIL.price_id = PRICE.price_id";
-            System.out.println("SQL BUY " +query);
+                    + "         WHERE BUY_AMOUNT.movie_id = BUY_PRICE.movie_id)DETAIL_SUB_TOTAL,\n"
+                    + "       (SELECT COPY_MOVIE.copy_movie_id, price_id, movie_id\n"
+                    + "          FROM BUY_DETAIL,COPY_MOVIE\n"
+                    + "         WHERE master_detail_id=? \n"
+                    + "           AND BUY_DETAIL.copy_movie_id = COPY_MOVIE.copy_movie_id)BUY_DETAIL_SALE, MOVIE,PRICE\n"
+                    + " WHERE DETAIL_SUB_TOTAL.movie_id = BUY_DETAIL_SALE.movie_id \n"
+                    + "   AND BUY_DETAIL_SALE.movie_id = MOVIE.movie_id \n"
+                    + "   AND BUY_DETAIL_SALE.price_id = PRICE.price_id  ";
             PreparedStatement st = connection.prepareStatement(query);
+            st.setLong(1, idMasterDetail);
+            st.setLong(2, idMasterDetail);
+            st.setLong(3, idMasterDetail);
             ResultSet rs = st.executeQuery();
             Either eitherRes = new Either();
             ReportSale reportSale = new ReportSale();
