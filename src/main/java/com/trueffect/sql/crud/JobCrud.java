@@ -18,11 +18,9 @@ public class JobCrud {
             String sql
                     = "SELECT JOB.job_id, "
                     + "       job_name\n"
-                    + "  FROM DATA_JOB,"
-                    + "       JOB\n"
-                    + " WHERE DATA_JOB.job_id= JOB.job_id "
-                    + "   AND status = 'Active'"
-                    + "   AND person_id = ?;";
+                    + "  FROM EMPLOYEE_DATA, JOB\n"
+                    + " WHERE EMPLOYEE_DATA.job_id= JOB.job_id "
+                    + "   AND employee_data_id = ?;";
             PreparedStatement st = connection.prepareStatement(sql);
             st.setLong(1, idUser);
             ResultSet rs = st.executeQuery();
@@ -51,8 +49,7 @@ public class JobCrud {
                     = "SELECT job_id, "
                     + "       job_name"
                     + "  FROM JOB"
-                    + "  WHERE job_name=?";
-
+                    + " WHERE job_name=?";
             PreparedStatement st = connection.prepareStatement(sql);
             st.setString(1, name);
             ResultSet rs = st.executeQuery();

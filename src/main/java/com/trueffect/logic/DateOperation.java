@@ -28,15 +28,19 @@ public class DateOperation {
     public static boolean isValidDate(String date) {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat(ConstantData.SIMPLE_DATE_FORMAT);
-            Date dateOtherFormat = dateFormat.parse(date);
-            LocalDate dateOther = LocalDate.fromDateFields(dateOtherFormat);
+            Date dateFormatParse = dateFormat.parse(date);
+            LocalDate localDate = LocalDate.fromDateFields(dateFormatParse);
             LocalDate dateNow = LocalDate.now();
-            Period diff = Period.fieldDifference(dateOther, dateNow);
+            Period diff = Period.fieldDifference(localDate, dateNow);
             if (diff.getYears() > 0) {
                 return true;
             } else if (diff.getYears() == 0) {
-                if (diff.getMonths() >= 0 && diff.getDays() >= 0) {
+                if (diff.getMonths() > 0) {
                     return true;
+                } else if (diff.getMonths() == 0) {
+                    if (diff.getDays() >= 0) {
+                        return true;
+                    }
                 }
             }
         } catch (ParseException ex) {
@@ -57,10 +61,17 @@ public class DateOperation {
             LocalDate pdate = LocalDate.fromDateFields(dateO);
             LocalDate now = LocalDate.now();
             Period diff = Period.fieldDifference(pdate, now);
-            if (diff.getMonths() >= 0 & diff.getDays() >= 0) {
-                year = diff.getYears();
-            } else {
-                year = diff.getYears() - 1;
+            if (diff.getYears() > 0) {
+                if (diff.getMonths() > 0) {
+                    return diff.getYears();
+                } else {
+                    if (diff.getMonths() == 0) {
+                        if (diff.getDays() > 0) {
+                            return diff.getYears();
+                        }
+                    }
+                    return diff.getYears() - 1;
+                }
             }
         } catch (ParseException ex) {
             //Implement if the input date parameter is an invalid format
@@ -133,7 +144,7 @@ public class DateOperation {
                 return true;
             }
         } catch (ParseException ex) {
-            //Implement if the input date parameter is an invalid format
+            //Implement if the input date parameter is an invalid format.
         }
         return false;
     }

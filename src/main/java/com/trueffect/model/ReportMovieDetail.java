@@ -1,9 +1,18 @@
 package com.trueffect.model;
 
+import org.codehaus.jackson.annotate.JsonPropertyOrder;
+
 /**
  *
  * @author santiago.mamani
  */
+@JsonPropertyOrder({
+    "idMovie",
+    "nameMovie",
+    "quantityCurrent",
+    "quantityRental",
+    "quantityBuy",
+    "statusMovie"})
 public class ReportMovieDetail extends ReportMovie {
 
     private int quantityRental;

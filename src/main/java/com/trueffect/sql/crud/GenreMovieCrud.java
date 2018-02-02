@@ -21,7 +21,7 @@ public class GenreMovieCrud {
             String sql
                     = "SELECT genre_movie_id, "
                     + "       genre_name\n"
-                    + "  FROM genre_movie\n"
+                    + "  FROM GENRE_MOVIE\n"
                     + " WHERE genre_movie_id = ?;";
             PreparedStatement st = connection.prepareStatement(sql);
             st.setString(1, idGenreMovie);
@@ -50,7 +50,7 @@ public class GenreMovieCrud {
             String sql
                     = "SELECT genre_movie_id, "
                     + "       genre_name\n"
-                    + "  FROM genre_movie\n";
+                    + "  FROM GENRE_MOVIE\n";
             PreparedStatement st = connection.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
@@ -101,7 +101,7 @@ public class GenreMovieCrud {
             String sql
                     = "SELECT genre_movie_id, "
                     + "       genre_name\n"
-                    + "  FROM genre_movie\n"
+                    + "  FROM GENRE_MOVIE\n"
                     + " WHERE genre_name = ?;";
             PreparedStatement st = connection.prepareStatement(sql);
             st.setString(1, nameGenreMovie);

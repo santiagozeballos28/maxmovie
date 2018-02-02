@@ -23,7 +23,7 @@ public class PriceCrud {
                     = "SELECT price_id, "
                     + "       price_name, "
                     + "       price \n"
-                    + "  FROM price;";
+                    + "  FROM PRICE;";
             PreparedStatement st = connection.prepareStatement(query);
             ResultSet rs = st.executeQuery();
             Either eitherRes = new Either();
@@ -53,7 +53,7 @@ public class PriceCrud {
                     = "SELECT price_id, "
                     + "       price_name, "
                     + "       price \n"
-                    + "  FROM price"
+                    + "  FROM PRICE"
                     + " WHERE price_id = '" + idPricePenalty + "'";
             PreparedStatement st = connection.prepareStatement(query);
             ResultSet rs = st.executeQuery();

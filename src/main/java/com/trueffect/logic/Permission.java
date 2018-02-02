@@ -158,7 +158,7 @@ public class Permission {
             Either eitherPerson = personCrud.getRenterUser(connection, idRenterUser, status);
             person = (Person) eitherPerson.getFirstObject();
             if (person.isEmpty()) {
-                String object = ConstantData.ObjectMovie.RennterUser.name();
+                String object = ConstantData.ObjectMovie.RennterUser.getDescription();
                 listData.clear();
                 listData.put(ConstantData.OBJECT, object);
                 String errorMgs = OperationString.generateMesage(Message.NOT_FOUND, listData);
