@@ -21,6 +21,26 @@ public class RentalDetail extends SaleDetail {
         super(copyMovieId, rentalAmount, rentalPrice, idPrice);
     }
 
+    public RentalDetail(
+            long idCopyMovie,
+            int amount,
+            double rentalPrice,
+            int returnAmount,
+            String returnDate,
+            double amountOficial,
+            double penalty,
+            double priceOficial,
+            long employeeReceive,
+            long idMasterDetail) {
+        super(idCopyMovie, amount, rentalPrice, idMasterDetail);
+        this.returnAmount = returnAmount;
+        this.returnDate = returnDate;
+        this.amountOficial = amountOficial;
+        this.employeeReceive = employeeReceive;
+        this.penalty = penalty;
+        this.priceOficial = priceOficial;
+    }
+
     public int getReturnAmount() {
         return returnAmount;
     }

@@ -1,10 +1,12 @@
 package com.trueffect.sql.crud;
 
 import com.trueffect.model.AmountSaleMovie;
+import com.trueffect.model.RentalDetail;
 import com.trueffect.model.SaleDetail;
 import com.trueffect.response.Either;
 import com.trueffect.tools.CodeStatus;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -86,6 +88,51 @@ public class RentalDetailCrud {
             }
             if (query != null) {
                 query.close();
+            }
+            eitherRes.setCode(CodeStatus.OK);
+            return eitherRes;
+        } catch (Exception exception) {
+            ArrayList<String> listError = new ArrayList<String>();
+            listError.add(exception.getMessage());
+            return new Either(CodeStatus.INTERNAL_SERVER_ERROR, listError);
+        }
+    }
+
+    public Either getReatalOf(Connection connection, long idMasterDetail) {
+        try {
+            String query
+                    = "SELECT copy_movie_id, "
+                    + "       rental_amount, "
+                    + "       rental_price, "
+                    + "       return_amount, "
+                    + "       return_date, "
+                    + "       rental_amount_official, "
+                    + "       penalty, "
+                    + "       rental_price_official, "
+                    + "       employee_receive, "
+                    + "       master_detail_id "
+                    + "  FROM rental_detail\n"
+                    + " WHERE master_detail_id=?";
+            PreparedStatement st = connection.prepareStatement(query);
+            st.setLong(1, idMasterDetail);
+            ResultSet rs = st.executeQuery();
+            Either eitherRes = new Either();
+            while (rs.next()) {
+            RentalDetail rentalDetail = new RentalDetail(
+                    rs.getLong("copy_movie_id"), 
+                    rs.getInt("rental_amount"),
+                    rs.getDouble("rental_price"), 
+                    rs.getInt("return_amount"), 
+                    rs.getString("return_date"), 
+                    rs.getInt("rental_amount_official"), 
+                    rs.getDouble("penalty"), 
+                    rs.getDouble("rental_price_official"), 
+                    rs.getLong("employee_receive"), 
+                    rs.getLong("master_detail_id"));
+            eitherRes.addModeloObjet(rentalDetail);
+            }
+            if (st != null) {
+                st.close();
             }
             eitherRes.setCode(CodeStatus.OK);
             return eitherRes;

@@ -398,15 +398,21 @@ public class SaleLogic {
             }
             ArrayList<Long> idsMovieSale = getIdsMovie(rentReturnSales);
             //Get movies           
-            eitherRes = movieCrud.getMovie(connection, idsMovieSale, active);
+            eitherRes = movieCrud.getMovie(connection, idsMovieSale, null);//test with null state
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
+            movies = eitherRes.getListObject();
             RentReturnCreate rentReturnCreate = new RentReturnCreate(movies, rentReturnSales);
             eitherRes = rentReturnCreate.complyCondition();
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
+            eitherRes = rentalDetailCrud.getReatalOf(connection, idMasterDetail);
+            if (eitherRes.existError()) {
+                throw eitherRes;
+            }
+
             //To verify that the return amount is coherent with the rented
             eitherRes = saleValidationDB.verifyRentQuantity(connection, idMasterDetail, rentReturnSales);
             if (eitherRes.existError()) {
@@ -447,6 +453,7 @@ public class SaleLogic {
             RentalDetail rentalDetail = rentalDetails.remove(i);
             double rentalPriceCurrent = rentalDetail.getPriceOficial();
             double penaltySubTotal = rentalDetail.getAmountOficial() * pricePenalty;
+            rentalDetail.setPenalty(pricePenalty);
             rentalDetail.setPriceOficial(rentalPriceCurrent + pricePenalty);
             rentalDetails.add(i, rentalDetail);
         }
