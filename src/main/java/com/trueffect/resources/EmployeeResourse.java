@@ -30,7 +30,7 @@ public class EmployeeResourse {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response insertEmployee(@QueryParam("idUserCreate") long idUserCreate, @QueryParam("enabledRenterUser") boolean enabledRenterUser, Employee employee) {
+    public Response insertEmployee(@QueryParam("idUserCreate") long idUserCreate, @QueryParam("enabledRent") boolean enabledRenterUser, Employee employee) {
         int minAge = ConstantData.MIN_AGE_EMPLOYEE;
         String nameObject = ConstantData.ObjectMovie.Employee.getDescription();
         Either eitherEmployee = employeeLogic.createEmployee(idUserCreate, enabledRenterUser, employee, new EmployeeCreate(minAge, nameObject));
@@ -44,9 +44,9 @@ public class EmployeeResourse {
     public Response updateEmployee(
             @PathParam("id") long idUser,
             @QueryParam("idModifyUser") long idModifyUser,
-            @QueryParam("enabledRenterUser") boolean enabledRenterUser,
+            @QueryParam("enabledRent") Boolean enabledRent,
             Employee employee) {
-        Either eitherEmployee = employeeLogic.update(employee, enabledRenterUser, idUser, idModifyUser);
+        Either eitherEmployee = employeeLogic.update(employee, enabledRent, idUser, idModifyUser);
         Response response = mapper.toResponse(eitherEmployee);
         return response;
     }

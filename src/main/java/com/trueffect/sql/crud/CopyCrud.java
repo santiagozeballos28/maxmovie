@@ -103,7 +103,7 @@ public class CopyCrud {
                     + "       amount_current,"
                     + "       create_date,"
                     + "       movie_id\n"
-                    + "  FROM copy_movie\n"
+                    + "  FROM COPY_MOVIE\n"
                     + " WHERE movie_id IN " + idsString
                     + " ORDER BY create_date asc";
             PreparedStatement st = connection.prepareStatement(query);
@@ -138,7 +138,7 @@ public class CopyCrud {
             String query
                     = "SELECT movie_id, "
                     + "   SUM (amount_current ) total_current\n"
-                    + "  FROM copy_movie\n"
+                    + "  FROM COPY_MOVIE\n"
                     + " WHERE movie_id IN " + idsString + "\n"
                     + " GROUP BY movie_id";
             PreparedStatement st = connection.prepareStatement(query);

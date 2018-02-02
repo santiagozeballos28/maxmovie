@@ -164,8 +164,8 @@ public class PersonCrud {
             query = query
                     + "   AND person_id"
                     + "   NOT IN("
-                    + "SELECT person_id"
-                    + "  FROM DATA_JOB"
+                    + "SELECT employee_data_id"
+                    + "  FROM EMPLOYEE_DATA"
                     + " WHERE enable_rent = FALSE)";
             PreparedStatement st = connection.prepareStatement(query);
             st.setLong(1, idPerson);
@@ -302,8 +302,8 @@ public class PersonCrud {
                     + "        PERSON.status"
                     + "   FROM PERSON "
                     + "  WHERE PERSON.person_id NOT IN"
-                    + "(SELECT person_id"
-                    + "   FROM DATA_JOB"
+                    + "(SELECT employee_data_id"
+                    + "   FROM EMPLOYEE_DATA"
                     + "  WHERE enable_rent = false)) RENTER_USER,PERSON"
                     + "  WHERE RENTER_USER.status= 'Active' "
                     + "    AND RENTER_USER.create_user = PERSON.person_id";

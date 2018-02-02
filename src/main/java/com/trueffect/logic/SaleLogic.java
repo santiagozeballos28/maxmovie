@@ -4,7 +4,7 @@ import com.trueffect.conection.db.DataBasePostgres;
 import com.trueffect.messages.Message;
 import com.trueffect.model.BuyDetail;
 import com.trueffect.model.CopyMovie;
-import com.trueffect.model.DataJob;
+import com.trueffect.model.EmployeeData;
 import com.trueffect.model.Identifier;
 import com.trueffect.model.MasterDetail;
 import com.trueffect.model.MasterDetailSaile;
@@ -85,12 +85,12 @@ public class SaleLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            eitherRes = permission.getRenterUser(connection, idRenterUser, active);
+            //Validation of permission           
+            eitherRes = permission.checkUserPermissionCustomerCare(connection, idCreateUser, create);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            //Validation of permission           
-            eitherRes = permission.checkUserPermissionCustomerCare(connection, idCreateUser, create);
+            eitherRes = permission.getRenterUser(connection, idRenterUser, active);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
@@ -104,6 +104,7 @@ public class SaleLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
+            movies = eitherRes.getListObject();
             SaleCreate saleCreate = new SaleCreate(movies, sales);
             eitherRes = saleCreate.complyCondition();
             if (eitherRes.existError()) {
@@ -130,12 +131,12 @@ public class SaleLogic {
             int amountTotal = getSubTotalAmount(rentalDetails) + getSubTotalAmount(buyDetails);
             double priceTotal = getSubTotalPrice(rentalDetails) + getSubTotalPrice(buyDetails);
             EmployeeCrud employeeCrud = new EmployeeCrud();
-            eitherRes = employeeCrud.getDataJob(connection, idCreateUser, active);
+            eitherRes = employeeCrud.getEmployeeData(connection, idCreateUser);
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-            long idDataJob = ((DataJob) eitherRes.getFirstObject()).getJobId();
-            MasterDetail masterDetail = new MasterDetail(amountTotal, priceTotal, idDataJob, idRenterUser);
+            long idEmployeeData = ((EmployeeData) eitherRes.getFirstObject()).getIdEmployeeData();
+            MasterDetail masterDetail = new MasterDetail(amountTotal, priceTotal, idEmployeeData, idRenterUser);
             eitherRes = masterDetailCrud.insert(connection, masterDetail);
             if (eitherRes.existError()) {
                 throw eitherRes;
@@ -246,24 +247,26 @@ public class SaleLogic {
         String operationRental = OperationSale.R.name();
         for (Sale sale : sales) {
             boolean terminate = false;
+            String operation = sale.getOperation().trim().toUpperCase();
             while (!terminate) {
                 int posCopy = getPosCopyMovieOf(sale.getIdMovie(), copiesMovie);
                 CopyMovie copyMovie = (CopyMovie) copiesMovie.remove(posCopy);
                 int copyCurrent = copyMovie.getAmountCurrent() - sale.getAmount();
+
                 if (copyCurrent >= 0) {
                     terminate = true;
-                    if (sale.getOperation().equals(operationRental)) {
-                        addSaleDetail(rentalDetails, copyMovie, sale.getOperation(), sale.getAmount());
+                    if (operation.equals(operationRental)) {
+                        addSaleDetail(rentalDetails, copyMovie, operation, sale.getAmount());
                     } else {
-                        addSaleDetail(buyDetails, copyMovie, sale.getOperation(), sale.getAmount());
+                        addSaleDetail(buyDetails, copyMovie, operation, sale.getAmount());
                     }
                     copyMovie.setAmountCurrent(copyCurrent);
                     copiesMovie.add(posCopy, copyMovie);//update copy
                 } else {
-                    if (sale.getOperation().equals(operationRental)) {
-                        addSaleDetail(rentalDetails, copyMovie, sale.getOperation(), sale.getAmount());
+                    if (operation.equals(operationRental)) {
+                        addSaleDetail(rentalDetails, copyMovie, operation, copyMovie.getAmountCurrent());
                     } else {
-                        addSaleDetail(buyDetails, copyMovie, sale.getOperation(), sale.getAmount());
+                        addSaleDetail(buyDetails, copyMovie, operation, copyMovie.getAmountCurrent());
                     }
                     int amountRemaining = sale.getAmount() - copyMovie.getAmountCurrent();
                     sale.setAmount(amountRemaining);
@@ -306,7 +309,7 @@ public class SaleLogic {
             String dateCurrent = DateOperation.getDateCurrent();
             double priceBuySubTotal = 0.0;
             String createMovieDate = getCreateMovieDate(copyMovie.getMovieId());
-            if (DateOperation.areSameMonthAndYear(dateCurrent, createMovieDate)) {
+            if (DateOperation.areSameMonthAndYear(dateCurrent.trim(), createMovieDate.trim())) {
                 priceBuySubTotal = amount * priceBuyPremier;
                 saleDetails.add(new BuyDetail(copyMovie.getCopyMovieId(), amount, priceBuySubTotal, operationBuyPremier));
             } else {
@@ -322,7 +325,7 @@ public class SaleLogic {
         int i = 0;
         while (i < prices.size() && !find) {
             Price price = (Price) prices.get(i);
-            if (price.getId().equals(priceId)) {
+            if (price.getId().trim().equals(priceId)) {
                 find = true;
                 priceRes = price.getPrice();
             }

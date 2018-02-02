@@ -114,7 +114,7 @@ public class SaleCreate {
 
     private boolean isValidOperationSale(String sale) {
         try {
-            OperationSale operationSale = OperationSale.valueOf(sale);
+            OperationSale operationSale = OperationSale.valueOf(sale.trim().toUpperCase());
         } catch (Exception e) {
             return false;
         }
@@ -130,6 +130,7 @@ public class SaleCreate {
             if (movie.getId() == idMovie) {
                 findMovie = true;
                 nameMovie = movie.getName();
+                System.out.println("Name: " +nameMovie);
             }
             i++;
         }

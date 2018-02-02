@@ -11,29 +11,29 @@ public class MasterDetail extends ModelObject {
     private long idMasterDetail;
     private int amountTotal;
     private double priceTotal;
-    protected long idDataJob;
+    protected long idEmployeeData;
     protected long idRenterUser;
 
     public MasterDetail() {
     }
 
-    public MasterDetail(long id, int amountTotal, double priceTotal, long idDataJob, long idRenterUser) {
-        this.idMasterDetail = id;
+    public MasterDetail(long idMasterDetail, int amountTotal, double priceTotal, long idEmployeeData, long idRenterUser) {
+        this.idMasterDetail = idMasterDetail;
         this.amountTotal = amountTotal;
         this.priceTotal = priceTotal;
-        this.idDataJob = idDataJob;
+        this.idEmployeeData = idEmployeeData;
         this.idRenterUser = idRenterUser;
     }
 
-    public MasterDetail(int amountTotal, double priceTotal, long idDataJob, long idRenterUser) {
+    public MasterDetail(int amountTotal, double priceTotal, long idEmployeeData, long idRenterUser) {
         this.amountTotal = amountTotal;
         this.priceTotal = priceTotal;
-        this.idDataJob = idDataJob;
+        this.idEmployeeData = idEmployeeData;
         this.idRenterUser = idRenterUser;
     }
 
-    public MasterDetail(long id, int amountTotal, double priceTotal) {
-        this.idMasterDetail = id;
+    public MasterDetail(long idMasterDetail, int amountTotal, double priceTotal) {
+        this.idMasterDetail = idMasterDetail;
         this.amountTotal = amountTotal;
         this.priceTotal = priceTotal;
     }
@@ -50,8 +50,8 @@ public class MasterDetail extends ModelObject {
         return priceTotal;
     }
 
-    public long getIdDataJob() {
-        return idDataJob;
+    public long getIdEmployeeData() {
+        return idEmployeeData;
     }
 
     public long getIdRenterUser() {
@@ -70,8 +70,8 @@ public class MasterDetail extends ModelObject {
         this.priceTotal = priceTotal;
     }
 
-    public void setIdDataJob(long idDataJob) {
-        this.idDataJob = idDataJob;
+    public void setIdEmployeeData(long idEmployeeData) {
+        this.idEmployeeData = idEmployeeData;
     }
 
     public void setIdRenterUser(long idRenterUser) {

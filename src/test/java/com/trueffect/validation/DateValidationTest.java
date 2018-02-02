@@ -2,10 +2,8 @@ package com.trueffect.validation;
 
 import com.trueffect.logic.DateOperation;
 import com.trueffect.tools.ConstantData;
-import java.util.Date;
 import org.junit.Assert;
 import org.junit.Test;
-import static com.trueffect.logic.DateOperation.getDateCurrent;
 
 /**
  *
@@ -250,5 +248,25 @@ public class DateValidationTest {
         System.err.println("DATE SECOND: " + dateSecond);
         System.out.println("DIF2: " + DateOperation.diferenceDays(dateFirst, dateSecond));
         Assert.assertEquals(DateOperation.diferenceDays(dateFirst, dateSecond), expected);
+    }
+       @Test
+    public void areSameMonthAndYear() {
+
+        boolean expected = true;
+        String dateFirst = "2018-01-25";
+        String dateSecond = "2018-01-25";
+        System.err.println("DATE SECOND: " + dateSecond);
+        //System.out.println("DIF2: " + DateOperation.areSameMonthAndYear(dateFirst, dateSecond));
+        Assert.assertEquals(DateOperation.areSameMonthAndYear(dateFirst, dateSecond), expected);
+    }
+      @Test
+    public void areSameMonthAndYear2() {
+
+        boolean expected = true;
+        String dateFirst = "2018-02-02";
+        String dateSecond = "2018-02-1 19:55:27.114";
+        System.err.println("DATE SECOND: " + dateSecond);
+        //System.out.println("DIF2: " + DateOperation.areSameMonthAndYear(dateFirst, dateSecond));
+        Assert.assertEquals(DateOperation.areSameMonthAndYear(dateFirst, dateSecond), expected);
     }
 }

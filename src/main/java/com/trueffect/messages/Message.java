@@ -8,7 +8,7 @@ public class Message {
     // Message of Empty
     public static String EMPTY_DATA = "The {typeData} is required";
     // Message of Empty sale
-    public static String EMPTY_DATA_SALE = "the {typeData} of the {nameObject} {object} is required";
+    public static String EMPTY_DATA_SALE = "the {typeData} of the {nameObject} {object} is requiredWW";
     //Message data incorrect
     public static String NOT_VALID_THE_VALID_DATA_ARE = "The {typeData} ({data}) is not valid. The valid values are: [{valid}]";
     //Message data incorrect sale
