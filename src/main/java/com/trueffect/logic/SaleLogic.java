@@ -412,7 +412,8 @@ public class SaleLogic {
             if (eitherRes.existError()) {
                 throw eitherRes;
             }
-
+            ArrayList<ModelObject> rentalDetails = eitherRes.getListObject();
+            ArrayList<SaleDetail> buyDetails=getBuyDetailOfRentReturn(rentalDetails,rentReturns);
             //To verify that the return amount is coherent with the rented
             eitherRes = saleValidationDB.verifyRentQuantity(connection, idMasterDetail, rentReturnSales);
             if (eitherRes.existError()) {
@@ -458,5 +459,20 @@ public class SaleLogic {
             rentalDetails.add(i, rentalDetail);
         }
         return new Either();
+    }
+
+    private ArrayList<SaleDetail> getBuyDetailOfRentReturn(ArrayList<ModelObject> rentalDetails, ArrayList<RentReturn> rentReturns) {
+        for (ModelObject modelObject :rentalDetails) {
+            RentalDetail  rentalDetail = (RentalDetail)modelObject;
+            int i = 0;
+            boolean find = false;
+            ArrayList<RentalDetail> rentalDetails1= new ArrayList<RentalDetail>();
+            while (i<rentReturns.size()&&!find) {                
+                RentReturn rentReturn = rentReturns.get(i);
+                //if(rentalDetail.ge)
+                i++;
+            }
+        }
+        return null;
     }
 }
